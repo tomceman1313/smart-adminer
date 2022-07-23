@@ -1,13 +1,40 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@100;300;400;500;600;700;800&display=swap");
+body,
+html {
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
+	font-family: "Barlow", sans-serif;
+	font-weight: 400;
+	scrollbar-color: var(--main-color) #333;
+	scrollbar-width: thin;
+	scroll-behavior: smooth;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root {
+	--main-color: #008080;
+}
+input {
+	font-family: "Barlow", sans-serif;
+	outline: none;
+	border: none;
+}
+
+input[type="submit"] {
+	cursor: pointer;
+}
+
+button {
+	border: none;
+	outline: none;
+	font-family: "Barlow", sans-serif;
+	cursor: pointer;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	-webkit-box-shadow: 0 0 0 120px var(--main-color) inset !important;
+	-webkit-text-fill-color: black;
 }
