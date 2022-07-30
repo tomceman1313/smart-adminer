@@ -33,10 +33,10 @@ class AdminGateway
         ]);
         $user = @$stmt->fetchAll()[0];
 
-        // if (password_verify($data["password"], $user['password'])) {
+        // if ($user != null && password_verify($data["password"], $user['password'])) {
         //     return true;
         // }
-        if ($data["password"] == $user['password']) {
+        if ($user != null && $data["password"] == $user['password']) {
             return true;
         }
         return false;
@@ -44,12 +44,18 @@ class AdminGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO goods (name, description, price) VALUES (:name, :description, :price)";
+        $sql = "INSERT INTO users (username, password, privilege, tel, email, fname, lname) VALUES (:username, :password, :privilege, :tel, :email, :fname, :lname)";
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(":name", $data["name"], PDO::PARAM_STR);
-        $stmt->bindValue(":description", $data["description"], PDO::PARAM_STR);
-        $stmt->bindValue(":price", 666, PDO::PARAM_STR);
+        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $stmt->bindValue(":username", $data["username"], PDO::PARAM_STR);
+        $stmt->bindValue(":password", $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindValue(":privilege", $data["privilege"], PDO::PARAM_STR);
+        $stmt->bindValue(":tel", $data["tel"], PDO::PARAM_STR);
+        $stmt->bindValue(":email", $data["email"], PDO::PARAM_STR);
+        $stmt->bindValue(":fname", $data["fname"], PDO::PARAM_STR);
+        $stmt->bindValue(":lname", $data["lname"], PDO::PARAM_STR);
 
         $stmt->execute();
 
@@ -87,13 +93,14 @@ class AdminGateway
 
     public function delete(string $id): int
     {
-        $sql = "DELETE FROM goods WHERE id = :id";
+        $sql = "DELETE FROM users WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
 
         $stmt->execute();
+
 
         return $stmt->rowCount();
     }

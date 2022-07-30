@@ -20,7 +20,6 @@ class AdminController
                 break;
             case 'verify':
                 $data = json_decode(file_get_contents("php://input"), true);
-                //echo json_encode($this->gateway->checkUser($data));
                 $result = $this->gateway->checkUser($data);
                 if ($result) {
                     http_response_code(201);
@@ -28,13 +27,33 @@ class AdminController
                         "message" => "success"
                     ]);
                 } else {
-                    http_response_code(205);
+                    http_response_code(200);
                     echo json_encode([
                         "message" => "wrong"
                     ]);
                 }
                 break;
 
+            case 'create':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $id = $this->gateway->create($data);
+
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Product created",
+                    "id" => $id
+                ]);
+
+                break;
+            case 'delete':
+                $data = json_decode(file_get_contents("php://input"), true);
+                //echo json_encode($this->gateway->checkUser($data));
+                $this->gateway->delete($data["id"]);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "user deleted"
+                ]);
+                break;
             default:
                 break;
         }

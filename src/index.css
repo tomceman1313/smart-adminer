@@ -38,3 +38,17 @@ input:-webkit-autofill:active {
 	-webkit-box-shadow: 0 0 0 120px var(--main-color) inset !important;
 	-webkit-text-fill-color: black;
 }
+
+ul {
+	padding: 0;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
+select {
+	outline: none;
+	border: none;
+}

@@ -1,11 +1,14 @@
 import React from "react";
 import css from "./styles/Login.module.css";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 
 export default function Login() {
 	const { register, handleSubmit } = useForm();
+	let navigate = useNavigate();
 	const onSubmit = (data) => {
 		console.log(JSON.stringify(data));
 		fetch("http://localhost:4300/api?class=admin&action=verify", {
@@ -14,7 +17,16 @@ export default function Login() {
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
-				console.log(response);
+				//console.log(response);
+				response.text().then((_data) => {
+					let data = JSON.parse(_data);
+					console.log(data);
+					if (data.message === "success") {
+						navigate("/dashboard");
+					} else {
+						alert("wrong");
+					}
+				});
 				if (!response.ok) {
 					throw new Error("Network response was not ok");
 				}

@@ -1,0 +1,101 @@
+.menu {
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	height: calc(100vh - 40px);
+	padding: 20px 0;
+	background-color: white;
+	width: 350px;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	align-content: flex-start;
+	flex-wrap: wrap;
+}
+
+.menu img {
+	width: 100px;
+	margin-left: 40px;
+}
+
+.title {
+	font-size: 35px;
+}
+
+.menu ul {
+	width: calc(100% - 10px);
+	margin-right: 10px;
+	list-style: none;
+}
+
+.menu li {
+	margin: 15px 0;
+	overflow: hidden;
+}
+
+.menu ul div {
+	margin-left: 40px;
+	padding: 15px 25px;
+	font-size: 20px;
+	font-weight: 500;
+	color: #2d1967;
+	border-radius: 18px;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+.menu ul div label {
+	cursor: pointer;
+}
+
+.menu article {
+	max-height: 0;
+	margin-left: 60px;
+	overflow: hidden;
+	transition: max-height 0.7s ease-in-out;
+}
+
+.icon {
+	margin-right: 10px;
+}
+
+.smallarrow {
+	font-size: 15px;
+	margin-left: 10px;
+	color: white;
+}
+
+.menu ul a {
+	display: block;
+	margin: 15px 0 15px 35px;
+	font-size: 18px;
+	color: #333;
+	font-weight: 500;
+	transition: all 0.5s;
+	text-decoration: underline white;
+}
+
+.menu ul a:hover {
+	color: #2d1967;
+	text-decoration: underline #2d1967;
+}
+
+.menu ul div:hover {
+	background-color: #2d1967;
+	color: white !important;
+}
+
+.active {
+	border-left: solid #2d1967 4px;
+	transition: all 0.5s;
+}
+
+.active > div {
+	background-color: #2d1967;
+	color: white !important;
+}
+
+.active > article {
+	max-height: 300px;
+}

@@ -81,6 +81,25 @@
 	border: solid 1px white;
 }
 
+.login select {
+	position: absolute;
+	left: 25px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: calc(100% - 20px);
+	height: 35px;
+	background-color: transparent;
+	padding: 5px 0;
+	color: white;
+	font-size: 16px;
+	transition: all 0.5s;
+}
+
+.login select option {
+	background-color: #333;
+	line-height: 22px;
+}
+
 .login input[type="submit"]:hover {
 	background-color: transparent;
 	color: white;
