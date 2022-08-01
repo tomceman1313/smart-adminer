@@ -1,0 +1,100 @@
+.users {
+	width: 80%;
+	max-width: 400px;
+	/* background-color: white;
+	padding: 25px;
+	border-radius: 8px; */
+}
+
+.users li {
+	margin: 15px;
+	padding: 15px 25px;
+	background: white;
+	box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.1);
+	color: #2d1967;
+	border-radius: 8px;
+}
+
+.users li div {
+	position: relative;
+}
+
+.users li div label {
+	display: block;
+}
+
+.users li svg {
+	margin-right: 10px;
+}
+
+.users li svg path {
+	margin-right: 10px;
+}
+
+.users li div label:nth-of-type(1) {
+	font-size: 18px;
+	font-weight: 600;
+	text-transform: uppercase;
+	margin: 15px 0 5px 0;
+}
+
+.users li div label:nth-of-type(2) {
+	font-size: 18px;
+	font-weight: 400;
+	color: #333;
+}
+
+.show {
+	margin: 15px 0;
+	display: block;
+	width: 100%;
+	background-color: #2d1967;
+	color: white;
+	border: solid 1px #2d1967;
+	border-radius: 8px;
+}
+
+.users li article {
+	display: flex;
+	flex-wrap: wrap;
+	transition: all 1s ease-in-out;
+	max-height: 0;
+	overflow: hidden;
+}
+
+.users article label {
+	width: 100%;
+	display: block;
+	margin: 10px 0;
+}
+
+.users article label:nth-of-type(1) {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.users button {
+	width: calc(50%);
+	margin-top: 10px;
+	font-size: 16px;
+	padding: 10px;
+	text-transform: uppercase;
+	color: white;
+}
+
+.users button:nth-of-type(1) {
+	background-color: #2d1967;
+}
+
+.users button:nth-of-type(2) {
+	background-color: #d3384b;
+}
+
+.active {
+	max-height: 220px !important;
+}
+
+.rotate {
+	transform: rotate(180deg);
+	transform-origin: center center;
+}

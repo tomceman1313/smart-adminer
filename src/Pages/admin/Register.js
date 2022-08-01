@@ -1,5 +1,5 @@
 import React from "react";
-import css from "../styles/Login.module.css";
+import css from "./styles/Register.module.css";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faIdBadge, faImagePortrait, faMobileScreen, faAt, faUnlock, faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +26,7 @@ export default function Register() {
 	};
 
 	return (
-		<div className={css.login}>
+		<div className={css.register}>
 			<section>
 				<h2>Nový uživatel</h2>
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -66,8 +66,8 @@ export default function Register() {
 					</div>
 
 					<div className={css.input_box}>
-						<select {...register("privilege")}>
-							<option value="" disabled selected>
+						<select defaultValue={"default"} {...register("privilege")}>
+							<option value="default" disabled>
 								-- Práva nového účtu --
 							</option>
 							<option value="1">Uživatel</option>

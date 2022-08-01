@@ -17,7 +17,6 @@ export default function Profiles() {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(data);
 				setUsers(data);
 			});
 	};
@@ -37,10 +36,25 @@ export default function Profiles() {
 			});
 	};
 
+	const handleEdit = (id) => {
+		fetch(`http://localhost:4300/api?class=admin&action=delete`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ id: id }),
+		})
+			.then((res) => {
+				return res.json();
+			})
+			.then((message) => {
+				console.log(message);
+				loadData();
+			});
+	};
+
 	return (
 		<section>
 			<h1>Uživatelské profily</h1>
-			<div className={css.users}>{users && <UserList data={users} handleDelete={handleDelete} />}</div>
+			<div className={css.users}>{users && <UserList data={users} handleDelete={handleDelete} handleEdit={handleEdit} css={css} />}</div>
 		</section>
 	);
 }
