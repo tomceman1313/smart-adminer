@@ -40,7 +40,19 @@ class AdminController
 
                 http_response_code(201);
                 echo json_encode([
-                    "message" => "Product created",
+                    "message" => "User created",
+                    "id" => $id
+                ]);
+
+                break;
+            case 'edit':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $current = $this->gateway->get($data['id']);
+                $id = $this->gateway->update($current, $data);
+
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "User edited",
                     "id" => $id
                 ]);
 
@@ -51,7 +63,7 @@ class AdminController
                 $this->gateway->delete($data["id"]);
                 http_response_code(201);
                 echo json_encode([
-                    "message" => "user deleted"
+                    "message" => "User deleted"
                 ]);
                 break;
             default:

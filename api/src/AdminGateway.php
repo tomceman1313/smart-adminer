@@ -64,7 +64,7 @@ class AdminGateway
 
     public function get(string $id): array
     {
-        $sql = "SELECT * FROM goods WHERE id = :id";
+        $sql = "SELECT * FROM users WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
@@ -74,15 +74,22 @@ class AdminGateway
         return $data;
     }
 
-    public function update(array $current, array $new): int
+    public function update(array $current, array $data): int
     {
-        $sql = "UPDATE goods SET name = :name, description = :description, price = :price WHERE id = :id";
+        $sql = "UPDATE users SET username = :username, privilege = :privilege, tel = :tel,
+         email = :email, fname = :fname, lname = :lname WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(":name", $new["name"] ?? $current["name"], PDO::PARAM_STR);
-        $stmt->bindValue(":description", $new["description"] ?? $current["description"], PDO::PARAM_STR);
-        $stmt->bindValue(":price", $new["price"] ?? $current["price"], PDO::PARAM_STR);
+        //$hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $stmt->bindValue(":username", $data["username"] ?? $current["username"], PDO::PARAM_STR);
+        //$stmt->bindValue(":password", $hashedPassword ?? $current["password"], PDO::PARAM_STR);
+        $stmt->bindValue(":privilege", $data["privilege"] ?? $current["privilege"], PDO::PARAM_STR);
+        $stmt->bindValue(":tel", $data["tel"] ?? $current["tel"], PDO::PARAM_STR);
+        $stmt->bindValue(":email", $data["email"] ?? $current["email"], PDO::PARAM_STR);
+        $stmt->bindValue(":fname", $data["fname"] ?? $current["fname"], PDO::PARAM_STR);
+        $stmt->bindValue(":lname", $data["lname"] ?? $current["lname"], PDO::PARAM_STR);
 
         $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
 

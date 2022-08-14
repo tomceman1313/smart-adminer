@@ -12,7 +12,7 @@ spl_autoload_register(function ($class) {
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-type: application/json; charset=UTF-8");
-//header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD");
+header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
 
 
 //$parts = explode("/", $_SERVER["REQUEST_URI"]);
