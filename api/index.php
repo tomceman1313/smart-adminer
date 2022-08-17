@@ -71,6 +71,6 @@ switch ($class) {
 
         break;
     default:
-        http_response_code(404);
+        //http_response_code(404);
         break;
 }

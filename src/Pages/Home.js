@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment } from "../redux/slicer";
+
 import css from "./styles/Home.module.css";
 
 function Home() {
-	const [list, setList] = useState([]);
+	const [list, setList] = useState(null);
+
+	const count = useSelector((state) => state.counter.value);
+	const dispatch = useDispatch();
+
 	useEffect(() => {
 		loadData();
 	}, []);
@@ -12,7 +20,7 @@ function Home() {
 			response.text().then((_data) => {
 				let data = JSON.parse(_data);
 				console.log(data);
-				setList(data.name);
+				setList(data);
 			});
 		});
 	};
@@ -20,7 +28,17 @@ function Home() {
 	return (
 		<div className={css.login}>
 			<h1>Home</h1>
-			<p>{list}</p>
+			<div>{list && list.map((user) => <p key={user.id}>{user.username}</p>)}</div>
+
+			<div>
+				<button aria-label="Increment value" onClick={() => dispatch(increment())}>
+					Increment
+				</button>
+				<span>{count}</span>
+				<button aria-label="Decrement value" onClick={() => dispatch(decrement())}>
+					Decrement
+				</button>
+			</div>
 		</div>
 	);
 }

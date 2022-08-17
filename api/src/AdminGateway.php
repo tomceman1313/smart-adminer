@@ -3,7 +3,7 @@
 class AdminGateway
 {
 
-    private PDO $conn;
+    //private PDO $conn;
 
     public function __construct(Database $database)
     {
@@ -33,12 +33,12 @@ class AdminGateway
         ]);
         $user = @$stmt->fetchAll()[0];
 
-        // if ($user != null && password_verify($data["password"], $user['password'])) {
-        //     return true;
-        // }
-        if ($user != null && $data["password"] == $user['password']) {
+        if ($user != null && password_verify($data["password"], $user['password'])) {
             return true;
         }
+        // if ($user != null && $data["password"] == $user['password']) {
+        //     return true;
+        // }
         return false;
     }
 
