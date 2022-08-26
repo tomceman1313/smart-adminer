@@ -5,8 +5,9 @@
 }
 
 .content {
-	width: calc(100% - 390px);
+	width: calc(100% - 380px);
 	position: absolute;
 	top: 0;
 	right: 0;
+	margin: 15px;
 }

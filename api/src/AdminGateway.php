@@ -1,9 +1,19 @@
 <?php
+require('./jwt/src/BeforeValidException.php');
+require './jwt/src/ExpiredException.php';
+require './jwt/src/SignatureInvalidException.php';
+require './jwt/src/JWT.php';
+require './jwt/src/Key.php';
+require './jwt/src/JWK.php';
+
+use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class AdminGateway
 {
 
     //private PDO $conn;
+    private $key = 'privatekey';
 
     public function __construct(Database $database)
     {
@@ -23,6 +33,34 @@ class AdminGateway
         }
 
         return $data;
+    }
+
+    public function auth(array $data)
+    {
+        $stmt = $this->conn->prepare('SELECT * FROM users WHERE username = :username LIMIT 1');
+        $stmt->execute([
+            'username' => $data["username"]
+        ]);
+        $user = @$stmt->fetchAll()[0];
+
+        if ($user != null && password_verify($data["password"], $user['password'])) {
+            $iat = time();
+            $exp = $iat + 60 * 60;
+            $payload = array(
+                'iss' => 'http://localhost:4300/api',
+                'aud' => 'http://localhost:3000/',
+                'iat' => $iat,
+                'exp' => $exp,
+                'user' => "daki"
+            );
+            $jwt = JWT::encode($payload, $this->key, 'HS512');
+            $decoded = JWT::decode($jwt, new Key($this->key, 'HS512'));
+            return $jwt;
+        }
+        // if ($user != null && $data["password"] == $user['password']) {
+        //     return true;
+        // }
+        return "wrong";
     }
 
     public function checkUser(array $data): string

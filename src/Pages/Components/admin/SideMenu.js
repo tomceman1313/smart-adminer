@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faDisplay, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faDisplay, faGear, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 
 import css from "../styles/SideMenu.module.css";
 
-export default function SideMenu() {
+export default function SideMenu({ logOut }) {
 	return (
 		<div className={css.menu}>
 			<img src="/images/logo512.png" alt="logo" />
@@ -62,6 +63,13 @@ export default function SideMenu() {
 						<Link to="/dashboard/pricelist">Přehled článků</Link>
 						<Link to="/dashboard/articles">Nový článek</Link>
 					</article>
+				</li>
+
+				<li>
+					<div id="logout" onClick={logOut}>
+						<FontAwesomeIcon className={css.icon} icon={faPowerOff} />
+						<label>Odhlásit</label>
+					</div>
 				</li>
 			</ul>
 		</div>

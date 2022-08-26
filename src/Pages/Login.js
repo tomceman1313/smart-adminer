@@ -4,37 +4,31 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
-import { logIn, logOut } from "../redux/login";
-import { useAuth0 } from "@auth0/auth0-react";
+import { setKey } from "../redux/authKey";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 
 export default function Login() {
 	const { register, handleSubmit } = useForm();
-
-	const { loginWithRedirect, logout, user } = useAuth0();
-	const userInfo = useSelector((state) => state.user.isLogged);
+	const apiKey = useSelector((state) => state.auth.apiKey);
 	const dispatch = useDispatch();
-
-	if (user) {
-		dispatch(logIn());
-	}
 
 	let navigate = useNavigate();
 	const onSubmit = (data) => {
 		console.log(JSON.stringify(data));
-		fetch("http://localhost:4300/api?class=admin&action=verify", {
+		fetch("http://localhost:4300/api?class=admin&action=auth", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
-				//console.log(response);
 				response.text().then((_data) => {
 					let data = JSON.parse(_data);
-					console.log(data);
-					if (data.message === "success") {
+					//console.log(data);
+					if (data.message === "access") {
+						dispatch(setKey(data.token));
+						sessionStorage.setItem("logged", true);
 						navigate("/dashboard");
 					} else {
 						alert("wrong");
@@ -65,24 +59,6 @@ export default function Login() {
 					</div>
 					<input type="submit" />
 				</form>
-
-				<div>
-					<button
-						onClick={() => {
-							loginWithRedirect();
-						}}
-					>
-						Log in
-					</button>
-					<button
-						onClick={() => {
-							logout();
-						}}
-					>
-						Log out
-					</button>
-					<h4>State: {String(userInfo)}</h4>
-				</div>
 			</section>
 		</div>
 	);

@@ -37,7 +37,7 @@
 	left: 25px;
 	top: 50%;
 	transform: translateY(-50%);
-	width: calc(100% - 10px);
+	width: calc(100% - 25px);
 	height: 35px;
 	background-color: transparent;
 	padding: 5px 0;
@@ -48,6 +48,7 @@
 
 .input_box input:focus {
 	left: 0;
+	width: calc(100%);
 }
 
 .input_box input:focus ~ .icon {

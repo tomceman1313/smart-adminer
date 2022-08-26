@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment } from "../redux/slicer";
+import { decrement, increment, incrementByAmount } from "../redux/slicer";
 
 import css from "./styles/Home.module.css";
 
@@ -37,6 +37,9 @@ function Home() {
 				<span>{count}</span>
 				<button aria-label="Decrement value" onClick={() => dispatch(decrement())}>
 					Decrement
+				</button>
+				<button aria-label="Decrement value" onClick={() => dispatch(incrementByAmount(33))}>
+					Increment 33
 				</button>
 			</div>
 		</div>

@@ -66,6 +66,16 @@ class AdminController
                     "message" => "User deleted"
                 ]);
                 break;
+
+            case 'auth':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $response = $this->gateway->auth($data);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "access",
+                    "token" => $response
+                ]);
+                break;
             default:
                 break;
         }
