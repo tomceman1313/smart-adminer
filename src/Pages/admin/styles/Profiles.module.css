@@ -3,6 +3,7 @@
 	align-items: flex-start;
 	flex-wrap: wrap;
 	transition: all 0.5s;
+	margin: 0;
 }
 
 .users li {
@@ -11,7 +12,7 @@
 	padding: 15px 25px;
 	background: white;
 	box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.1);
-	color: #2d1967;
+	color: var(--main-dark);
 	border-radius: 8px;
 }
 
@@ -48,9 +49,9 @@
 	margin: 15px 0;
 	display: block;
 	width: 100%;
-	background-color: #2d1967;
+	background-color: var(--main-dark);
 	color: white;
-	border: solid 1px #2d1967;
+	border: solid 1px var(--main-dark);
 	border-radius: 8px;
 }
 
@@ -82,12 +83,16 @@
 	color: white;
 }
 
-.users button:nth-of-type(1) {
-	background-color: #2d1967;
-}
+
 
 .users button:nth-of-type(2) {
-	background-color: #d3384b;
+	background-color: var(--red);
+	text-decoration: underline var(--red);
+}
+
+.users button:nth-of-type(2):hover {
+	background-color: var(--red-dark);
+	text-decoration: underline white;
 }
 
 .active {
@@ -118,7 +123,7 @@
 }
 
 #close {
-	color: #d3384b;
+	color: var(--red);
 	position: absolute;
 	font-size: 22px;
 	top: 0;
@@ -131,7 +136,7 @@
 
 #close:hover {
 	color: white;
-	background-color: #d3384b;
+	background-color: var(--red);
 }
 
 .edit h2 {
@@ -144,7 +149,7 @@
 	background-size: 200% 1px;
 	background-repeat: no-repeat;
 	background-position: 100% 100%;
-	margin: 15px 0;
+	margin-top: 20px;
 	height: 50px;
 }
 
@@ -182,20 +187,9 @@
 	top: 50%;
 	transform: translateY(-50%);
 	transition: all 0.5s;
+	color: var(--main-dark);
 }
 
-.edit input[type="submit"] {
-	background-color: #2d1967;
-	font-size: 18px;
-	font-weight: 400;
-	text-transform: uppercase;
-	padding: 10px 15px;
-	border-radius: 8px;
-	margin-top: 25px;
-	color: white;
-	transition: all 0.5s;
-	border: solid 1px #2d1967;
-}
 
 .edit select {
 	position: absolute;
@@ -216,10 +210,6 @@
 	line-height: 22px;
 }
 
-.edit input[type="submit"]:hover {
-	background-color: transparent;
-	color: black;
-}
 
 .notifier {
 	position: fixed;

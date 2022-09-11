@@ -10,12 +10,6 @@ function App() {
 	return (
 		<div className="App">
 			<BrowserRouter>
-				<nav>
-					<Link to="/">Home</Link>
-					<Link to="/login">Login</Link>
-					<Link to="/register">Register</Link>
-					<Link to="/dashboard">Register</Link>
-				</nav>
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/login" element={<Login />} />

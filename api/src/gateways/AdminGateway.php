@@ -35,6 +35,39 @@ class AdminGateway
         return $data;
     }
 
+    public function getRoles(): array
+    {
+        $sql = "SELECT * from roles";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        // boolean values have to converted manualy, represented by 0/1 by default
+        // $row["bool column"] = (bool) $row["bool column];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    public function updateRole(array $data)
+    {
+        $availablePermissions = ["create_articles", "edit_articles", "post_articles", "edit_prices", "create_pricelist_item", "create_news", "edit_news", "post_news"];
+
+        if (in_array($data['action'], $availablePermissions)) {
+            $sql = "UPDATE roles SET " . $data['action'] . " = :permission WHERE role = :role";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                'permission' => $data['permission'],
+                'role' => $data['role']
+            ]);
+            return "updated";
+        }
+
+        return "dismiss";
+    }
+
     public function auth(array $data)
     {
         $stmt = $this->conn->prepare('SELECT * FROM users WHERE username = :username LIMIT 1');

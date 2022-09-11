@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment, incrementByAmount } from "../redux/slicer";
@@ -27,6 +28,12 @@ function Home() {
 
 	return (
 		<div className={css.login}>
+			<nav>
+				<Link to="/">Home</Link>
+				<Link to="/login">Login</Link>
+				<Link to="/register">Register</Link>
+				<Link to="/dashboard">Register</Link>
+			</nav>
 			<h1>Home</h1>
 			<div>{list && list.map((user) => <p key={user.id}>{user.username}</p>)}</div>
 

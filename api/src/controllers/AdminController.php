@@ -67,6 +67,18 @@ class AdminController
                 ]);
                 break;
 
+            case 'getroles':
+                echo json_encode($this->gateway->getRoles());
+                break;
+
+            case 'update_role':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $response = $this->gateway->updateRole($data);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => $response
+                ]);
+                break;
             case 'auth':
                 $data = json_decode(file_get_contents("php://input"), true);
                 $response = $this->gateway->auth($data);

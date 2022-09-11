@@ -6,6 +6,15 @@ spl_autoload_register(function ($class) {
     require __DIR__ . "/src/$class.php";
 });
 
+require __DIR__ . "/src/controllers/AdminController.php";
+require __DIR__ . "/src/gateways/AdminGateway.php";
+
+require __DIR__ . "/src/controllers/ProductController.php";
+require __DIR__ . "/src/gateways/ProductGateway.php";
+
+require __DIR__ . "/src/controllers/PricelistController.php";
+require __DIR__ . "/src/gateways/PricelistGateway.php";
+
 // set_error_handler("ErrorHandler::handleError");
 // set_exception_handler("ErrorHandler::handleException");
 
@@ -36,8 +45,6 @@ if (isset($_GET["id"])) {
     $id = $_GET["id"];
 }
 
-
-
 switch ($class) {
     case 'products':
         $gateway = new ProductGateway($database);
@@ -51,25 +58,11 @@ switch ($class) {
 
         $controller->processRequest($action, $id);
         break;
-    case 'test':
-        $conn = $database->getConnection();
-        $data = json_decode(file_get_contents("php://input"), true);
+    case 'pricelist':
+        $gateway = new PricelistGateway($database);
+        $controller = new PricelistConroller($gateway);
 
-        $sql = "INSERT INTO users (username, password, privilege) VALUES (:username, :password, :privilege)";
-        $stmt = $conn->prepare($sql);
-
-        $stmt->bindValue(":username", $data["username"], PDO::PARAM_STR);
-        $stmt->bindValue(":password", $data["password"], PDO::PARAM_STR);
-        $stmt->bindValue(":privilege", 666, PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        http_response_code(201);
-        echo json_encode([
-            "message" => "User created"
-        ]);
-
-        break;
+        $controller->processRequest($action, $id);
     default:
         //http_response_code(404);
         break;

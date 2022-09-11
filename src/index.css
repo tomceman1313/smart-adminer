@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@100;300;400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 body,
 html {
 	margin: 0;
 	padding: 0;
 	max-width: 100%;
-	font-family: "Barlow", sans-serif;
+	font-family: 'Quicksand', sans-serif;
 	font-weight: 400;
 	scrollbar-color: var(--main-color) #333;
 	scrollbar-width: thin;
@@ -15,7 +15,7 @@ html {
 	--main-color: #008080;
 }
 input {
-	font-family: "Barlow", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	outline: none;
 	border: none;
 }
@@ -27,7 +27,7 @@ input[type="submit"] {
 button {
 	border: none;
 	outline: none;
-	font-family: "Barlow", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	cursor: pointer;
 }
 
@@ -35,8 +35,8 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-	-webkit-box-shadow: 0 0 0 120px #7579ff inset !important;
-	-webkit-text-fill-color: white;
+	-webkit-box-shadow: 0 0 0 120px white inset !important;
+	-webkit-text-fill-color: black;
 }
 
 ul {
@@ -52,4 +52,10 @@ a {
 select {
 	outline: none;
 	border: none;
+}
+
+.no-section{
+	background-color: transparent;
+	box-shadow: none;
+	padding: 0;
 }

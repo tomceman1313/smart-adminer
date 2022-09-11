@@ -1,0 +1,90 @@
+.pricelist{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.pricelist section:nth-of-type(1) {
+	grid-column: span 2;
+	min-height: 400px;
+}
+
+
+.pricelist table{
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+.pricelist tr:hover{
+	background-color: #e5e5e5;
+}
+
+.pricelist th{
+	padding: 15px;
+	text-align: left;
+	border-bottom: 1px solid #d6dde1;
+	border-top: 1px solid #d6dde1;
+}
+
+.pricelist td{
+	padding: 15px;
+	border-bottom: 1px solid #d6dde1;
+}
+
+.edit_price{
+	position: absolute;
+	width: calc(100% - 110px);
+	height: 100%;
+	padding: 0 55px;
+	background-color: var(--main);
+	left: 0;
+	top: 100%;
+	transition: all 1s;
+	color: white;
+}
+
+.edit_price form{
+	width: calc(100% - 110px);
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.edit_price h2{
+	color: white;
+}
+
+.edit_price input, .edit_price input::placeholder {
+	color: white !important;
+}
+
+.show_roles_edit{
+	top: 0;
+}
+
+#close {
+	color: white;
+	position: absolute;
+	font-size: 22px;
+	top: 0;
+	right: 0;
+	padding: 16px 20px;
+	background-color: var(--main);
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+#close:hover {
+	color: white;
+	background-color: var(--red);
+}
+
+
+@media(max-width: 1500px){
+	.pricelist section:nth-of-type(1) {
+		grid-column: span 4;
+		min-height: 400px;
+	}
+}

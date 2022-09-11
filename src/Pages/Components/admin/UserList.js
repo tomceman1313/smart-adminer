@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faUser, faIdBadge, faMobileScreen, faAt, faArrowUpWideShort, faLock, faImagePortrait, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCaretDown,
+	faUser,
+	faIdBadge,
+	faMobileScreen,
+	faAt,
+	faArrowUpWideShort,
+	faLock,
+	faImagePortrait,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 
 function UserList({ data, handleDelete, handleEdit, css }) {
@@ -31,6 +41,8 @@ function UserList({ data, handleDelete, handleEdit, css }) {
 
 	const showMoreInfo = (e) => {
 		const el = e.target.parentNode;
+
+		const ee = 1;
 		const article = el.parentNode.childNodes[1];
 
 		const arrow = e.target.firstChild;
@@ -74,35 +86,67 @@ function UserList({ data, handleDelete, handleEdit, css }) {
 		return (
 			<section className={css.edit}>
 				<h2>{userData[0].username}</h2>
-				<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editVisibility} />
+				<FontAwesomeIcon
+					id={css.close}
+					icon={faXmark}
+					onClick={editVisibility}
+				/>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className={css.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...register("username")} defaultValue={userData[0].username} />
+						<input
+							type="text"
+							placeholder="Uživatelské jméno"
+							{...register("username")}
+							defaultValue={userData[0].username}
+						/>
 						<FontAwesomeIcon className={css.icon} icon={faUser} />
 					</div>
 
 					<div className={css.input_box}>
-						<input type="text" placeholder="Jméno" {...register("fname")} defaultValue={userData[0].fname} />
+						<input
+							type="text"
+							placeholder="Jméno"
+							{...register("fname")}
+							defaultValue={userData[0].fname}
+						/>
 						<FontAwesomeIcon className={css.icon} icon={faImagePortrait} />
 					</div>
 
 					<div className={css.input_box}>
-						<input type="text" placeholder="Příjmení" {...register("lname")} defaultValue={userData[0].lname} />
+						<input
+							type="text"
+							placeholder="Příjmení"
+							{...register("lname")}
+							defaultValue={userData[0].lname}
+						/>
 						<FontAwesomeIcon className={css.icon} icon={faIdBadge} />
 					</div>
 
 					<div className={css.input_box}>
-						<input type="phone" placeholder="Telefon" {...register("tel")} defaultValue={userData[0].tel} />
+						<input
+							type="phone"
+							placeholder="Telefon"
+							{...register("tel")}
+							defaultValue={userData[0].tel}
+						/>
 						<FontAwesomeIcon className={css.icon} icon={faMobileScreen} />
 					</div>
 
 					<div className={css.input_box}>
-						<input type="email" placeholder="Email" {...register("email")} defaultValue={userData[0].email} />
+						<input
+							type="email"
+							placeholder="Email"
+							{...register("email")}
+							defaultValue={userData[0].email}
+						/>
 						<FontAwesomeIcon className={css.icon} icon={faAt} />
 					</div>
 
 					<div className={css.input_box}>
-						<select defaultValue={userData[0].privilege} {...register("privilege")}>
+						<select
+							defaultValue={userData[0].privilege}
+							{...register("privilege")}
+						>
 							<option value="default" disabled>
 								-- Práva nového účtu --
 							</option>
@@ -113,7 +157,11 @@ function UserList({ data, handleDelete, handleEdit, css }) {
 						<FontAwesomeIcon className={css.icon} icon={faArrowUpWideShort} />
 					</div>
 
-					<input type="hidden" defaultValue={userData[0].id} {...register("id")} />
+					<input
+						type="hidden"
+						defaultValue={userData[0].id}
+						{...register("id")}
+					/>
 
 					<input type="submit" />
 				</form>
@@ -141,7 +189,11 @@ function UserList({ data, handleDelete, handleEdit, css }) {
 								{/* <FontAwesomeIcon icon={faArrowUpWideShort} /> */}
 								{user.privilege}
 							</label>
-							<FontAwesomeIcon icon={faCaretDown} className={css.show} onClick={showMoreInfo} />
+							<FontAwesomeIcon
+								icon={faCaretDown}
+								className={css.show}
+								onClick={showMoreInfo}
+							/>
 						</div>
 						<article>
 							<label>

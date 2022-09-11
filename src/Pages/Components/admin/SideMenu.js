@@ -11,7 +11,7 @@ export default function SideMenu({ logOut }) {
 	return (
 		<div className={css.menu}>
 			<img src="/images/logo512.png" alt="logo" />
-			<label className={css.title}>CRM</label>
+			<label className={css.title}>Adminer</label>
 			<ul>
 				<li className={css.active}>
 					<div id="profiles" onClick={setActive}>

@@ -1,0 +1,96 @@
+.input_box {
+	position: relative;
+	background: linear-gradient(to left, #333 50%, rgb(255, 255, 255, 0.9) 50%);
+	background-size: 200% 1px;
+	background-repeat: no-repeat;
+	background-position: 100% 100%;
+	margin-top: 20px;
+	height: 50px;
+}
+
+.input_box input {
+	position: absolute;
+	left: 25px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: calc(100% - 10px);
+	height: 35px;
+	background-color: transparent;
+	padding: 5px 0;
+	color: #333;
+	font-size: 16px;
+	transition: all 0.5s;
+}
+
+.input_box input:focus {
+	left: 0;
+}
+
+.input_box input:focus ~ .icon {
+	transform: translateY(-28px);
+	font-size: 12px;
+}
+
+.input_box input::placeholder {
+	color: #333;
+}
+
+.icon {
+	font-size: 16px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	transition: all 0.5s;
+	color: var(--main-dark);
+}
+
+/*-------------------------------------- S vysvětlivkou*/
+.input_box_comment {
+	position: relative;
+	background: linear-gradient(to left, #333 50%, rgb(255, 255, 255, 0.9) 50%);
+	background-size: 200% 1px;
+	background-repeat: no-repeat;
+	background-position: 100% 100%;
+	margin-top: 20px;
+	height: 50px;
+}
+
+.input_box_comment input {
+	position: absolute;
+	left: 25px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: calc(100% - 10px);
+	height: 35px;
+	background-color: transparent;
+	padding: 15px 0 5px 0;
+	color: white;
+	font-size: 16px;
+	transition: all 0.5s;
+}
+
+.input_box_comment input:focus, .input_box_comment input:valid {
+	left: 0;
+}
+
+.input_box_comment input:focus ~ div, .input_box_comment input:valid ~ div{
+	transform: translateY(0);
+	top: 0;
+	font-size: 14px;
+	color: black;
+}
+
+.input_box_comment div{
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	transition: all 0.5s;
+	
+}
+
+.icon_comment {
+	color: var(--main-dark);
+	margin-right: 3px;
+}
