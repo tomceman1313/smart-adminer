@@ -1,47 +1,69 @@
-:root{
-	--main: #2874A6;
-	--main-dark: #1B4F72;
-	--green: #17A589;
-	--green-dark: #148F77;
+:root {
+	--main: #2874a6;
+	--main-dark: #263544;
+	/* --main-dark: #1B4F72; */
+	--green: #17a589;
+	--green-dark: #148f77;
 	--red: #d3384b;
-	--red-dark: #BB2F40;
+	--red-dark: #bb2f40;
+	--gray: #d6dde1;
 }
 
 .dashboard {
 	background-color: #f2f7fb;
 	min-height: 100vh;
 	position: relative;
+	display: flex;
+	justify-content: right;
 }
 
-.content {
-	width: calc(100% - 380px);
-	position: absolute;
-	top: 100px;
-	right: 0;
-	margin: 15px;
-}
-
-.banner{
+.banner {
 	width: calc(100% - 350px);
 	position: absolute;
-	height: 150px;
+	height: 180px;
 	top: 0;
 	right: 0;
 	background-color: #263544;
 	color: white;
 }
 
-.banner h1{
+.banner h1 {
 	font-size: 32px;
 	font-weight: 400;
-	margin: 35px 0 0 15px;
+	margin: 45px 0 0 15px;
 }
 
-.banner p{
+.banner p {
 	margin: 0 0 0 15px;
 }
 
-input[type="submit"], button{
+.banner a {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 40px;
+	background-color: var(--green);
+	padding: 12px 16px;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: all 0.5s;
+	color: white;
+}
+
+.banner a:hover {
+	background-color: var(--green-dark);
+	color: var(--main-dark);
+}
+
+.content {
+	width: calc(100% - 380px);
+	margin: 15px;
+	margin-top: 130px;
+	right: 0;
+}
+
+input[type="submit"],
+button {
 	background-color: var(--green);
 	font-size: 14px;
 	font-weight: 400;
@@ -55,26 +77,47 @@ input[type="submit"], button{
 	text-decoration: underline var(--green);
 }
 
-input[type="submit"]:hover, button:hover {
+input[type="submit"]:hover,
+button:hover {
 	background-color: var(--green-dark);
 	color: white;
 	text-decoration: underline white;
 }
 
-
- h2 {
+h2 {
 	font-size: 35px;
 	margin: 0;
+	margin-bottom: 40px;
 	color: var(--main-dark);
 }
 
-section{
+section {
 	position: relative;
-    border-radius: 8px;
+	border-radius: 8px;
 	padding: 55px;
 	background: white;
 	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
 	color: #333;
 	grid-column: span 1;
 	overflow: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: var(--gray);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
 }

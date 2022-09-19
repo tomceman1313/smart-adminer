@@ -31,14 +31,19 @@ class PricelistConroller
                 break;
             case 'update':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $current = $this->gateway->get($data['id']);
-                $id = $this->gateway->update($current, $data);
+                $result = $this->gateway->update($data);
 
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Item edited",
-                    "id" => $id
-                ]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited"
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Update failure"
+                    ]);
+                }
                 break;
             default:
                 break;

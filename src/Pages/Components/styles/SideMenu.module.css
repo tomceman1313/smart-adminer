@@ -88,7 +88,7 @@
 	color: white !important;
 }
 
-.menu ul div:hover label{
+.menu ul div:hover label {
 	color: white !important;
 }
 
@@ -106,6 +106,10 @@
 	max-height: 300px;
 }
 
-.active label{
+.active label {
 	color: white !important;
+}
+
+.active_link {
+	color: #42a5f5 !important;
 }

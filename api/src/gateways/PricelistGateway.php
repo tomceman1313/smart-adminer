@@ -24,20 +24,16 @@ class PricelistGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO users (username, password, privilege, tel, email, fname, lname) VALUES (:username, :password, :privilege, :tel, :email, :fname, :lname)";
+        $sql = "INSERT INTO pricelist (name, price, special_price, special_price_start, special_price_end) VALUES (:name, :price, :special_price, :special_price_start, :special_price_end)";
         $stmt = $this->conn->prepare($sql);
 
-        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
-
-        $stmt->bindValue(":username", $data["username"], PDO::PARAM_STR);
-        $stmt->bindValue(":password", $hashedPassword, PDO::PARAM_STR);
-        $stmt->bindValue(":privilege", $data["privilege"], PDO::PARAM_STR);
-        $stmt->bindValue(":tel", $data["tel"], PDO::PARAM_STR);
-        $stmt->bindValue(":email", $data["email"], PDO::PARAM_STR);
-        $stmt->bindValue(":fname", $data["fname"], PDO::PARAM_STR);
-        $stmt->bindValue(":lname", $data["lname"], PDO::PARAM_STR);
-
-        $stmt->execute();
+        $stmt->execute([
+            'name' => $data["name"],
+            'price' => $data["price"],
+            'special_price' => $data["special_price"],
+            'special_price_start' => $data["start"],
+            'special_price_end' => $data["end"]
+        ]);
 
         return $this->conn->lastInsertId();
     }
@@ -55,12 +51,16 @@ class PricelistGateway
         return $data;
     }
 
-    public function update(array $current, array $data): int
+    public function update(array $data): int
     {
         $sql = "UPDATE pricelist SET name = :name, price = :price, special_price = :special_price,
          special_price_start = :start, special_price_end = :end WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
+
+        if ($data["start"] > $data["end"]) {
+            return false;
+        }
 
         $stmt->execute([
             'name' => $data["name"],
@@ -71,7 +71,7 @@ class PricelistGateway
             'id' => $data["id"]
         ]);
 
-        return $stmt->rowCount();
+        return true;
     }
 
     public function delete(string $id): int

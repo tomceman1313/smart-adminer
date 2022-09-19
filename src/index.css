@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 body,
 html {
 	margin: 0;
 	padding: 0;
 	max-width: 100%;
-	font-family: 'Quicksand', sans-serif;
+	font-family: "Quicksand", sans-serif;
 	font-weight: 400;
 	scrollbar-color: var(--main-color) #333;
 	scrollbar-width: thin;
@@ -54,8 +54,47 @@ select {
 	border: none;
 }
 
-.no-section{
+.no-section {
 	background-color: transparent;
 	box-shadow: none;
 	padding: 0;
+}
+
+.splide__arrow--prev {
+	left: -35px !important;
+}
+
+.splide__arrow--next {
+	right: -35px !important;
+}
+
+.splide__pagination {
+	bottom: -25px !important;
+}
+
+.splide__pagination__page.is-active {
+	background: #263544 !important;
+}
+
+.fc-event-title {
+	margin-left: 8px;
+}
+
+.fc-daygrid-event {
+	border-radius: 15px !important;
+	cursor: pointer;
+}
+
+.fc-direction-ltr .fc-daygrid-block-event:not(.fc-event-start),
+.fc-direction-rtl .fc-daygrid-block-event:not(.fc-event-end) {
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+	border-left-width: 0 !important;
+}
+
+.fc-direction-ltr .fc-daygrid-block-event:not(.fc-event-end),
+.fc-direction-rtl .fc-daygrid-block-event:not(.fc-event-start) {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+	border-right-width: 0 !important;
 }

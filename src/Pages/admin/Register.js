@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import css from "./styles/Register.module.css";
 import cssBasic from "./styles/Basic.module.css";
+import "@splidejs/react-splide/css";
 
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faIdBadge, faImagePortrait, faMobileScreen, faAt, faUnlock, faArrowUpWideShort, faAddressBook, faBolt, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
 
 export default function Register() {
 	const { register, handleSubmit } = useForm();
@@ -21,6 +23,9 @@ export default function Register() {
 				setPrivileges(data);
 			});
 		});
+
+		document.getElementById("banner-title").innerHTML = "Registrace a role";
+		document.getElementById("banner-desc").innerHTML = "Tvorba nových profilů, přehled a správa práv rolí";
 	}, []);
 
 	const onSubmit = (data) => {
@@ -81,39 +86,39 @@ export default function Register() {
 		<div className={css.register}>
 			<section>
 				<h2>Nový uživatel</h2>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form onSubmit={handleSubmit(onSubmit)} autoComplete="new-password">
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...register("username")} />
+						<input type="text" placeholder="Uživatelské jméno" {...register("username")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faUser} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Jméno" {...register("fname")} />
+						<input type="text" placeholder="Jméno" {...register("fname")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faImagePortrait} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Příjmení" {...register("lname")} />
+						<input type="text" placeholder="Příjmení" {...register("lname")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faIdBadge} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="phone" placeholder="Telefon" {...register("tel")} />
+						<input type="phone" placeholder="Telefon" {...register("tel")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faMobileScreen} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="email" placeholder="Email" {...register("email")} />
+						<input type="email" placeholder="Email" {...register("email")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faAt} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo" {...register("password")} />
+						<input type="password" placeholder="Heslo" {...register("password")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faUnlock} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo znovu" {...register("password_check")} />
+						<input type="password" placeholder="Heslo znovu" {...register("password_check")} autoComplete="new-password" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faLock} />
 					</div>
 
@@ -135,86 +140,107 @@ export default function Register() {
 			{privileges && (
 				<section>
 					<h2>Práva rolí</h2>
-					<div className={css.roles}>
-						<h3>Články</h3>
-						<table>
-							<thead>
-								<tr>
-									<th>Role</th>
-									<th>Vytvoření</th>
-									<th>Editace</th>
-									<th>Publikování</th>
-								</tr>
-							</thead>
 
-							<tbody>
-								{privileges.map((role) => (
-									<tr key={role.role}>
-										<td>{role.name}</td>
-										<td>{role.create_articles}</td>
-										<td>{role.edit_articles}</td>
-										<td>{role.post_articles}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+					<Splide
+						options={{
+							perPage: 1,
+							height: "auto",
+							rewind: true,
+						}}
+						aria-labelledby="basic-example-heading"
+						onMoved={(splide, newIndex) => {
+							// eslint-disable-next-line
+							console.log("moved", newIndex);
 
-					<div className={css.roles}>
-						<h3>Ceny</h3>
+							// eslint-disable-next-line
+							console.log("length", splide.length);
+						}}
+					>
+						<SplideSlide className={css.slide}>
+							<div className={css.roles}>
+								<h3>Články</h3>
+								<table>
+									<thead>
+										<tr>
+											<th>Role</th>
+											<th>Vytvoření</th>
+											<th>Editace</th>
+											<th>Publikování</th>
+										</tr>
+									</thead>
 
-						<table>
-							<thead>
-								<tr>
-									<th>Role</th>
-									<th>Změnit</th>
-									<th>Vytvořit položku</th>
-								</tr>
-							</thead>
+									<tbody>
+										{privileges.map((role) => (
+											<tr key={role.role}>
+												<td>{role.name}</td>
+												<td>{role.create_articles}</td>
+												<td>{role.edit_articles}</td>
+												<td>{role.post_articles}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</SplideSlide>
+						<SplideSlide className={css.slide}>
+							<div className={css.roles}>
+								<h3>Ceny</h3>
 
-							<tbody>
-								{privileges.map((role) => (
-									<tr key={role.role}>
-										<td>{role.name}</td>
-										<td>{role.edit_prices}</td>
-										<td>{role.create_pricelist_item}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+								<table>
+									<thead>
+										<tr>
+											<th>Role</th>
+											<th>Změnit</th>
+											<th>Vytvořit položku</th>
+										</tr>
+									</thead>
 
-					<div className={css.roles}>
-						<h3>Aktuality</h3>
-						<table>
-							<thead>
-								<tr>
-									<th>Role</th>
-									<th>Vytvoření</th>
-									<th>Editace</th>
-									<th>Publikování</th>
-								</tr>
-							</thead>
-							<tbody>
-								{privileges.map((role) => (
-									<tr key={role.role}>
-										<td>{role.name}</td>
-										<td>{role.create_news}</td>
-										<td>{role.edit_news}</td>
-										<td>{role.post_news}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+									<tbody>
+										{privileges.map((role) => (
+											<tr key={role.role}>
+												<td>{role.name}</td>
+												<td>{role.edit_prices}</td>
+												<td>{role.create_pricelist_item}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</SplideSlide>
 
-						<button onClick={editRoles}>Změnit práva</button>
-					</div>
+						<SplideSlide className={css.slide}>
+							<div className={css.roles}>
+								<h3>Aktuality</h3>
+								<table>
+									<thead>
+										<tr>
+											<th>Role</th>
+											<th>Vytvoření</th>
+											<th>Editace</th>
+											<th>Publikování</th>
+										</tr>
+									</thead>
+									<tbody>
+										{privileges.map((role) => (
+											<tr key={role.role}>
+												<td>{role.name}</td>
+												<td>{role.create_news}</td>
+												<td>{role.edit_news}</td>
+												<td>{role.post_news}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</SplideSlide>
+					</Splide>
+					<button onClick={editRoles}>Změnit práva</button>
 
 					<div className={css.edit_roles}>
 						<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editRoles} />
 						<form onSubmit={handleRoleUpdate(onSubmitRoles)}>
 							<h2>Změna práv role</h2>
-							<div className={css.input_box}>
+							<div className={cssBasic.input_box}>
 								<select defaultValue={"default"} {...registerUpdateRole("role")}>
 									<option value="default" disabled>
 										-- Vyberte roli --
@@ -225,10 +251,10 @@ export default function Register() {
 										</option>
 									))}
 								</select>
-								<FontAwesomeIcon className={css.icon} icon={faAddressBook} />
+								<FontAwesomeIcon className={cssBasic.icon} icon={faAddressBook} />
 							</div>
 
-							<div className={css.input_box}>
+							<div className={cssBasic.input_box}>
 								<select name="action" defaultValue={"default"} {...registerUpdateRole("action")}>
 									<option value="default" disabled>
 										-- Zvolte akci --
@@ -242,15 +268,15 @@ export default function Register() {
 									<option value="edit_news">Editace novinky</option>
 									<option value="post_news">Publikování novinky</option>
 								</select>
-								<FontAwesomeIcon className={css.icon} icon={faBolt} />
+								<FontAwesomeIcon className={cssBasic.icon} icon={faBolt} />
 							</div>
 
-							<div className={css.input_box}>
+							<div className={cssBasic.input_box}>
 								<select name="permission" {...registerUpdateRole("permission")}>
 									<option value="1">Povolit</option>
 									<option value="0">Zamítnout</option>
 								</select>
-								<FontAwesomeIcon className={css.icon} icon={faArrowUpWideShort} />
+								<FontAwesomeIcon className={cssBasic.icon} icon={faArrowUpWideShort} />
 							</div>
 
 							<button type="submit">Uložit</button>

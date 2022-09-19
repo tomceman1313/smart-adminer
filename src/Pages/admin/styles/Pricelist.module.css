@@ -1,39 +1,66 @@
-.pricelist{
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+.pricelist {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.pricelist section {
+	border-radius: 8px;
+	padding: 55px;
+	background: white;
+	box-shadow: 1px 1px 5px 1px rgb(0, 0, 0, 0.1);
+	color: #333;
+	margin-bottom: 15px;
 }
 
 .pricelist section:nth-of-type(1) {
-	grid-column: span 2;
-	min-height: 400px;
+	width: calc(50% - 120px);
+}
+.pricelist section:nth-of-type(2) {
+	width: calc(50% - 120px);
+	position: relative;
+	overflow: hidden;
 }
 
-
-.pricelist table{
+.pricelist table {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 20px;
+	table-layout: fixed;
 }
 
-.pricelist tr:hover{
+.pricelist tr:hover {
 	background-color: #e5e5e5;
 }
 
-.pricelist th{
+.pricelist th {
 	padding: 15px;
 	text-align: left;
 	border-bottom: 1px solid #d6dde1;
 	border-top: 1px solid #d6dde1;
 }
 
-.pricelist td{
+.pricelist td {
 	padding: 15px;
 	border-bottom: 1px solid #d6dde1;
 }
 
-.edit_price{
+#addItem {
+	background-color: var(--main);
+	text-decoration: underline var(--main);
+	font-size: 18px;
+	line-height: 18px;
+}
+
+#addItem:hover {
+	background-color: var(--main-dark);
+}
+
+.edit_price,
+.add_item {
 	position: absolute;
 	width: calc(100% - 110px);
 	height: 100%;
@@ -45,22 +72,28 @@
 	color: white;
 }
 
-.edit_price form{
+.edit_price form,
+.add_item form {
 	width: calc(100% - 110px);
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
 }
 
-.edit_price h2{
+.edit_price h2 {
 	color: white;
 }
 
-.edit_price input, .edit_price input::placeholder {
+.edit_price input,
+.edit_price input::placeholder {
 	color: white !important;
 }
 
-.show_roles_edit{
+.show_roles_edit,
+.show_add_item {
 	top: 0;
 }
 
@@ -81,10 +114,58 @@
 	background-color: var(--red);
 }
 
+/*
+* styly k formuláři přídávání nových položek
+* zbytek je stejný jako pro formulář editace
+*/
 
-@media(max-width: 1500px){
+.add_item {
+	background-color: var(--green);
+}
+
+.add_item h2 {
+	margin-bottom: 30px;
+}
+
+.add_item #close {
+	background-color: var(--green);
+}
+
+.add_item #close:hover {
+	background-color: var(--red);
+}
+
+.add_item button {
+	background-color: var(--main-dark);
+	text-decoration: underline var(--main-dark);
+}
+
+.add_item button:hover {
+	text-decoration: underline var(--green);
+}
+
+@media (max-width: 1500px) {
 	.pricelist section:nth-of-type(1) {
-		grid-column: span 4;
-		min-height: 400px;
+		width: calc(100% - 120px);
 	}
+	.pricelist section:nth-of-type(2) {
+		width: calc(100% - 120px);
+	}
+}
+
+/*
+* styly ke kalendáři
+* globální přepisování je v index.css
+*/
+
+.calendar table {
+	margin-top: 0;
+}
+
+.calendar table tr:hover {
+	background-color: white;
+}
+
+.calendar button {
+	text-decoration: none !important;
 }
