@@ -1,0 +1,20 @@
+.profile {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+}
+
+.user_info {
+	width: calc(50% - 120px);
+}
+
+.user_info form button:nth-of-type(1) {
+	background-color: var(--main);
+	text-decoration: underline var(--main);
+}
+
+.user_info form button:nth-of-type(1):hover {
+	background-color: var(--main-dark);
+	text-decoration: underline white;
+}

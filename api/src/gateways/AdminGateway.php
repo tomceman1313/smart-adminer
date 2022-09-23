@@ -20,6 +20,76 @@ class AdminGateway
         $this->conn = $database->getConnection();
     }
 
+    public function create(array $data): string
+    {
+        $sql = "INSERT INTO users (username, password, privilege, tel, email, fname, lname) VALUES (:username, :password, :privilege, :tel, :email, :fname, :lname)";
+        $stmt = $this->conn->prepare($sql);
+
+        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $stmt->bindValue(":username", $data["username"], PDO::PARAM_STR);
+        $stmt->bindValue(":password", $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindValue(":privilege", $data["privilege"], PDO::PARAM_STR);
+        $stmt->bindValue(":tel", $data["tel"], PDO::PARAM_STR);
+        $stmt->bindValue(":email", $data["email"], PDO::PARAM_STR);
+        $stmt->bindValue(":fname", $data["fname"], PDO::PARAM_STR);
+        $stmt->bindValue(":lname", $data["lname"], PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $this->conn->lastInsertId();
+    }
+
+    public function get(string $id): array
+    {
+        $sql = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data;
+    }
+
+    public function update(array $current, array $data): int
+    {
+        $sql = "UPDATE users SET username = :username, privilege = :privilege, tel = :tel,
+         email = :email, fname = :fname, lname = :lname WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        //$hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $stmt->bindValue(":username", $data["username"] ?? $current["username"], PDO::PARAM_STR);
+        //$stmt->bindValue(":password", $hashedPassword ?? $current["password"], PDO::PARAM_STR);
+        $stmt->bindValue(":privilege", $data["privilege"] ?? $current["privilege"], PDO::PARAM_STR);
+        $stmt->bindValue(":tel", $data["tel"] ?? $current["tel"], PDO::PARAM_STR);
+        $stmt->bindValue(":email", $data["email"] ?? $current["email"], PDO::PARAM_STR);
+        $stmt->bindValue(":fname", $data["fname"] ?? $current["fname"], PDO::PARAM_STR);
+        $stmt->bindValue(":lname", $data["lname"] ?? $current["lname"], PDO::PARAM_STR);
+
+        $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
+    public function delete(string $id): int
+    {
+        $sql = "DELETE FROM users WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+
+        return $stmt->rowCount();
+    }
+
     public function getAll(): array
     {
         $sql = "SELECT * from users";
@@ -111,75 +181,5 @@ class AdminGateway
         //     return true;
         // }
         return false;
-    }
-
-    public function create(array $data): string
-    {
-        $sql = "INSERT INTO users (username, password, privilege, tel, email, fname, lname) VALUES (:username, :password, :privilege, :tel, :email, :fname, :lname)";
-        $stmt = $this->conn->prepare($sql);
-
-        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
-
-        $stmt->bindValue(":username", $data["username"], PDO::PARAM_STR);
-        $stmt->bindValue(":password", $hashedPassword, PDO::PARAM_STR);
-        $stmt->bindValue(":privilege", $data["privilege"], PDO::PARAM_STR);
-        $stmt->bindValue(":tel", $data["tel"], PDO::PARAM_STR);
-        $stmt->bindValue(":email", $data["email"], PDO::PARAM_STR);
-        $stmt->bindValue(":fname", $data["fname"], PDO::PARAM_STR);
-        $stmt->bindValue(":lname", $data["lname"], PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return $this->conn->lastInsertId();
-    }
-
-    public function get(string $id): array
-    {
-        $sql = "SELECT * FROM users WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
-    }
-
-    public function update(array $current, array $data): int
-    {
-        $sql = "UPDATE users SET username = :username, privilege = :privilege, tel = :tel,
-         email = :email, fname = :fname, lname = :lname WHERE id = :id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        //$hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
-
-        $stmt->bindValue(":username", $data["username"] ?? $current["username"], PDO::PARAM_STR);
-        //$stmt->bindValue(":password", $hashedPassword ?? $current["password"], PDO::PARAM_STR);
-        $stmt->bindValue(":privilege", $data["privilege"] ?? $current["privilege"], PDO::PARAM_STR);
-        $stmt->bindValue(":tel", $data["tel"] ?? $current["tel"], PDO::PARAM_STR);
-        $stmt->bindValue(":email", $data["email"] ?? $current["email"], PDO::PARAM_STR);
-        $stmt->bindValue(":fname", $data["fname"] ?? $current["fname"], PDO::PARAM_STR);
-        $stmt->bindValue(":lname", $data["lname"] ?? $current["lname"], PDO::PARAM_STR);
-
-        $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
-
-        $stmt->execute();
-
-        return $stmt->rowCount();
-    }
-
-    public function delete(string $id): int
-    {
-        $sql = "DELETE FROM users WHERE id = :id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
-        $stmt->execute();
-
-
-        return $stmt->rowCount();
     }
 }

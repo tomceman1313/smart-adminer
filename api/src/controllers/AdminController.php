@@ -18,6 +18,10 @@ class AdminController
             case 'show':
                 echo json_encode($this->gateway->getAll());
                 break;
+            case 'get':
+                $id = json_decode(file_get_contents("php://input"), true);
+                echo json_encode($this->gateway->get($id["id"]));
+                break;
             case 'verify':
                 $data = json_decode(file_get_contents("php://input"), true);
                 $result = $this->gateway->checkUser($data);

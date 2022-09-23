@@ -83,8 +83,6 @@
 	color: white;
 }
 
-
-
 .users button:nth-of-type(2) {
 	background-color: var(--red);
 	text-decoration: underline var(--red);
@@ -110,8 +108,7 @@
 	max-width: 500px;
 	position: fixed;
 	background-color: white;
-	top: 50%;
-	transform: translateY(-50%);
+	top: 145px;
 	margin-left: -600px;
 	border-radius: 8px;
 	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
@@ -190,7 +187,6 @@
 	color: var(--main-dark);
 }
 
-
 .edit select {
 	position: absolute;
 	left: 25px;
@@ -210,29 +206,6 @@
 	line-height: 22px;
 }
 
-
-.notifier {
-	position: fixed;
-	bottom: -45px;
-	left: 0;
-	width: 100%;
-	background-color: #38d381;
-	color: white;
-	text-align: center;
-	font-size: 20px;
-	padding: 10px 0;
-	border-radius: 8px;
-	z-index: 1;
-	animation-name: appear;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
-	animation-delay: 0.5s;
-}
-
-.notifier label {
-	margin-left: 8px;
-}
-
 @keyframes show {
 	to {
 		margin-left: 15px;
@@ -246,11 +219,5 @@
 
 	to {
 		margin-left: -600px;
-	}
-}
-
-@keyframes appear {
-	to {
-		bottom: 0px;
 	}
 }
