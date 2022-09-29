@@ -75,7 +75,7 @@
 }
 
 .users button {
-	width: calc(50%);
+	width: calc(50% - 10px);
 	margin-top: 10px;
 	font-size: 16px;
 	padding: 10px;

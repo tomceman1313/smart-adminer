@@ -1,3 +1,6 @@
+import { faCircleCheck, faClockRotateLeft, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export function makeDate(year, month, day) {
 	let date = `${year}`;
 
@@ -38,4 +41,24 @@ export function createEventsArray(data) {
 		});
 	});
 	return events;
+}
+
+/**
+ * * Vybere vhodnou ikonu podle aktuálnosti akční ceny
+ * @param {int} start: začátek akce
+ * @param {int} end: konec akce
+ * @returns navrací ikonu podle aktuálnosti akce
+ */
+export function isActive(start, end, css) {
+	const date = new Date();
+	const dateNow = Number(makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate()));
+	if (start == 0 || end == 0) {
+		return <FontAwesomeIcon id={css.status_icon} icon={faMinus} style={{ color: "gray" }} title="Nedostupné" />;
+	}
+
+	if (dateNow >= start && dateNow <= end) {
+		return <FontAwesomeIcon id={css.status_icon} icon={faCircleCheck} style={{ color: "var(--green)" }} title="Aktivní" />;
+	}
+
+	return <FontAwesomeIcon id={css.status_icon} icon={faClockRotateLeft} style={{ color: "orange" }} title="Neaktivní" />;
 }

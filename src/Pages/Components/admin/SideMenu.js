@@ -41,7 +41,7 @@ export default function SideMenu({ logOut }) {
 						<Link to="/dashboard/pricelist" onClick={setActiveLink} id="pricelist">
 							Ceník
 						</Link>
-						<Link to="/dashboard/alerts" onClick={setActiveLink} id="alerts">
+						<Link to="/dashboard/notifications" onClick={setActiveLink} id="notifications">
 							Upozornění
 						</Link>
 					</article>

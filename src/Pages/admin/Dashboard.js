@@ -7,6 +7,7 @@ import Register from "./Register";
 import Profiles from "./Profiles";
 import Pricelist from "./Pricelist";
 import Profile from "./Profile";
+import Notifications from "./Notifications";
 
 import { useSelector, useDispatch } from "react-redux";
 import { deleteKey } from "../../redux/authKey";
@@ -45,6 +46,7 @@ export default function Dashboard() {
 					<Route path="register" element={<Register />} />
 					<Route path="pricelist" element={<Pricelist />} />
 					<Route path="profile" element={<Profile />} />
+					<Route path="notifications" element={<Notifications />} />
 				</Routes>
 			</div>
 		</div>

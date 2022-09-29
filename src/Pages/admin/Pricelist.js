@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import css from "./styles/Pricelist.module.css";
 import cssBasic from "./styles/Basic.module.css";
+import css from "./styles/Pricelist.module.css";
 
 import { useForm } from "react-hook-form";
-import { makeDate, makeDateFormat, createEventsArray } from "../modules/BasicFunctions";
+import { createEventsArray, isActive, makeDate, makeDateFormat } from "../modules/BasicFunctions";
 
-import FullCalendar from "@fullcalendar/react"; // must go before plugins
-import dayGridPlugin from "@fullcalendar/daygrid";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid"; // must go before plugins
 
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faClockRotateLeft, faXmark, faMinus } from "@fortawesome/free-solid-svg-icons";
 import Alert from "../Components/admin/Alert";
 
 const Pricelist = () => {
@@ -175,24 +175,6 @@ const Pricelist = () => {
 	};
 
 	/**
-	 * * Vybere vhodnou ikonu podle aktuálnosti akční ceny
-	 * @param {int} start: začátek akce
-	 * @param {int} end: konec akce
-	 * @returns navrací ikonu podle aktuálnosti akce
-	 */
-	const isActive = (start, end) => {
-		if (start == 0 || end == 0) {
-			return <FontAwesomeIcon id={css.status_icon} icon={faMinus} onClick={editRolesCont} style={{ color: "gray" }} title="Nedostupné" />;
-		}
-
-		if (dateNow >= start && dateNow <= end) {
-			return <FontAwesomeIcon id={css.status_icon} icon={faCircleCheck} onClick={editRolesCont} style={{ color: "var(--green)" }} title="Aktivní" />;
-		}
-
-		return <FontAwesomeIcon id={css.status_icon} icon={faClockRotateLeft} onClick={editRolesCont} style={{ color: "orange" }} title="Neaktivní" />;
-	};
-
-	/**
 	 * * Handler pro onclick eventu
 	 * @param {object} info: objekt obsahující veškerá data eventu
 	 */
@@ -238,7 +220,7 @@ const Pricelist = () => {
 									<td>{item.name}</td>
 									<td>{item.price} Kč</td>
 									<td>{item.special_price} Kč</td>
-									<td>{isActive(item.special_price_start, item.special_price_end)}</td>
+									<td>{isActive(item.special_price_start, item.special_price_end, css)}</td>
 								</tr>
 							))}
 					</tbody>
