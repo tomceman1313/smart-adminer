@@ -14,7 +14,7 @@ const Notifications = () => {
 	// array všech notifikací
 	const [notifications, setNotifications] = useState(null);
 
-	const { register: registerUpdate, handleSubmit: handleSubmitUpdate, setValue, reset } = useForm();
+	const { register: registerUpdate, handleSubmit: handleSubmitUpdate, setValue, reset, getValues } = useForm();
 	const { register: registerCreate, handleSubmit: handleSubmitCreate, reset: resetCreateForm } = useForm();
 
 	// ukazatel pro zobrazení Alert componentu
@@ -125,6 +125,9 @@ const Notifications = () => {
 	 * @param e: odkaz na element option, který byl vybrán
 	 */
 	const handleChange = (e) => {
+		if (e.target.value === "choose") {
+			document.getElementById("delete").style.opacity = "0";
+		}
 		let index = notifications.findIndex((el) => el.title == e.target.value);
 		setSelected(e.target.value);
 		setValue("id", notifications[index].id);
@@ -133,6 +136,7 @@ const Notifications = () => {
 		setValue("path", notifications[index].path);
 		setValue("start", makeDateFormat(notifications[index].start, "str"));
 		setValue("end", makeDateFormat(notifications[index].end, "str"));
+		document.getElementById("delete").style.opacity = "1";
 	};
 
 	/**
@@ -165,11 +169,17 @@ const Notifications = () => {
 		setShowAddItemCont(!showAddItemCont);
 	};
 
+	/**
+	 * * DELETE request na api
+	 * @param {int} id
+	 */
+
 	const remove = (id) => {
+		const idJson = { id: id };
 		fetch("http://localhost:4300/api?class=notifications&action=delete", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(id),
+			body: JSON.stringify(idJson),
 		})
 			.then((response) => {
 				if (response.status === 200) {
@@ -191,7 +201,8 @@ const Notifications = () => {
 	};
 
 	const deleteNotification = () => {
-		setCheck({ question: "Smazat notifikaci?" });
+		const id = getValues("id");
+		setCheck({ id: id, question: "Smazat notifikaci?" });
 	};
 
 	return (
@@ -276,7 +287,7 @@ const Notifications = () => {
 						</div>
 						<input type="hidden" {...registerUpdate("id")} />
 						<button type="submit">Uložit</button>
-						<button type="button" className={cssBasic.delete_button} onClick={deleteNotification}>
+						<button type="button" id="delete" className={cssBasic.delete_button} onClick={deleteNotification}>
 							Smazat
 						</button>
 					</form>
@@ -326,7 +337,7 @@ const Notifications = () => {
 				</div>
 			</section>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{check && <CheckMessage question={check.question} positiveHandler={remove} />}
+			{check && <CheckMessage id={check.id} question={check.question} positiveHandler={remove} setCheck={setCheck} />}
 		</div>
 	);
 };

@@ -50,6 +50,21 @@ class NotificationsConroller
                     ]);
                 }
                 break;
+            case 'delete':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $result = $this->gateway->delete($data["id"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Notification deleted"
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Delete failure"
+                    ]);
+                }
+                break;
             default:
                 break;
         }

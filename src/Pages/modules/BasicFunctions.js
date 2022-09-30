@@ -1,4 +1,4 @@
-import { faCircleCheck, faClockRotateLeft, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function makeDate(year, month, day) {
@@ -61,4 +61,12 @@ export function isActive(start, end, css) {
 	}
 
 	return <FontAwesomeIcon id={css.status_icon} icon={faClockRotateLeft} style={{ color: "orange" }} title="Neaktivní" />;
+}
+
+export function isPermitted(permission) {
+	if (permission === 1) {
+		return <FontAwesomeIcon icon={faCircleCheck} style={{ color: "var(--green)" }} title="Povoleno" />;
+	} else {
+		return <FontAwesomeIcon icon={faCircleXmark} style={{ color: "var(--red)" }} title="Zakázáno" />;
+	}
 }

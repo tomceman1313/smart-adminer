@@ -71,7 +71,8 @@ button {
 	padding: 10px 15px;
 	border-radius: 8px;
 	margin: 5px;
-	margin-top: 25px;
+	margin-left: 0;
+	margin-top: 20px;
 	color: white;
 	transition: all 0.5s;
 	border: solid 1px white;
@@ -83,6 +84,10 @@ button:hover {
 	background-color: var(--green-dark);
 	color: white;
 	text-decoration: underline white;
+}
+
+form button {
+	margin-top: 0;
 }
 
 h2 {

@@ -3,6 +3,8 @@ import css from "./styles/Register.module.css";
 import cssBasic from "./styles/Basic.module.css";
 import "@splidejs/react-splide/css";
 
+import { isPermitted } from "../modules/BasicFunctions";
+
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faIdBadge, faImagePortrait, faMobileScreen, faAt, faUnlock, faArrowUpWideShort, faAddressBook, faBolt, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -173,9 +175,9 @@ export default function Register() {
 										{privileges.map((role) => (
 											<tr key={role.role}>
 												<td>{role.name}</td>
-												<td>{role.create_articles}</td>
-												<td>{role.edit_articles}</td>
-												<td>{role.post_articles}</td>
+												<td>{isPermitted(role.create_articles)}</td>
+												<td>{isPermitted(role.edit_articles)}</td>
+												<td>{isPermitted(role.post_articles)}</td>
 											</tr>
 										))}
 									</tbody>
@@ -199,8 +201,8 @@ export default function Register() {
 										{privileges.map((role) => (
 											<tr key={role.role}>
 												<td>{role.name}</td>
-												<td>{role.edit_prices}</td>
-												<td>{role.create_pricelist_item}</td>
+												<td>{isPermitted(role.edit_prices)}</td>
+												<td>{isPermitted(role.create_pricelist_item)}</td>
 											</tr>
 										))}
 									</tbody>
@@ -224,9 +226,9 @@ export default function Register() {
 										{privileges.map((role) => (
 											<tr key={role.role}>
 												<td>{role.name}</td>
-												<td>{role.create_news}</td>
-												<td>{role.edit_news}</td>
-												<td>{role.post_news}</td>
+												<td>{isPermitted(role.create_news)}</td>
+												<td>{isPermitted(role.edit_news)}</td>
+												<td>{isPermitted(role.post_news)}</td>
 											</tr>
 										))}
 									</tbody>

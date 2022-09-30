@@ -74,7 +74,7 @@ class NotificationsGateway
         $stmt->execute();
 
 
-        return $stmt->rowCount();
+        return true;
     }
 
     function getAll(): array

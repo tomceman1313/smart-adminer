@@ -5,7 +5,7 @@
 	background-size: 200% 1px;
 	background-repeat: no-repeat;
 	background-position: 100% 100%;
-	margin-top: 20px;
+	margin-bottom: 20px;
 	height: 50px;
 	overflow: hidden;
 }
@@ -119,13 +119,9 @@
 	background-size: 200% 1px;
 	background-repeat: no-repeat;
 	background-position: 100% 100%;
-	margin-top: 20px;
+	margin-bottom: 20px;
 	height: 50px;
 	width: 100%;
-}
-
-.input_box_comment:nth-of-type(1) {
-	margin-top: 0;
 }
 
 .input_box_comment input {
@@ -202,6 +198,7 @@
 .delete_button {
 	background-color: var(--red);
 	text-decoration: underline var(--red);
+	opacity: 0;
 }
 
 .delete_button:hover {

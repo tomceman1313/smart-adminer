@@ -1,12 +1,17 @@
 import React from "react";
 import css from "../styles/CheckMessage.module.css";
 
-const CheckMessage = ({ question, positiveHandler }) => {
+const CheckMessage = ({ id, question, positiveHandler, setCheck }) => {
+	const hideCheckMessage = () => {
+		setCheck(null);
+	};
+
 	return (
 		<div className={css.check_message}>
 			<p>{question}</p>
-			<button onClick={positiveHandler}>Potvrdit</button>
-			<button>Zrušit</button>
+			<p>{id}</p>
+			<button onClick={() => positiveHandler(id)}>Potvrdit</button>
+			<button onClick={hideCheckMessage}>Zrušit</button>
 		</div>
 	);
 };
