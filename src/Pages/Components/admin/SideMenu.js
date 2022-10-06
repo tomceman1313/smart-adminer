@@ -55,8 +55,12 @@ export default function SideMenu({ logOut }) {
 					</div>
 
 					<article>
-						<Link to="/dashboard/articles">Přehled článků</Link>
-						<Link to="/dashboard/new_article">Nový článek</Link>
+						<Link to="/dashboard/articles" onClick={setActiveLink} id="articles">
+							Přehled článků
+						</Link>
+						<Link to="/dashboard/article" onClick={setActiveLink} id="article">
+							Nový článek
+						</Link>
 					</article>
 				</li>
 

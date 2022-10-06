@@ -1,0 +1,16 @@
+.article {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	align-items: baseline;
+}
+
+.article section:nth-of-type(1),
+.article section:nth-of-type(2) {
+	width: calc(50% - 120px);
+	height: 300px;
+}
+
+.article section:nth-of-type(3) {
+	width: calc(100%);
+}

@@ -98,3 +98,7 @@ select {
 	border-bottom-right-radius: 0 !important;
 	border-right-width: 0 !important;
 }
+
+.ql-toolbar button {
+	margin: 0;
+}

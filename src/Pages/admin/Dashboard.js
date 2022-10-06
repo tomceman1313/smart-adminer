@@ -8,12 +8,14 @@ import Profiles from "./Profiles";
 import Pricelist from "./Pricelist";
 import Profile from "./Profile";
 import Notifications from "./Notifications";
+import Articles from "./Articles";
 
 import { useSelector, useDispatch } from "react-redux";
 import { deleteKey } from "../../redux/authKey";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import Article from "./Article";
 
 export default function Dashboard() {
 	const apiKey = useSelector((state) => state.auth.apiKey);
@@ -47,6 +49,8 @@ export default function Dashboard() {
 					<Route path="pricelist" element={<Pricelist />} />
 					<Route path="profile" element={<Profile />} />
 					<Route path="notifications" element={<Notifications />} />
+					<Route path="articles" element={<Articles />} />
+					<Route path="article" element={<Article />} />
 				</Routes>
 			</div>
 		</div>

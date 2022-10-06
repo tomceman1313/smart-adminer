@@ -23,7 +23,7 @@ const Notifications = () => {
 	// ukazatel pro zobrazení Alert componentu
 	const [check, setCheck] = useState(null);
 
-	// name položky v ceníku, která byla vybrána v selectu
+	// title aktuálně zvolené notifikace, která byla vybrána v selectu
 	const [selected, setSelected] = useState("");
 
 	// true / false pro zobrazení formulářů
@@ -48,7 +48,7 @@ const Notifications = () => {
 
 	/**
 	 * * POST
-	 * * Funkce pro submit formuláře pro editaci položek ceníku
+	 * ? Funkce pro submit formuláře pro editaci položek ceníku
 	 * @param {object} data
 	 */
 	const onSubmit = (data) => {
@@ -85,7 +85,7 @@ const Notifications = () => {
 
 	/**
 	 * * POST
-	 * * Funkce pro submit formuláře pro vytvoření položek ceníku
+	 * ? Funkce pro submit formuláře pro vytvoření položek ceníku
 	 * @param {object} data
 	 */
 	const onSubmitCreate = (data) => {
@@ -121,12 +121,15 @@ const Notifications = () => {
 	};
 
 	/**
-	 * * Naplnění formuláře při vybrání option v selectu v rámci formuláře
+	 * * Click handler option v selectu
+	 * ? Naplnění formuláře při vybrání option v selectu v rámci formuláře
 	 * @param e: odkaz na element option, který byl vybrán
 	 */
 	const handleChange = (e) => {
 		if (e.target.value === "choose") {
 			document.getElementById("delete").style.opacity = "0";
+			reset();
+			return;
 		}
 		let index = notifications.findIndex((el) => el.title == e.target.value);
 		setSelected(e.target.value);
@@ -140,7 +143,8 @@ const Notifications = () => {
 	};
 
 	/**
-	 * * Zobrazení konteineru pro editaci položky ceníku
+	 * * Click Handler pro btn + (přidat novou notifikaci)
+	 * ? Zobrazí nebo skryje formulář pro úpravu notifikace
 	 */
 	const edit = () => {
 		const cont = document.querySelector(`.${css.edit_notification}`);
@@ -155,7 +159,8 @@ const Notifications = () => {
 	};
 
 	/**
-	 * * Zobrazuje nebo skryje formulář pro vytvoření nové notifikace
+	 * * Click Handler pro btn UPRAVIT POLOŽKU
+	 * ? Zobrazuje nebo skryje formulář pro vytvoření nové notifikace
 	 */
 
 	const add = () => {
@@ -171,9 +176,9 @@ const Notifications = () => {
 
 	/**
 	 * * DELETE request na api
+	 * ? Po potvrzení CheckMessage je volána tato funkce, která zajistí odstranění zvolené položky
 	 * @param {int} id
 	 */
-
 	const remove = (id) => {
 		const idJson = { id: id };
 		fetch("http://localhost:4300/api?class=notifications&action=delete", {
@@ -200,9 +205,26 @@ const Notifications = () => {
 			});
 	};
 
+	/**
+	 * * Click Handler pro smazání notifikace
+	 * ? Vyvolá CheckMessage
+	 */
 	const deleteNotification = () => {
 		const id = getValues("id");
 		setCheck({ id: id, question: "Smazat notifikaci?" });
+	};
+
+	const openNotification = (id) => {
+		const index = notifications.findIndex((el) => el.id === id);
+		setSelected(notifications[index].title);
+		setValue("id", notifications[index].id);
+		setValue("title", notifications[index].title);
+		setValue("text", notifications[index].text);
+		setValue("path", notifications[index].path);
+		setValue("start", makeDateFormat(notifications[index].start, "str"));
+		setValue("end", makeDateFormat(notifications[index].end, "str"));
+		document.getElementById("delete").style.opacity = "1";
+		edit();
 	};
 
 	return (
@@ -221,7 +243,7 @@ const Notifications = () => {
 					<tbody>
 						{notifications &&
 							notifications.map((item) => (
-								<tr key={item.id}>
+								<tr key={item.id} onClick={() => openNotification(item.id)}>
 									<td>{item.title}</td>
 									<td>{item.text}</td>
 									<td>{item.path}</td>

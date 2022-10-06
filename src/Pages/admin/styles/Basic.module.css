@@ -24,6 +24,15 @@
 	transition: all 0.5s;
 }
 
+.input_box input[type="date"] {
+	width: calc(100% - 80px);
+}
+
+.input_box input[type="file"] {
+	line-height: 35px;
+	font-size: 14px;
+}
+
 .input_box input:focus ~ .icon {
 	background-color: var(--main-dark);
 	color: white;
@@ -50,7 +59,7 @@
 	left: 60px;
 	top: 50%;
 	transform: translateY(-50%);
-	width: calc(100% - 60px);
+	width: calc(100% - 80px);
 	height: 35px;
 	background-color: transparent;
 	padding: 5px 0;
