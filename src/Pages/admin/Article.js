@@ -49,13 +49,17 @@ const Article = () => {
 		// 		console.error("There has been a problem with your fetch operation:", error);
 		// 	});
 		var data1 = new FormData();
-		data1.append("file", data.image);
-		fetch("http://localhost:4300/api?class=articles&action=create", {
+		data1.append("image", data.image);
+		fetch("http://localhost:4300/api?class=articles&action=upload", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "undefined" },
 			body: data1,
 		})
 			.then((response) => {
+				response.text().then((_data) => {
+					const data = JSON.parse(_data);
+					console.log(data);
+				});
 				if (response.status === 201) {
 					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
 				} else {

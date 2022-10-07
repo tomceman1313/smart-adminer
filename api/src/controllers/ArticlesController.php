@@ -80,7 +80,8 @@ class ArticlesConroller
                 } else {
                     http_response_code(400);
                     echo json_encode([
-                        "message" => "Delete failure"
+                        "message" => "Delete failure",
+                        "code" => $result
                     ]);
                 }
             default:
