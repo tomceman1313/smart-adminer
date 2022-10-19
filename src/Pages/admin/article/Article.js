@@ -1,64 +1,80 @@
 import { useEffect, useState } from "react";
-import TextEditor from "../Components/admin/TextEditor";
-import Alert from "../Components/admin/Alert";
+import Alert from "../../Components/admin/Alert";
+import TextEditor from "../../Components/admin/TextEditor";
 
 import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faCalendarDays, faHeading, faMagnifyingGlass, faImage, faHashtag } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-import { makeDateFormat } from "../modules/BasicFunctions";
+import { makeDateFormat } from "../../modules/BasicFunctions";
 
-import css from "./styles/Article.module.css";
-import cssBasic from "./styles/Basic.module.css";
+import { useParams } from "react-router-dom";
+import cssBasic from "../styles/Basic.module.css";
+import css from "./Article.module.css";
 
 const Article = () => {
-	const { register, handleSubmit } = useForm();
+	const { id } = useParams();
+	const [article, setArticle] = useState(null);
+
+	const { register, handleSubmit, setValue } = useForm();
 	const [alert, setAlert] = useState(null);
-	const [value, setValue] = useState("");
+	const [body, setBody] = useState("");
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Články";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
+		if (id) {
+			getData();
+		}
 	}, []);
 
-	const onSubmit = (data) => {
-		// data.date = makeDateFormat(data.date);
-		// data.body = value;
-		// data.image = "imageplaceholder.png";
-		// data.owner_id = "1";
-		// console.log(JSON.stringify(data));
-		// fetch("http://localhost:4300/api?class=articles&action=create", {
-		// 	method: "POST",
-		// 	headers: { "Content-Type": "application/json" },
-		// 	body: JSON.stringify(data),
-		// })
-		// 	.then((response) => {
-		// 		if (response.status === 201) {
-		// 			setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-		// 		} else {
-		// 			setAlert({ action: "failure", text: "Vytvoření článku nebylo provedeno", timeout: 6000 });
-		// 		}
-
-		// 		if (!response.ok) {
-		// 			throw new Error("Network response was not ok");
-		// 		}
-		// 		return;
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error("There has been a problem with your fetch operation:", error);
-		// 	});
-		var data1 = new FormData();
-		data1.append("image", data.image);
-		fetch("http://localhost:4300/api?class=articles&action=upload", {
+	function getData() {
+		fetch("http://localhost:4300/api?class=articles&action=get", {
 			method: "POST",
-			headers: { "Content-Type": "undefined" },
-			body: data1,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ id: 7 }),
+		}).then((response) => {
+			response.text().then((_data) => {
+				const data = JSON.parse(_data);
+				setArticle(data);
+				setValue("title", data.title);
+				setValue("description", data.title);
+				setValue("date", makeDateFormat(data.date, "str"));
+			});
+		});
+	}
+
+	const convertBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
+	};
+
+	const onSubmit = async (data) => {
+		data.date = makeDateFormat(data.date);
+		data.body = body;
+		const base64 = await convertBase64(data.image[0]);
+		data.image = base64;
+		data.owner_id = "1";
+		console.log(JSON.stringify(data));
+		fetch("http://localhost:4300/api?class=articles&action=create", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data),
 		})
 			.then((response) => {
 				response.text().then((_data) => {
 					const data = JSON.parse(_data);
-					console.log(data);
 				});
 				if (response.status === 201) {
 					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
@@ -116,7 +132,7 @@ const Article = () => {
 
 			<section>
 				<h2>Text článku</h2>
-				<TextEditor value={value} setValue={setValue} />
+				<TextEditor value={body} setValue={setBody} />
 			</section>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
 		</form>

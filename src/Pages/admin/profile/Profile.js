@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import cssBasic from "./styles/Basic.module.css";
-import css from "./styles/Profile.module.css";
+import cssBasic from "../styles/Basic.module.css";
+import css from "./Profile.module.css";
 
-import Alert from "../Components/admin/Alert";
+import Alert from "../../Components/admin/Alert";
 
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

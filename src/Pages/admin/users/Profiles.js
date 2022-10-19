@@ -1,9 +1,9 @@
 import { React, useEffect, useState } from "react";
 
-import Alert from "../Components/admin/Alert";
-import UserList from "../Components/admin/UserList";
+import Alert from "../../Components/admin/Alert";
+import UserList from "../../Components/admin/UserList";
 
-import css from "./styles/Profiles.module.css";
+import css from ".//Profiles.module.css";
 
 export default function Profiles() {
 	const [users, setUsers] = useState(null);

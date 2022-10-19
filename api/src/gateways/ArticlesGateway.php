@@ -9,12 +9,22 @@ class ArticlesGateway
 
     public function create(array $data): bool
     {
+        $base64DataString = $data["image"];
+        list($dataType, $imageData) = explode(';', $base64DataString);
 
-        // $pic = $_FILES['image']['name'];
-        // $pic_tem_loc = $_FILES['image']['tmp_name'];
-        // $pic_store = "/public/images/" . $pic;
+        // image file extension
+        $imageExtension = explode('/', $dataType)[1];
 
-        // move_uploaded_file($pic_tem_loc, $pic_store);
+        // base64-encoded image data
+        list(, $encodedImageData) = explode(',', $imageData);
+
+
+        // decode base64-encoded image data
+        $decodedImageData = base64_decode($encodedImageData);
+
+        // save image data as file
+        $image_name = uniqid();
+        file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $sql = "INSERT INTO articles (title, description, image, body, date, category, owner_id) VALUES (:title, :description, :image, :body, :date, :category, :owner_id)";
         $stmt = $this->conn->prepare($sql);
@@ -22,11 +32,12 @@ class ArticlesGateway
         $stmt->execute([
             'title' => $data["title"],
             'description' => $data["description"],
-            'image' => $data["image"],
+            'image' => $image_name . ".{$imageExtension}",
             'body' => $data["body"],
             'date' => $data["date"],
             'category' => $data["category"],
-            'owner_id' => $data["owner_id"]
+            'owner_id' => $data["owner_id"],
+            'active' => "1"
         ]);
 
         return true;

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import css from "./styles/Notifications.module.css";
-import cssBasic from "./styles/Basic.module.css";
+import css from "./Notifications.module.css";
+import cssBasic from "../styles/Basic.module.css";
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Alert from "../Components/admin/Alert";
+import Alert from "../../Components/admin/Alert";
 
-import { isActive, makeDateFormat } from "../modules/BasicFunctions";
+import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 import { useForm } from "react-hook-form";
-import CheckMessage from "../Components/admin/CheckMessage";
+import CheckMessage from "../../Components/admin/CheckMessage";
 
 const Notifications = () => {
 	// array všech notifikací
@@ -188,8 +188,9 @@ const Notifications = () => {
 		})
 			.then((response) => {
 				if (response.status === 200) {
+					setCheck(null);
 					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-					add();
+					edit();
 					getData();
 				} else {
 					setAlert({ action: "failure", text: "Vytvoření položky nebylo provedeno", timeout: 6000 });

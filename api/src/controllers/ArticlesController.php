@@ -18,6 +18,10 @@ class ArticlesConroller
             case 'getall':
                 echo json_encode($this->gateway->getAll());
                 break;
+            case 'get':
+                $data = json_decode(file_get_contents("php://input"), true);
+                echo json_encode($this->gateway->get($data["id"]));
+                break;
             case 'create':
                 $data = json_decode(file_get_contents("php://input"), true);
                 $result = $this->gateway->create($data);
@@ -66,24 +70,6 @@ class ArticlesConroller
                 }
                 break;
 
-            case 'upload':
-                $pic = $_FILES['image']['name'];
-                $pic_tem_loc = $_FILES['image']['tmp_name'];
-                $pic_store = "/public/images/" . $pic;
-
-                $result = move_uploaded_file($pic_tem_loc, $pic_store);
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Article deleted"
-                    ]);
-                } else {
-                    http_response_code(400);
-                    echo json_encode([
-                        "message" => "Delete failure",
-                        "code" => $result
-                    ]);
-                }
             default:
                 break;
         }

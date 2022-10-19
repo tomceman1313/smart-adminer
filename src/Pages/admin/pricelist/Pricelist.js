@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import cssBasic from "./styles/Basic.module.css";
-import css from "./styles/Pricelist.module.css";
+import cssBasic from "../styles/Basic.module.css";
+import css from "./Pricelist.module.css";
 
 import { useForm } from "react-hook-form";
-import { createEventsArray, isActive, makeDate, makeDateFormat } from "../modules/BasicFunctions";
+import { createEventsArray, isActive, makeDate, makeDateFormat } from "../../modules/BasicFunctions";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // must go before plugins
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Alert from "../Components/admin/Alert";
+import Alert from "../../Components/admin/Alert";
 
 const Pricelist = () => {
 	// array položek ceníku

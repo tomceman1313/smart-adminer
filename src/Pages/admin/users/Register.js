@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import css from "./styles/Register.module.css";
-import cssBasic from "./styles/Basic.module.css";
+import css from "./Register.module.css";
+import cssBasic from "../styles/Basic.module.css";
 import "@splidejs/react-splide/css";
 
-import { isPermitted } from "../modules/BasicFunctions";
+import { isPermitted } from "../../modules/BasicFunctions";
 
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

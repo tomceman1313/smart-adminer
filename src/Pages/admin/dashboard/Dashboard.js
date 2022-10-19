@@ -1,21 +1,21 @@
 import { useEffect } from "react";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 
-import css from "./styles/Dashboard.module.css";
-import SideMenu from "../Components/admin/SideMenu";
-import Register from "./Register";
-import Profiles from "./Profiles";
-import Pricelist from "./Pricelist";
-import Profile from "./Profile";
-import Notifications from "./Notifications";
-import Articles from "./Articles";
+import css from "./Dashboard.module.css";
+import SideMenu from "../../Components/admin/SideMenu";
+import Register from "../users/Register";
+import Profiles from "../users/Profiles";
+import Pricelist from "../pricelist/Pricelist";
+import Profile from "../profile/Profile";
+import Notifications from "../notifications/Notifications";
+import Articles from "../articles/Articles";
+import Article from "../article/Article";
 
 import { useSelector, useDispatch } from "react-redux";
-import { deleteKey } from "../../redux/authKey";
+import { deleteKey } from "../../../redux/authKey";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import Article from "./Article";
 
 export default function Dashboard() {
 	const apiKey = useSelector((state) => state.auth.apiKey);
@@ -51,6 +51,7 @@ export default function Dashboard() {
 					<Route path="notifications" element={<Notifications />} />
 					<Route path="articles" element={<Articles />} />
 					<Route path="article" element={<Article />} />
+					<Route path="article/:id" element={<Article />} />
 				</Routes>
 			</div>
 		</div>

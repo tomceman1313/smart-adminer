@@ -1,5 +1,4 @@
 <?php
-
 //declare(strict_types=1);
 
 spl_autoload_register(function ($class) {
@@ -26,7 +25,7 @@ require __DIR__ . "/src/gateways/ArticlesGateway.php";
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
-// header("Content-type: application/json; charset=UTF-8");
+header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
 
 
@@ -73,14 +72,14 @@ switch ($class) {
     case 'notifications':
         $gateway = new NotificationsGateway($database);
         $controller = new NotificationsConroller($gateway);
-
         $controller->processRequest($action, $id);
+        break;
 
     case 'articles':
         $gateway = new ArticlesGateway($database);
         $controller = new ArticlesConroller($gateway);
-
         $controller->processRequest($action, $id);
+        break;
     default:
         //http_response_code(404);
         break;
