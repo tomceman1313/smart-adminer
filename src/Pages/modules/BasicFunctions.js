@@ -29,6 +29,11 @@ export function makeDateFormat(date, direction) {
 	return dateFormated;
 }
 
+/**
+ * * Vytvoří pole objektů pro kalendář
+ * @param {array} data
+ * @returns Array objektů pro kalendář
+ */
 export function createEventsArray(data) {
 	let events = new Array();
 	data.forEach((el) => {
@@ -63,10 +68,26 @@ export function isActive(start, end, css) {
 	return <FontAwesomeIcon id={css.status_icon} icon={faClockRotateLeft} style={{ color: "orange" }} title="Neaktivní" />;
 }
 
+/**
+ * * Vybere správnou ikonu podle přiděleného práva
+ * Ikona OK nebo Křížek
+ * @param {int} permission
+ * @returns Ikona
+ */
+
 export function isPermitted(permission) {
 	if (permission === 1) {
 		return <FontAwesomeIcon icon={faCircleCheck} style={{ color: "var(--green)" }} title="Povoleno" />;
 	} else {
 		return <FontAwesomeIcon icon={faCircleXmark} style={{ color: "var(--red)" }} title="Zakázáno" />;
 	}
+}
+
+/**
+ * * Otevře nový tab s obrázkem
+ * @param {string} url
+ */
+
+export function openImage(url) {
+	window.open(url, "_blank").focus();
 }

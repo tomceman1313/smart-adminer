@@ -25,7 +25,7 @@ const Profile = () => {
 	function getUserInfo(id) {
 		fetch("http://localhost:4300/api?class=admin&action=get", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(id),
 		}).then((response) => {
 			response.text().then((_data) => {
@@ -54,7 +54,7 @@ const Profile = () => {
 
 		fetch("http://localhost:4300/api?class=admin&action=edit", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		}).then((response) => {
 			if (response.status === 201) {

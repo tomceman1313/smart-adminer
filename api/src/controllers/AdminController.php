@@ -1,4 +1,5 @@
 <?php
+
 class AdminController
 {
     public function __construct(AdminGateway $gateway)
@@ -86,11 +87,47 @@ class AdminController
             case 'auth':
                 $data = json_decode(file_get_contents("php://input"), true);
                 $response = $this->gateway->auth($data);
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "access",
-                    "token" => $response
-                ]);
+                http_response_code(200);
+                if ($response != "wrong") {
+                    echo json_encode([
+                        "message" => "access",
+                        "token" => $response["token"],
+                        "username" => $response["username"],
+                        "role" => $response["role"]
+                    ]);
+                } else {
+                    echo json_encode([
+                        "message" => "wrong"
+                    ]);
+                }
+                break;
+
+            case 'refresh':
+                //$data = json_decode(file_get_contents("php://input"), true);
+                $response = $this->gateway->refresh();
+                if ($response != false) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "refreshed",
+                        "token" => $response
+                    ]);
+                } else {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "relogin"
+                    ]);
+                }
+                break;
+
+            case 'logout':
+                // header("Access-Control-Allow-Origin: http://localhost:3000");
+                // header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+                // header("Content-type: application/json; charset=UTF-8");
+                // header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
+                // header("Access-Control-Allow-Credentials: true");
+
+                setcookie("refresh_token", null, -1, '/', null, false, true);
+                http_response_code(200);
                 break;
             default:
                 break;

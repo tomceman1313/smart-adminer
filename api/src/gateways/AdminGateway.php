@@ -148,21 +148,23 @@ class AdminGateway
 
         if ($user != null && password_verify($data["password"], $user['password'])) {
             $iat = time();
-            $exp = $iat + 60 * 60;
+            $exp = $iat + 60 * 5;
             $payload = array(
                 'iss' => 'http://localhost:4300/api',
                 'aud' => 'http://localhost:3000/',
                 'iat' => $iat,
                 'exp' => $exp,
-                'user' => "daki"
+                'user' => $user["username"],
+                'privilege' => $user["privilege"]
             );
             $jwt = JWT::encode($payload, $this->key, 'HS512');
-            $decoded = JWT::decode($jwt, new Key($this->key, 'HS512'));
-            return $jwt;
+            // $decoded = JWT::decode($jwt, new Key($this->key, 'HS512'));
+
+            $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 30, 'user' => $user["username"], 'privilege' => $user["privilege"]), $this->key, 'HS512');
+            setcookie("refresh_token", $jwt_refresh, null, '/', null, false, true);
+            return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"], "refresh_token" => $jwt_refresh);
         }
-        // if ($user != null && $data["password"] == $user['password']) {
-        //     return true;
-        // }
+
         return "wrong";
     }
 
@@ -181,5 +183,35 @@ class AdminGateway
         //     return true;
         // }
         return false;
+    }
+
+    public function refresh()
+    {
+        $refresh_token = $_COOKIE["refresh_token"];
+        if (!isset($refresh_token)) {
+            return false;
+        }
+
+        $decoded = JWT::decode($refresh_token, new Key($this->key, 'HS512'));
+        $currentTime = time();
+
+        if ($decoded->exp < $currentTime) {
+            return false;
+        }
+        $payload = array(
+            'iss' => 'http://localhost:4300/api',
+            'aud' => 'http://localhost:3000/',
+            'iat' => $currentTime,
+            'exp' => $currentTime + 60 * 5,
+            'user' => $decoded->user,
+            'privilege' => $decoded->privilege
+        );
+        return JWT::encode($payload, $this->key, 'HS512');
+    }
+
+    public function createCookie()
+    {
+
+        setcookie("refresh_token", "F Me", null, '/', null, false, true);
     }
 }

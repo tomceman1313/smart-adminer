@@ -69,7 +69,19 @@ class ArticlesConroller
                     ]);
                 }
                 break;
-
+            case 'category':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $result = $this->gateway->getCategory($data["id"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode($result);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Category not found"
+                    ]);
+                }
+                break;
             default:
                 break;
         }

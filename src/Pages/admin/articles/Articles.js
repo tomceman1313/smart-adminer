@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAll } from "../../modules/ApiFunctions";
+import { isPermitted, makeDateFormat } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
 
@@ -10,17 +12,8 @@ const Articles = () => {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Články";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
-		loadData();
+		getAll("articles", setArticles);
 	}, []);
-
-	const loadData = () => {
-		fetch("http://localhost:4300/api?class=articles&action=getall").then((response) => {
-			response.text().then((_data) => {
-				const data = JSON.parse(_data);
-				setArticles(data);
-			});
-		});
-	};
 
 	const openArticleDetails = (e) => {
 		const id = e.currentTarget.id;
@@ -38,6 +31,12 @@ const Articles = () => {
 								<h3>{article.title}</h3>
 								<p>{article.description}</p>
 							</div>
+
+							<div>
+								<label>{makeDateFormat(article.date, "str")}</label>
+							</div>
+
+							<div>{isPermitted(article.active)}</div>
 						</article>
 					))}
 			</section>

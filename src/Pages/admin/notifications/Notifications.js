@@ -61,7 +61,7 @@ const Notifications = () => {
 
 		fetch("http://localhost:4300/api?class=notifications&action=update", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
@@ -98,7 +98,7 @@ const Notifications = () => {
 
 		fetch("http://localhost:4300/api?class=notifications&action=create", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
@@ -183,7 +183,7 @@ const Notifications = () => {
 		const idJson = { id: id };
 		fetch("http://localhost:4300/api?class=notifications&action=delete", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(idJson),
 		})
 			.then((response) => {

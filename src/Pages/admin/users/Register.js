@@ -34,7 +34,7 @@ export default function Register() {
 		console.log(JSON.stringify(data));
 		fetch("http://localhost:4300/api?class=admin&action=create", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
@@ -56,7 +56,7 @@ export default function Register() {
 		console.log(JSON.stringify(data));
 		fetch("http://localhost:4300/api?class=admin&action=update_role", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
@@ -90,37 +90,37 @@ export default function Register() {
 				<h2>Nový uživatel</h2>
 				<form onSubmit={handleSubmit(onSubmit)} autoComplete="new-password">
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...register("username")} autoComplete="new-password" />
+						<input type="text" placeholder="Uživatelské jméno" {...register("username")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faUser} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Jméno" {...register("fname")} autoComplete="new-password" />
+						<input type="text" placeholder="Jméno" {...register("fname")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faImagePortrait} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Příjmení" {...register("lname")} autoComplete="new-password" />
+						<input type="text" placeholder="Příjmení" {...register("lname")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faIdBadge} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="phone" placeholder="Telefon" {...register("tel")} autoComplete="new-password" />
+						<input type="phone" placeholder="Telefon" {...register("tel")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faMobileScreen} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="email" placeholder="Email" {...register("email")} autoComplete="new-password" />
+						<input type="email" placeholder="Email" {...register("email")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faAt} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo" {...register("password")} autoComplete="new-password" />
+						<input type="password" placeholder="Heslo" {...register("password")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faUnlock} />
 					</div>
 
 					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo znovu" {...register("password_check")} autoComplete="new-password" />
+						<input type="password" placeholder="Heslo znovu" {...register("password_check")} autoComplete="off" />
 						<FontAwesomeIcon className={cssBasic.icon} icon={faLock} />
 					</div>
 

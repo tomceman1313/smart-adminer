@@ -1,22 +1,24 @@
-import React from "react";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./Pages/context/AuthContext";
 
+import Dashboard from "./Pages/admin/dashboard/Dashboard";
+import Register from "./Pages/admin/users/Register";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
-import Register from "./Pages/admin/users/Register";
-import Dashboard from "./Pages/admin/dashboard/Dashboard";
 
 function App() {
 	return (
 		<div className="App">
-			<BrowserRouter>
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="/dashboard/*" element={<Dashboard />} />
-				</Routes>
-			</BrowserRouter>
+			<AuthProvider>
+				<BrowserRouter>
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/register" element={<Register />} />
+						<Route path="/dashboard/*" element={<Dashboard />} />
+					</Routes>
+				</BrowserRouter>
+			</AuthProvider>
 		</div>
 	);
 }

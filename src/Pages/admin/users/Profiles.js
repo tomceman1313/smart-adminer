@@ -28,7 +28,7 @@ export default function Profiles() {
 	const handleDelete = (id) => {
 		fetch(`http://localhost:4300/api?class=admin&action=delete`, {
 			method: "DELETE",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ id: id }),
 		})
 			.then((res) => {
@@ -44,7 +44,7 @@ export default function Profiles() {
 	const handleEdit = (data) => {
 		fetch(`http://localhost:4300/api?class=admin&action=edit`, {
 			method: "PATCH",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((res) => {

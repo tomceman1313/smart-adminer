@@ -68,7 +68,7 @@ const Pricelist = () => {
 		console.log(JSON.stringify(data));
 		fetch("http://localhost:4300/api?class=pricelist&action=update", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {
@@ -106,7 +106,7 @@ const Pricelist = () => {
 		console.log(JSON.stringify(data));
 		fetch("http://localhost:4300/api?class=pricelist&action=create", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(data),
 		})
 			.then((response) => {

@@ -18,3 +18,20 @@ export const authKey = createSlice({
 export const { setKey, deleteKey } = authKey.actions;
 
 export default authKey.reducer;
+
+/**
+ * * 	const apiKey = useSelector((state) => state.auth.apiKey);
+ **		const dispatch = useDispatch();
+ */
+
+//? importy
+//		import { useSelector, useDispatch } from "react-redux";
+//		import { setKey } from "../redux/authKey";
+
+//* Inicializace
+//		const apiKey = useSelector((state) => state.auth.apiKey);
+//		const dispatch = useDispatch();
+
+//! Přístup
+//		dispatch(setKey(data.token));
+//		dispatch(deleteKey());

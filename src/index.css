@@ -102,3 +102,7 @@ select {
 .ql-toolbar button {
 	margin: 0;
 }
+
+.quill {
+	margin-bottom: 20px;
+}
