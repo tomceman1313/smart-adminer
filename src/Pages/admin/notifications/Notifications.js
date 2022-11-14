@@ -9,8 +9,16 @@ import Alert from "../../Components/admin/Alert";
 import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 import { useForm } from "react-hook-form";
 import CheckMessage from "../../Components/admin/CheckMessage";
+import useApi from "../../Hooks/useApi";
+import useAuth from "../../Hooks/useAuth";
 
 const Notifications = () => {
+	const auth = useAuth();
+	const getAll = useApi("getAll");
+	const createNotification = useApi("create");
+	const editNotification = useApi("edit");
+	const removeNotification = useApi("remove");
+
 	// array všech notifikací
 	const [notifications, setNotifications] = useState(null);
 
@@ -37,13 +45,7 @@ const Notifications = () => {
 	}, []);
 
 	const getData = () => {
-		fetch("http://localhost:4300/api?class=notifications&action=getall").then((response) => {
-			response.text().then((_data) => {
-				const data = JSON.parse(_data);
-				setNotifications(data);
-				console.log(data);
-			});
-		});
+		getAll("notifications", setNotifications, auth);
 	};
 
 	/**
@@ -59,28 +61,9 @@ const Notifications = () => {
 			return;
 		}
 
-		fetch("http://localhost:4300/api?class=notifications&action=update", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-					edit();
-					getData();
-				} else {
-					setAlert({ action: "failure", text: "Změna položky nebyla provedena", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		editNotification("notifications", data, setAlert, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		editCont();
+		getData();
 	};
 
 	/**
@@ -96,28 +79,29 @@ const Notifications = () => {
 			return;
 		}
 
-		fetch("http://localhost:4300/api?class=notifications&action=create", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				if (response.status === 201) {
-					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-					add();
-					getData();
-				} else {
-					setAlert({ action: "failure", text: "Vytvoření položky nebylo provedeno", timeout: 6000 });
-				}
+		createNotification("notifications", data, setAlert, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		addCont();
+		getData();
+	};
 
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+	/**
+	 * * DELETE request na api
+	 * ? Po potvrzení CheckMessage je volána tato funkce, která zajistí odstranění zvolené položky
+	 * @param {int} id
+	 */
+	const remove = (id) => {
+		removeNotification("notifications", id, setAlert, "Upozornění bylo odstřaněna", "Upozornění nebylo odstřaněna", auth);
+		editCont();
+		getData();
+	};
+
+	/**
+	 * * Click Handler pro smazání notifikace
+	 * ? Vyvolá CheckMessage
+	 */
+	const deleteNotification = () => {
+		const id = getValues("id");
+		setCheck({ id: id, question: "Smazat notifikaci?" });
 	};
 
 	/**
@@ -146,7 +130,7 @@ const Notifications = () => {
 	 * * Click Handler pro btn + (přidat novou notifikaci)
 	 * ? Zobrazí nebo skryje formulář pro úpravu notifikace
 	 */
-	const edit = () => {
+	const editCont = () => {
 		const cont = document.querySelector(`.${css.edit_notification}`);
 		if (showEditCont) {
 			cont.classList.remove(css.show_roles_edit);
@@ -163,7 +147,7 @@ const Notifications = () => {
 	 * ? Zobrazuje nebo skryje formulář pro vytvoření nové notifikace
 	 */
 
-	const add = () => {
+	const addCont = () => {
 		const cont = document.querySelector(`.${css.add_notification}`);
 		if (showAddItemCont) {
 			cont.classList.remove(css.show_add_notification);
@@ -172,47 +156,6 @@ const Notifications = () => {
 			cont.classList.add(css.show_add_notification);
 		}
 		setShowAddItemCont(!showAddItemCont);
-	};
-
-	/**
-	 * * DELETE request na api
-	 * ? Po potvrzení CheckMessage je volána tato funkce, která zajistí odstranění zvolené položky
-	 * @param {int} id
-	 */
-	const remove = (id) => {
-		const idJson = { id: id };
-		fetch("http://localhost:4300/api?class=notifications&action=delete", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(idJson),
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					setCheck(null);
-					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-					edit();
-					getData();
-				} else {
-					setAlert({ action: "failure", text: "Vytvoření položky nebylo provedeno", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
-	};
-
-	/**
-	 * * Click Handler pro smazání notifikace
-	 * ? Vyvolá CheckMessage
-	 */
-	const deleteNotification = () => {
-		const id = getValues("id");
-		setCheck({ id: id, question: "Smazat notifikaci?" });
 	};
 
 	const openNotification = (id) => {
@@ -225,7 +168,7 @@ const Notifications = () => {
 		setValue("start", makeDateFormat(notifications[index].start, "str"));
 		setValue("end", makeDateFormat(notifications[index].end, "str"));
 		document.getElementById("delete").style.opacity = "1";
-		edit();
+		editCont();
 	};
 
 	return (
@@ -248,18 +191,18 @@ const Notifications = () => {
 									<td>{item.title}</td>
 									<td>{item.text}</td>
 									<td>{item.path}</td>
-									<td>{isActive(item.start, item.end, edit, css)}</td>
+									<td>{isActive(item.start, item.end, editCont, css)}</td>
 								</tr>
 							))}
 					</tbody>
 				</table>
-				<button id={css.addItem} onClick={add}>
+				<button id={css.addItem} onClick={addCont}>
 					+
 				</button>
-				<button onClick={edit}>Upravit položky</button>
+				<button onClick={editCont}>Upravit položky</button>
 				{/* // * Formulář pro editaci položek ceníku (class EDIT_PRICE) */}
 				<div className={css.edit_notification}>
-					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={edit} />
+					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editCont} />
 					<form onSubmit={handleSubmitUpdate(onSubmit)}>
 						<h2>Úprava upozornění</h2>
 						<div className={cssBasic.input_box_comment}>
@@ -317,7 +260,7 @@ const Notifications = () => {
 				</div>
 				{/* // * Formulář pro vytváření nových položek (class ADD_NOTIFICATION) */}
 				<div className={css.add_notification}>
-					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={add} />
+					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={addCont} />
 					<form onSubmit={handleSubmitCreate(onSubmitCreate)}>
 						<h2>Nová položka</h2>
 

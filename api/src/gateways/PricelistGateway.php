@@ -76,7 +76,7 @@ class PricelistGateway
 
     public function delete(string $id): int
     {
-        $sql = "DELETE FROM users WHERE id = :id";
+        $sql = "DELETE FROM pricelist WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 

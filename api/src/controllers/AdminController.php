@@ -16,13 +16,30 @@ class AdminController
     private function userControl(string $action): void
     {
         switch ($action) {
-            case 'show':
-                echo json_encode($this->gateway->getAll());
+            case 'getall':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->getAll();
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" => $result,
+                        "token" => $authAction
+                    ]);
+                }
                 break;
+
             case 'get':
                 $id = json_decode(file_get_contents("php://input"), true);
                 echo json_encode($this->gateway->get($id["id"]));
                 break;
+
             case 'verify':
                 $data = json_decode(file_get_contents("php://input"), true);
                 $result = $this->gateway->checkUser($data);
@@ -41,48 +58,107 @@ class AdminController
 
             case 'create':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $id = $this->gateway->create($data);
-
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "User created",
-                    "id" => $id
-                ]);
-
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $id = $this->gateway->create($data["data"]);
+                    http_response_code(201);
+                    echo json_encode([
+                        "message" => "User created",
+                        "data" => $id,
+                        "token" => $authAction
+                    ]);
+                }
                 break;
-            case 'edit':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $current = $this->gateway->get($data['id']);
-                $id = $this->gateway->update($current, $data);
 
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "User edited",
-                    "id" => $id
-                ]);
+            case 'update':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $current = $this->gateway->get($data['data']["id"]);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->update($current, $data["data"]);
+                    if ($result) {
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "User edited",
+                            "token" => $authAction
+                        ]);
+                    } else {
+                        http_response_code(400);
+                        echo json_encode([
+                            "message" => "Update failure",
+                            "token" => $authAction
+                        ]);
+                    }
+                }
 
                 break;
             case 'delete':
                 $data = json_decode(file_get_contents("php://input"), true);
-                //echo json_encode($this->gateway->checkUser($data));
-                $this->gateway->delete($data["id"]);
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "User deleted"
-                ]);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $id = $this->gateway->delete($data["id"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "User deleted",
+                        "data" => $id,
+                        "token" => $authAction
+                    ]);
+                }
                 break;
 
             case 'getroles':
-                echo json_encode($this->gateway->getRoles());
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $response = $this->gateway->getRoles();
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" => $response,
+                        "token" => $authAction
+                    ]);
+                }
                 break;
 
             case 'update_role':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $response = $this->gateway->updateRole($data);
-                http_response_code(201);
-                echo json_encode([
-                    "message" => $response
-                ]);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $response = $this->gateway->updateRole($data["data"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Role updated",
+                        "data" => $response,
+                        "token" => $authAction
+                    ]);
+                }
+
+
                 break;
             case 'auth':
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -103,7 +179,6 @@ class AdminController
                 break;
 
             case 'refresh':
-                //$data = json_decode(file_get_contents("php://input"), true);
                 $response = $this->gateway->refresh();
                 if ($response != false) {
                     http_response_code(200);
@@ -112,7 +187,7 @@ class AdminController
                         "token" => $response
                     ]);
                 } else {
-                    http_response_code(403);
+                    http_response_code(401);
                     echo json_encode([
                         "message" => "relogin"
                     ]);
@@ -128,6 +203,13 @@ class AdminController
 
                 setcookie("refresh_token", null, -1, '/', null, false, true);
                 http_response_code(200);
+                break;
+
+            case 'decode':
+                $result = $this->gateway->decodeToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQzMDAvYXBpIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImlhdCI6MTY2ODIwMTIzOCwiZXhwIjoxNjY4MjAyMTM4LCJ1c2VyX2lkIjoxNCwidXNlciI6InRvbWNlbWFuMTMiLCJwcml2aWxlZ2UiOjN9.JLGuSP4QM5THnwEGpA_hRwbfW2BTbctwSX7cjNVpfNRBX3yKlO-Tx0BFxwl-EC4wNDq7O5Z5hQ_HBsuVbMg5AQ");
+                echo json_encode([
+                    "result" => $result
+                ]);
                 break;
             default:
                 break;

@@ -30,11 +30,16 @@ require __DIR__ . "/src/gateways/ArticlesGateway.php";
 // header("Access-Control-Allow-Credentials: true");
 
 header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+//header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
 
 header("Access-Control-Allow-Credentials: true");
+
+//header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+// header("Content-type: application/json; charset=UTF-8");
+// header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
 
 
 //$parts = explode("/", $_SERVER["REQUEST_URI"]);
@@ -57,7 +62,7 @@ if (isset($_GET["action"])) {
 if (isset($_GET["id"])) {
     $id = $_GET["id"];
 }
-
+$admin = new AdminGateway($database);
 switch ($class) {
     case 'products':
         $gateway = new ProductGateway($database);
@@ -73,22 +78,22 @@ switch ($class) {
         break;
     case 'pricelist':
         $gateway = new PricelistGateway($database);
-        $controller = new PricelistConroller($gateway);
+        $controller = new PricelistConroller($gateway, $admin);
 
         $controller->processRequest($action, $id);
         break;
     case 'notifications':
         $gateway = new NotificationsGateway($database);
-        $controller = new NotificationsConroller($gateway);
+        $controller = new NotificationsConroller($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
 
     case 'articles':
         $gateway = new ArticlesGateway($database);
-        $controller = new ArticlesConroller($gateway);
+        $controller = new ArticlesConroller($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     default:
-        //http_response_code(404);
+        http_response_code(404);
         break;
 }

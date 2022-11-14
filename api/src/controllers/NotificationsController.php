@@ -1,9 +1,10 @@
 <?php
 class NotificationsConroller
 {
-    public function __construct(NotificationsGateway $gateway)
+    public function __construct(NotificationsGateway $gateway, AdminGateway $adminGateway)
     {
         $this->gateway = $gateway;
+        $this->admin = $adminGateway;
     }
 
 
@@ -16,52 +17,83 @@ class NotificationsConroller
     {
         switch ($action) {
             case 'getall':
-                echo json_encode($this->gateway->getAll());
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->getAll();
+                    http_response_code(201);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" =>  $result,
+                        "token" => $data["token"]
+                    ]);
+                }
                 break;
             case 'create':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $result = $this->gateway->create($data);
-
-                if ($result) {
-                    http_response_code(201);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
                     echo json_encode([
-                        "message" => "Item created"
+                        "message" => "Access denied"
                     ]);
                 } else {
-                    http_response_code(400);
+                    $id = $this->gateway->create($data["data"]);
+                    http_response_code(201);
                     echo json_encode([
-                        "message" => "Insert failure"
+                        "message" => "Item created",
+                        "data" => $id,
+                        "token" => $authAction
                     ]);
                 }
                 break;
             case 'update':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $result = $this->gateway->update($data);
-
-                if ($result) {
-                    http_response_code(200);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
                     echo json_encode([
-                        "message" => "Item edited"
+                        "message" => "Access denied"
                     ]);
                 } else {
-                    http_response_code(400);
-                    echo json_encode([
-                        "message" => "Update failure"
-                    ]);
+                    $result = $this->gateway->update($data["data"]);
+                    if ($result) {
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Item edited",
+                            "token" => $authAction
+                        ]);
+                    } else {
+                        http_response_code(400);
+                        echo json_encode([
+                            "message" => "Update failure",
+                            "token" => $authAction
+                        ]);
+                    }
                 }
+
                 break;
+
             case 'delete':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $result = $this->gateway->delete($data["id"]);
-                if ($result) {
-                    http_response_code(200);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
                     echo json_encode([
-                        "message" => "Notification deleted"
+                        "message" => "Access denied"
                     ]);
                 } else {
-                    http_response_code(400);
+                    $id = $this->gateway->delete($data["id"]);
+                    http_response_code(200);
                     echo json_encode([
-                        "message" => "Delete failure"
+                        "message" => "Item deleted",
+                        "data" => $id,
+                        "token" => $authAction
                     ]);
                 }
                 break;

@@ -13,11 +13,14 @@ import { makeDateFormat, openImage } from "../../modules/BasicFunctions";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
+import useAuth from "../../Hooks/useAuth";
 
 /**
  * TODO změnit id vlastníka při vytváření článku
  */
 const Article = () => {
+	const auth = useAuth();
+
 	const { id } = useParams();
 	const [article, setArticle] = useState(null);
 
@@ -38,6 +41,7 @@ const Article = () => {
 		} else {
 			reset();
 			setBody("");
+			setImageIsSet(false);
 		}
 	}, [location]);
 
@@ -45,26 +49,31 @@ const Article = () => {
 		fetch("http://localhost:4300/api?class=articles&action=get", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify({ id: id }),
+			body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+			credentials: "include",
 		}).then((response) => {
+			if (response.status === 403) {
+				navigation("/login");
+			}
+
 			response.text().then((_data) => {
 				const data = JSON.parse(_data);
-				setArticle(data);
-				setValue("title", data.title);
-				setValue("description", data.description);
-				setValue("date", makeDateFormat(data.date, "str"));
-				setValue("active", data.active);
-				setBody(data.body);
+				setArticle(data.data);
+				setValue("title", data.data.title);
+				setValue("description", data.data.description);
+				setValue("date", makeDateFormat(data.data.date, "str"));
+				setValue("active", data.data.active);
+				setBody(data.data.body);
 				setImageIsSet(true);
 
 				fetch("http://localhost:4300/api?class=articles&action=category", {
 					method: "POST",
 					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-					body: JSON.stringify({ id: data.category }),
+					body: JSON.stringify({ id: data.data.category, token: auth.userInfo.token }),
 				}).then((response) => {
 					response.text().then((_data) => {
 						const data = JSON.parse(_data);
-						setValue("category", data.id);
+						setValue("category", data.data.id);
 					});
 				});
 			});
@@ -104,7 +113,8 @@ const Article = () => {
 		fetch(url, {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
+			body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+			credentials: "include",
 		})
 			.then((response) => {
 				if (response.status === 200 || response.status === 201) {
@@ -124,11 +134,12 @@ const Article = () => {
 	};
 
 	const deleteArticle = () => {
-		const idJson = { id: article.id };
+		const idJson = { id: article.id, token: auth.userInfo.token };
 		fetch("http://localhost:4300/api?class=articles&action=delete", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(idJson),
+			credentials: "include",
 		})
 			.then((response) => {
 				if (response.status === 200) {

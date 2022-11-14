@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 import { getAll } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
 
 const Articles = () => {
+	const auth = useAuth();
+
 	const [articles, setArticles] = useState(null);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Články";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
-		getAll("articles", setArticles);
+		const responseCode = getAll("articles", setArticles, auth);
+		// if (!responseCode) {
+		// 	navigate("/login");
+		// }
 	}, []);
 
 	const openArticleDetails = (e) => {

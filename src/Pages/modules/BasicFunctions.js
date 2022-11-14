@@ -45,6 +45,7 @@ export function createEventsArray(data) {
 			backgroundColor: "#2874a6",
 		});
 	});
+
 	return events;
 }
 

@@ -10,7 +10,14 @@ const CheckMessage = ({ id, question, positiveHandler, setCheck }) => {
 		<div className={css.check_message}>
 			<p>{question}</p>
 			<p>{id}</p>
-			<button onClick={() => positiveHandler(id)}>Potvrdit</button>
+			<button
+				onClick={() => {
+					positiveHandler(id);
+					setCheck(null);
+				}}
+			>
+				Potvrdit
+			</button>
 			<button onClick={hideCheckMessage}>Zrušit</button>
 		</div>
 	);

@@ -11,8 +11,17 @@ import dayGridPlugin from "@fullcalendar/daygrid"; // must go before plugins
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Alert from "../../Components/admin/Alert";
+import CheckMessage from "../../Components/admin/CheckMessage";
+import useApi from "../../Hooks/useApi";
+import useAuth from "../../Hooks/useAuth";
 
 const Pricelist = () => {
+	const getAll = useApi("getAll");
+	const editPrice = useApi("edit");
+	const create = useApi("create");
+	const removeItem = useApi("remove");
+	const auth = useAuth();
+
 	// array položek ceníku
 	const [prices, setPrices] = useState(null);
 	// name položky v ceníku, která byla vybrána v selectu
@@ -21,15 +30,14 @@ const Pricelist = () => {
 	const [events, setEvents] = useState([]);
 	// ukazatel pro zobrazení Alert componentu
 	const [alert, setAlert] = useState(null);
+	// ukazatel pro zobrazení Alert componentu
+	const [check, setCheck] = useState(null);
 
 	// true / false pro zobrazení formulářů
 	const [showEditCont, setShowEditCont] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
-	const date = new Date();
-	const dateNow = Number(makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate()));
-
-	const { register: register, handleSubmit: handleSubmit, setValue, reset } = useForm();
+	const { register: register, handleSubmit: handleSubmit, setValue, reset, getValues } = useForm();
 	const { register: registerCreate, handleSubmit: handleSubmitCreate, reset: resetCreateForm } = useForm();
 
 	useEffect(() => {
@@ -38,19 +46,18 @@ const Pricelist = () => {
 		document.getElementById("banner-desc").innerHTML = "Úprava cen, vytváření nových položek, správa akčních cen";
 	}, []);
 
+	useEffect(() => {
+		if (prices) {
+			setSelected("choose");
+			setEvents(createEventsArray(prices));
+		}
+	}, [prices]);
+
 	/**
 	 * * GET request všech položek ceníku
 	 */
 	function getData() {
-		fetch("http://localhost:4300/api?class=pricelist&action=getall").then((response) => {
-			response.text().then((_data) => {
-				const data = JSON.parse(_data);
-				console.log(data);
-				setPrices(data);
-				setSelected("choose");
-				setEvents(createEventsArray(data));
-			});
-		});
+		getAll("pricelist", setPrices, auth);
 	}
 
 	/**
@@ -65,29 +72,9 @@ const Pricelist = () => {
 			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
 			return;
 		}
-		console.log(JSON.stringify(data));
-		fetch("http://localhost:4300/api?class=pricelist&action=update", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-					editRolesCont();
-					getData();
-				} else {
-					setAlert({ action: "failure", text: "Změna položky nebyla provedena", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		editPrice("pricelist", data, setAlert, "Položka upravena", "Položka nebyla upravena", auth);
+		editRolesCont();
+		getData();
 	};
 
 	/**
@@ -102,30 +89,9 @@ const Pricelist = () => {
 			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
 			return;
 		}
-
-		console.log(JSON.stringify(data));
-		fetch("http://localhost:4300/api?class=pricelist&action=create", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				if (response.status === 201) {
-					setAlert({ action: "success", text: "Položka vytvořena", timeout: 6000 });
-					addItemCont();
-					getData();
-				} else {
-					setAlert({ action: "failure", text: "Položka nebyla vytvořena", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		create("pricelist", data, setAlert, "Položka přidána", "Položka nebyla přidána", auth);
+		addItemCont();
+		getData();
 	};
 
 	/**
@@ -133,6 +99,11 @@ const Pricelist = () => {
 	 * @param e: odkaz na element option, který byl vybrán
 	 */
 	const handleChange = (e) => {
+		if (e.target.value === "choose") {
+			document.getElementById("delete").style.opacity = "0";
+			reset();
+			return;
+		}
 		let index = prices.findIndex((el) => el.name == e.target.value);
 		setSelected(e.target.value);
 		setValue("id", prices[index].id);
@@ -141,6 +112,7 @@ const Pricelist = () => {
 		setValue("special_price", prices[index].special_price);
 		setValue("start", makeDateFormat(prices[index].special_price_start, "str"));
 		setValue("end", makeDateFormat(prices[index].special_price_end, "str"));
+		document.getElementById("delete").style.opacity = "1";
 	};
 
 	/**
@@ -198,6 +170,17 @@ const Pricelist = () => {
 		}
 
 		setShowAddItemCont(!showAddItemCont);
+	};
+
+	const deleteItem = () => {
+		const id = getValues("id");
+		setCheck({ id: id, question: "Smazat notifikaci?" });
+	};
+
+	const remove = (id) => {
+		removeItem("pricelist", id, setAlert, "Položka byla odstřaněna", "Položka nebyla odstraněna", auth);
+		editRolesCont();
+		getData();
 	};
 
 	return (
@@ -282,6 +265,9 @@ const Pricelist = () => {
 						</div>
 						<input type="hidden" {...register("id")} />
 						<button type="submit">Uložit</button>
+						<button type="button" id="delete" className={cssBasic.delete_button} onClick={deleteItem}>
+							Delete
+						</button>
 					</form>
 				</div>
 				{/* // * Formulář pro vytváření nových položek (class ADD_ITEM) */}
@@ -332,6 +318,7 @@ const Pricelist = () => {
 				<FullCalendar plugins={[dayGridPlugin]} events={events} locale="cs" timeZone="local" firstDay="1" initialView="dayGridMonth" buttonText={{ today: "Dnes" }} height="auto" eventBorderColor="transparent" eventClick={eventHandler}></FullCalendar>
 			</section>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
+			{check && <CheckMessage id={check.id} question={check.question} positiveHandler={remove} setCheck={setCheck} />}
 		</div>
 	);
 };

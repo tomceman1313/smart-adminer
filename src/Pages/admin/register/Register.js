@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import css from "./Register.module.css";
 import cssBasic from "../styles/Basic.module.css";
 import "@splidejs/react-splide/css";
+import Alert from "../../Components/admin/Alert";
 
 import { isPermitted } from "../../modules/BasicFunctions";
 
@@ -9,69 +10,38 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faIdBadge, faImagePortrait, faMobileScreen, faAt, faUnlock, faArrowUpWideShort, faAddressBook, faBolt, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import useAuth from "../../Hooks/useAuth";
+import useApi from "../../Hooks/useApi";
+import useRolesApi from "../../Hooks/useRolesApi";
 
 export default function Register() {
+	const auth = useAuth();
+	const getRoles = useRolesApi("getroles");
+	const createUser = useApi("create");
+	const editRole = useRolesApi("update_role");
+
 	const { register, handleSubmit } = useForm();
 	const { register: registerUpdateRole, handleSubmit: handleRoleUpdate } = useForm();
 
 	const [privileges, setPrivileges] = useState(null);
 	const [showEditCont, setShowEditCont] = useState(false);
+	const [alert, setAlert] = useState(null);
 
 	useEffect(() => {
-		fetch("http://localhost:4300/api?class=admin&action=getroles").then((response) => {
-			response.text().then((_data) => {
-				let data = JSON.parse(_data);
-				console.log(data);
-				setPrivileges(data);
-			});
-		});
+		getRoles(setPrivileges, auth);
 
 		document.getElementById("banner-title").innerHTML = "Registrace a role";
 		document.getElementById("banner-desc").innerHTML = "Tvorba nových profilů, přehled a správa práv rolí";
 	}, []);
 
 	const onSubmit = (data) => {
-		console.log(JSON.stringify(data));
-		fetch("http://localhost:4300/api?class=admin&action=create", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				response.text().then((_data) => {
-					let data = JSON.parse(_data);
-					console.log(data);
-				});
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		createUser("admin", data, setAlert, "Účet vytvořen", "Účet nebyl vytvořen", auth);
 	};
 
 	const onSubmitRoles = (data) => {
-		console.log(JSON.stringify(data));
-		fetch("http://localhost:4300/api?class=admin&action=update_role", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				response.text().then((_data) => {
-					let data = JSON.parse(_data);
-					console.log(data);
-				});
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		editRole(data, setAlert, "Práva byla upravena", "Práva nebyla upravena", auth);
+		getRoles(setPrivileges, auth);
+		editRoles();
 	};
 
 	const editRoles = () => {
@@ -286,6 +256,7 @@ export default function Register() {
 					</div>
 				</section>
 			)}
+			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
 		</div>
 	);
 }

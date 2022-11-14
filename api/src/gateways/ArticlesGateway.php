@@ -7,7 +7,7 @@ class ArticlesGateway
         $this->conn = $database->getConnection();
     }
 
-    public function create(array $data): bool
+    public function create(array $data, int $userId): bool
     {
         $base64DataString = $data["image"];
         list($dataType, $imageData) = explode(';', $base64DataString);
@@ -36,7 +36,7 @@ class ArticlesGateway
             'body' => $data["body"],
             'date' => $data["date"],
             'category' => $data["category"],
-            'owner_id' => $data["owner_id"],
+            'owner_id' => $userId,
             'active' => $data["active"]
         ]);
 
