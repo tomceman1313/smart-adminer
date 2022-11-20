@@ -15,10 +15,8 @@ const Articles = () => {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Články";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
-		const responseCode = getAll("articles", setArticles, auth);
-		// if (!responseCode) {
-		// 	navigate("/login");
-		// }
+
+		getAll("articles", setArticles, auth);
 	}, []);
 
 	const openArticleDetails = (e) => {

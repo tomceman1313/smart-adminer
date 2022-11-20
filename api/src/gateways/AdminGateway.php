@@ -105,7 +105,7 @@ class AdminGateway
 
     public function getRoles(): array
     {
-        $sql = "SELECT * from roles";
+        $sql = "SELECT * from roles ORDER BY role";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -161,7 +161,7 @@ class AdminGateway
 
             $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 60, 'user_id' => $user["id"], 'user' => $user["username"], 'privilege' => $user["privilege"]), $this->key, 'HS512');
             setcookie("refresh_token", $jwt_refresh, time() + 3600, '/', null, false, true);
-            return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"]);
+            return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"], "id" => $user["id"]);
         }
 
         return "wrong";
@@ -205,7 +205,7 @@ class AdminGateway
             'privilege' => $decoded->privilege
         );
 
-        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "user" => $decoded->user, "role" => $decoded->privilege);
+        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "username" => $decoded->user, "role" => $decoded->privilege, "id" => $decoded->user_id);
     }
 
     /**

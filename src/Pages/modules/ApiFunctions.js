@@ -1,22 +1,41 @@
 const BASE_URL = "http://localhost:4300";
 
-export function getAll(apiClass, setState, auth) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
+export async function getAll(apiClass, setState, auth) {
+	// fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
+	// 	method: "POST",
+	// 	headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+	// 	body: JSON.stringify({ token: auth.userInfo.token }),
+	// 	credentials: "include",
+	// }).then((response) => {
+	// 	if (response.status === 403) {
+	// 		auth.setUserInfo(null);
+	// 		return;
+	// 	}
+	// 	response.text().then((_data) => {
+	// 		const data = JSON.parse(_data);
+	// 		setState(data.data);
+	// 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	// 	});
+	// });
+
+	const response = await fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ token: auth.userInfo.token }),
 		credentials: "include",
-	}).then((response) => {
-		if (response.status === 403) {
-			auth.setUserInfo(null);
-			return;
-		}
-		response.text().then((_data) => {
-			const data = JSON.parse(_data);
-			setState(data.data);
-			auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		});
 	});
+
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const data = await response.json();
+
+	setState(data.data);
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+
+	return data;
 }
 
 export function get(apiClass, id) {
@@ -179,7 +198,54 @@ export function refreshAccessToken(navigate, auth) {
 		}
 		response.text().then((_data) => {
 			let data = JSON.parse(_data);
-			auth.setUserInfo(data.token);
+			auth.setUserInfo(data.user);
 		});
 	});
+}
+
+export async function testFetch() {
+	const response = await fetch(`${BASE_URL}/api?class=admin&action=test`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
+export async function getUserData(auth) {
+	const response = await fetch(`${BASE_URL}/api?class=admin&action=get`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ id: auth.userInfo.id, token: auth.userInfo.token }),
+		credentials: "include",
+	});
+
+	if (response.status == 403) {
+		auth.setUserInfo(null);
+		return false;
+	}
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	return data;
+}
+
+export async function editUserData(postData, auth) {
+	const response = await fetch(`${BASE_URL}/api?class=admin&action=get`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
+		credentials: "include",
+	});
+
+	if (response.status == 403) {
+		auth.setUserInfo(null);
+		return false;
+	}
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	return data;
 }

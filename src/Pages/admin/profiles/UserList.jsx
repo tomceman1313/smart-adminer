@@ -19,7 +19,6 @@ function UserList({ data, handleEdit, css, setCheckMessage }) {
 				return "Admin";
 			default:
 				return "Uživatel";
-				break;
 		}
 	};
 

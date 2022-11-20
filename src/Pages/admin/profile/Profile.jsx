@@ -4,12 +4,17 @@ import css from "./Profile.module.css";
 
 import Alert from "../../Components/admin/Alert";
 
+import { getUserData } from "../../modules/ApiFunctions";
+import useAuth from "../../Hooks/useAuth";
+
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
+	const auth = useAuth();
+
 	const [alert, setAlert] = useState(null);
 	const [userInfo, setUserInfo] = useState({});
 	const [editInfo, setEditInfo] = useState(false);
@@ -19,26 +24,20 @@ const Profile = () => {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Správa profilu";
 		document.getElementById("banner-desc").innerHTML = "Přehled a správa uživatelského profilu";
-		getUserInfo({ id: "14" });
+		getUserInfo();
 	}, []);
 
-	function getUserInfo(id) {
-		fetch("http://localhost:4300/api?class=admin&action=get", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(id),
-		}).then((response) => {
-			response.text().then((_data) => {
-				const data = JSON.parse(_data);
-				setUserInfo(data);
-				setValue("username", data.username);
-				setValue("fname", data.fname);
-				setValue("lname", data.lname);
-				setValue("tel", data.tel);
-				setValue("email", data.email);
-				setValue("id", data.id);
-			});
-		});
+	async function getUserInfo() {
+		const data = await getUserData(auth);
+		const userData = data.data;
+
+		setUserInfo(userData);
+		setValue("username", userData.username);
+		setValue("fname", userData.fname);
+		setValue("lname", userData.lname);
+		setValue("tel", userData.tel);
+		setValue("email", userData.email);
+		setValue("id", userData.id);
 	}
 
 	const onSumbitUserInfo = (data) => {
@@ -52,26 +51,16 @@ const Profile = () => {
 		document.getElementById("submit").innerHTML = "Upravit";
 		setEditInfo(!editInfo);
 
-		fetch("http://localhost:4300/api?class=admin&action=edit", {
+		fetch("http://localhost:4300/api?class=admin&action=update", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(data),
+			body: JSON.stringify({ token: auth.userInfo.token, data: data }),
 		}).then((response) => {
 			if (response.status === 201) {
 				setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-				getUserInfo({ id: "14" });
+				getUserInfo();
 			}
 		});
-	};
-
-	const editUserInfoCont = (e) => {
-		if (editInfo) {
-			e.target.innerHTML = "Upravit";
-		} else {
-			setFocus("username");
-			e.target.innerHTML = "Uložit";
-		}
-		setEditInfo(!editInfo);
 	};
 
 	return (

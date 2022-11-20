@@ -36,8 +36,22 @@ class AdminController
                 break;
 
             case 'get':
-                $id = json_decode(file_get_contents("php://input"), true);
-                echo json_encode($this->gateway->get($id["id"]));
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->gateway->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->get($data["id"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" => $result,
+                        "token" => $authAction
+                    ]);
+                }
                 break;
 
             case 'verify':
@@ -169,7 +183,8 @@ class AdminController
                         "message" => "access",
                         "token" => $response["token"],
                         "username" => $response["username"],
-                        "role" => $response["role"]
+                        "role" => $response["role"],
+                        "id" => $response["id"]
                     ]);
                 } else {
                     echo json_encode([
@@ -184,7 +199,7 @@ class AdminController
                     http_response_code(200);
                     echo json_encode([
                         "message" => "refreshed",
-                        "token" => $response
+                        "user" => $response
                     ]);
                 } else {
                     http_response_code(401);
@@ -205,10 +220,11 @@ class AdminController
                 http_response_code(200);
                 break;
 
-            case 'decode':
-                $result = $this->gateway->decodeToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQzMDAvYXBpIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImlhdCI6MTY2ODIwMTIzOCwiZXhwIjoxNjY4MjAyMTM4LCJ1c2VyX2lkIjoxNCwidXNlciI6InRvbWNlbWFuMTMiLCJwcml2aWxlZ2UiOjN9.JLGuSP4QM5THnwEGpA_hRwbfW2BTbctwSX7cjNVpfNRBX3yKlO-Tx0BFxwl-EC4wNDq7O5Z5hQ_HBsuVbMg5AQ");
+            case 'test':
+                sleep(5);
                 echo json_encode([
-                    "result" => $result
+                    "result" => "Sleeping for five seconds",
+                    "token" => $_COOKIE["refresh_token"]
                 ]);
                 break;
             default:

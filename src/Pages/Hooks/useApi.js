@@ -1,4 +1,4 @@
-import { getAll, get, create, edit, remove, refreshAccessToken } from "../modules/ApiFunctions";
+import { getAll, get, create, edit, remove, refreshAccessToken, testFetch } from "../modules/ApiFunctions";
 
 const useApi = (action) => {
 	switch (action) {
@@ -14,6 +14,8 @@ const useApi = (action) => {
 			return remove;
 		case "refresh":
 			return refreshAccessToken;
+		case "test":
+			return testFetch;
 	}
 };
 

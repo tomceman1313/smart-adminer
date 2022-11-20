@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
-import css from "./Register.module.css";
-import cssBasic from "../styles/Basic.module.css";
 import "@splidejs/react-splide/css";
+import { useEffect, useState } from "react";
 import Alert from "../../Components/admin/Alert";
-
+import PrivilegePrices from "./PrivilegePrices";
+import PrivilegeArticles from "./PrivilegeArticles";
+import PrivilegeNews from "./PrivilegeNews";
 import { isPermitted } from "../../modules/BasicFunctions";
+import cssBasic from "../styles/Basic.module.css";
+import css from "./Register.module.css";
 
-import { useForm } from "react-hook-form";
+import { faAddressBook, faArrowUpWideShort, faAt, faBolt, faIdBadge, faImagePortrait, faLock, faMobileScreen, faUnlock, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faIdBadge, faImagePortrait, faMobileScreen, faAt, faUnlock, faArrowUpWideShort, faAddressBook, faBolt, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
-import useAuth from "../../Hooks/useAuth";
+import { useForm } from "react-hook-form";
 import useApi from "../../Hooks/useApi";
+import useAuth from "../../Hooks/useAuth";
 import useRolesApi from "../../Hooks/useRolesApi";
 
 export default function Register() {
@@ -20,7 +22,7 @@ export default function Register() {
 	const createUser = useApi("create");
 	const editRole = useRolesApi("update_role");
 
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, reset } = useForm();
 	const { register: registerUpdateRole, handleSubmit: handleRoleUpdate } = useForm();
 
 	const [privileges, setPrivileges] = useState(null);
@@ -36,6 +38,7 @@ export default function Register() {
 
 	const onSubmit = (data) => {
 		createUser("admin", data, setAlert, "Účet vytvořen", "Účet nebyl vytvořen", auth);
+		reset();
 	};
 
 	const onSubmitRoles = (data) => {
@@ -120,90 +123,23 @@ export default function Register() {
 							rewind: true,
 						}}
 						aria-labelledby="basic-example-heading"
-						onMoved={(splide, newIndex) => {
-							// eslint-disable-next-line
-							console.log("moved", newIndex);
+						// onMoved={(splide, newIndex) => {
+						// 	// eslint-disable-next-line
+						// 	console.log("moved", newIndex);
 
-							// eslint-disable-next-line
-							console.log("length", splide.length);
-						}}
+						// 	// eslint-disable-next-line
+						// 	console.log("length", splide.length);
+						// }}
 					>
 						<SplideSlide className={css.slide}>
-							<div className={css.roles}>
-								<h3>Články</h3>
-								<table>
-									<thead>
-										<tr>
-											<th>Role</th>
-											<th>Vytvoření</th>
-											<th>Editace</th>
-											<th>Publikování</th>
-										</tr>
-									</thead>
-
-									<tbody>
-										{privileges.map((role) => (
-											<tr key={role.role}>
-												<td>{role.name}</td>
-												<td>{isPermitted(role.create_articles)}</td>
-												<td>{isPermitted(role.edit_articles)}</td>
-												<td>{isPermitted(role.post_articles)}</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
+							<PrivilegePrices css={css} privileges={privileges} isPermitted={isPermitted} />
 						</SplideSlide>
 						<SplideSlide className={css.slide}>
-							<div className={css.roles}>
-								<h3>Ceny</h3>
-
-								<table>
-									<thead>
-										<tr>
-											<th>Role</th>
-											<th>Změnit</th>
-											<th>Vytvořit položku</th>
-										</tr>
-									</thead>
-
-									<tbody>
-										{privileges.map((role) => (
-											<tr key={role.role}>
-												<td>{role.name}</td>
-												<td>{isPermitted(role.edit_prices)}</td>
-												<td>{isPermitted(role.create_pricelist_item)}</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
+							<PrivilegeArticles css={css} privileges={privileges} isPermitted={isPermitted} />
 						</SplideSlide>
 
 						<SplideSlide className={css.slide}>
-							<div className={css.roles}>
-								<h3>Aktuality</h3>
-								<table>
-									<thead>
-										<tr>
-											<th>Role</th>
-											<th>Vytvoření</th>
-											<th>Editace</th>
-											<th>Publikování</th>
-										</tr>
-									</thead>
-									<tbody>
-										{privileges.map((role) => (
-											<tr key={role.role}>
-												<td>{role.name}</td>
-												<td>{isPermitted(role.create_news)}</td>
-												<td>{isPermitted(role.edit_news)}</td>
-												<td>{isPermitted(role.post_news)}</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
+							<PrivilegeNews css={css} privileges={privileges} isPermitted={isPermitted} />
 						</SplideSlide>
 					</Splide>
 					<button onClick={editRoles}>Změnit práva</button>

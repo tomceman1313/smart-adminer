@@ -31,7 +31,7 @@ export default function Login() {
 				response.text().then((_data) => {
 					let data = JSON.parse(_data);
 					if (data.message === "access") {
-						auth.setUserInfo({ role: data.role, username: data.username, token: data.token });
+						auth.setUserInfo({ role: data.role, username: data.username, token: data.token, id: data.id });
 						navigate(from, { state: { from: location }, replace: true });
 					} else {
 						setAlert(true);
