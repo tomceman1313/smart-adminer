@@ -220,6 +220,27 @@ class AdminController
                 http_response_code(200);
                 break;
 
+            case 'change_password':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->gateway->authAction($data["token"], array(1, 2, 3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $response = $this->gateway->changePassword($data["data"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Password change",
+                        "success" => $response,
+                        "token" => $authAction
+                    ]);
+                }
+
+
+                break;
+
             case 'test':
                 sleep(5);
                 echo json_encode([

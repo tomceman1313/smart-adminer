@@ -1,23 +1,6 @@
 const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass, setState, auth) {
-	// fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
-	// 	method: "POST",
-	// 	headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-	// 	body: JSON.stringify({ token: auth.userInfo.token }),
-	// 	credentials: "include",
-	// }).then((response) => {
-	// 	if (response.status === 403) {
-	// 		auth.setUserInfo(null);
-	// 		return;
-	// 	}
-	// 	response.text().then((_data) => {
-	// 		const data = JSON.parse(_data);
-	// 		setState(data.data);
-	// 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	// 	});
-	// });
-
 	const response = await fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -240,7 +223,7 @@ export async function editUserData(postData, auth) {
 		credentials: "include",
 	});
 
-	if (response.status == 403) {
+	if (response.status === 403) {
 		auth.setUserInfo(null);
 		return false;
 	}
@@ -248,4 +231,22 @@ export async function editUserData(postData, auth) {
 	const data = await response.json();
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
+}
+
+export async function changePassword(postData, auth) {
+	const response = await fetch(`${BASE_URL}/api?class=admin&action=change_password`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
+		credentials: "include",
+	});
+
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return false;
+	}
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	return data.success;
 }

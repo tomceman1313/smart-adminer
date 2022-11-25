@@ -71,7 +71,7 @@ class AdminGateway
 
         $stmt->execute();
 
-        return $stmt->rowCount();
+        return true;
     }
 
     public function delete(string $id): int
@@ -242,5 +242,20 @@ class AdminGateway
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    public function changePassword(array $data)
+    {
+
+        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $sql = "UPDATE users SET password = :password WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'password' => $hashedPassword,
+            'id' => $data['id']
+        ]);
+        return true;
     }
 }

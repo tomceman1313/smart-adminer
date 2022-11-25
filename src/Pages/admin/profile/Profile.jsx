@@ -4,13 +4,13 @@ import css from "./Profile.module.css";
 
 import Alert from "../../Components/admin/Alert";
 
-import { getUserData } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
+import { getUserData } from "../../modules/ApiFunctions";
 
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import NewPassword from "./NewPassword";
 
 const Profile = () => {
 	const auth = useAuth();
@@ -18,6 +18,7 @@ const Profile = () => {
 	const [alert, setAlert] = useState(null);
 	const [userInfo, setUserInfo] = useState({});
 	const [editInfo, setEditInfo] = useState(false);
+	const [password, setPassword] = useState(null);
 
 	const { register: registerUserInfo, handleSubmit: handleSubmitUserInfo, setValue, setFocus } = useForm();
 
@@ -56,11 +57,15 @@ const Profile = () => {
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ token: auth.userInfo.token, data: data }),
 		}).then((response) => {
-			if (response.status === 201) {
+			if (response.status === 200) {
 				setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
 				getUserInfo();
 			}
 		});
+	};
+
+	const handleChangePassword = () => {
+		setPassword((prev) => !prev);
 	};
 
 	return (
@@ -93,13 +98,16 @@ const Profile = () => {
 						<FontAwesomeIcon className={cssBasic.icon} icon={faAt} />
 					</div>
 					<input type="hidden" {...registerUserInfo("id")} />
-					<button type="button">Změnit heslo</button>
+					<button type="button" onClick={handleChangePassword}>
+						Změnit heslo
+					</button>
 					<button type="submit" id="submit">
 						Upravit
 					</button>
 				</form>
 			</section>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
+			{password && <NewPassword setState={setPassword} setAlert={setAlert} />}
 		</div>
 	);
 };
