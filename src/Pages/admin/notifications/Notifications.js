@@ -115,7 +115,7 @@ const Notifications = () => {
 			reset();
 			return;
 		}
-		let index = notifications.findIndex((el) => el.title == e.target.value);
+		let index = notifications.findIndex((el) => el.title === e.target.value);
 		setSelected(e.target.value);
 		setValue("id", notifications[index].id);
 		setValue("title", notifications[index].title);
