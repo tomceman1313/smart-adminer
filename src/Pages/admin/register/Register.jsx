@@ -142,7 +142,9 @@ export default function Register() {
 							<PrivilegeNews css={css} privileges={privileges} isPermitted={isPermitted} />
 						</SplideSlide>
 					</Splide>
-					<button onClick={editRoles}>Změnit práva</button>
+					<button id={css.btnEditRoles} onClick={editRoles}>
+						Změnit práva
+					</button>
 
 					<div className={css.edit_roles}>
 						<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editRoles} />

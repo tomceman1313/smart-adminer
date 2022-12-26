@@ -16,6 +16,8 @@ const useApi = (action) => {
 			return refreshAccessToken;
 		case "test":
 			return testFetch;
+		default:
+			return null;
 	}
 };
 

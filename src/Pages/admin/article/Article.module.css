@@ -90,3 +90,21 @@
 	-ms-transform: translateX(26px);
 	transform: translateX(26px);
 }
+
+@media (max-width: 900px) {
+	.article section:nth-of-type(1),
+	.article section:nth-of-type(2) {
+		width: calc(50% - 70px);
+	}
+
+	.article section:nth-of-type(3) {
+		width: calc(100%);
+	}
+}
+
+@media (max-width: 700px) {
+	.article section:nth-of-type(1),
+	.article section:nth-of-type(2) {
+		width: calc(100% - 60px);
+	}
+}

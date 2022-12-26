@@ -20,6 +20,9 @@ require __DIR__ . "/src/gateways/NotificationsGateway.php";
 require __DIR__ . "/src/controllers/ArticlesController.php";
 require __DIR__ . "/src/gateways/ArticlesGateway.php";
 
+require __DIR__ . "/src/controllers/GalleryController.php";
+require __DIR__ . "/src/gateways/GalleryGateway.php";
+
 // set_error_handler("ErrorHandler::handleError");
 // set_exception_handler("ErrorHandler::handleException");
 
@@ -91,6 +94,11 @@ switch ($class) {
     case 'articles':
         $gateway = new ArticlesGateway($database);
         $controller = new ArticlesConroller($gateway, $admin);
+        $controller->processRequest($action, $id);
+        break;
+    case 'gallery':
+        $gateway = new GalleryGateway($database);
+        $controller = new GalleryConroller($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     default:

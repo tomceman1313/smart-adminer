@@ -3,7 +3,7 @@ import React from "react";
 const PrivilegeTable = ({ css, privileges, isPermitted }) => {
 	return (
 		<div className={css.roles}>
-			<h3>Články</h3>
+			<h3>Notifikace</h3>
 			<table>
 				<thead>
 					<tr>
@@ -18,9 +18,9 @@ const PrivilegeTable = ({ css, privileges, isPermitted }) => {
 					{privileges.map((role) => (
 						<tr key={role.role}>
 							<td>{role.name}</td>
-							<td>{isPermitted(role.create_articles)}</td>
-							<td>{isPermitted(role.edit_articles)}</td>
-							<td>{isPermitted(role.post_articles)}</td>
+							<td>{isPermitted(role.create_news)}</td>
+							<td>{isPermitted(role.edit_news)}</td>
+							<td>{isPermitted(role.post_news)}</td>
 						</tr>
 					))}
 				</tbody>

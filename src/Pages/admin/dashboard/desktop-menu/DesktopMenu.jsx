@@ -1,13 +1,51 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import { faChevronDown, faDisplay, faGear, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import css from "../styles/SideMenu.module.css";
+import css from "./DesktopMenu.module.css";
 
-export default function SideMenu({ logOut }) {
+export default function DesktopMenu({ logOut }) {
+	const activeMenu = useRef(null);
+	const activeMenuItem = useRef(null);
+
+	function setActive(e) {
+		let id = e.currentTarget.id;
+
+		if (activeMenu.current === null) {
+			document.getElementById(id).parentNode.classList.add(css.active);
+			activeMenu.current = id;
+			return;
+		}
+
+		if (id !== activeMenu.current) {
+			document.getElementById(activeMenu.current).parentNode.classList.remove(css.active);
+			document.getElementById(id).parentNode.classList.add(css.active);
+			activeMenu.current = id;
+		} else {
+			document.getElementById(activeMenu.current).parentNode.classList.remove(css.active);
+			activeMenu.current = null;
+		}
+	}
+
+	function setActiveLink(e) {
+		let id = e.currentTarget.id;
+
+		if (activeMenuItem.current === null) {
+			document.getElementById(id).classList.add(css.active_link);
+			activeMenuItem.current = id;
+			return;
+		}
+
+		if (id !== activeMenuItem.current) {
+			document.getElementById(activeMenuItem.current).classList.remove(css.active_link);
+			document.getElementById(id).classList.add(css.active_link);
+			activeMenuItem.current = id;
+		}
+	}
+
 	return (
 		<div className={css.menu}>
 			<img src="/images/logo512.png" alt="logo" />
@@ -40,6 +78,9 @@ export default function SideMenu({ logOut }) {
 					<article>
 						<Link to="/dashboard/pricelist" onClick={setActiveLink} id="pricelist">
 							Ceník
+						</Link>
+						<Link to="/dashboard/gallery" onClick={setActiveLink} id="gallery">
+							Galerie
 						</Link>
 						<Link to="/dashboard/notifications" onClick={setActiveLink} id="notifications">
 							Upozornění
@@ -86,36 +127,4 @@ export default function SideMenu({ logOut }) {
 			</ul>
 		</div>
 	);
-}
-
-function setActive(e) {
-	let id = e.currentTarget.id;
-	let active = document.querySelector(`.${css.active}`) != null ? document.querySelector(`.${css.active}`).firstChild.id : "";
-
-	if (active === "") {
-		document.getElementById(id).parentNode.classList.add(css.active);
-		return;
-	}
-
-	if (id !== active) {
-		document.querySelector(`.${css.active}`).classList.remove(css.active);
-		document.getElementById(id).parentNode.classList.add(css.active);
-	} else {
-		document.querySelector(`.${css.active}`).classList.remove(css.active);
-	}
-}
-
-function setActiveLink(e) {
-	let id = e.currentTarget.id;
-	let active = document.querySelector(`.${css.active_link}`) != null ? document.querySelector(`.${css.active_link}`).firstChild.id : "";
-
-	if (active === "") {
-		document.getElementById(id).classList.add(css.active_link);
-		return;
-	}
-
-	if (id !== active) {
-		document.querySelector(`.${css.active_link}`).classList.remove(css.active_link);
-		document.getElementById(id).classList.add(css.active_link);
-	}
 }

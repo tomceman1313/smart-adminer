@@ -62,10 +62,22 @@ select {
 
 .splide__arrow--prev {
 	left: -35px !important;
+	margin: 0;
 }
 
 .splide__arrow--next {
 	right: -35px !important;
+	margin: 0;
+}
+
+@media (max-width: 900px) {
+	.splide__arrow--prev {
+		left: -28px !important;
+	}
+
+	.splide__arrow--next {
+		right: -28px !important;
+	}
 }
 
 .splide__pagination {

@@ -5,7 +5,7 @@
 	left: 0;
 	height: calc(100vh - 40px);
 	padding: 20px 0;
-	background-color: #263544;
+	background-color: var(--main-dark);
 	width: 350px;
 	display: flex;
 	justify-content: left;
