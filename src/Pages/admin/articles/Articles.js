@@ -17,6 +17,7 @@ const Articles = () => {
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
 
 		getAll("articles", setArticles, auth);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const openArticleDetails = (e) => {
@@ -30,7 +31,7 @@ const Articles = () => {
 				{articles &&
 					articles.map((article) => (
 						<article key={article.id} id={article.id} onClick={openArticleDetails}>
-							<img src={`/images/articles/${article.image}`} />
+							<img src={`/images/articles/${article.image}`} alt="" />
 							<div>
 								<h3>{article.title}</h3>
 								<p>{article.description}</p>

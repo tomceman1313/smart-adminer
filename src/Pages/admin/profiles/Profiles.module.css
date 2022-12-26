@@ -53,6 +53,7 @@
 	color: white;
 	border: solid 1px var(--main-dark);
 	border-radius: 8px;
+	cursor: pointer;
 }
 
 .users li article {
@@ -103,20 +104,21 @@
 }
 
 .edit {
-	width: calc(100% - 50%);
+	width: 50%;
 	padding: 15px 25px;
 	max-width: 500px;
 	position: fixed;
 	background-color: white;
 	top: 145px;
-	margin-left: -600px;
 	border-radius: 8px;
 	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
 	overflow: hidden;
-	transition: all 1s;
-	animation-name: show;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
+}
+
+.edit input[type="submit"] {
+	padding: 10px 20px;
+	font-size: 16px;
+	margin-top: 0;
 }
 
 #close {
@@ -140,84 +142,30 @@
 	margin-top: 0;
 }
 
-.input_box {
-	position: relative;
-	background: linear-gradient(to left, #333 50%, rgb(255, 255, 255, 0.9) 50%);
-	background-size: 200% 1px;
-	background-repeat: no-repeat;
-	background-position: 100% 100%;
-	margin-top: 20px;
-	height: 50px;
-}
-
-.input_box input {
-	position: absolute;
-	left: 25px;
-	top: 50%;
-	transform: translateY(-50%);
-	width: calc(100% - 10px);
-	height: 35px;
-	background-color: transparent;
-	padding: 5px 0;
-	color: #333;
-	font-size: 16px;
-	transition: all 0.5s;
-}
-
-.input_box input:focus {
-	left: 0;
-}
-
-.input_box input:focus ~ .icon {
-	transform: translateY(-28px);
-	font-size: 12px;
-}
-
-.input_box input::placeholder {
-	color: #333;
-}
-
-.icon {
-	font-size: 16px;
-	position: absolute;
-	left: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	transition: all 0.5s;
-	color: var(--main-dark);
-}
-
-.edit select {
-	position: absolute;
-	left: 25px;
-	top: 50%;
-	transform: translateY(-50%);
-	width: calc(100% - 20px);
-	height: 35px;
-	background-color: transparent;
-	padding: 5px 0;
-	color: #333;
-	font-size: 16px;
-	transition: all 0.5s;
-}
-
-.edit select option {
-	background-color: white;
-	line-height: 22px;
-}
-
-@keyframes show {
-	to {
-		margin-left: 15px;
+@media (max-width: 1200px) {
+	.users li {
+		width: calc(50% - 80px);
 	}
 }
 
-@keyframes hide {
-	from {
-		margin-left: 15px;
+@media (max-width: 700px) {
+	.users li {
+		width: calc(100% - 50px);
+		margin: 15px 0;
 	}
 
-	to {
-		margin-left: -600px;
+	.edit {
+		width: calc(100% - 80px);
+	}
+}
+
+@media (max-height: 800px) {
+	.edit {
+		max-width: none;
+		width: calc(100% - 50px);
+		height: calc(100vh - 30px);
+		top: 0;
+		left: 0;
+		z-index: 10;
 	}
 }

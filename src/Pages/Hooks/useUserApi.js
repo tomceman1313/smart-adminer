@@ -8,6 +8,8 @@ const useUserApi = (action) => {
 			return editUserData;
 		case "password":
 			return changePassword;
+		default:
+			return getUserData;
 	}
 };
 

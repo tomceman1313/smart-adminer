@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 
-import SideMenu from "../../Components/admin/SideMenu";
+import SideMenu from "./SideMenu";
 import Article from "../article/Article";
 import Articles from "../articles/Articles";
 import Notifications from "../notifications/Notifications";
@@ -16,10 +16,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
 import { refreshAccessToken } from "../../modules/ApiFunctions";
+import useViewport from "../../Hooks/useViewport";
+import Gallery from "../gallery/Gallery";
 
 export default function Dashboard() {
 	let navigate = useNavigate();
 	const auth = useAuth();
+	const { width } = useViewport();
 
 	const ROLES = {
 		user: 1,
@@ -32,7 +35,7 @@ export default function Dashboard() {
 			refreshAccessToken(navigate, auth);
 			return;
 		}
-	}, [auth]);
+	}, [auth, navigate]);
 
 	const logOut = () => {
 		fetch("http://localhost:4300/api?class=admin&action=logout", {
@@ -53,17 +56,22 @@ export default function Dashboard() {
 			<div className={css.banner}>
 				<h1 id="banner-title">Přehled</h1>
 				<p id="banner-desc">Nejdůležitější informace z chodu stránek</p>
-				<Link to="profile">
-					<FontAwesomeIcon icon={faUser} />
-				</Link>
+				{width > 900 ? (
+					<Link to="profile">
+						<FontAwesomeIcon icon={faUser} />
+					</Link>
+				) : (
+					<></>
+				)}
 			</div>
 			<div className={css.content}>
 				<Routes>
-					<Route element={<RequireAuth allowedRoles={[ROLES.admin]} />}>
+					<Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.employee]} />}>
 						<Route path="users" element={<Profiles />} />
 						<Route path="register" element={<Register />} />
 						<Route path="pricelist" element={<Pricelist />} />
 						<Route path="notifications" element={<Notifications />} />
+						<Route path="gallery" element={<Gallery />} />
 					</Route>
 					<Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.employee, ROLES.admin]} />}>
 						<Route path="profile" element={<Profile />} />

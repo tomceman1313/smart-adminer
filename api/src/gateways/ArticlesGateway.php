@@ -129,7 +129,6 @@ class ArticlesGateway
 
         $imageName = $article["image"];
 
-        echo $imageName;
         if (file_exists("../public/images/articles/{$imageName}")) {
             unlink("../public/images/articles/{$imageName}");
         }

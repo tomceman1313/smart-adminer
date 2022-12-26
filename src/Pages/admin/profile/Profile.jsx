@@ -16,7 +16,6 @@ const Profile = () => {
 	const auth = useAuth();
 
 	const [alert, setAlert] = useState(null);
-	const [userInfo, setUserInfo] = useState({});
 	const [editInfo, setEditInfo] = useState(false);
 	const [password, setPassword] = useState(null);
 
@@ -26,13 +25,13 @@ const Profile = () => {
 		document.getElementById("banner-title").innerHTML = "Správa profilu";
 		document.getElementById("banner-desc").innerHTML = "Přehled a správa uživatelského profilu";
 		getUserInfo();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	async function getUserInfo() {
 		const data = await getUserData(auth);
 		const userData = data.data;
 
-		setUserInfo(userData);
 		setValue("username", userData.username);
 		setValue("fname", userData.fname);
 		setValue("lname", userData.lname);
@@ -107,7 +106,7 @@ const Profile = () => {
 				</form>
 			</section>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{password && <NewPassword setState={setPassword} setAlert={setAlert} />}
+			<NewPassword state={password} setState={setPassword} setAlert={setAlert} />
 		</div>
 	);
 };

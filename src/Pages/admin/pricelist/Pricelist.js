@@ -3,7 +3,7 @@ import cssBasic from "../styles/Basic.module.css";
 import css from "./Pricelist.module.css";
 
 import { useForm } from "react-hook-form";
-import { createEventsArray, isActive, makeDate, makeDateFormat } from "../../modules/BasicFunctions";
+import { createEventsArray, isActive, makeDateFormat } from "../../modules/BasicFunctions";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // must go before plugins
@@ -37,13 +37,14 @@ const Pricelist = () => {
 	const [showEditCont, setShowEditCont] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
-	const { register: register, handleSubmit: handleSubmit, setValue, reset, getValues } = useForm();
+	const { register, handleSubmit, setValue, reset, getValues } = useForm();
 	const { register: registerCreate, handleSubmit: handleSubmitCreate, reset: resetCreateForm } = useForm();
 
 	useEffect(() => {
 		getData();
 		document.getElementById("banner-title").innerHTML = "Ceník";
 		document.getElementById("banner-desc").innerHTML = "Úprava cen, vytváření nových položek, správa akčních cen";
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -104,7 +105,7 @@ const Pricelist = () => {
 			reset();
 			return;
 		}
-		let index = prices.findIndex((el) => el.name == e.target.value);
+		let index = prices.findIndex((el) => el.name === e.target.value);
 		setSelected(e.target.value);
 		setValue("id", prices[index].id);
 		setValue("name", prices[index].name);

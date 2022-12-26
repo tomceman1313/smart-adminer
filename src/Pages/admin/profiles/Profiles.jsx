@@ -24,6 +24,7 @@ export default function Profiles() {
 		getAll("admin", setUsers, auth);
 		document.getElementById("banner-title").innerHTML = "Správa profilů";
 		document.getElementById("banner-desc").innerHTML = "Přehled a správa profilů";
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleDelete = (id) => {

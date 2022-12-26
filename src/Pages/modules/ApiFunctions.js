@@ -91,7 +91,7 @@ export function edit(apiClass, data, setAlert, positiveText, negativeText, auth)
 		credentials: "include",
 	})
 		.then((response) => {
-			if (response.status == 403) {
+			if (response.status === 403) {
 				auth.setUserInfo(null);
 				return false;
 			}
@@ -205,7 +205,7 @@ export async function getUserData(auth) {
 		credentials: "include",
 	});
 
-	if (response.status == 403) {
+	if (response.status === 403) {
 		auth.setUserInfo(null);
 		return false;
 	}
