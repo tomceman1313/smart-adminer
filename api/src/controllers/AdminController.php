@@ -216,7 +216,7 @@ class AdminController
                 // header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
                 // header("Access-Control-Allow-Credentials: true");
 
-                setcookie("refresh_token", null, -1, '/', null, false, true);
+                setcookie("refresh_token", "", -1, '/', "", false, true);
                 http_response_code(200);
                 break;
 

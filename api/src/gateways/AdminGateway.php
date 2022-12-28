@@ -160,7 +160,7 @@ class AdminGateway
             // $decoded = JWT::decode($jwt, new Key($this->key, 'HS512'));
 
             $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 60, 'user_id' => $user["id"], 'user' => $user["username"], 'privilege' => $user["privilege"]), $this->key, 'HS512');
-            setcookie("refresh_token", $jwt_refresh, time() + 3600, '/', null, false, true);
+            setcookie("refresh_token", $jwt_refresh, time() + 3600, '/', "", false, true);
             return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"], "id" => $user["id"]);
         }
 
