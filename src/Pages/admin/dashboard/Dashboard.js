@@ -18,6 +18,8 @@ import useAuth from "../../Hooks/useAuth";
 import { refreshAccessToken } from "../../modules/ApiFunctions";
 import useViewport from "../../Hooks/useViewport";
 import Gallery from "../gallery/Gallery";
+import Alert from "../../Components/admin/Alert";
+import Message from "../../Components/admin/Message";
 
 export default function Dashboard() {
 	let navigate = useNavigate();
@@ -81,6 +83,8 @@ export default function Dashboard() {
 						<Route path="article/:id" element={<Article />} />
 					</Route>
 				</Routes>
+				<Alert />
+				<Message />
 			</div>
 		</div>
 	);

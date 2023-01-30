@@ -5,19 +5,22 @@ import Dashboard from "./Pages/admin/dashboard/Dashboard";
 import Register from "./Pages/admin/register/Register";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import { InteractionProvider } from "./Pages/context/InteractionContext";
 
 function App() {
 	return (
 		<div className="App">
 			<AuthProvider>
-				<BrowserRouter>
-					<Routes>
-						<Route path="/" element={<Home />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/register" element={<Register />} />
-						<Route path="/dashboard/*" element={<Dashboard />} />
-					</Routes>
-				</BrowserRouter>
+				<InteractionProvider>
+					<BrowserRouter>
+						<Routes>
+							<Route path="/" element={<Home />} />
+							<Route path="/login" element={<Login />} />
+							<Route path="/register" element={<Register />} />
+							<Route path="/dashboard/*" element={<Dashboard />} />
+						</Routes>
+					</BrowserRouter>
+				</InteractionProvider>
 			</AuthProvider>
 		</div>
 	);

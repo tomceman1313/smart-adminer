@@ -3,8 +3,10 @@ import UserForm from "./UserForm";
 
 import { faAt, faCaretDown, faIdBadge, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useInteraction from "../../Hooks/useInteraction";
 
-function UserList({ data, handleEdit, css, setCheckMessage }) {
+function UserList({ data, handleEdit, handleDelete, css }) {
+	const { setAlert } = useInteraction();
 	const [show, setShow] = useState(false);
 
 	const privilegeToName = (privilege) => {
@@ -42,6 +44,10 @@ function UserList({ data, handleEdit, css, setCheckMessage }) {
 		setShow(userData);
 	};
 
+	const deleteUser = (id) => {
+		setAlert({ id: id, question: "Smazat uživatele?", positiveHandler: handleDelete });
+	};
+
 	return (
 		<div style={{ position: "relative" }}>
 			<ul>
@@ -70,7 +76,7 @@ function UserList({ data, handleEdit, css, setCheckMessage }) {
 								<FontAwesomeIcon icon={faAt} /> {user.email}
 							</label>
 							<button onClick={() => userData(user.id)}>Upravit</button>
-							<button onClick={() => setCheckMessage({ id: user.id })}>Smazat</button>
+							<button onClick={() => deleteUser(user.id)}>Smazat</button>
 						</article>
 					</li>
 				))}

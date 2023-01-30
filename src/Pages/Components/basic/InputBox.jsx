@@ -10,7 +10,7 @@ const InputBox = ({ placeholder, register, type, name, icon, white }) => {
 	return (
 		<div className={divClassName}>
 			<input type={type} placeholder={placeholder} {...register(name)} autoComplete="new-password" />
-			<FontAwesomeIcon className={`${cssBasic.icon} ${cssBasic.white_color}`} icon={icon} />
+			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 		</div>
 	);
 };

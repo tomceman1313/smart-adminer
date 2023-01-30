@@ -1,33 +1,32 @@
 import { useEffect, useState } from "react";
-import Alert from "../../Components/admin/Alert";
-import CheckMessage from "../../Components/admin/CheckMessage";
 import TextEditor from "../../Components/admin/TextEditor";
 
 import { useForm } from "react-hook-form";
 
+import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays, faHashtag, faHeading, faImage, faMagnifyingGlass, faEye, faUserLock } from "@fortawesome/free-solid-svg-icons";
 
 import { makeDateFormat, openImage } from "../../modules/BasicFunctions";
 
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
-import useAuth from "../../Hooks/useAuth";
 
 /**
  * TODO změnit id vlastníka při vytváření článku
  */
 const Article = () => {
 	const auth = useAuth();
+	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
 	const [article, setArticle] = useState(null);
 
 	const { register, handleSubmit, setValue, reset } = useForm();
 	const [imageIsSet, setImageIsSet] = useState(false);
-	const [alert, setAlert] = useState(null);
-	const [checkMessage, setCheckMessage] = useState(null);
+
 	const [body, setBody] = useState("");
 
 	const navigation = useNavigate();
@@ -43,6 +42,8 @@ const Article = () => {
 			setBody("");
 			setImageIsSet(false);
 		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
 	function getData() {
@@ -118,9 +119,34 @@ const Article = () => {
 		})
 			.then((response) => {
 				if (response.status === 200 || response.status === 201) {
-					setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
+					setMessage({ action: "success", text: "Uloženo", timeout: 6000 });
 				} else {
-					setAlert({ action: "failure", text: "Operace selhala", timeout: 6000 });
+					setMessage({ action: "failure", text: "Operace selhala", timeout: 6000 });
+				}
+
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				return;
+			})
+			.catch((error) => {
+				console.error("There has been a problem with your fetch operation:", error);
+			});
+	};
+
+	const remove = () => {
+		const idJson = { id: article.id, token: auth.userInfo.token };
+		fetch("http://localhost:4300/api?class=articles&action=delete", {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+			body: JSON.stringify(idJson),
+			credentials: "include",
+		})
+			.then((response) => {
+				if (response.status === 200) {
+					navigation("/dashboard/articles");
+				} else {
+					setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
 				}
 
 				if (!response.ok) {
@@ -134,28 +160,7 @@ const Article = () => {
 	};
 
 	const deleteArticle = () => {
-		const idJson = { id: article.id, token: auth.userInfo.token };
-		fetch("http://localhost:4300/api?class=articles&action=delete", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(idJson),
-			credentials: "include",
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					navigation("/dashboard/articles");
-				} else {
-					setAlert({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		setAlert({ id: id, question: "Smazat článek?", positiveHandler: remove });
 	};
 
 	return (
@@ -223,14 +228,12 @@ const Article = () => {
 						Náhled článku
 					</button>
 					{article && (
-						<button type="button" className={cssBasic.btn_delete} onClick={() => setCheckMessage(true)}>
+						<button type="button" className={cssBasic.btn_delete} onClick={deleteArticle}>
 							Smazat
 						</button>
 					)}
 				</div>
 			</section>
-			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{checkMessage && <CheckMessage id={article.id} question={"Opravdu chcete smazat článek?"} positiveHandler={deleteArticle} setCheck={setCheckMessage} />}
 		</form>
 	);
 };

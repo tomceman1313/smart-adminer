@@ -54,7 +54,7 @@ export function getRoles(setState, auth) {
 	});
 }
 
-export function create(apiClass, data, setAlert, positiveText, negativeText, auth) {
+export function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
 	fetch(`${BASE_URL}/api?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -67,10 +67,10 @@ export function create(apiClass, data, setAlert, positiveText, negativeText, aut
 				return false;
 			}
 			if (response.status === 201) {
-				setAlert({ action: "success", text: positiveText, timeout: 6000 });
+				setMessage({ action: "success", text: positiveText });
 				//auth.setUserInfo({...auth.userInfo, token: });
 			} else {
-				setAlert({ action: "failure", text: negativeText, timeout: 6000 });
+				setMessage({ action: "failure", text: negativeText });
 			}
 
 			if (!response.ok) {
@@ -83,7 +83,7 @@ export function create(apiClass, data, setAlert, positiveText, negativeText, aut
 		});
 }
 
-export function edit(apiClass, data, setAlert, positiveText, negativeText, auth) {
+export function edit(apiClass, data, setMessage, positiveText, negativeText, auth) {
 	fetch(`${BASE_URL}/api?class=${apiClass}&action=update`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -97,9 +97,9 @@ export function edit(apiClass, data, setAlert, positiveText, negativeText, auth)
 			}
 
 			if (response.status === 200) {
-				setAlert({ action: "success", text: positiveText, timeout: 6000 });
+				setMessage({ action: "success", text: positiveText });
 			} else {
-				setAlert({ action: "failure", text: negativeText, timeout: 6000 });
+				setMessage({ action: "failure", text: negativeText });
 			}
 
 			if (!response.ok) {
@@ -112,6 +112,33 @@ export function edit(apiClass, data, setAlert, positiveText, negativeText, auth)
 		});
 }
 
+export function remove(apiClass, id, setMessage, positiveText, negativeText, auth) {
+	fetch(`${BASE_URL}/api?class=${apiClass}&action=delete`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+		credentials: "include",
+	})
+		.then((response) => {
+			if (response.status === 403) {
+				auth.setUserInfo(null);
+				return false;
+			}
+			if (response.status === 200) {
+				setMessage({ action: "success", text: positiveText });
+			} else {
+				setMessage({ action: "failure", text: negativeText });
+			}
+
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return;
+		})
+		.catch((error) => {
+			console.error("There has been a problem with your fetch operation:", error);
+		});
+}
 export function editRole(data, setAlert, positiveText, negativeText, auth) {
 	fetch(`${BASE_URL}/api?class=admin&action=update_role`, {
 		method: "POST",
@@ -121,34 +148,6 @@ export function editRole(data, setAlert, positiveText, negativeText, auth) {
 	})
 		.then((response) => {
 			if (response.status === 403) {
-				auth.setUserInfo(null);
-				return false;
-			}
-			if (response.status === 200) {
-				setAlert({ action: "success", text: positiveText, timeout: 6000 });
-			} else {
-				setAlert({ action: "failure", text: negativeText, timeout: 6000 });
-			}
-
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return;
-		})
-		.catch((error) => {
-			console.error("There has been a problem with your fetch operation:", error);
-		});
-}
-
-export function remove(apiClass, id, setAlert, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=delete`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	})
-		.then((response) => {
-			if (response.status == 403) {
 				auth.setUserInfo(null);
 				return false;
 			}

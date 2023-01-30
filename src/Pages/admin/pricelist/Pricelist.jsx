@@ -10,10 +10,9 @@ import dayGridPlugin from "@fullcalendar/daygrid"; // must go before plugins
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Alert from "../../Components/admin/Alert";
-import CheckMessage from "../../Components/admin/CheckMessage";
 import useApi from "../../Hooks/useApi";
 import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
 
 const Pricelist = () => {
 	const getAll = useApi("getAll");
@@ -22,6 +21,8 @@ const Pricelist = () => {
 	const removeItem = useApi("remove");
 	const auth = useAuth();
 
+	const { setMessage, setAlert } = useInteraction();
+
 	// array položek ceníku
 	const [prices, setPrices] = useState(null);
 	// name položky v ceníku, která byla vybrána v selectu
@@ -29,9 +30,7 @@ const Pricelist = () => {
 	// array eventů
 	const [events, setEvents] = useState([]);
 	// ukazatel pro zobrazení Alert componentu
-	const [alert, setAlert] = useState(null);
-	// ukazatel pro zobrazení Alert componentu
-	const [check, setCheck] = useState(null);
+	//const [check, setCheck] = useState(null);
 
 	// true / false pro zobrazení formulářů
 	const [showEditCont, setShowEditCont] = useState(false);
@@ -70,10 +69,10 @@ const Pricelist = () => {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
-			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
+			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně" });
 			return;
 		}
-		editPrice("pricelist", data, setAlert, "Položka upravena", "Položka nebyla upravena", auth);
+		editPrice("pricelist", data, setMessage, "Položka upravena", "Položka nebyla upravena", auth);
 		editRolesCont();
 		getData();
 	};
@@ -87,10 +86,10 @@ const Pricelist = () => {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
-			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
+			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně" });
 			return;
 		}
-		create("pricelist", data, setAlert, "Položka přidána", "Položka nebyla přidána", auth);
+		create("pricelist", data, setMessage, "Položka přidána", "Položka nebyla přidána", auth);
 		addItemCont();
 		getData();
 	};
@@ -173,15 +172,16 @@ const Pricelist = () => {
 		setShowAddItemCont(!showAddItemCont);
 	};
 
-	const deleteItem = () => {
-		const id = getValues("id");
-		setCheck({ id: id, question: "Smazat notifikaci?" });
-	};
-
 	const remove = (id) => {
-		removeItem("pricelist", id, setAlert, "Položka byla odstřaněna", "Položka nebyla odstraněna", auth);
+		removeItem("pricelist", id, setMessage, "Položka byla odstřaněna", "Položka nebyla odstraněna", auth);
 		editRolesCont();
 		getData();
+	};
+
+	const deleteItem = () => {
+		const id = getValues("id");
+		//setCheck({ id: id, question: "Smazat notifikaci?" });
+		setAlert({ id: id, question: "Smazat položku?", positiveHandler: remove });
 	};
 
 	return (
@@ -318,8 +318,6 @@ const Pricelist = () => {
 			<section className={css.calendar}>
 				<FullCalendar plugins={[dayGridPlugin]} events={events} locale="cs" timeZone="local" firstDay="1" initialView="dayGridMonth" buttonText={{ today: "Dnes" }} height="auto" eventBorderColor="transparent" eventClick={eventHandler}></FullCalendar>
 			</section>
-			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{check && <CheckMessage id={check.id} question={check.question} positiveHandler={remove} setCheck={setCheck} />}
 		</div>
 	);
 };

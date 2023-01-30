@@ -3,7 +3,7 @@ import Category from "./Category";
 
 import useAuth from "../../Hooks/useAuth";
 
-import css from "./Gallery.module.css";
+import css from "./css/Gallery.module.css";
 
 const Gallery = () => {
 	const [photos, setPhotos] = useState(null);

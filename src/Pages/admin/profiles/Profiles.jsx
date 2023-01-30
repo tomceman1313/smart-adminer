@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from "react";
 
 import Alert from "../../Components/admin/Alert";
-import CheckMessage from "../../Components/admin/CheckMessage";
 import useAuth from "../../Hooks/useAuth";
 import { getAll } from "../../modules/ApiFunctions";
 import UserList from "./UserList";
@@ -15,7 +14,6 @@ export default function Profiles() {
 
 	const [users, setUsers] = useState(null);
 	const [alert, setAlert] = useState(null);
-	const [check, setCheck] = useState(null);
 
 	const deleteProfile = useApi("remove");
 	const editProfile = useApi("edit");
@@ -27,7 +25,7 @@ export default function Profiles() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleDelete = (id) => {
+	const remove = (id) => {
 		deleteProfile("admin", id, setAlert, "Profil odstraněn", "Profile se nepodařilo odstranit", auth);
 		let list = document.querySelector(`.${css.users} ul`);
 		list.style.opacity = 1;
@@ -43,9 +41,8 @@ export default function Profiles() {
 
 	return (
 		<section className="no-section" style={{ position: "relative" }}>
-			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} css={css} setCheckMessage={setCheck} />}</div>
+			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={remove} css={css} />}</div>
 			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{check && <CheckMessage id={check.id} question={"Opravdu chcete profil smazat?"} positiveHandler={handleDelete} setCheck={setCheck} />}
 		</section>
 	);
 }

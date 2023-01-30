@@ -1,42 +1,35 @@
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+import css from "../styles/CheckMessage.module.css";
+import useInteraction from "../../Hooks/useInteraction";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleXmark, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-
-import css from "../styles/Alert.module.css";
-
-const Alert = ({ action, text, timeout, setAlert }) => {
-	setTimeout(() => {
-		setAlert(null);
-	}, timeout);
-
-	const chooseDesign = () => {
-		switch (action) {
-			case "success":
-				return css.success;
-			case "failure":
-				return css.failure;
-			case "alert":
-				return css.alert;
-		}
-	};
-
-	const chooseIcon = () => {
-		switch (action) {
-			case "success":
-				return faCircleCheck;
-			case "failure":
-				return faCircleXmark;
-			case "alert":
-				return faCircleExclamation;
-		}
+/**
+ * ? alert = { id, question, positiveHandler }
+ * @returns ReactElement
+ */
+const Alert = () => {
+	const { alert, setAlert } = useInteraction();
+	const hideCheckMessage = () => {
+		setAlert(false);
 	};
 
 	return (
-		<div className={`${css.notifier} ${chooseDesign()}`}>
-			<FontAwesomeIcon icon={chooseIcon()} />
-			<label>{`${text}`}</label>
-		</div>
+		<AnimatePresence>
+			{alert && (
+				<motion.div className={css.check_message} initial={{ y: -300, x: "-50%" }} animate={{ y: 50 }} exit={{ y: -300 }} transition={{ type: "spring", duration: 1 }}>
+					<p>{alert.question}</p>
+					<button
+						onClick={() => {
+							alert.positiveHandler(alert.id);
+							setAlert(false);
+						}}
+					>
+						Potvrdit
+					</button>
+					<button onClick={hideCheckMessage}>Zrušit</button>
+				</motion.div>
+			)}
+		</AnimatePresence>
 	);
 };
 

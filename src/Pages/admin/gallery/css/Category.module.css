@@ -1,0 +1,52 @@
+/*------------------------------------------------ List of categories*/
+.category_list li {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	margin: 10px 0;
+	overflow: hidden;
+}
+
+.category_list input {
+	width: 100%;
+	padding-left: 30px;
+	background-color: white;
+	border: solid 1px #d6dde1;
+	border-right: none;
+	border-radius: 8px 0 0 8px;
+}
+
+.category_list svg {
+	font-size: 20px;
+	padding: 10px;
+	color: white;
+	cursor: pointer;
+}
+
+.category_list svg:nth-of-type(1) {
+	background-color: var(--main);
+}
+
+.category_list svg:nth-of-type(2) {
+	background-color: var(--red);
+	border-radius: 0 8px 8px 0;
+}
+
+/*------------------------------------------------ New category form*/
+.category form {
+	display: flex;
+	align-items: stretch;
+}
+
+.category form div {
+	width: 100%;
+	margin-bottom: 0;
+	border-radius: 8px 0 0 8px;
+	border-right: none;
+}
+
+.category form button {
+	margin: 0;
+	border-radius: 0 8px 8px 0;
+	border: none;
+}

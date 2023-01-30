@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import css from "./Notifications.module.css";
 import cssBasic from "../styles/Basic.module.css";
+import css from "./Notifications.module.css";
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Alert from "../../Components/admin/Alert";
 
-import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 import { useForm } from "react-hook-form";
-import CheckMessage from "../../Components/admin/CheckMessage";
 import useApi from "../../Hooks/useApi";
 import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
+import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 
 const Notifications = () => {
 	const auth = useAuth();
@@ -19,17 +18,13 @@ const Notifications = () => {
 	const editNotification = useApi("edit");
 	const removeNotification = useApi("remove");
 
+	const { setAlert, setMessage } = useInteraction();
+
 	// array všech notifikací
 	const [notifications, setNotifications] = useState(null);
 
 	const { register: registerUpdate, handleSubmit: handleSubmitUpdate, setValue, reset, getValues } = useForm();
 	const { register: registerCreate, handleSubmit: handleSubmitCreate, reset: resetCreateForm } = useForm();
-
-	// ukazatel pro zobrazení Alert componentu
-	const [alert, setAlert] = useState(null);
-
-	// ukazatel pro zobrazení Alert componentu
-	const [check, setCheck] = useState(null);
 
 	// title aktuálně zvolené notifikace, která byla vybrána v selectu
 	const [selected, setSelected] = useState("");
@@ -42,6 +37,7 @@ const Notifications = () => {
 		getData();
 		document.getElementById("banner-title").innerHTML = "Upozornění";
 		document.getElementById("banner-desc").innerHTML = "Informujte své návštěvníky o mimořádných událostech";
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const getData = () => {
@@ -57,11 +53,11 @@ const Notifications = () => {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
-			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
+			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
 			return;
 		}
 
-		editNotification("notifications", data, setAlert, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		editNotification("notifications", data, setMessage, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
 		editCont();
 		getData();
 	};
@@ -75,11 +71,11 @@ const Notifications = () => {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
-			setAlert({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
+			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
 			return;
 		}
 
-		createNotification("notifications", data, setAlert, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		createNotification("notifications", data, setMessage, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
 		addCont();
 		getData();
 	};
@@ -90,7 +86,7 @@ const Notifications = () => {
 	 * @param {int} id
 	 */
 	const remove = (id) => {
-		removeNotification("notifications", id, setAlert, "Upozornění bylo odstřaněna", "Upozornění nebylo odstřaněna", auth);
+		removeNotification("notifications", id, setMessage, "Upozornění bylo odstřaněna", "Upozornění nebylo odstřaněna", auth);
 		editCont();
 		getData();
 	};
@@ -101,7 +97,7 @@ const Notifications = () => {
 	 */
 	const deleteNotification = () => {
 		const id = getValues("id");
-		setCheck({ id: id, question: "Smazat notifikaci?" });
+		setAlert({ id: id, question: "Smazat notifikaci?", positiveHandler: remove });
 	};
 
 	/**
@@ -302,8 +298,6 @@ const Notifications = () => {
 					</form>
 				</div>
 			</section>
-			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			{check && <CheckMessage id={check.id} question={check.question} positiveHandler={remove} setCheck={setCheck} />}
 		</div>
 	);
 };

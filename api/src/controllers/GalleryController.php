@@ -175,11 +175,10 @@ class GalleryConroller
                         "message" => "Access denied"
                     ]);
                 } else {
-                    $id = $this->gateway->deleteCategory($data["id"]);
+                    $this->gateway->deleteCategory($data["id"]);
                     http_response_code(200);
                     echo json_encode([
                         "message" => "Item deleted",
-                        "data" => $id,
                         "token" => $authAction
                     ]);
                 }
