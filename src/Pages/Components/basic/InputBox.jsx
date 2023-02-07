@@ -1,7 +1,7 @@
 import cssBasic from "../../admin/styles/Basic.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const InputBox = ({ placeholder, register, type, name, icon, white }) => {
+const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, accept }) => {
 	let divClassName = `${cssBasic.input_box}`;
 	if (white) {
 		divClassName = `${cssBasic.input_box} ${cssBasic.white_color}`;
@@ -9,7 +9,7 @@ const InputBox = ({ placeholder, register, type, name, icon, white }) => {
 
 	return (
 		<div className={divClassName}>
-			<input type={type} placeholder={placeholder} {...register(name)} autoComplete="new-password" />
+			<input type={type} placeholder={placeholder} {...register(name)} autoComplete="new-password" required={isRequired && true} accept={accept} />
 			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 		</div>
 	);

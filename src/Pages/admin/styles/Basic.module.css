@@ -63,6 +63,14 @@
 	color: white !important;
 }
 
+.white_color select {
+	color: white !important;
+}
+
+.white_color select option {
+	background-color: #333 !important;
+}
+
 .input_box select {
 	position: absolute;
 	left: 60px;

@@ -55,7 +55,7 @@ export function getRoles(setState, auth) {
 }
 
 export function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=create`, {
+	return fetch(`${BASE_URL}/api?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),

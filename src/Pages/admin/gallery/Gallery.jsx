@@ -4,10 +4,12 @@ import Category from "./Category";
 import useAuth from "../../Hooks/useAuth";
 
 import css from "./css/Gallery.module.css";
+import NewPicture from "./NewPicture";
+import Images from "./Images";
 
 const Gallery = () => {
-	const [photos, setPhotos] = useState(null);
 	const auth = useAuth();
+	const [images, setImages] = useState(null);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Galerie";
@@ -16,7 +18,9 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
-			<Category auth={auth} />
+			<Category auth={auth} setImages={setImages} />
+			<NewPicture auth={auth} setImages={setImages} />
+			<Images images={images} setImages={setImages} auth={auth} />
 		</div>
 	);
 };

@@ -1,4 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+:root {
+	--main: #2874a6;
+	--main-dark: #263544;
+	/* --main-dark: #1b4f72; */
+	--green: #17a589;
+	--green-dark: #148f77;
+	--red: #d3384b;
+	--red-dark: #bb2f40;
+	--gray: #d6dde1;
+}
+
 body,
 html {
 	margin: 0;
@@ -52,6 +63,26 @@ a {
 select {
 	outline: none;
 	border: none;
+}
+
+.red_button {
+	background-color: var(--red);
+	text-decoration: underline var(--red);
+}
+
+.red_button:hover {
+	background-color: var(--red-dark);
+	text-decoration: underline white;
+}
+
+.blue_button {
+	background-color: var(--main);
+	text-decoration: underline var(--main-dark);
+}
+
+.blue_button:hover {
+	background-color: var(--main-dark);
+	text-decoration: underline white;
 }
 
 .no-section {

@@ -26,7 +26,44 @@ class GalleryConroller
                     ]);
                 } else {
                     $result = $this->gateway->getAll();
-                    http_response_code(201);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" =>  $result,
+                        "token" => $data["token"]
+                    ]);
+                }
+                break;
+
+            case 'getByCategory':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->getByCategory($data["category_id"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Data provided",
+                        "data" =>  $result,
+                        "token" => $data["token"]
+                    ]);
+                }
+                break;
+            case 'getImageCategories':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $result = $this->gateway->getImageCategories($data["image_id"]);
+                    http_response_code(200);
                     echo json_encode([
                         "message" => "Data provided",
                         "data" =>  $result,
@@ -48,6 +85,24 @@ class GalleryConroller
                     echo json_encode([
                         "message" => "Item created",
                         "data" => $id,
+                        "token" => $authAction
+                    ]);
+                }
+                break;
+
+            case 'multipleCreate':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $this->gateway->multipleCreate($data["data"]);
+                    http_response_code(201);
+                    echo json_encode([
+                        "message" => "Item created",
                         "token" => $authAction
                     ]);
                 }
@@ -93,6 +148,23 @@ class GalleryConroller
                     echo json_encode([
                         "message" => "Item deleted",
                         "data" => $id,
+                        "token" => $authAction
+                    ]);
+                }
+                break;
+            case 'multipleDelete':
+                $data = json_decode(file_get_contents("php://input"), true);
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                } else {
+                    $this->gateway->multipleDelete($data["data"]);
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Items deleted",
                         "token" => $authAction
                     ]);
                 }

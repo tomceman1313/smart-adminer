@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "../../modules/ApiGallery";
 import useInteraction from "../../Hooks/useInteraction";
+import { getByCategory } from "../../modules/ApiGallery";
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,11 +11,11 @@ import InputBox from "../../Components/basic/InputBox";
 
 import css from "./css/Category.module.css";
 
-const Category = ({ auth }) => {
+const Category = ({ auth, setImages }) => {
 	const { setMessage } = useInteraction();
 
 	const [categories, setCategories] = useState(null);
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, setValue } = useForm();
 
 	useEffect(() => {
 		get();
@@ -27,6 +28,7 @@ const Category = ({ auth }) => {
 
 	const create = (data) => {
 		createCategory(data, auth, setMessage);
+		setValue("name", "");
 		get();
 	};
 
@@ -40,12 +42,16 @@ const Category = ({ auth }) => {
 		get();
 	};
 
+	const showCategory = (id) => {
+		getByCategory(id, setImages, auth);
+	};
+
 	return (
 		<section className={css.category}>
 			<h2>Kategorie</h2>
-			<ul className={css.category_list}>{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} />)}</ul>
+			<ul className={css.category_list}>{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={showCategory} />)}</ul>
 			<form onSubmit={handleSubmit(create)}>
-				<InputBox placeholder={"Název nové kategorie"} name={"name"} register={register} type={"text"} icon={faFont} white={false} />
+				<InputBox placeholder={"Název nové kategorie"} name={"name"} register={register} type={"text"} icon={faFont} white={false} isRequired={true} />
 				<button>Vytvořit</button>
 			</form>
 		</section>

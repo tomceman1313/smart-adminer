@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { faPencil, faFloppyDisk, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faFloppyDisk, faTrashCan, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 import useInteraction from "../../Hooks/useInteraction";
 
-const Item = ({ el, remove, edit }) => {
+const Item = ({ el, remove, edit, show }) => {
 	const [disabled, setDisabled] = useState(true);
 	const inputRef = useRef(null);
 	const { setAlert } = useInteraction();
@@ -26,9 +26,14 @@ const Item = ({ el, remove, edit }) => {
 		});
 	};
 
+	const showCategory = () => {
+		show(el.id);
+	};
+
 	return (
 		<li>
 			<input defaultValue={el.name} disabled={disabled} required ref={inputRef} />
+			<FontAwesomeIcon icon={faEye} onClick={showCategory} />
 			<FontAwesomeIcon icon={disabled ? faPencil : faFloppyDisk} onClick={changeHandler} />
 			<FontAwesomeIcon icon={faTrashCan} onClick={removeCategory} />
 		</li>

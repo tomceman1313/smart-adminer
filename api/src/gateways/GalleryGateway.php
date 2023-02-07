@@ -39,21 +39,124 @@ class GalleryGateway
         $image_name = uniqid();
         file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
 
-        $sql = "INSERT INTO gallery (name, category_id) VALUES (:name, :category_id)";
+        $sql = "INSERT INTO gallery (name, title, description, date) VALUES (:name, :title, :description, :date)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $image_name . ".{$imageExtension}",
-            'category_id' => $data["category_id"]
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'date' => $data["date"]
         ]);
+
+        $categories = $data["category_id"];
+        $last_id = $this->conn->lastInsertId();
+
+        $sql_image = "INSERT INTO image_category (image_id, category_id) VALUES (:image_id, :category_id)";
+        foreach ($categories as $item) {
+            $stmt = $this->conn->prepare($sql_image);
+            $stmt->execute([
+                'image_id' => $last_id,
+                'category_id' => $item["id"]
+            ]);
+        }
+
+        return true;
+    }
+
+    public function multipleCreate(array $data)
+    {
+        $images = $data["images"];
+        foreach ($images as $image) {
+            $base64DataString = $image;
+            list($dataType, $imageData) = explode(';', $base64DataString);
+
+            // image file extension
+            $imageExtension = explode('/', $dataType)[1];
+
+            // base64-encoded image data
+            list(, $encodedImageData) = explode(',', $imageData);
+
+
+            // decode base64-encoded image data
+            $decodedImageData = base64_decode($encodedImageData);
+
+            // save image data as file
+            $image_name = uniqid();
+
+            file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
+
+            $sql = "INSERT INTO gallery (name, date) VALUES (:name, :date)";
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->execute([
+                'name' => $image_name . ".{$imageExtension}",
+                'date' => $data["date"]
+            ]);
+
+            $categories = $data["category_id"];
+            $last_id = $this->conn->lastInsertId();
+
+            $sql_image = "INSERT INTO image_category (image_id, category_id) VALUES (:image_id, :category_id)";
+            foreach ($categories as $item) {
+                $stmt = $this->conn->prepare($sql_image);
+                $stmt->execute([
+                    'image_id' => $last_id,
+                    'category_id' => $item["id"]
+                ]);
+            }
+        }
+        return true;
+    }
+
+    public function update(array $data): bool
+    {
+        $sql = "UPDATE gallery SET title = :title, description = :description WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'id' => $data["id"]
+        ]);
+
+        $sql_select = "SELECT * FROM image_category WHERE image_id = :id";
+        $stmt_select = $this->conn->prepare($sql_select);
+
+        $stmt_select->execute([
+            'id' => $data["id"]
+        ]);
+
+        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "DELETE FROM image_category WHERE id = :id";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
+
+            $stmt->execute();
+        }
+
+
+        $categories = $data["category_id"];
+
+        $sql_image = "INSERT INTO image_category (image_id, category_id) VALUES (:image_id, :category_id)";
+        foreach ($categories as $item) {
+            $stmt = $this->conn->prepare($sql_image);
+            $stmt->execute([
+                'image_id' => $data["id"],
+                'category_id' => $item["id"]
+            ]);
+        }
 
         return true;
     }
 
     public function delete(string $id): int
     {
-        $article = $this->get($id);
-        $imageName = $article["image"];
+        $image = $this->get($id);
+        $imageName = $image["name"];
 
         if (file_exists("../public/images/gallery/{$imageName}")) {
             unlink("../public/images/gallery/{$imageName}");
@@ -67,9 +170,34 @@ class GalleryGateway
 
         $stmt->execute();
 
+        $sql_select = "SELECT * FROM image_category WHERE image_id = :id";
+        $stmt_select = $this->conn->prepare($sql_select);
+
+        $stmt_select->execute([
+            'id' => $id
+        ]);
+
+        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "DELETE FROM image_category WHERE id = :id";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
+
+            $stmt->execute();
+        }
+
 
         return true;
     }
+
+    public function multipleDelete(array $ids)
+    {
+        foreach ($ids as $image) {
+            $this->delete($image);
+        }
+    }
+
 
     function getAll(): array
     {
@@ -86,9 +214,69 @@ class GalleryGateway
         return $data;
     }
 
+    function getByCategory(string $category_id): array
+    {
+        $sql = "SELECT * FROM image_category WHERE category_id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $category_id
+        ]);
+
+        $ids = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ids[] = $row["image_id"];
+        }
+
+        if (sizeof($ids) == 0) {
+            return [];
+        }
+
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ")";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getImageCategories(string $image_id): array
+    {
+        $sql = "SELECT * FROM image_category WHERE image_id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $image_id
+        ]);
+
+        $ids = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ids[] = $row["category_id"];
+        }
+
+        if (sizeof($ids) == 0) {
+            return [];
+        }
+
+        $sql = "SELECT * FROM gallery_category WHERE id IN (" . implode(',', $ids) . ")";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     function getCategories(): array
     {
-        $sql = "SELECT * FROM gallery_category";
+        $sql = "SELECT * FROM gallery_category ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -136,6 +324,23 @@ class GalleryGateway
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
 
         $stmt->execute();
+
+        $sql_select = "SELECT * FROM image_category WHERE category_id = :id";
+        $stmt_select = $this->conn->prepare($sql_select);
+
+        $stmt_select->execute([
+            'id' => $id
+        ]);
+
+        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "DELETE FROM image_category WHERE id = :id";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
+
+            $stmt->execute();
+        }
 
 
         return true;
