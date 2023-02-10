@@ -16,6 +16,9 @@ const Item = ({ el, remove, edit, show }) => {
 			}
 		}
 		setDisabled((prev) => !prev);
+		setTimeout(() => {
+			inputRef.current.focus();
+		}, 500);
 	};
 
 	const removeCategory = () => {

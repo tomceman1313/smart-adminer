@@ -10,7 +10,7 @@ import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./css/Gallery.module.css";
 
-const AddMultiplePictures = ({ auth, close }) => {
+const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	const { setMessage } = useInteraction();
 	const [category, setCategory] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
@@ -36,6 +36,7 @@ const AddMultiplePictures = ({ auth, close }) => {
 		setMessage({ action: "success", text: "Obrázky byly přidány" });
 		reset();
 		setPickedCategories([]);
+		refreshImages();
 		close();
 	};
 

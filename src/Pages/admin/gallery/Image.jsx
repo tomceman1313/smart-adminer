@@ -1,17 +1,22 @@
-import { useState } from "react";
-import { faPenToSquare, faTrashCan, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 import css from "./css/Images.module.css";
 
 const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImages }) => {
 	const [selected, setSelected] = useState(false);
-	const onClickHandler = (e) => {
-		if (e.target.localName !== "article") {
-			return;
-		}
+	const [clicked, setClicked] = useState(false);
 
+	useEffect(() => {
+		if (!multiSelection) {
+			setSelected(false);
+		}
+	}, [multiSelection]);
+
+	const onClickHandler = (e) => {
 		if (multiSelection) {
 			let selectedMap = selectedImages.current;
 			if (selected) {
@@ -20,20 +25,42 @@ const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImage
 				selectedMap.set(el.name, el.id);
 			}
 			setSelected((prev) => !prev);
+			return;
 		}
+
+		console.log(e.target.localName);
+		if (e.target.localName === "svg") {
+			return;
+		}
+
+		setClicked((prev) => !prev);
 	};
 
 	return (
-		<div key={el.id} onClick={onClickHandler}>
+		<motion.div
+			key={el.id}
+			onClick={onClickHandler}
+			initial={{ scale: 0.6 }}
+			animate={{ scale: 1 }}
+			exit={{ scale: 0.6 }}
+			transition={{
+				duration: 0.3,
+				ease: "easeInOut",
+			}}
+		>
 			<img src={`/images/gallery/${el.name}`} alt={el.title} />
-			<article id={el.id}>
-				<h3>{el.title}</h3>
-				<p>{el.description}</p>
-				<FontAwesomeIcon className={css.icon} onClick={deleteImage} icon={faTrashCan} />
-				<FontAwesomeIcon className={css.icon} icon={faPenToSquare} onClick={() => setShowEditCont(el)} />
-			</article>
+			<AnimatePresence>
+				{clicked && (
+					<motion.article id={el.id} key={255 + el.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+						<h3>{el.title}</h3>
+						<p>{el.description}</p>
+						<FontAwesomeIcon className={css.icon} onClick={deleteImage} icon={faTrashCan} />
+						<FontAwesomeIcon className={css.icon} icon={faPenToSquare} onClick={() => setShowEditCont(el)} />
+					</motion.article>
+				)}
+			</AnimatePresence>
 			{multiSelection && <FontAwesomeIcon className={css.multiselection} icon={selected ? faCircleCheck : faCircle} />}
-		</div>
+		</motion.div>
 	);
 };
 

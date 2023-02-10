@@ -129,6 +129,15 @@ section {
 	section {
 		padding: 30px;
 	}
+
+	.banner {
+		padding: 30px;
+		font-size: 14px;
+	}
+
+	.banner h1 {
+		font-size: 26px;
+	}
 }
 
 /* width */

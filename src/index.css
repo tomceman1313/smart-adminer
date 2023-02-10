@@ -77,7 +77,7 @@ select {
 
 .blue_button {
 	background-color: var(--main);
-	text-decoration: underline var(--main-dark);
+	text-decoration: underline var(--main);
 }
 
 .blue_button:hover {
@@ -126,6 +126,10 @@ select {
 .fc-daygrid-event {
 	border-radius: 15px !important;
 	cursor: pointer;
+}
+
+.fc-toolbar {
+	flex-wrap: wrap;
 }
 
 .fc-direction-ltr .fc-daygrid-block-event:not(.fc-event-start),

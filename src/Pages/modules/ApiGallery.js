@@ -14,7 +14,6 @@ export async function getCategories(auth, setState) {
 	}
 
 	const data = await response.json();
-
 	setState(data.data);
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;

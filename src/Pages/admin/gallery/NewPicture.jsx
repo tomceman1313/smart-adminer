@@ -100,13 +100,13 @@ const NewPicture = ({ auth, setImages }) => {
 					</ul>
 
 					<button>Vložit</button>
-					<button type="button" onClick={showAddMultiplePictures}>
+					<button type="button" className="blue_button" onClick={showAddMultiplePictures}>
 						Vložit více
 					</button>
 				</form>
 			</section>
 
-			<AnimatePresence>{addMultiplePictures && <AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} />}</AnimatePresence>
+			<AnimatePresence>{addMultiplePictures && <AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={() => getAll("gallery", setImages, auth)} />}</AnimatePresence>
 		</>
 	);
 };

@@ -26,6 +26,8 @@
 	padding: 10px;
 	color: white;
 	cursor: pointer;
+	transition: all 0.5s;
+	width: 40px;
 }
 .category_list svg:nth-of-type(1) {
 	background-color: var(--green);
@@ -38,6 +40,18 @@
 .category_list svg:nth-of-type(3) {
 	background-color: var(--red);
 	border-radius: 0 8px 8px 0;
+}
+
+.category_list svg:nth-of-type(1):hover {
+	background-color: var(--green-dark);
+}
+
+.category_list svg:nth-of-type(2):hover {
+	background-color: var(--main-dark);
+}
+
+.category_list svg:nth-of-type(3):hover {
+	background-color: var(--red-dark);
 }
 
 /*------------------------------------------------ New category form*/
@@ -57,4 +71,11 @@
 	margin: 0;
 	border-radius: 0 8px 8px 0;
 	border: none;
+}
+
+@media (max-width: 450px) {
+	.category form button {
+		font-size: 12px;
+		padding: 10px 5px;
+	}
 }

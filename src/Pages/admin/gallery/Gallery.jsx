@@ -10,6 +10,7 @@ import Images from "./Images";
 const Gallery = () => {
 	const auth = useAuth();
 	const [images, setImages] = useState(null);
+	const [selectedCategory, setSelectedCategory] = useState(null);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Galerie";
@@ -18,9 +19,9 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
-			<Category auth={auth} setImages={setImages} />
+			<Category auth={auth} setImages={setImages} setSelectedCategory={setSelectedCategory} />
 			<NewPicture auth={auth} setImages={setImages} />
-			<Images images={images} setImages={setImages} auth={auth} />
+			<Images images={images} setImages={setImages} auth={auth} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
 		</div>
 	);
 };
