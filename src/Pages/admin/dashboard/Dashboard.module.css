@@ -140,6 +140,17 @@ section {
 	}
 }
 
+@media (max-width: 600px) {
+	.content {
+		margin: 8px;
+		width: calc(100% - 16px);
+	}
+
+	section {
+		padding: 20px;
+	}
+}
+
 /* width */
 ::-webkit-scrollbar {
 	width: 10px;

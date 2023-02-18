@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import SideMenu from "./SideMenu";
 import Article from "../article/Article";
@@ -20,9 +20,11 @@ import useViewport from "../../Hooks/useViewport";
 import Gallery from "../gallery/Gallery";
 import Alert from "../../Components/admin/Alert";
 import Message from "../../Components/admin/Message";
+import Documents from "../documents/Documents";
 
 export default function Dashboard() {
-	let navigate = useNavigate();
+	const navigate = useNavigate();
+	const location = useLocation();
 	const auth = useAuth();
 	const { width } = useViewport();
 
@@ -34,10 +36,10 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		if (auth.userInfo == null) {
-			refreshAccessToken(navigate, auth);
+			refreshAccessToken(navigate, location.pathname, auth);
 			return;
 		}
-	}, [auth, navigate]);
+	}, [auth, navigate, location]);
 
 	const logOut = () => {
 		fetch("http://localhost:4300/api?class=admin&action=logout", {
@@ -74,6 +76,7 @@ export default function Dashboard() {
 						<Route path="pricelist" element={<Pricelist />} />
 						<Route path="notifications" element={<Notifications />} />
 						<Route path="gallery" element={<Gallery />} />
+						<Route path="documents" element={<Documents />} />
 					</Route>
 					<Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.employee, ROLES.admin]} />}>
 						<Route path="profile" element={<Profile />} />

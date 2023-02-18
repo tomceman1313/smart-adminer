@@ -192,10 +192,10 @@ const Notifications = () => {
 							))}
 					</tbody>
 				</table>
-				<button id={css.addItem} onClick={addCont}>
-					+
+				<button onClick={addCont}>+</button>
+				<button className="blue_button" onClick={editCont}>
+					Upravit položky
 				</button>
-				<button onClick={editCont}>Upravit položky</button>
 				{/* // * Formulář pro editaci položek ceníku (class EDIT_PRICE) */}
 				<div className={css.edit_notification}>
 					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editCont} />
@@ -284,14 +284,14 @@ const Notifications = () => {
 						<div className={`${cssBasic.input_box_comment} ${cssBasic.datepicker}`}>
 							<input type="date" {...registerCreate("start")} />
 							<div>
-								<label>Začátek akční ceny</label>
+								<label>Počáteční datum</label>
 							</div>
 						</div>
 
 						<div className={`${cssBasic.input_box_comment} ${cssBasic.datepicker}`}>
 							<input type="date" {...registerCreate("end")} />
 							<div>
-								<label>Konec akční ceny</label>
+								<label>Konečné datum</label>
 							</div>
 						</div>
 						<button type="submit">Uložit</button>

@@ -50,7 +50,7 @@ const EditPicture = ({ auth, image, edit, close }) => {
 	};
 
 	return (
-		<motion.section className={css.edit_image_cont} initial={{ y: "-150%", x: "-50%" }} animate={{ y: 50 }} exit={{ y: "-150%" }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section className={css.edit_image_cont} initial={{ y: "-250%", x: "-50%" }} animate={{ y: "-50%" }} exit={{ y: "-250%" }} transition={{ type: "spring", duration: 1 }}>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
 			<h2>Úprava informací</h2>
 			<form onSubmit={handleSubmit(updateImage)}>
@@ -81,7 +81,7 @@ const EditPicture = ({ auth, image, edit, close }) => {
 						))}
 				</ul>
 
-				<button>Uložit</button>
+				<button className="blue_button">Uložit</button>
 			</form>
 		</motion.section>
 	);

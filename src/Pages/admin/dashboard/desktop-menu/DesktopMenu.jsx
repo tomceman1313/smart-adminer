@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
@@ -82,6 +82,9 @@ export default function DesktopMenu({ logOut }) {
 						<Link to="/dashboard/gallery" onClick={setActiveLink} id="gallery">
 							Galerie
 						</Link>
+						<Link to="/dashboard/documents" onClick={setActiveLink} id="documents">
+							Dokumenty
+						</Link>
 						<Link to="/dashboard/notifications" onClick={setActiveLink} id="notifications">
 							Upozornění
 						</Link>
@@ -89,14 +92,14 @@ export default function DesktopMenu({ logOut }) {
 				</li>
 
 				<li>
-					<div id="articles" onClick={setActive}>
+					<div id="articles-cont" onClick={setActive}>
 						<FontAwesomeIcon className={css.icon} icon={faNewspaper} />
 						<label>Články</label>
 						<FontAwesomeIcon className={css.smallarrow} icon={faChevronDown} />
 					</div>
 
 					<article>
-						<Link to="/dashboard/articles" onClick={setActiveLink} id="allArticles">
+						<Link to="/dashboard/articles" onClick={setActiveLink} id="articles">
 							Přehled článků
 						</Link>
 						<Link to="/dashboard/new-article" onClick={setActiveLink} id="new-article">

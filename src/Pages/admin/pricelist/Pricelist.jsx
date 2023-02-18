@@ -209,10 +209,10 @@ const Pricelist = () => {
 							))}
 					</tbody>
 				</table>
-				<button id={css.addItem} onClick={addItemCont}>
-					+
+				<button onClick={addItemCont}>+</button>
+				<button className="blue_button" onClick={editRolesCont}>
+					Upravit položky
 				</button>
-				<button onClick={editRolesCont}>Upravit položky</button>
 				{/* // * Formulář pro editaci položek ceníku (class EDIT_PRICE) */}
 				<div className={css.edit_price}>
 					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editRolesCont} />
@@ -267,7 +267,7 @@ const Pricelist = () => {
 						<input type="hidden" {...register("id")} />
 						<button type="submit">Uložit</button>
 						<button type="button" id="delete" className={cssBasic.delete_button} onClick={deleteItem}>
-							Delete
+							Smazat
 						</button>
 					</form>
 				</div>

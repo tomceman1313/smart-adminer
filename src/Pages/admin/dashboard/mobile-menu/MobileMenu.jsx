@@ -2,13 +2,13 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faDisplay, faGear, faPowerOff, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faDisplay, faGear, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import css from "./MobileMenu.module.css";
-import { MenuToggle } from "./MenuToggle";
-import { motion, useCycle, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion, useCycle } from "framer-motion";
 import { useEffect } from "react";
+import { MenuToggle } from "./MenuToggle";
+import css from "./MobileMenu.module.css";
 
 const MobileMenu = ({ logOut }) => {
 	const activeMenu = useRef(null);
@@ -100,6 +100,9 @@ const MobileMenu = ({ logOut }) => {
 								</Link>
 								<Link to="/dashboard/gallery" onClick={setActiveLink} id="gallery">
 									Galerie
+								</Link>
+								<Link to="/dashboard/documents" onClick={setActiveLink} id="documents">
+									Dokumenty
 								</Link>
 								<Link to="/dashboard/notifications" onClick={setActiveLink} id="notifications">
 									Upozornění

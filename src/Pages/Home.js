@@ -1,16 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment, incrementByAmount } from "../redux/slicer";
-
 import css from "./styles/Home.module.css";
 
 function Home() {
 	const [list, setList] = useState(null);
-
-	const count = useSelector((state) => state.counter.value);
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		loadData();
@@ -36,19 +30,6 @@ function Home() {
 			</nav>
 			<h1>Home</h1>
 			<div>{list && list.map((user) => <p key={user.id}>{user.username}</p>)}</div>
-
-			<div>
-				<button aria-label="Increment value" onClick={() => dispatch(increment())}>
-					Increment
-				</button>
-				<span>{count}</span>
-				<button aria-label="Decrement value" onClick={() => dispatch(decrement())}>
-					Decrement
-				</button>
-				<button aria-label="Decrement value" onClick={() => dispatch(incrementByAmount(33))}>
-					Increment 33
-				</button>
-			</div>
 		</div>
 	);
 }

@@ -1,0 +1,204 @@
+.documents {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+.documents section:nth-of-type(1) {
+	width: calc(50% - 120px);
+}
+
+.documents section:nth-of-type(2) {
+	width: calc(50% - 120px);
+}
+
+.documents section:nth-of-type(4) {
+	width: 100%;
+}
+
+.add_files_cont {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	background-color: var(--green);
+	width: 100%;
+	max-width: 400px;
+	z-index: 1;
+}
+
+.add_files_cont button {
+	background-color: var(--main);
+	text-decoration: underline var(--main);
+}
+
+.add_files_cont button:hover {
+	background-color: var(--main-dark);
+	text-decoration: underline white;
+}
+
+.close_btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 30px;
+	color: white;
+	background-color: var(--red);
+	cursor: pointer;
+	padding: 5px 10px;
+	transition: all 0.5;
+}
+
+.close_btn:hover {
+	background-color: var(--red-dark);
+}
+
+/*-------------------------------- FILTER*/
+
+.filter {
+	width: calc(100% - 60px);
+	display: flex;
+	justify-content: space-between;
+	padding: 25px;
+	background-color: var(--main);
+}
+
+.filter h3 {
+	color: white;
+	margin: 0;
+	font-size: 24px;
+}
+
+.filter button {
+	padding: 2px 5px;
+}
+
+.document_list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+}
+
+.document_list div {
+	display: flex;
+	align-items: center;
+	width: calc(50% - 12px);
+	height: 50px;
+	margin: 5px;
+	border-radius: 8px;
+	overflow: hidden;
+	cursor: pointer;
+	position: relative;
+	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
+	border: 1px solid #d6dde1;
+}
+
+.document_list label {
+	display: block;
+	width: calc(100% - 120px);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.document_list div.controls {
+	width: 100px;
+	position: absolute;
+	border-radius: 0;
+	right: 0;
+	margin: 0;
+}
+
+.document_list path {
+	pointer-events: none;
+}
+
+.file_icon {
+	color: var(--main-dark);
+	width: 40px;
+	height: 30px;
+	padding: 10px;
+	margin-right: 20px;
+	transition: all 0.5s;
+}
+
+.document_list div:hover > .file_icon {
+	background-color: var(--main-dark);
+	color: white;
+}
+
+.delete_icon,
+.download_icon {
+	color: white;
+	width: 20px;
+	height: 20px;
+	padding: 20px 15px;
+	transition: all 0.5s;
+}
+
+.delete_icon {
+	background-color: var(--red);
+}
+.delete_icon:hover {
+	background-color: var(--red-dark);
+}
+
+.download_icon {
+	background-color: var(--green);
+}
+
+.download_icon:hover {
+	background-color: var(--green-dark);
+}
+
+.multiselection {
+	font-size: 60px !important;
+	position: absolute;
+	top: 50% !important;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+	background-color: transparent !important;
+}
+
+@media (max-width: 1200px) {
+	.documents section:nth-of-type(1) {
+		width: calc(100% - 110px);
+	}
+
+	.documents section:nth-of-type(2) {
+		width: calc(100% - 110px);
+	}
+}
+
+@media (max-width: 800px) {
+	.filter {
+		flex-wrap: wrap;
+	}
+
+	.filter h3 {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+}
+
+@media (max-width: 600px) {
+	.documents section:nth-of-type(1) {
+		width: calc(100% - 40px);
+	}
+
+	.documents section:nth-of-type(2) {
+		width: calc(100% - 40px);
+	}
+
+	.document_list div {
+		width: calc(100% - 12px);
+	}
+
+	.add_files_cont {
+		width: calc(100% - 50px);
+	}
+
+	.file_icon {
+		margin-right: 10px;
+	}
+}

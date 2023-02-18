@@ -167,7 +167,11 @@ export function editRole(data, setAlert, positiveText, negativeText, auth) {
 		});
 }
 
-export function refreshAccessToken(navigate, auth) {
+export function refreshAccessToken(navigate, from, auth) {
+	let fromPath = "/dashboard";
+	if (from) {
+		fromPath = from;
+	}
 	fetch(`${BASE_URL}/api?class=admin&action=refresh`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -175,7 +179,7 @@ export function refreshAccessToken(navigate, auth) {
 	}).then((response) => {
 		if (response.status === 401) {
 			auth.setUserInfo(null);
-			navigate("/login");
+			navigate("/login", { state: { from: fromPath } });
 			return;
 		}
 		response.text().then((_data) => {

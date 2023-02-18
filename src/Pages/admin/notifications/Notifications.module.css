@@ -31,17 +31,6 @@
 	border-bottom: 1px solid #d6dde1;
 }
 
-#addItem {
-	background-color: var(--main);
-	text-decoration: underline var(--main);
-	font-size: 18px;
-	line-height: 18px;
-}
-
-#addItem:hover {
-	background-color: var(--main-dark);
-}
-
 .edit_notification,
 .add_notification {
 	position: absolute;
@@ -102,17 +91,34 @@
 		width: calc(100% - 60px);
 	}
 
-	.edit_notification {
+	.edit_notification,
+	.add_notification {
 		width: calc(100% - 60px);
 		padding: 0 30px;
 	}
 
-	.edit_notification form {
+	.edit_notification form,
+	.add_notification form {
 		width: calc(100% - 60px);
 	}
 }
 
 @media (max-width: 600px) {
+	.notifications section:nth-of-type(1) {
+		width: calc(100% - 40px);
+	}
+
+	.edit_notification,
+	.add_notification {
+		width: calc(100% - 40px);
+		padding: 0 20px;
+	}
+
+	.edit_notification form,
+	.add_notification form {
+		width: calc(100% - 40px);
+	}
+
 	.notifications th,
 	.notifications td {
 		padding: 8px;

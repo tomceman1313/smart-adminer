@@ -59,7 +59,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	};
 
 	return (
-		<motion.section className={css.add_images_cont} initial={{ y: "-150%", x: "-50%" }} animate={{ y: 50 }} exit={{ y: "-150%" }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section className={css.add_images_cont} initial={{ y: "-250%", x: "-50%" }} animate={{ y: "-50%" }} exit={{ y: "-250%" }} transition={{ type: "spring", duration: 1 }}>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
 			<h2>Přidání obrázků</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -92,7 +92,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 						))}
 				</ul>
 
-				<button>Uložit</button>
+				<button className="blue_button">Uložit</button>
 			</form>
 		</motion.section>
 	);

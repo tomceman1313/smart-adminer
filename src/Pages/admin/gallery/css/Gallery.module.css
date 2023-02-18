@@ -35,22 +35,11 @@
 .add_images_cont {
 	position: fixed;
 	left: 50%;
+	top: 50%;
 	background-color: var(--green);
 	width: 100%;
 	max-width: 400px;
 	z-index: 1;
-}
-
-.edit_image_cont button,
-.add_images_cont button {
-	background-color: var(--main);
-	text-decoration: underline var(--main);
-}
-
-.edit_image_cont button:hover,
-.add_images_cont button:hover {
-	background-color: var(--main-dark);
-	text-decoration: underline white;
 }
 
 .close_btn {
@@ -86,5 +75,20 @@
 
 	.gallery section:nth-of-type(2) {
 		width: calc(100% - 60px);
+	}
+}
+
+@media (max-width: 600px) {
+	.gallery section:nth-of-type(1) {
+		width: calc(100% - 40px);
+	}
+
+	.gallery section:nth-of-type(2) {
+		width: calc(100% - 40px);
+	}
+
+	.edit_image_cont,
+	.add_images_cont {
+		width: calc(100% - 70px);
 	}
 }

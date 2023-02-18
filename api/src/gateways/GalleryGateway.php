@@ -39,6 +39,8 @@ class GalleryGateway
         $image_name = uniqid();
         file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
 
+        $this->compress($image_name . "." . $imageExtension);
+
         $sql = "INSERT INTO gallery (name, title, description, date) VALUES (:name, :title, :description, :date)";
         $stmt = $this->conn->prepare($sql);
 
@@ -70,21 +72,18 @@ class GalleryGateway
         foreach ($images as $image) {
             $base64DataString = $image;
             list($dataType, $imageData) = explode(';', $base64DataString);
-
             // image file extension
             $imageExtension = explode('/', $dataType)[1];
-
             // base64-encoded image data
             list(, $encodedImageData) = explode(',', $imageData);
-
-
             // decode base64-encoded image data
             $decodedImageData = base64_decode($encodedImageData);
-
             // save image data as file
             $image_name = uniqid();
 
             file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
+
+            $this->compress($image_name . "." . $imageExtension);
 
             $sql = "INSERT INTO gallery (name, date) VALUES (:name, :date)";
             $stmt = $this->conn->prepare($sql);
@@ -107,6 +106,37 @@ class GalleryGateway
             }
         }
         return true;
+    }
+
+    private function compress($imageName)
+    {
+        $source = "../public/images/gallery/{$imageName}";
+        // $quality = 75;
+        set_time_limit(10);
+        do {
+            if (file_exists($source)) {
+                $info = getimagesize($source);
+                $width = $info[0];
+                $height = $info[1];
+
+                if ($info['mime'] == 'image/jpeg')
+                    $image = imagecreatefromjpeg($source);
+
+                elseif ($info['mime'] == 'image/gif')
+                    $image = imagecreatefromgif($source);
+
+                elseif ($info['mime'] == 'image/png')
+                    $image = imagecreatefrompng($source);
+
+                if ($width > 1920) {
+                    $aspectRatio = $width / $height;
+                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
+                }
+
+                imagejpeg($imageResized, $source);
+                break;
+            }
+        } while (true);
     }
 
     public function update(array $data): bool

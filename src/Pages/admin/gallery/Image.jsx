@@ -27,8 +27,6 @@ const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImage
 			setSelected((prev) => !prev);
 			return;
 		}
-
-		console.log(e.target.localName);
 		if (e.target.localName === "svg") {
 			return;
 		}

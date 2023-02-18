@@ -132,6 +132,10 @@ select {
 	flex-wrap: wrap;
 }
 
+.fc-scrollgrid table {
+	margin-bottom: 0 !important;
+}
+
 .fc-direction-ltr .fc-daygrid-block-event:not(.fc-event-start),
 .fc-direction-rtl .fc-daygrid-block-event:not(.fc-event-end) {
 	border-top-left-radius: 0 !important;
