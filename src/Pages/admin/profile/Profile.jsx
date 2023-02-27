@@ -51,7 +51,7 @@ const Profile = () => {
 		document.getElementById("submit").innerHTML = "Upravit";
 		setEditInfo(!editInfo);
 
-		fetch("http://localhost:4300/api?class=admin&action=update", {
+		fetch("https://smart-studio.fun/api/?class=admin&action=update", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ token: auth.userInfo.token, data: data }),

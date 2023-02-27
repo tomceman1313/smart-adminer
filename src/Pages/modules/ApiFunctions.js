@@ -1,7 +1,8 @@
-const BASE_URL = "http://localhost:4300";
+const BASE_URL = "https://smart-studio.fun";
+//const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass, setState, auth) {
-	const response = await fetch(`${BASE_URL}/api?class=${apiClass}&action=getall`, {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ token: auth.userInfo.token }),
@@ -22,7 +23,7 @@ export async function getAll(apiClass, setState, auth) {
 }
 
 export function get(apiClass, id) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=get`, {
+	fetch(`${BASE_URL}/api/?class=${apiClass}&action=get`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: id }),
@@ -36,7 +37,7 @@ export function get(apiClass, id) {
 }
 
 export function getRoles(setState, auth) {
-	fetch(`${BASE_URL}/api?class=admin&action=getroles`, {
+	fetch(`${BASE_URL}/api/?class=admin&action=getroles`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ token: auth.userInfo.token }),
@@ -55,7 +56,7 @@ export function getRoles(setState, auth) {
 }
 
 export function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
-	return fetch(`${BASE_URL}/api?class=${apiClass}&action=create`, {
+	return fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
@@ -84,7 +85,7 @@ export function create(apiClass, data, setMessage, positiveText, negativeText, a
 }
 
 export function edit(apiClass, data, setMessage, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=update`, {
+	fetch(`${BASE_URL}/api/?class=${apiClass}&action=update`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
@@ -113,7 +114,7 @@ export function edit(apiClass, data, setMessage, positiveText, negativeText, aut
 }
 
 export function remove(apiClass, id, setMessage, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api?class=${apiClass}&action=delete`, {
+	fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
@@ -140,7 +141,7 @@ export function remove(apiClass, id, setMessage, positiveText, negativeText, aut
 		});
 }
 export function editRole(data, setAlert, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api?class=admin&action=update_role`, {
+	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
@@ -172,7 +173,7 @@ export function refreshAccessToken(navigate, from, auth) {
 	if (from) {
 		fromPath = from;
 	}
-	fetch(`${BASE_URL}/api?class=admin&action=refresh`, {
+	fetch(`${BASE_URL}/api/?class=admin&action=refresh`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
@@ -190,7 +191,7 @@ export function refreshAccessToken(navigate, from, auth) {
 }
 
 export async function testFetch() {
-	const response = await fetch(`${BASE_URL}/api?class=admin&action=test`, {
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=test`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
@@ -201,7 +202,7 @@ export async function testFetch() {
 }
 
 export async function getUserData(auth) {
-	const response = await fetch(`${BASE_URL}/api?class=admin&action=get`, {
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: auth.userInfo.id, token: auth.userInfo.token }),
@@ -219,7 +220,7 @@ export async function getUserData(auth) {
 }
 
 export async function editUserData(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api?class=admin&action=get`, {
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
@@ -237,7 +238,7 @@ export async function editUserData(postData, auth) {
 }
 
 export async function changePassword(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api?class=admin&action=change_password`, {
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=change_password`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),

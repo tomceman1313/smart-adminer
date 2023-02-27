@@ -21,7 +21,7 @@ export default function Login() {
 	const auth = useAuth();
 
 	const onSubmit = (data) => {
-		fetch("http://localhost:4300/api?class=admin&action=auth", {
+		fetch("https://smart-studio.fun/api/?class=admin&action=auth", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",
@@ -29,6 +29,7 @@ export default function Login() {
 		})
 			.then((response) => {
 				response.text().then((_data) => {
+					console.log(_data);
 					let data = JSON.parse(_data);
 					if (data.message === "access") {
 						auth.setUserInfo({ role: data.role, username: data.username, token: data.token, id: data.id });
@@ -37,6 +38,7 @@ export default function Login() {
 						setAlert(true);
 					}
 				});
+
 				if (!response.ok) {
 					throw new Error("Network response was not ok");
 				}

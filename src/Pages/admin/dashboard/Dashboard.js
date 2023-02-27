@@ -42,7 +42,7 @@ export default function Dashboard() {
 	}, [auth, navigate, location]);
 
 	const logOut = () => {
-		fetch("http://localhost:4300/api?class=admin&action=logout", {
+		fetch("https://smart-studio.fun/api/?class=admin&action=logout", {
 			method: "GET",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",

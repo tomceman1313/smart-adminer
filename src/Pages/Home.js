@@ -1,24 +1,19 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import css from "./styles/Home.module.css";
 
 function Home() {
-	const [list, setList] = useState(null);
-
-	useEffect(() => {
-		loadData();
-	}, []);
-
-	const loadData = () => {
-		fetch("http://localhost:4300/api?class=admin&action=show").then((response) => {
-			response.text().then((_data) => {
-				let data = JSON.parse(_data);
-				console.log(data);
-				setList(data);
-			});
+	const getdata = async () => {
+		const response = await fetch(`https://smart-studio.fun/api?class=admin&action=getall`, {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+			credentials: "include",
 		});
+		const data = await response.json();
+		console.log(data);
 	};
+
+	getdata();
 
 	return (
 		<div className={css.login}>
@@ -29,7 +24,6 @@ function Home() {
 				<Link to="/dashboard">Register</Link>
 			</nav>
 			<h1>Home</h1>
-			<div>{list && list.map((user) => <p key={user.id}>{user.username}</p>)}</div>
 		</div>
 	);
 }

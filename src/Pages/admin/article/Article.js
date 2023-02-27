@@ -47,7 +47,7 @@ const Article = () => {
 	}, [location]);
 
 	function getData() {
-		fetch("http://localhost:4300/api?class=articles&action=get", {
+		fetch("https://smart-studio.fun/api/?class=articles&action=get", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ id: id, token: auth.userInfo.token }),
@@ -67,7 +67,7 @@ const Article = () => {
 				setBody(data.data.body);
 				setImageIsSet(true);
 
-				fetch("http://localhost:4300/api?class=articles&action=category", {
+				fetch("https://smart-studio.fun/api/?class=articles&action=category", {
 					method: "POST",
 					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 					body: JSON.stringify({ id: data.data.category, token: auth.userInfo.token }),
@@ -106,10 +106,10 @@ const Article = () => {
 			data.image = "no-change";
 		}
 		data.owner_id = "1"; // Změnit ID až bude login
-		let url = "http://localhost:4300/api?class=articles&action=create";
+		let url = "https://smart-studio.fun/api/?class=articles&action=create";
 		if (article) {
 			data.id = article.id;
-			url = "http://localhost:4300/api?class=articles&action=update";
+			url = "https://smart-studio.fun/api/?class=articles&action=update";
 		}
 		fetch(url, {
 			method: "POST",
@@ -136,7 +136,7 @@ const Article = () => {
 
 	const remove = () => {
 		const idJson = { id: article.id, token: auth.userInfo.token };
-		fetch("http://localhost:4300/api?class=articles&action=delete", {
+		fetch("https://smart-studio.fun/api/?class=articles&action=delete", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(idJson),
