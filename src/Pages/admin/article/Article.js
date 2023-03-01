@@ -7,6 +7,7 @@ import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { makeDateFormat, openImage } from "../../modules/BasicFunctions";
+import { BASE_URL } from "../../modules/ApiFunctions";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
@@ -47,7 +48,7 @@ const Article = () => {
 	}, [location]);
 
 	function getData() {
-		fetch("https://smart-studio.fun/api/?class=articles&action=get", {
+		fetch(`${BASE_URL}/api/?class=articles&action=get`, {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ id: id, token: auth.userInfo.token }),
@@ -67,7 +68,7 @@ const Article = () => {
 				setBody(data.data.body);
 				setImageIsSet(true);
 
-				fetch("https://smart-studio.fun/api/?class=articles&action=category", {
+				fetch(BASE_URL + "/api/?class=articles&action=category", {
 					method: "POST",
 					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 					body: JSON.stringify({ id: data.data.category, token: auth.userInfo.token }),
@@ -106,10 +107,10 @@ const Article = () => {
 			data.image = "no-change";
 		}
 		data.owner_id = "1"; // Změnit ID až bude login
-		let url = "https://smart-studio.fun/api/?class=articles&action=create";
+		let url = BASE_URL + "/api/?class=articles&action=create";
 		if (article) {
 			data.id = article.id;
-			url = "https://smart-studio.fun/api/?class=articles&action=update";
+			url = BASE_URL + "/api/?class=articles&action=update";
 		}
 		fetch(url, {
 			method: "POST",
@@ -136,7 +137,7 @@ const Article = () => {
 
 	const remove = () => {
 		const idJson = { id: article.id, token: auth.userInfo.token };
-		fetch("https://smart-studio.fun/api/?class=articles&action=delete", {
+		fetch(BASE_URL + "/api/?class=articles&action=delete", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify(idJson),

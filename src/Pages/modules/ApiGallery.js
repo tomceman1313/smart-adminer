@@ -1,4 +1,4 @@
-const BASE_URL = "https://smart-studio.fun/";
+import { BASE_URL } from "./ApiFunctions";
 //const BASE_URL = "http://localhost:4300";
 
 export async function getCategories(auth, setState) {

@@ -15,7 +15,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
-import { refreshAccessToken } from "../../modules/ApiFunctions";
+import { refreshAccessToken, BASE_URL } from "../../modules/ApiFunctions";
 import useViewport from "../../Hooks/useViewport";
 import Gallery from "../gallery/Gallery";
 import Alert from "../../Components/admin/Alert";
@@ -42,7 +42,7 @@ export default function Dashboard() {
 	}, [auth, navigate, location]);
 
 	const logOut = () => {
-		fetch("https://smart-studio.fun/api/?class=admin&action=logout", {
+		fetch(`${BASE_URL}/api/?class=admin&action=logout`, {
 			method: "GET",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",

@@ -5,7 +5,7 @@ import css from "./Profile.module.css";
 import Alert from "../../Components/admin/Alert";
 
 import useAuth from "../../Hooks/useAuth";
-import { getUserData } from "../../modules/ApiFunctions";
+import { BASE_URL, getUserData } from "../../modules/ApiFunctions";
 
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -51,7 +51,7 @@ const Profile = () => {
 		document.getElementById("submit").innerHTML = "Upravit";
 		setEditInfo(!editInfo);
 
-		fetch("https://smart-studio.fun/api/?class=admin&action=update", {
+		fetch(BASE_URL + "/api/?class=admin&action=update", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			body: JSON.stringify({ token: auth.userInfo.token, data: data }),

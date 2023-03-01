@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { BASE_URL } from "./modules/ApiFunctions";
 
 export default function Login() {
 	const { register, handleSubmit } = useForm();
@@ -21,7 +22,7 @@ export default function Login() {
 	const auth = useAuth();
 
 	const onSubmit = (data) => {
-		fetch("https://smart-studio.fun/api/?class=admin&action=auth", {
+		fetch(BASE_URL + "/api/?class=admin&action=auth", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",
@@ -29,7 +30,6 @@ export default function Login() {
 		})
 			.then((response) => {
 				response.text().then((_data) => {
-					console.log(_data);
 					let data = JSON.parse(_data);
 					if (data.message === "access") {
 						auth.setUserInfo({ role: data.role, username: data.username, token: data.token, id: data.id });

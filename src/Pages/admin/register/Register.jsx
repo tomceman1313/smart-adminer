@@ -1,19 +1,31 @@
 import "@splidejs/react-splide/css";
 import { useEffect, useState } from "react";
-import Alert from "../../Components/admin/Alert";
-import PrivilegePrices from "./PrivilegePrices";
-import PrivilegeArticles from "./PrivilegeArticles";
-import PrivilegeNews from "./PrivilegeNews";
 import { isPermitted } from "../../modules/BasicFunctions";
 import cssBasic from "../styles/Basic.module.css";
+import PrivilegeArticles from "./PrivilegeArticles";
+import PrivilegeNews from "./PrivilegeNews";
+import PrivilegePrices from "./PrivilegePrices";
 import css from "./Register.module.css";
 
-import { faAddressBook, faArrowUpWideShort, faAt, faBolt, faIdBadge, faImagePortrait, faLock, faMobileScreen, faUnlock, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faAddressBook,
+	faArrowUpWideShort,
+	faAt,
+	faBolt,
+	faIdBadge,
+	faImagePortrait,
+	faLock,
+	faMobileScreen,
+	faUnlock,
+	faUser,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useForm } from "react-hook-form";
 import useApi from "../../Hooks/useApi";
 import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
 import useRolesApi from "../../Hooks/useRolesApi";
 
 export default function Register() {
@@ -27,7 +39,7 @@ export default function Register() {
 
 	const [privileges, setPrivileges] = useState(null);
 	const [showEditCont, setShowEditCont] = useState(false);
-	const [alert, setAlert] = useState(null);
+	const { setMessage } = useInteraction();
 
 	useEffect(() => {
 		getRoles(setPrivileges, auth);
@@ -38,12 +50,12 @@ export default function Register() {
 	}, []);
 
 	const onSubmit = (data) => {
-		createUser("admin", data, setAlert, "Účet vytvořen", "Účet nebyl vytvořen", auth);
+		createUser("admin", data, setMessage, "Účet vytvořen", "Účet nebyl vytvořen", auth);
 		reset();
 	};
 
 	const onSubmitRoles = (data) => {
-		editRole(data, setAlert, "Práva byla upravena", "Práva nebyla upravena", auth);
+		editRole(data, setMessage, "Práva byla upravena", "Práva nebyla upravena", auth);
 		getRoles(setPrivileges, auth);
 		editRoles();
 	};
@@ -195,7 +207,6 @@ export default function Register() {
 					</div>
 				</section>
 			)}
-			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
 		</div>
 	);
 }
