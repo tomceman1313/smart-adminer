@@ -6,6 +6,7 @@ import { faChevronDown, faDisplay, faGear, faPowerOff } from "@fortawesome/free-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AnimatePresence, motion, useCycle } from "framer-motion";
+import { publicPath } from "../../../modules/BasicFunctions";
 import { useEffect } from "react";
 import { MenuToggle } from "./MenuToggle";
 import css from "./MobileMenu.module.css";
@@ -63,7 +64,7 @@ const MobileMenu = ({ logOut }) => {
 	return (
 		<motion.div className={css.menu} initial={false} animate={isOpen ? "open" : "closed"}>
 			<div className={css.logo_title}>
-				<img src="/images/logo512.png" alt="logo" />
+				<img src={`${publicPath}/images/logo512.png`} alt="logo" />
 				<label className={css.title}>Adminer Mobile</label>
 			</div>
 			<MenuToggle toggle={() => toggleOpen()} css={css} />

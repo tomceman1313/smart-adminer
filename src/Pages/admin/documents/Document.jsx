@@ -36,7 +36,7 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments }) =
 	};
 
 	const downloadDocument = () => {
-		window.open(`http://localhost:3000/files/documents/${info.name}`, "_blank").focus();
+		window.open(`/admin/files/documents/${info.name}`, "_blank").focus();
 	};
 
 	const setFileIcon = (format) => {

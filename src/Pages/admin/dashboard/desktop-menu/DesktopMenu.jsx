@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import { faChevronDown, faDisplay, faGear, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { publicPath } from "../../../modules/BasicFunctions";
 
 import css from "./DesktopMenu.module.css";
 
@@ -48,7 +49,7 @@ export default function DesktopMenu({ logOut }) {
 
 	return (
 		<div className={css.menu}>
-			<img src="/images/logo512.png" alt="logo" />
+			<img src={`${publicPath}/images/logo512.png`} alt="logo" />
 			<label className={css.title}>Adminer</label>
 			<ul>
 				<li>

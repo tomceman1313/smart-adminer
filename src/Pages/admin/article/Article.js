@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import TextEditor from "../../Components/admin/TextEditor";
 
 import { useForm } from "react-hook-form";
@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { makeDateFormat, openImage } from "../../modules/BasicFunctions";
-import { BASE_URL } from "../../modules/ApiFunctions";
+import { createArticle, deleteArticle, getArticle, updateArticle } from "../../modules/ApiArticles";
+import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
@@ -15,11 +15,9 @@ import useInteraction from "../../Hooks/useInteraction";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 
-/**
- * TODO změnit id vlastníka při vytváření článku
- */
 const Article = () => {
 	const auth = useAuth();
+
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
@@ -32,6 +30,9 @@ const Article = () => {
 
 	const navigation = useNavigate();
 	let location = useLocation();
+
+	let arrayInsideImages = [];
+	const originalImages = useRef([]);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Články";
@@ -47,121 +48,108 @@ const Article = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
-	function getData() {
-		fetch(`${BASE_URL}/api/?class=articles&action=get`, {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify({ id: id, token: auth.userInfo.token }),
-			credentials: "include",
-		}).then((response) => {
-			if (response.status === 403) {
-				navigation("/login");
-			}
-
-			response.text().then((_data) => {
-				const data = JSON.parse(_data);
-				setArticle(data.data);
-				setValue("title", data.data.title);
-				setValue("description", data.data.description);
-				setValue("date", makeDateFormat(data.data.date, "str"));
-				setValue("active", data.data.active);
-				setBody(data.data.body);
-				setImageIsSet(true);
-
-				fetch(BASE_URL + "/api/?class=articles&action=category", {
-					method: "POST",
-					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-					body: JSON.stringify({ id: data.data.category, token: auth.userInfo.token }),
-				}).then((response) => {
-					response.text().then((_data) => {
-						const data = JSON.parse(_data);
-						setValue("category", data.data.id);
-					});
-				});
-			});
-		});
+	async function getData() {
+		const data = await getArticle(id, auth.userInfo.token, navigation);
+		setArticle(data.data);
+		console.log(data.data);
+		setValue("title", data.data.title);
+		setValue("description", data.data.description);
+		setValue("date", makeDateFormat(data.data.date, "str"));
+		setValue("active", data.data.active);
+		setValue("category", data.data.category);
+		setBody(data.data.body);
+		originalImages.current = checkInnerImage(data.data.body);
+		setImageIsSet(true);
 	}
-
-	const convertBase64 = (file) => {
-		return new Promise((resolve, reject) => {
-			const fileReader = new FileReader();
-			fileReader.readAsDataURL(file);
-
-			fileReader.onload = () => {
-				resolve(fileReader.result);
-			};
-
-			fileReader.onerror = (error) => {
-				reject(error);
-			};
-		});
-	};
 
 	const onSubmit = async (data) => {
 		data.date = makeDateFormat(data.date);
-		data.body = body;
+		data.body = await formatBody();
 		if (data.image[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
 		} else {
 			data.image = "no-change";
 		}
-		data.owner_id = "1"; // Změnit ID až bude login
-		let url = BASE_URL + "/api/?class=articles&action=create";
+
+		let imagesArray = [];
+		for (const file of data.images) {
+			const base64 = await convertBase64(file);
+			imagesArray.push(base64);
+		}
+		data.images = imagesArray;
+		data.innerImages = arrayInsideImages;
+		data.owner_id = auth.userInfo.id;
+		data.deletedImages = findDeletedImages();
+		console.log(data);
 		if (article) {
 			data.id = article.id;
-			url = BASE_URL + "/api/?class=articles&action=update";
+			updateArticle(data, auth, setMessage);
+		} else {
+			console.log(data);
+			createArticle(data, auth, setMessage);
 		}
-		fetch(url, {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify({ data: data, token: auth.userInfo.token }),
-			credentials: "include",
-		})
-			.then((response) => {
-				if (response.status === 200 || response.status === 201) {
-					setMessage({ action: "success", text: "Uloženo", timeout: 6000 });
-				} else {
-					setMessage({ action: "failure", text: "Operace selhala", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
 	};
 
 	const remove = () => {
-		const idJson = { id: article.id, token: auth.userInfo.token };
-		fetch(BASE_URL + "/api/?class=articles&action=delete", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify(idJson),
-			credentials: "include",
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					navigation("/dashboard/articles");
-				} else {
-					setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
-				}
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
+		deleteArticle(article.id, auth, setMessage, navigation);
 	};
 
-	const deleteArticle = () => {
+	const removeArticle = () => {
 		setAlert({ id: id, question: "Smazat článek?", positiveHandler: remove });
+	};
+
+	const formatBody = async () => {
+		let bodyContent = body;
+		while (bodyContent.indexOf('src="data') > 0) {
+			bodyContent = await replaceSrcByRelativePath(bodyContent);
+		}
+		return bodyContent;
+	};
+
+	async function replaceSrcByRelativePath(bodyContent) {
+		const start = bodyContent.indexOf('src="data');
+		let end;
+		for (var i = start; i < bodyContent.length; i++) {
+			if (bodyContent[i] === '"' && bodyContent[i + 1] === ">") {
+				end = i;
+				const id = parseInt(Date.now() + Math.random());
+				const sliced = bodyContent.slice(start + 5, end);
+				const strStart = bodyContent.substring(0, start + 5);
+				const strEnd = bodyContent.substring(end);
+				const fileFormat = await getImageFormat(sliced);
+				let imgSrc = `${publicPath}/images/articles/innerimage${id}.${fileFormat}`;
+				let str = strStart + imgSrc + strEnd;
+				arrayInsideImages.push({ name: `innerimage${id}`, file: sliced });
+				return str;
+			}
+		}
+	}
+
+	const checkInnerImage = (sourceString) => {
+		const regex = /innerimage\d*.\w*/g;
+		const found = sourceString.match(regex);
+		return found ? found : [];
+	};
+
+	const findDeletedImages = () => {
+		const bodyImages = checkInnerImage(body);
+		if (originalImages.current.length !== bodyImages.length) {
+			return originalImages.current.filter((el) => {
+				if (!bodyImages.includes(el)) {
+					return el;
+				}
+			});
+		}
+	};
+
+	const getImageFormat = async (str) => {
+		const start = str.indexOf("image/") + 6;
+		for (var i = start; i < 30; i++) {
+			if (str[i] === ";") {
+				return str.slice(start, i);
+			}
+		}
 	};
 
 	return (
@@ -204,7 +192,7 @@ const Article = () => {
 				<div className={cssBasic.input_box} title="">
 					{imageIsSet ? (
 						<div className={cssBasic.image_box}>
-							<button type="button" onClick={() => openImage(`/images/articles/${article.image}`)}>
+							<button type="button" onClick={() => openImage(`${publicPath}/images/articles/${article.image}`)}>
 								Zobrazit obrázek
 							</button>
 							<button type="button" onClick={() => setImageIsSet(false)}>
@@ -222,6 +210,15 @@ const Article = () => {
 			<section>
 				<h2>Text článku</h2>
 				<TextEditor value={body} setValue={setBody} />
+
+				<div>
+					<h2>Obrázky pod článkem:</h2>
+					<div className={`${cssBasic.input_box}`}>
+						<input type="file" accept="image/*" {...register("images")} multiple />
+						<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
+					</div>
+				</div>
+
 				<div className={css.control_box}>
 					<button>Uložit</button>
 					<button type="button" className={css.btn_preview}>
@@ -229,7 +226,7 @@ const Article = () => {
 						Náhled článku
 					</button>
 					{article && (
-						<button type="button" className={cssBasic.btn_delete} onClick={deleteArticle}>
+						<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
 							Smazat
 						</button>
 					)}

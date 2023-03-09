@@ -1,6 +1,8 @@
 import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+export const publicPath = "/admin";
+
 export function makeDate(year, month, day) {
 	let date = `${year}`;
 
@@ -35,7 +37,7 @@ export function makeDateFormat(date, direction) {
  * @returns Array objektů pro kalendář
  */
 export function createEventsArray(data) {
-	let events = new Array();
+	let events = [];
 	data.forEach((el) => {
 		events.push({
 			title: el.name,

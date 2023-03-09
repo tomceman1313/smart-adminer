@@ -1,30 +1,23 @@
-import { useState, useEffect } from "react";
+import { faHashtag, faHeading, faImage, faQuoteRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
-import { getCategories } from "../../modules/ApiGallery";
+import useInteraction from "../../Hooks/useInteraction";
 import { create, getAll } from "../../modules/ApiFunctions";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faHashtag, faHeading, faQuoteRight } from "@fortawesome/free-solid-svg-icons";
-import useInteraction from "../../Hooks/useInteraction";
 
-import css from "./css/Gallery.module.css";
+import { AnimatePresence } from "framer-motion";
 import cssBasic from "../styles/Basic.module.css";
 import AddMultiplePictures from "./AddMultiplePictures";
-import { AnimatePresence } from "framer-motion";
+import css from "./css/Gallery.module.css";
 
-const NewPicture = ({ auth, setImages }) => {
+const NewPicture = ({ auth, setImages, categories }) => {
 	const { setMessage } = useInteraction();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
-	const [category, setCategory] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
-
-	useEffect(() => {
-		getCategories(auth, setCategory);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	const createNew = async (data) => {
 		if (data.image[0]) {
@@ -44,7 +37,7 @@ const NewPicture = ({ auth, setImages }) => {
 	};
 
 	const chooseCategory = (e) => {
-		const name = category.filter((item) => item.id === parseInt(e.target.value));
+		const name = categories.filter((item) => item.id === parseInt(e.target.value));
 		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
 		setValue("category_id", "default");
 		if (alreadyIn) {
@@ -78,8 +71,8 @@ const NewPicture = ({ auth, setImages }) => {
 							<option value="default" disabled>
 								-- Přiřadit kategorii --
 							</option>
-							{category &&
-								category.map((el) => (
+							{categories &&
+								categories.map((el) => (
 									<option key={el.id} value={el.id}>
 										{el.name}
 									</option>
@@ -106,7 +99,11 @@ const NewPicture = ({ auth, setImages }) => {
 				</form>
 			</section>
 
-			<AnimatePresence>{addMultiplePictures && <AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={() => getAll("gallery", setImages, auth)} />}</AnimatePresence>
+			<AnimatePresence>
+				{addMultiplePictures && (
+					<AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={() => getAll("gallery", setImages, auth)} />
+				)}
+			</AnimatePresence>
 		</>
 	);
 };

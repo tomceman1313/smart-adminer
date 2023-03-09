@@ -12,7 +12,7 @@ function App() {
 		<div className="App">
 			<AuthProvider>
 				<InteractionProvider>
-					<BrowserRouter>
+					<BrowserRouter basename="/admin">
 						<Routes>
 							<Route path="/" element={<Home />} />
 							<Route path="/login" element={<Login />} />

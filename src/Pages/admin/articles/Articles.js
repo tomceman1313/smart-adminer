@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import { getAll } from "../../modules/ApiFunctions";
-import { isPermitted, makeDateFormat } from "../../modules/BasicFunctions";
+import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
 
@@ -31,7 +31,7 @@ const Articles = () => {
 				{articles &&
 					articles.map((article) => (
 						<article key={article.id} id={article.id} onClick={openArticleDetails}>
-							<img src={`/images/articles/${article.image}`} alt="" />
+							<img src={`${publicPath}/images/articles/${article.image}`} alt="" />
 							<div>
 								<h3>{article.title}</h3>
 								<p>{article.description}</p>

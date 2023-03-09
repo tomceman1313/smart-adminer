@@ -3,6 +3,7 @@ import { faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-soli
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { publicPath } from "../../modules/BasicFunctions";
 
 import css from "./css/Images.module.css";
 
@@ -46,7 +47,7 @@ const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImage
 				ease: "easeInOut",
 			}}
 		>
-			<img src={`/images/gallery/${el.name}`} alt={el.title} />
+			<img src={`${publicPath}/images/gallery/${el.name}`} alt={el.title} />
 			<AnimatePresence>
 				{clicked && (
 					<motion.article id={el.id} key={255 + el.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

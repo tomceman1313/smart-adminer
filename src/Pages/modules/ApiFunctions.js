@@ -1,4 +1,4 @@
-//export const BASE_URL = "https://smart-studio.fun";
+//export const BASE_URL = "https://smart-studio.fun/admin";
 export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass, setState, auth) {
@@ -56,6 +56,7 @@ export function getRoles(setState, auth) {
 }
 
 export function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
+	//console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
 	return fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },

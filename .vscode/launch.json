@@ -1,10 +1,11 @@
 {
     "configurations": [
+
         {
             "type": "pwa-chrome",
-            "name": "http://localhost:3000/dashboard/notifications",
+            "name": "article",
             "request": "launch",
-            "url": "http://localhost:3000/dashboard/notifications"
+            "url": "http://localhost:3000/admin/dashboard/article/30"
         }
     ]
 }
