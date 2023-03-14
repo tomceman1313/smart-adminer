@@ -43,6 +43,7 @@ const Article = () => {
 			reset();
 			setBody("");
 			setImageIsSet(false);
+			setArticle(null);
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +52,7 @@ const Article = () => {
 	async function getData() {
 		const data = await getArticle(id, auth.userInfo.token, navigation);
 		setArticle(data.data);
-		console.log(data.data);
+		//console.log(data.data);
 		setValue("title", data.data.title);
 		setValue("description", data.data.description);
 		setValue("date", makeDateFormat(data.data.date, "str"));
@@ -86,8 +87,7 @@ const Article = () => {
 			data.id = article.id;
 			updateArticle(data, auth, setMessage);
 		} else {
-			console.log(data);
-			createArticle(data, auth, setMessage);
+			createArticle(data, auth, setMessage, navigation);
 		}
 	};
 
@@ -141,6 +141,7 @@ const Article = () => {
 				}
 			});
 		}
+		return [];
 	};
 
 	const getImageFormat = async (str) => {

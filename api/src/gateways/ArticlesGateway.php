@@ -190,6 +190,24 @@ class ArticlesGateway
             ]);
         }
 
+        $innerImages = $data["innerImages"];
+
+        foreach ($innerImages as $image) {
+            $this->createImage($image["name"], $image["file"], $data["id"]);
+        }
+
+        $deletedImages = $data["deletedImages"];
+
+        foreach ($deletedImages as $image) {
+            $this->deleteImage($image);
+        }
+
+        $images = $data["images"];
+
+        foreach ($images as $image) {
+            $this->createImage(uniqid(), $image, $data["id"]);
+        }
+
         return true;
     }
 
@@ -307,5 +325,19 @@ class ArticlesGateway
             'name' => "{$image_name}.{$imageExtension}",
             'article_id' => $article_id
         ]);
+    }
+
+    private function deleteImage($image_name)
+    {
+        $sql = "DELETE FROM article_images WHERE name = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $image_name
+        ]);
+
+        if (file_exists("../public/images/articles/{$image_name}")) {
+            unlink("../public/images/articles/{$image_name}");
+        }
     }
 }

@@ -18,8 +18,7 @@ export async function getArticle(id, token, navigation) {
 	return article;
 }
 
-export async function createArticle(data, auth, setMessage) {
-	console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
+export async function createArticle(data, auth, setMessage, navigation) {
 	const response = await fetch(BASE_URL + "/api/?class=articles&action=create", {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -29,6 +28,7 @@ export async function createArticle(data, auth, setMessage) {
 
 	if (response.status === 201) {
 		setMessage({ action: "success", text: "Uloženo" });
+		navigation("/dashboard/articles");
 	} else {
 		setMessage({ action: "failure", text: "Operace selhala" });
 	}
@@ -50,7 +50,6 @@ export async function updateArticle(data, auth, setMessage) {
 		auth.setUserInfo(null);
 		return null;
 	}
-
 	const rdata = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
