@@ -1,11 +1,12 @@
 <?php
 
-class ArticlesGateway
+class EventsGateway
 {
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
     }
+
 
     public function create(array $data, int $userId): bool
     {
@@ -23,11 +24,11 @@ class ArticlesGateway
 
         // save image data as file
         $image_name = uniqid();
-        file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
-        $sql = "INSERT INTO articles (title, description, image, body, date, category, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category, :owner_id, :active)";
+        $sql = "INSERT INTO events (title, description, image, body, date, category, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category, :owner_id, :active)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -60,7 +61,7 @@ class ArticlesGateway
 
     public function get(string $id): array
     {
-        $sql = "SELECT * FROM articles WHERE id = :id LIMIT 1";
+        $sql = "SELECT * FROM events WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -69,7 +70,7 @@ class ArticlesGateway
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT id, name FROM article_images WHERE article_id = :id AND type = 'under'";
+        $sql = "SELECT id, name FROM event_images WHERE event_id = :id AND type = 'under'";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -88,7 +89,7 @@ class ArticlesGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM articles";
+        $sql = "SELECT * FROM events";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -114,7 +115,7 @@ class ArticlesGateway
             $decodedImageData = base64_decode($encodedImageData);
             // save image data as file
             $image_name = uniqid();
-            file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+            file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
             if (file_exists("../public/images/events/{$data["prevImage"]}")) {
                 unlink("../public/images/events/{$data["prevImage"]}");
@@ -122,7 +123,7 @@ class ArticlesGateway
 
             $this->compress($image_name . "." . $imageExtension);
 
-            $sql = "UPDATE articles SET title = :title, description = :description, image = :image,
+            $sql = "UPDATE events SET title = :title, description = :description, image = :image,
             body = :body, date = :date, category = :category, owner_id = :owner_id, active = :active WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
@@ -139,7 +140,7 @@ class ArticlesGateway
                 'id' => $data["id"]
             ]);
         } else {
-            $sql = "UPDATE articles SET title = :title, description = :description, 
+            $sql = "UPDATE events SET title = :title, description = :description, 
             body = :body, date = :date, category = :category, owner_id = :owner_id, active = :active WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
@@ -183,11 +184,11 @@ class ArticlesGateway
 
         $imageName = $article["image"];
 
-        if (file_exists("../public/images/articles/{$imageName}")) {
-            unlink("../public/images/articles/{$imageName}");
+        if (file_exists("../public/images/events/{$imageName}")) {
+            unlink("../public/images/events/{$imageName}");
         }
 
-        $sql = "DELETE FROM articles WHERE id = :id";
+        $sql = "DELETE FROM events WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -195,7 +196,7 @@ class ArticlesGateway
 
         $stmt->execute();
 
-        $sql_select = "SELECT * FROM article_images WHERE article_id = :id";
+        $sql_select = "SELECT * FROM event_images WHERE event_id = :id";
         $stmt_select = $this->conn->prepare($sql_select);
 
         $stmt_select->execute([
@@ -203,7 +204,7 @@ class ArticlesGateway
         ]);
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
-            $sql_row = "DELETE FROM article_images WHERE id = :id";
+            $sql_row = "DELETE FROM event_images WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql_row);
 
@@ -211,8 +212,8 @@ class ArticlesGateway
 
             $stmt->execute();
 
-            if (file_exists("../public/images/articles/{$row['name']}")) {
-                unlink("../public/images/articles/{$row['name']}");
+            if (file_exists("../public/images/events/{$row['name']}")) {
+                unlink("../public/images/events/{$row['name']}");
             }
         }
 
@@ -225,7 +226,7 @@ class ArticlesGateway
     public function getCategory(string $id): array
     {
 
-        $sql = "SELECT * FROM article_category WHERE id = :id LIMIT 1";
+        $sql = "SELECT * FROM event_category WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -238,7 +239,7 @@ class ArticlesGateway
 
     private function compress($imageName)
     {
-        $source = "../public/images/articles/{$imageName}";
+        $source = "../public/images/events/{$imageName}";
         // $quality = 75;
         set_time_limit(10);
         do {
@@ -280,31 +281,31 @@ class ArticlesGateway
         // decode base64-encoded image data
         $decodedImageData = base64_decode($encodedImageData);
 
-        file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
-        $sql = "INSERT INTO article_images (name, type, article_id) VALUES (:name, :type, :article_id)";
+        $sql = "INSERT INTO event_images (name, type, event_id) VALUES (:name, :type, :event_id)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => "{$image_name}.{$imageExtension}",
             'type' => $type,
-            'article_id' => $article_id
+            'event_id' => $article_id
         ]);
     }
 
     public function deleteImage($image_name)
     {
-        $sql = "DELETE FROM article_images WHERE name = :name";
+        $sql = "DELETE FROM event_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $image_name
         ]);
 
-        if (file_exists("../public/images/articles/{$image_name}")) {
-            unlink("../public/images/articles/{$image_name}");
+        if (file_exists("../public/images/events/{$image_name}")) {
+            unlink("../public/images/events/{$image_name}");
         }
     }
 }

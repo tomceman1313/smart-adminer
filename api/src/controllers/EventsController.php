@@ -1,7 +1,7 @@
 <?php
-class ArticlesConroller
+class EventsConroller
 {
-    public function __construct(ArticlesGateway $gateway, AdminGateway $adminGateway)
+    public function __construct(EventsGateway $gateway, AdminGateway $adminGateway)
     {
         $this->gateway = $gateway;
         $this->admin = $adminGateway;
@@ -47,7 +47,7 @@ class ArticlesConroller
                     $data = $this->gateway->get($data["id"]);
                     http_response_code(200);
                     echo json_encode([
-                        "message" => "Article provided",
+                        "message" => "Event provided",
                         "data" => $data,
                         "token" => $authAction
                     ]);
@@ -66,9 +66,9 @@ class ArticlesConroller
                     $userId = $this->admin->decodeToken($authAction);
                     if ($userId != null) {
                         $id = $this->gateway->create($data["data"], $userId);
-                        http_response_code(201);
+                        http_response_code(200);
                         echo json_encode([
-                            "message" => "Item created",
+                            "message" => "Event created",
                             "data" => $id,
                             "token" => $authAction
                         ]);
@@ -89,7 +89,7 @@ class ArticlesConroller
                     if ($result) {
                         http_response_code(200);
                         echo json_encode([
-                            "message" => "Item edited",
+                            "message" => "Event edited",
                             "token" => $authAction
                         ]);
                     } else {
@@ -114,7 +114,7 @@ class ArticlesConroller
                     $id = $this->gateway->delete($data["id"]);
                     http_response_code(200);
                     echo json_encode([
-                        "message" => "Item deleted",
+                        "message" => "Event deleted",
                         "data" => $id,
                         "token" => $authAction
                     ]);
@@ -124,7 +124,6 @@ class ArticlesConroller
                 $data = json_decode(file_get_contents("php://input"), true);
                 $result = $this->gateway->getCategory($data["id"]);
                 echo json_encode([
-                    "message" => "Data provided",
                     "data" =>  $result,
                     "token" => $data["token"]
                 ]);

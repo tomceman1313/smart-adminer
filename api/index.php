@@ -26,21 +26,32 @@ require __DIR__ . "/src/gateways/GalleryGateway.php";
 require __DIR__ . "/src/controllers/DocumentsController.php";
 require __DIR__ . "/src/gateways/DocumentsGateway.php";
 
+require __DIR__ . "/src/controllers/EventsController.php";
+require __DIR__ . "/src/gateways/EventsGateway.php";
 
+//Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+// header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-header("Content-type: application/json; charset=UTF-8, multipart/form-data");
+// header("Content-type: application/json; charset=UTF-8, multipart/form-data");
+// header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
+
+// header("Access-Control-Allow-Credentials: true");
+
+//Production 
+//header("Access-Control-Allow-Origin: http://localhost/admin");
+header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
 
 header("Access-Control-Allow-Credentials: true");
 
-
+header("Access-Control-Allow-Headers: *");
 
 
 
 //$parts = explode("/", $_SERVER["REQUEST_URI"]);
 $database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
+//$database = new Database("localhost", "u351850998_dbtest", "u351850998_admin_test", "Tomikz13");
 $class = null;
 $action = null;
 $id = null;
@@ -99,6 +110,11 @@ switch ($class) {
     case 'documents':
         $gateway = new DocumentsGateway($database);
         $controller = new DocumentsConroller($gateway, $admin);
+        $controller->processRequest($action, $id);
+        break;
+    case 'events':
+        $gateway = new EventsGateway($database);
+        $controller = new EventsConroller($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     default:

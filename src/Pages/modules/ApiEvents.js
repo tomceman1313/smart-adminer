@@ -1,8 +1,8 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function getArticle(id, token, navigation) {
+export async function getEvent(id, token, navigation) {
 	//console.log(JSON.stringify({ id: id, token: token }));
-	const response = await fetch(`${BASE_URL}/api/?class=articles&action=get`, {
+	const response = await fetch(`${BASE_URL}/api/?class=events&action=get`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: id, token: token }),
@@ -18,8 +18,8 @@ export async function getArticle(id, token, navigation) {
 	return article;
 }
 
-export async function createArticle(data, auth, setMessage, navigation) {
-	const response = await fetch(BASE_URL + "/api/?class=articles&action=create", {
+export async function createEvent(data, auth, setMessage) {
+	const response = await fetch(BASE_URL + "/api/?class=events&action=create", {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
@@ -28,7 +28,6 @@ export async function createArticle(data, auth, setMessage, navigation) {
 
 	if (response.status === 201) {
 		setMessage({ action: "success", text: "Uloženo" });
-		navigation("/dashboard/articles");
 	} else {
 		setMessage({ action: "failure", text: "Operace selhala" });
 	}
@@ -38,8 +37,8 @@ export async function createArticle(data, auth, setMessage, navigation) {
 	return;
 }
 
-export async function updateArticle(data, auth, setMessage) {
-	const response = await fetch(BASE_URL + "/api/?class=articles&action=update", {
+export async function updateEvent(data, auth, setMessage) {
+	const response = await fetch(BASE_URL + "/api/?class=events&action=update", {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
@@ -51,16 +50,14 @@ export async function updateArticle(data, auth, setMessage) {
 		return null;
 	}
 	const rdata = await response.json();
-	// console.log(rdata);
-	// return;
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Článek byl upraven" });
+	setMessage({ action: "success", text: "Událost byla upravena" });
 	return;
 }
 
-export async function deleteArticle(id, auth, setMessage, navigation) {
-	const response = await fetch(`${BASE_URL}/api/?class=articles&action=delete`, {
+export async function deleteEvent(id, auth, setMessage, navigation) {
+	const response = await fetch(`${BASE_URL}/api/?class=events&action=delete`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
@@ -75,16 +72,17 @@ export async function deleteArticle(id, auth, setMessage, navigation) {
 	const data = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	navigation("/dashboard/events");
 	if (response.status === 200) {
 		setMessage({ action: "success", text: "Článek byl smazán" });
-		navigation("/dashboard/articles");
 	} else {
 		setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
 	}
+	return;
 }
 
 export async function deleteImage(name, auth, setMessage) {
-	const response = await fetch(`${BASE_URL}/api/?class=articles&action=delete-image`, {
+	const response = await fetch(`${BASE_URL}/api/?class=events&action=delete-image`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ name: name, token: auth.userInfo.token }),

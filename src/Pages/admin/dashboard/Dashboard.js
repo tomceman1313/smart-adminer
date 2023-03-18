@@ -9,6 +9,13 @@ import Pricelist from "../pricelist/Pricelist";
 import Profile from "../profile/Profile";
 import Profiles from "../profiles/Profiles";
 import Register from "../register/Register";
+import Gallery from "../gallery/Gallery";
+import Alert from "../../Components/admin/Alert";
+import Message from "../../Components/admin/Message";
+import Documents from "../documents/Documents";
+import Event from "../events/Event";
+import Events from "../events/Events";
+
 import css from "./Dashboard.module.css";
 
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -17,10 +24,6 @@ import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
 import { refreshAccessToken, BASE_URL } from "../../modules/ApiFunctions";
 import useViewport from "../../Hooks/useViewport";
-import Gallery from "../gallery/Gallery";
-import Alert from "../../Components/admin/Alert";
-import Message from "../../Components/admin/Message";
-import Documents from "../documents/Documents";
 
 export default function Dashboard() {
 	const navigate = useNavigate();
@@ -84,6 +87,10 @@ export default function Dashboard() {
 						<Route path="article" element={<Article />} />
 						<Route path="new-article" element={<Article />} />
 						<Route path="article/:id" element={<Article />} />
+						<Route path="events" element={<Events />} />
+						<Route path="event" element={<Event />} />
+						<Route path="new-event" element={<Event />} />
+						<Route path="event/:id" element={<Event />} />
 					</Route>
 				</Routes>
 				<Alert />
