@@ -1,11 +1,11 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function getArticle(id, token, navigation) {
+export async function getArticle(id, navigation) {
 	//console.log(JSON.stringify({ id: id, token: token }));
 	const response = await fetch(`${BASE_URL}/api/?class=articles&action=get`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: token }),
+		body: JSON.stringify({ id: id }),
 		credentials: "include",
 	});
 
@@ -51,8 +51,6 @@ export async function updateArticle(data, auth, setMessage) {
 		return null;
 	}
 	const rdata = await response.json();
-	// console.log(rdata);
-	// return;
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	setMessage({ action: "success", text: "Článek byl upraven" });

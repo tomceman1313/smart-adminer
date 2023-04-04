@@ -1,10 +1,11 @@
 <?php
-
 class GalleryGateway
 {
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->path = $path;
     }
 
     public function get(string $id): array
@@ -37,7 +38,7 @@ class GalleryGateway
 
         // save image data as file
         $image_name = uniqid();
-        if (file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData)) {
+        if (file_put_contents("{$this->path}/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData)) {
             $this->compress($image_name . "." . $imageExtension);
         } else {
             return false;
@@ -83,7 +84,7 @@ class GalleryGateway
             // save image data as file
             $image_name = uniqid();
 
-            file_put_contents("../public/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
+            file_put_contents("{$this->path}/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData);
 
             $this->compress($image_name . "." . $imageExtension);
 
@@ -112,7 +113,7 @@ class GalleryGateway
 
     private function compress($imageName)
     {
-        $source = "../public/images/gallery/{$imageName}";
+        $source = "{$this->path}/images/gallery/{$imageName}";
         // $quality = 75;
         set_time_limit(10);
         do {
@@ -192,8 +193,8 @@ class GalleryGateway
         $image = $this->get($id);
         $imageName = $image["name"];
 
-        if (file_exists("../public/images/gallery/{$imageName}")) {
-            unlink("../public/images/gallery/{$imageName}");
+        if (file_exists("{$this->path}/images/gallery/{$imageName}")) {
+            unlink("{$this->path}/images/gallery/{$imageName}");
         }
 
         $sql = "DELETE FROM gallery WHERE id = :id";
@@ -378,5 +379,10 @@ class GalleryGateway
 
 
         return true;
+    }
+
+    public function test()
+    {
+        return $this->path;
     }
 }

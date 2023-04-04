@@ -210,12 +210,6 @@ class AdminController
                 break;
 
             case 'logout':
-                // header("Access-Control-Allow-Origin: http://localhost:3000");
-                // header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-                // header("Content-type: application/json; charset=UTF-8");
-                // header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
-                // header("Access-Control-Allow-Credentials: true");
-
                 setcookie("refresh_token", "", -1, '/', "", false, true);
                 http_response_code(200);
                 break;
@@ -237,16 +231,14 @@ class AdminController
                         "token" => $authAction
                     ]);
                 }
-
-
                 break;
 
             case 'test':
-                setcookie("test_token", "abcdefgh", time() + 3600, '/', "", false, true);
-                echo json_encode([
-                    "result" => "Sleeping for five seconds",
-                    "token" => $_COOKIE["test_token"]
-                ]);
+                if (!isset($_COOKIE["refresh_token"])) {
+                    echo "nothing";
+                } else {
+                    echo $_COOKIE["refresh_token"];
+                }
                 break;
             default:
                 break;

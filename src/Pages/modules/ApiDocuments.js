@@ -15,7 +15,6 @@ export async function getCategories(auth, setState) {
 
 	const data = await response.json();
 	setState(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
 }
 
@@ -96,27 +95,6 @@ export async function getByCategory(id, setImages, auth) {
 	const data = await response.json();
 
 	setImages(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	return data;
-}
-
-export async function getImageCategories(id, setPickedCategories, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=documents&action=getImageCategories`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ image_id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-
-	setPickedCategories(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
 }
 

@@ -17,7 +17,6 @@ export async function getAll(apiClass, setState, auth) {
 	const data = await response.json();
 
 	setState(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 
 	return data;
 }
@@ -55,91 +54,61 @@ export function getRoles(setState, auth) {
 	});
 }
 
-export function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
-	//console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
-	return fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
+export async function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
 		credentials: "include",
-	})
-		.then((response) => {
-			if (response.status === 403) {
-				auth.setUserInfo(null);
-				return false;
-			}
-			if (response.status === 201) {
-				setMessage({ action: "success", text: positiveText });
-				//auth.setUserInfo({...auth.userInfo, token: });
-			} else {
-				setMessage({ action: "failure", text: negativeText });
-			}
+	});
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return;
-		})
-		.catch((error) => {
-			console.error("There has been a problem with your fetch operation:", error);
-		});
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const rdata = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export function edit(apiClass, data, setMessage, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api/?class=${apiClass}&action=update`, {
+export async function edit(apiClass, data, setMessage, positiveText, negativeText, auth) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=update`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
 		credentials: "include",
-	})
-		.then((response) => {
-			if (response.status === 403) {
-				auth.setUserInfo(null);
-				return false;
-			}
+	});
 
-			if (response.status === 200) {
-				setMessage({ action: "success", text: positiveText });
-			} else {
-				setMessage({ action: "failure", text: negativeText });
-			}
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return;
-		})
-		.catch((error) => {
-			console.error("There has been a problem with your fetch operation:", error);
-		});
+	const rdata = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export function remove(apiClass, id, setMessage, positiveText, negativeText, auth) {
-	fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete`, {
+export async function remove(apiClass, id, setMessage, positiveText, negativeText, auth) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
 		credentials: "include",
-	})
-		.then((response) => {
-			if (response.status === 403) {
-				auth.setUserInfo(null);
-				return false;
-			}
-			if (response.status === 200) {
-				setMessage({ action: "success", text: positiveText });
-			} else {
-				setMessage({ action: "failure", text: negativeText });
-			}
+	});
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return;
-		})
-		.catch((error) => {
-			console.error("There has been a problem with your fetch operation:", error);
-		});
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const rdata = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
+	setMessage({ action: "success", text: positiveText });
 }
 export function editRole(data, setAlert, positiveText, negativeText, auth) {
 	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {

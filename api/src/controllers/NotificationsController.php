@@ -18,21 +18,12 @@ class NotificationsConroller
         switch ($action) {
             case 'getall':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getAll();
-                    http_response_code(201);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+                $result = $this->gateway->getAll();
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
                 break;
             case 'create':
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -60,23 +51,23 @@ class NotificationsConroller
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $result = $this->gateway->update($data["data"]);
-                    if ($result) {
-                        http_response_code(200);
-                        echo json_encode([
-                            "message" => "Item edited",
-                            "token" => $authAction
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "Update failure",
-                            "token" => $authAction
-                        ]);
-                    }
+                    break;
                 }
 
+                $result = $this->gateway->update($data["data"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited",
+                        "token" => $authAction
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Update failure",
+                        "token" => $authAction
+                    ]);
+                }
                 break;
 
             case 'delete':
@@ -87,15 +78,16 @@ class NotificationsConroller
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $id = $this->gateway->delete($data["id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Item deleted",
-                        "data" => $id,
-                        "token" => $authAction
-                    ]);
+                    break;
                 }
+                $id = $this->gateway->delete($data["id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Item deleted",
+                    "data" => $id,
+                    "token" => $authAction
+                ]);
+
                 break;
             default:
                 break;

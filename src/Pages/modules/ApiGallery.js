@@ -16,7 +16,6 @@ export async function getCategories(auth, setState) {
 
 	const data = await response.json();
 	setState(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
 }
 
@@ -56,9 +55,11 @@ export async function updateCategory(data, auth, setMessage) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	setMessage({ action: "success", text: "Kategorie byla upravena" });
+	return;
 }
 
 export async function deleteCategory(id, auth, setMessage) {
+	console.log(auth.userInfo);
 	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=deleteCategory`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -75,6 +76,7 @@ export async function deleteCategory(id, auth, setMessage) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	setMessage({ action: "success", text: "Kategorie byla smazána" });
+	return;
 }
 
 /**
@@ -97,7 +99,6 @@ export async function getByCategory(id, setImages, auth) {
 	const data = await response.json();
 
 	setImages(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
 }
 
@@ -117,7 +118,6 @@ export async function getImageCategories(id, setPickedCategories, auth) {
 	const data = await response.json();
 
 	setPickedCategories(data.data);
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data;
 }
 

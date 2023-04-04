@@ -5,6 +5,8 @@ class ArticlesGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->path = $path;
     }
 
     public function create(array $data, int $userId): bool
@@ -23,7 +25,7 @@ class ArticlesGateway
 
         // save image data as file
         $image_name = uniqid();
-        file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("{$this->path}/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
@@ -114,10 +116,10 @@ class ArticlesGateway
             $decodedImageData = base64_decode($encodedImageData);
             // save image data as file
             $image_name = uniqid();
-            file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+            file_put_contents("{$this->path}/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
 
-            if (file_exists("../public/images/events/{$data["prevImage"]}")) {
-                unlink("../public/images/events/{$data["prevImage"]}");
+            if (file_exists("{$this->path}/images/events/{$data["prevImage"]}")) {
+                unlink("{$this->path}/images/events/{$data["prevImage"]}");
             }
 
             $this->compress($image_name . "." . $imageExtension);
@@ -183,8 +185,8 @@ class ArticlesGateway
 
         $imageName = $article["image"];
 
-        if (file_exists("../public/images/articles/{$imageName}")) {
-            unlink("../public/images/articles/{$imageName}");
+        if (file_exists("{$this->path}/images/articles/{$imageName}")) {
+            unlink("{$this->path}/images/articles/{$imageName}");
         }
 
         $sql = "DELETE FROM articles WHERE id = :id";
@@ -211,8 +213,8 @@ class ArticlesGateway
 
             $stmt->execute();
 
-            if (file_exists("../public/images/articles/{$row['name']}")) {
-                unlink("../public/images/articles/{$row['name']}");
+            if (file_exists("{$this->path}/images/articles/{$row['name']}")) {
+                unlink("{$this->path}/images/articles/{$row['name']}");
             }
         }
 
@@ -238,7 +240,7 @@ class ArticlesGateway
 
     private function compress($imageName)
     {
-        $source = "../public/images/articles/{$imageName}";
+        $source = "{$this->path}/images/articles/{$imageName}";
         // $quality = 75;
         set_time_limit(10);
         do {
@@ -280,7 +282,7 @@ class ArticlesGateway
         // decode base64-encoded image data
         $decodedImageData = base64_decode($encodedImageData);
 
-        file_put_contents("../public/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("{$this->path}/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
@@ -303,8 +305,8 @@ class ArticlesGateway
             'name' => $image_name
         ]);
 
-        if (file_exists("../public/images/articles/{$image_name}")) {
-            unlink("../public/images/articles/{$image_name}");
+        if (file_exists("{$this->path}/images/articles/{$image_name}")) {
+            unlink("{$this->path}/images/articles/{$image_name}");
         }
     }
 }

@@ -24,19 +24,19 @@ const Category = ({ auth, setImages, setSelectedCategory, categories, setCategor
 		getCategories(auth, setCategories);
 	};
 
-	const create = (data) => {
-		createCategory(data, auth, setMessage);
+	const create = async (data) => {
+		await createCategory(data, auth, setMessage);
 		setValue("name", "");
 		get();
 	};
 
-	const update = (data) => {
-		updateCategory(data, auth, setMessage);
+	const update = async (data) => {
+		await updateCategory(data, auth, setMessage);
 		get();
 	};
 
-	const remove = (id) => {
-		deleteCategory(id, auth, setMessage, get);
+	const remove = async (id) => {
+		await deleteCategory(id, auth, setMessage, get);
 		get();
 	};
 

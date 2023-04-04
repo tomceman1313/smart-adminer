@@ -5,6 +5,8 @@ class DocumentsGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->path = $path;
     }
 
     public function get(string $id): array
@@ -39,7 +41,7 @@ class DocumentsGateway
 
         // save image data as file
         $file_name = str_replace(" ", "_", $data["file_name"]);
-        file_put_contents("../public/files/documents/{$file_name}.{$fileExtension}", $decodedFileData);
+        file_put_contents("{$this->path}/files/documents/{$file_name}.{$fileExtension}", $decodedFileData);
 
         $sql = "INSERT INTO documents (name, category_id, date) VALUES (:name, :category_id, :date)";
         $stmt = $this->conn->prepare($sql);
@@ -73,7 +75,7 @@ class DocumentsGateway
             // save image data as file
             $file_name = str_replace(" ", "_", $data["file_name"]);
 
-            file_put_contents("../public/files/documents/{$file_name}.{$fileExtension}", $decodedfileData);
+            file_put_contents("{$this->path}/files/documents/{$file_name}.{$fileExtension}", $decodedfileData);
 
 
             $sql = "INSERT INTO documents (name, category_id, date) VALUES (:name, :category_id, :date)";
@@ -93,8 +95,8 @@ class DocumentsGateway
         $document = $this->get($id);
         $fileName = $document["name"];
 
-        if (file_exists("../public/files/documents/{$fileName}")) {
-            unlink("../public/files/documents/{$fileName}");
+        if (file_exists("{$this->path}/files/documents/{$fileName}")) {
+            unlink("{$this->path}/files/documents/{$fileName}");
         }
 
         $sql = "DELETE FROM documents WHERE id = :id";

@@ -18,22 +18,12 @@ class PricelistConroller
         switch ($action) {
             case 'getall':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getAll();
-                    http_response_code(201);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
-
+                $result = $this->gateway->getAll();
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
                 break;
 
             case 'create':

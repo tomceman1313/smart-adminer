@@ -15,6 +15,8 @@ import Message from "../../Components/admin/Message";
 import Documents from "../documents/Documents";
 import Event from "../events/Event";
 import Events from "../events/Events";
+import Products from "../products/Products";
+import Product from "../products/Product";
 
 import css from "./Dashboard.module.css";
 
@@ -80,6 +82,9 @@ export default function Dashboard() {
 						<Route path="notifications" element={<Notifications />} />
 						<Route path="gallery" element={<Gallery />} />
 						<Route path="documents" element={<Documents />} />
+						<Route path="products" element={<Products />} />
+						<Route path="new-product" element={<Product />} />
+						<Route path="product/:id" element={<Product />} />
 					</Route>
 					<Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.employee, ROLES.admin]} />}>
 						<Route path="profile" element={<Profile />} />

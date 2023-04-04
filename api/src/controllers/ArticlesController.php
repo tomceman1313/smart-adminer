@@ -18,40 +18,23 @@ class ArticlesConroller
         switch ($action) {
             case 'getall':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $data = $this->gateway->getAll();
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" => $data,
-                        "token" => $authAction
-                    ]);
-                }
+                $data = $this->gateway->getAll();
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" => $data
+                ]);
                 break;
 
             case 'get':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $data = $this->gateway->get($data["id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Article provided",
-                        "data" => $data,
-                        "token" => $authAction
-                    ]);
-                }
+                $data = $this->gateway->get($data["id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Article provided",
+                    "data" => $data
+                ]);
+
                 break;
 
             case 'create':
@@ -125,8 +108,7 @@ class ArticlesConroller
                 $result = $this->gateway->getCategory($data["id"]);
                 echo json_encode([
                     "message" => "Data provided",
-                    "data" =>  $result,
-                    "token" => $data["token"]
+                    "data" =>  $result
                 ]);
                 break;
 

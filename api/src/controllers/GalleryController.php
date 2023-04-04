@@ -15,160 +15,141 @@ class GalleryConroller
 
     private function controller(string $action): void
     {
+        $data = json_decode(file_get_contents("php://input"), true);
+
         switch ($action) {
             case 'getall':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getAll();
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+                $result = $this->gateway->getAll();
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
                 break;
 
             case 'getByCategory':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getByCategory($data["category_id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+                $result = $this->gateway->getByCategory($data["category_id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
                 break;
+
             case 'getImageCategories':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getImageCategories($data["image_id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+
+                $result = $this->gateway->getImageCategories($data["image_id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result,
+                ]);
                 break;
+
             case 'create':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
+
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $id = $this->gateway->create($data["data"]);
-                    http_response_code(201);
-                    echo json_encode([
-                        "message" => "Item created",
-                        "data" => $id,
-                        "token" => $authAction
-                    ]);
+                    break;
                 }
+
+                $id = $this->gateway->create($data["data"]);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Item created",
+                    "data" => $id,
+                    "token" => $authAction
+                ]);
                 break;
 
             case 'multipleCreate':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
+
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $this->gateway->multipleCreate($data["data"]);
-                    http_response_code(201);
+                    break;
+                }
+
+                $this->gateway->multipleCreate($data["data"]);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Items created",
+                    "token" => $authAction
+                ]);
+                break;
+
+            case 'update':
+                $authAction = $this->admin->authAction($data["token"], array(3));
+
+                if (!$authAction) {
+                    http_response_code(403);
                     echo json_encode([
-                        "message" => "Item created",
+                        "message" => "Access denied"
+                    ]);
+                    break;
+                }
+
+                $result = $this->gateway->update($data["data"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited",
+                        "token" => $authAction
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Update failure",
                         "token" => $authAction
                     ]);
                 }
-                break;
-            case 'update':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->update($data["data"]);
-                    if ($result) {
-                        http_response_code(200);
-                        echo json_encode([
-                            "message" => "Item edited",
-                            "token" => $authAction
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "Update failure",
-                            "token" => $authAction
-                        ]);
-                    }
-                }
-
                 break;
 
             case 'delete':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
+
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $id = $this->gateway->delete($data["id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Item deleted",
-                        "data" => $id,
-                        "token" => $authAction
-                    ]);
+                    break;
                 }
+
+                $id = $this->gateway->delete($data["id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Item deleted",
+                    "data" => $id,
+                    "token" => $authAction
+                ]);
                 break;
+
             case 'multipleDelete':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $this->gateway->multipleDelete($data["data"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Items deleted",
-                        "token" => $authAction
-                    ]);
+                    break;
                 }
+
+                $this->gateway->multipleDelete($data["data"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Items deleted",
+                    "token" => $authAction
+                ]);
                 break;
+
             default:
                 break;
         }
@@ -176,85 +157,83 @@ class GalleryConroller
         //* SWITCH for category methods
         switch ($action) {
             case 'getCategories':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getCategories();
-                    http_response_code(201);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+
+                $result = $this->gateway->getCategories();
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
                 break;
+
             case 'createCategory':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
+
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $id = $this->gateway->createCategory($data["data"]);
-                    http_response_code(201);
+                    break;
+                }
+
+                $id = $this->gateway->createCategory($data["data"]);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Item created",
+                    "data" => $id,
+                    "token" => $authAction
+                ]);
+                break;
+
+            case 'updateCategory':
+                $authAction = $this->admin->authAction($data["token"], array(3));
+
+                if (!$authAction) {
+                    http_response_code(403);
                     echo json_encode([
-                        "message" => "Item created",
-                        "data" => $id,
+                        "message" => "Access denied"
+                    ]);
+                    break;
+                }
+
+                $result = $this->gateway->updateCategory($data["data"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited",
+                        "token" => $authAction
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Update failure",
                         "token" => $authAction
                     ]);
                 }
-                break;
-            case 'updateCategory':
-                $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->updateCategory($data["data"]);
-                    if ($result) {
-                        http_response_code(200);
-                        echo json_encode([
-                            "message" => "Item edited",
-                            "token" => $authAction
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "Update failure",
-                            "token" => $authAction
-                        ]);
-                    }
-                }
-
                 break;
 
             case 'deleteCategory':
-                $data = json_decode(file_get_contents("php://input"), true);
                 $authAction = $this->admin->authAction($data["token"], array(3));
+
                 if (!$authAction) {
                     http_response_code(403);
                     echo json_encode([
                         "message" => "Access denied"
                     ]);
-                } else {
-                    $this->gateway->deleteCategory($data["id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Item deleted",
-                        "token" => $authAction
-                    ]);
+                    break;
                 }
+
+                $this->gateway->deleteCategory($data["id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Item deleted",
+                    "token" => $authAction
+                ]);
                 break;
+
+            case 'test':
+                var_dump($data);
             default:
                 break;
         }

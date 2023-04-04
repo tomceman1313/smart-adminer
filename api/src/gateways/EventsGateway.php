@@ -5,6 +5,8 @@ class EventsGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->path = $path;
     }
 
 
@@ -24,7 +26,7 @@ class EventsGateway
 
         // save image data as file
         $image_name = uniqid();
-        file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
@@ -115,10 +117,10 @@ class EventsGateway
             $decodedImageData = base64_decode($encodedImageData);
             // save image data as file
             $image_name = uniqid();
-            file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
+            file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
-            if (file_exists("../public/images/events/{$data["prevImage"]}")) {
-                unlink("../public/images/events/{$data["prevImage"]}");
+            if (file_exists("{$this->path}/images/events/{$data["prevImage"]}")) {
+                unlink("{$this->path}/images/events/{$data["prevImage"]}");
             }
 
             $this->compress($image_name . "." . $imageExtension);
@@ -184,8 +186,8 @@ class EventsGateway
 
         $imageName = $article["image"];
 
-        if (file_exists("../public/images/events/{$imageName}")) {
-            unlink("../public/images/events/{$imageName}");
+        if (file_exists("{$this->path}/images/events/{$imageName}")) {
+            unlink("{$this->path}/images/events/{$imageName}");
         }
 
         $sql = "DELETE FROM events WHERE id = :id";
@@ -212,8 +214,8 @@ class EventsGateway
 
             $stmt->execute();
 
-            if (file_exists("../public/images/events/{$row['name']}")) {
-                unlink("../public/images/events/{$row['name']}");
+            if (file_exists("{$this->path}/images/events/{$row['name']}")) {
+                unlink("{$this->path}/images/events/{$row['name']}");
             }
         }
 
@@ -239,7 +241,7 @@ class EventsGateway
 
     private function compress($imageName)
     {
-        $source = "../public/images/events/{$imageName}";
+        $source = "{$this->path}/images/events/{$imageName}";
         // $quality = 75;
         set_time_limit(10);
         do {
@@ -281,7 +283,7 @@ class EventsGateway
         // decode base64-encoded image data
         $decodedImageData = base64_decode($encodedImageData);
 
-        file_put_contents("../public/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
+        file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
 
         $this->compress($image_name . "." . $imageExtension);
 
@@ -304,8 +306,8 @@ class EventsGateway
             'name' => $image_name
         ]);
 
-        if (file_exists("../public/images/events/{$image_name}")) {
-            unlink("../public/images/events/{$image_name}");
+        if (file_exists("{$this->path}/images/events/{$image_name}")) {
+            unlink("{$this->path}/images/events/{$image_name}");
         }
     }
 }

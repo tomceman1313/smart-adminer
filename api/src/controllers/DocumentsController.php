@@ -18,40 +18,25 @@ class DocumentsConroller
         switch ($action) {
             case 'getall':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getAll();
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+
+                $result = $this->gateway->getAll();
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result,
+                ]);
+
                 break;
 
             case 'getByCategory':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getByCategory($data["category_id"]);
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+                $result = $this->gateway->getByCategory($data["category_id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
+
                 break;
             case 'create':
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -159,21 +144,13 @@ class DocumentsConroller
         switch ($action) {
             case 'getCategories':
                 $data = json_decode(file_get_contents("php://input"), true);
-                $authAction = $this->admin->authAction($data["token"], array(3));
-                if (!$authAction) {
-                    http_response_code(403);
-                    echo json_encode([
-                        "message" => "Access denied"
-                    ]);
-                } else {
-                    $result = $this->gateway->getCategories();
-                    http_response_code(201);
-                    echo json_encode([
-                        "message" => "Data provided",
-                        "data" =>  $result,
-                        "token" => $data["token"]
-                    ]);
-                }
+                $result = $this->gateway->getCategories();
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
+
                 break;
             case 'createCategory':
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -207,12 +184,6 @@ class DocumentsConroller
                         http_response_code(200);
                         echo json_encode([
                             "message" => "Item edited",
-                            "token" => $authAction
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "Update failure",
                             "token" => $authAction
                         ]);
                     }
