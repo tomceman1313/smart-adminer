@@ -29,6 +29,9 @@ require __DIR__ . "/src/gateways/DocumentsGateway.php";
 require __DIR__ . "/src/controllers/EventsController.php";
 require __DIR__ . "/src/gateways/EventsGateway.php";
 
+require __DIR__ . "/src/controllers/ProductsController.php";
+require __DIR__ . "/src/gateways/ProductsGateway.php";
+
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
 // header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
@@ -73,10 +76,10 @@ if (isset($_GET["id"])) {
 $admin = new AdminGateway($database);
 switch ($class) {
     case 'products':
-        $gateway = new ProductGateway($database);
-        $controller = new ProductController($gateway);
+        $gateway = new ProductsGateway($database);
+        $controller = new ProductsController($gateway, $admin);
 
-        $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
+        $controller->processRequest($action, $id);
         break;
     case 'admin':
         $gateway = new AdminGateway($database);
