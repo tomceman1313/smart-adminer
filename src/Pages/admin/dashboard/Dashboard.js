@@ -16,7 +16,7 @@ import Documents from "../documents/Documents";
 import Event from "../events/Event";
 import Events from "../events/Events";
 import Products from "../products/Products";
-import Product from "../products/Product";
+import Product from "../product/Product";
 
 import css from "./Dashboard.module.css";
 

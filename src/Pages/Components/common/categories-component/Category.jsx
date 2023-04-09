@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import useInteraction from "../../Hooks/useInteraction";
-import { createCategory, deleteCategory, getByCategory, getCategories, updateCategory } from "../../modules/ApiGallery";
+import useInteraction from "../../../Hooks/useInteraction";
+import useAuth from "../../../Hooks/useAuth";
+import { createCategory, deleteCategory, getByCategory, getCategories, updateCategory } from "../../../modules/ApiCategories";
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
-import InputBox from "../../Components/basic/InputBox";
-import Item from "./Item";
+import InputBox from "../../basic/InputBox";
+import Item from "../../../admin/gallery/Item";
 
-import css from "./css/Category.module.css";
+import css from "./Category.module.css";
 
-const Category = ({ auth, setImages, setSelectedCategory, categories, setCategories }) => {
+const Category = ({ setState, setSelectedCategory, categories, setCategories, apiClass }) => {
+	const auth = useAuth();
+
 	const { setMessage } = useInteraction();
 
 	const { register, handleSubmit, setValue } = useForm();
@@ -21,27 +24,27 @@ const Category = ({ auth, setImages, setSelectedCategory, categories, setCategor
 	}, []);
 
 	const get = () => {
-		getCategories(auth, setCategories);
+		getCategories(setCategories, apiClass);
 	};
 
 	const create = async (data) => {
-		await createCategory(data, auth, setMessage);
+		await createCategory(data, auth, setMessage, apiClass);
 		setValue("name", "");
 		get();
 	};
 
 	const update = async (data) => {
-		await updateCategory(data, auth, setMessage);
+		await updateCategory(data, auth, setMessage, apiClass);
 		get();
 	};
 
 	const remove = async (id) => {
-		await deleteCategory(id, auth, setMessage, get);
+		await deleteCategory(id, auth, setMessage, apiClass);
 		get();
 	};
 
 	const showCategory = (id) => {
-		getByCategory(id, setImages, auth);
+		getByCategory(id, setState, auth);
 		const categoryName = categories.filter((item) => item.id === id);
 		setSelectedCategory(categoryName[0].name);
 	};

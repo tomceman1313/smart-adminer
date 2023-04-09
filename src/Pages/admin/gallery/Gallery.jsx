@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Category from "./Category";
+import Category from "../../Components/common/categories-component/Category";
 
 import useAuth from "../../Hooks/useAuth";
 
@@ -20,7 +20,13 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
-			<Category auth={auth} setImages={setImages} setSelectedCategory={setSelectedCategory} categories={categories} setCategories={setCategories} />
+			<Category
+				setState={setImages}
+				setSelectedCategory={setSelectedCategory}
+				categories={categories}
+				setCategories={setCategories}
+				apiClass="gallery"
+			/>
 			<NewPicture auth={auth} setImages={setImages} categories={categories} />
 			<Images images={images} setImages={setImages} auth={auth} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
 		</div>

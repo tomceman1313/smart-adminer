@@ -8,9 +8,6 @@ spl_autoload_register(function ($class) {
 require __DIR__ . "/src/controllers/AdminController.php";
 require __DIR__ . "/src/gateways/AdminGateway.php";
 
-require __DIR__ . "/src/controllers/ProductController.php";
-require __DIR__ . "/src/gateways/ProductGateway.php";
-
 require __DIR__ . "/src/controllers/PricelistController.php";
 require __DIR__ . "/src/gateways/PricelistGateway.php";
 
