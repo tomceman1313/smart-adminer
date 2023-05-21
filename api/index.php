@@ -28,6 +28,8 @@ require __DIR__ . "/src/gateways/EventsGateway.php";
 
 require __DIR__ . "/src/controllers/ProductsController.php";
 require __DIR__ . "/src/gateways/ProductsGateway.php";
+require __DIR__ . "/src/gateways/products/ManufacturerGateway.php";
+require __DIR__ . "/src/gateways/products/CategoryGateway.php";
 
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
@@ -74,7 +76,9 @@ $admin = new AdminGateway($database);
 switch ($class) {
     case 'products':
         $gateway = new ProductsGateway($database);
-        $controller = new ProductsController($gateway, $admin);
+        $manufacturer = new ManufacturerGateway($database);
+        $category = new CategoryGateway($database);
+        $controller = new ProductsController($gateway, $admin, $manufacturer, $category);
 
         $controller->processRequest($action, $id);
         break;

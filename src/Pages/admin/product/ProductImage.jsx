@@ -2,10 +2,11 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
+import { useParams } from "react-router-dom";
 
-import css from "./Article.module.css";
+import css from "./Images.module.css";
 
-const ArticleImage = ({ el, deleteImage, location }) => {
+const ProductImage = ({ el, deleteImage }) => {
 	const [clicked, setClicked] = useState(false);
 
 	const onClickHandler = (e) => {
@@ -27,7 +28,7 @@ const ArticleImage = ({ el, deleteImage, location }) => {
 				ease: "easeInOut",
 			}}
 		>
-			<img src={`${publicPath}/images/${location}/${el.name}`} alt="Obrázek článku" />
+			<img src={`${publicPath}/images/products/${el.name}`} alt="Obrázek článku" />
 			{clicked && (
 				<article id={el.id} key={255 + el.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 					<FontAwesomeIcon className={css.icon} icon={faTrashCan} />
@@ -37,4 +38,4 @@ const ArticleImage = ({ el, deleteImage, location }) => {
 	);
 };
 
-export default ArticleImage;
+export default ProductImage;

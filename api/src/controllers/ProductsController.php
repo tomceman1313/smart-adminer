@@ -1,9 +1,11 @@
 <?php
 class ProductsController
 {
-    public function __construct(ProductsGateway $gateway, AdminGateway $adminGateway)
+    public function __construct(ProductsGateway $gateway, AdminGateway $adminGateway, ManufacturerGateway $manufacturerGateway, CategoryGateway $categoryGateway)
     {
         $this->gateway = $gateway;
+        $this->manufacturer = $manufacturerGateway;
+        $this->category = $categoryGateway;
         $this->admin = $adminGateway;
     }
 
@@ -15,29 +17,28 @@ class ProductsController
     private function controller(string $action): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $offset = 0;
+        $id = 0;
+        if (isset($_GET["offset"])) {
+            $offset = $_GET["offset"];
+        }
+        if (isset($_GET["id"])) {
+            $id = $_GET["id"];
+        }
         switch ($action) {
             case 'getall':
-
-                $data = $this->gateway->getAll();
+                $data = $this->gateway->getAll($offset);
                 http_response_code(200);
-                echo json_encode([
-                    "message" => "Data provided",
-                    "data" => $data
-                ]);
+                echo json_encode($data);
                 break;
 
             case 'get':
-
-                $data = $this->gateway->get($data["id"]);
+                $data = $this->gateway->get($id);
                 http_response_code(200);
-                echo json_encode([
-                    "message" => "Event provided",
-                    "data" => $data
-                ]);
+                echo json_encode($data);
                 break;
 
             case 'create':
-
                 $authAction = $this->admin->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -47,7 +48,7 @@ class ProductsController
                 } else {
                     $userId = $this->admin->decodeToken($authAction);
                     if ($userId != null) {
-                        $id = $this->gateway->create($data["data"], $userId);
+                        $id = $this->gateway->create($data["data"]);
                         http_response_code(200);
                         echo json_encode([
                             "message" => "Event created",
@@ -59,7 +60,6 @@ class ProductsController
                 break;
 
             case 'update':
-
                 $authAction = $this->admin->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -85,7 +85,6 @@ class ProductsController
 
                 break;
             case 'delete':
-
                 $authAction = $this->admin->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -93,7 +92,7 @@ class ProductsController
                         "message" => "Access denied"
                     ]);
                 } else {
-                    $id = $this->gateway->delete($data["id"]);
+                    $id = $this->gateway->delete($id);
                     http_response_code(200);
                     echo json_encode([
                         "message" => "Event deleted",
@@ -103,7 +102,6 @@ class ProductsController
                 }
                 break;
             case 'category':
-
                 $result = $this->gateway->getCategory($data["id"]);
                 echo json_encode([
                     "data" =>  $result
@@ -111,7 +109,6 @@ class ProductsController
                 break;
 
             case 'delete-image':
-
                 $authAction = $this->admin->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -119,7 +116,7 @@ class ProductsController
                         "message" => "Access denied"
                     ]);
                 } else {
-                    $result = $this->gateway->deleteImage($data["name"]);
+                    $result = $this->gateway->deleteImageWithUpdate($data["name"], $id);
                     echo json_encode([
                         "message" => "Image deleted",
                         "token" => $data["token"]
@@ -134,7 +131,7 @@ class ProductsController
         switch ($action) {
             case 'getCategories':
 
-                $result = $this->gateway->getCategories();
+                $result = $this->category->getCategories();
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Data provided",
@@ -153,7 +150,7 @@ class ProductsController
                     break;
                 }
 
-                $id = $this->gateway->createCategory($data["data"]);
+                $id = $this->category->createCategory($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Item created",
@@ -173,7 +170,7 @@ class ProductsController
                     break;
                 }
 
-                $result = $this->gateway->updateCategory($data["data"]);
+                $result = $this->category->updateCategory($data["data"]);
                 if ($result) {
                     http_response_code(200);
                     echo json_encode([
@@ -200,7 +197,7 @@ class ProductsController
                     break;
                 }
 
-                $this->gateway->deleteCategory($data["id"]);
+                $this->category->deleteCategory($data["id"]);
                 http_response_code(200);
                 echo json_encode([
                     "message" => "Item deleted",
@@ -210,6 +207,86 @@ class ProductsController
 
             case 'test':
                 var_dump($data);
+            default:
+                break;
+        }
+
+        //* SWITCH for manufacturer methods
+        switch ($action) {
+            case 'getManufacturers':
+                $result = $this->manufacturer->getAll();
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Data provided",
+                    "data" =>  $result
+                ]);
+                break;
+
+            case 'createManufacturer':
+                $authAction = $this->admin->authAction($data["token"], array(3));
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                    break;
+                }
+
+                $id = $this->manufacturer->create($data["data"]);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Item created",
+                    "data" => $id,
+                    "token" => $authAction
+                ]);
+                break;
+
+            case 'updateManufacturer':
+                $authAction = $this->admin->authAction($data["token"], array(3));
+
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                    break;
+                }
+
+                $result = $this->manufacturer->update($data["data"]);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited",
+                        "token" => $authAction
+                    ]);
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "message" => "Update failure",
+                        "token" => $authAction
+                    ]);
+                }
+                break;
+
+            case 'deleteManufacturer':
+                $authAction = $this->admin->authAction($data["token"], array(3));
+
+                if (!$authAction) {
+                    http_response_code(403);
+                    echo json_encode([
+                        "message" => "Access denied"
+                    ]);
+                    break;
+                }
+
+                $this->manufacturer->delete($data["id"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Item deleted",
+                    "token" => $authAction
+                ]);
+                break;
+
             default:
                 break;
         }

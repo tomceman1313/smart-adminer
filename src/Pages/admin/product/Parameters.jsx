@@ -1,14 +1,16 @@
-import { useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndent } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRef, useState, useEffect } from "react";
 
-import css from "./Product.module.css";
 import Parameter from "./Parameter";
+import css from "./Product.module.css";
 
 export default function Parameters({ variants, parameters, setParameters, refTableParams }) {
 	const refNewParameter = useRef(null);
 
 	const [paramIsUsed, setParamIsUsed] = useState(false);
+
+	useEffect(() => {}, [variants]);
 
 	const createNewParam = () => {
 		if (parameters.filter((item) => item.name === refNewParameter.current.value).length > 0) {
@@ -19,7 +21,13 @@ export default function Parameters({ variants, parameters, setParameters, refTab
 			return;
 		}
 
-		setParameters([...parameters, { name: refNewParameter.current.value, p_order: parameters.length }]);
+		const variantsCount = variants.length;
+		let emptyValues = [];
+		for (let index = 0; index < variantsCount; index++) {
+			emptyValues.push("");
+		}
+
+		setParameters([...parameters, { name: refNewParameter.current.value, p_order: parameters.length, values: emptyValues }]);
 		refNewParameter.current.value = "";
 	};
 
@@ -54,14 +62,14 @@ export default function Parameters({ variants, parameters, setParameters, refTab
 
 						<tbody ref={refTableParams}>
 							{parameters &&
-								parameters.map((el) => (
-									<tr key={el.name}>
+								parameters.map((parameter) => (
+									<tr key={parameter.name}>
 										<td>
-											<label>{el.name}</label>
+											<label>{parameter.name}</label>
 										</td>
-										{variants.map((el) => (
-											<td key={`value${el.name}`}>
-												<input type="text" placeholder="hodnota" />
+										{parameter.values.map((el, index) => (
+											<td key={`${parameter.name}-value-${el}-${index}`}>
+												<input type="text" placeholder="hodnota" defaultValue={el} />
 											</td>
 										))}
 									</tr>

@@ -55,6 +55,7 @@ export function getRoles(setState, auth) {
 }
 
 export async function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
+	//console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },

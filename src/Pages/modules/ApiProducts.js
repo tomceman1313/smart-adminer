@@ -1,8 +1,8 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function getVariants(setState, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getCategories`, {
-		method: "POST",
+export async function getProducts(setState, offset) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=getall&offset=${offset}`, {
+		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
 	});
@@ -12,53 +12,36 @@ export async function getVariants(setState, apiClass) {
 	}
 
 	const data = await response.json();
-	setState(data.data);
+	setState(data);
 	return data;
 }
 
-export async function createVariant(data, auth, setMessage, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=createCategory`, {
-		method: "POST",
+export async function getProduct(id) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=get&id=${id}`, {
+		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
 		credentials: "include",
 	});
 
 	if (response.status === 403) {
-		auth.setUserInfo(null);
 		return null;
 	}
 
-	const rdata = await response.json();
+	let data = await response.json();
 
-	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla přidána" });
-}
-
-export async function updateVariant(data, auth, setMessage, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=updateCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
-		credentials: "include",
+	data.variants.map((el) => {
+		el.parameters = JSON.parse(el.parameters);
+		return el;
 	});
 
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const rdata = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla upravena" });
+	return data;
 }
 
-export async function deleteVariant(id, auth, setMessage, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=deleteCategory`, {
-		method: "POST",
+export async function deleteProduct(id, auth, setMessage) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete&id=${id}`, {
+		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+		body: JSON.stringify({ token: auth.userInfo.token }),
 		credentials: "include",
 	});
 
@@ -70,5 +53,28 @@ export async function deleteVariant(id, auth, setMessage, apiClass) {
 	const data = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: "Kategorie byla smazána" });
+	setMessage({ action: "success", text: "Produkt byl smazán" });
+}
+
+export async function deleteImage(name, id, auth, setMessage) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image`, {
+		method: "DELETE",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ name: name, token: auth.userInfo.token }),
+		credentials: "include",
+	});
+
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const data = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	if (response.status === 200) {
+		setMessage({ action: "success", text: "Obrázek byl smazán" });
+	} else {
+		setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
+	}
 }

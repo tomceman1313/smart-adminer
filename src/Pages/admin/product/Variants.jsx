@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import css from "./Product.module.css";
 import Variant from "./Variant";
 
-export default function Variants({ variants, setVariants }) {
+export default function Variants({ variants, setVariants, parameters, setParameters }) {
 	const refName = useRef(null);
 	const refPrice = useRef(null);
 	const refInStock = useRef(null);
@@ -24,6 +24,13 @@ export default function Variants({ variants, setVariants }) {
 			}, 5000);
 			return;
 		}
+
+		let parametersUpdated = parameters.map((el) => {
+			el.values.push("");
+			return el;
+		});
+		setParameters(parametersUpdated);
+
 		refName.current.value = "";
 		refPrice.current.value = "";
 		refInStock.current.value = "";
@@ -42,16 +49,18 @@ export default function Variants({ variants, setVariants }) {
 					</li>
 				)}
 				{variants.length > 0 ? (
-					variants.map((item) => <Variant key={item.name} el={item} variants={variants} setVariants={setVariants} />)
+					variants.map((item) => (
+						<Variant key={item.name} el={item} variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
+					))
 				) : (
 					<p>- Pro tento produkt nebyly zatím vytvořeny žádné varianty</p>
 				)}
 			</ul>
 			<h3>Přidání varianty:</h3>
 			<div>
-				<input type="text" placeholder="Název" ref={refName} required />
-				<input type="number" placeholder="Kusů skladem" ref={refInStock} required />
-				<input type="number" placeholder="Cena" ref={refPrice} required />
+				<input type="text" placeholder="Název" ref={refName} />
+				<input type="number" placeholder="Kusů skladem" ref={refInStock} />
+				<input type="number" placeholder="Cena" ref={refPrice} />
 
 				<button type="button" onClick={addVariant}>
 					Uložit

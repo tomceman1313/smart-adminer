@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { faPencil, faFloppyDisk, faTrashCan, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDown, faArrowUp, faFloppyDisk, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import css from "./Product.module.css";
 
-const Variant = ({ el, variants, setVariants }) => {
+const Variant = ({ el, variants, setVariants, parameters, setParameters }) => {
 	const [disabled, setDisabled] = useState(true);
 	const refName = useRef(null);
 	const refPrice = useRef(null);
@@ -17,6 +16,8 @@ const Variant = ({ el, variants, setVariants }) => {
 			if (pos >= 0) {
 				let changedArray = [...variants];
 				changedArray[pos].name = refName.current.value;
+				changedArray[pos].price = refPrice.current.value;
+				changedArray[pos].in_stock = refInStock.current.value;
 				setVariants(changedArray);
 			}
 		} else {
@@ -27,6 +28,11 @@ const Variant = ({ el, variants, setVariants }) => {
 		setDisabled((prev) => !prev);
 	};
 
+	/**
+	 * * Function for moving variant up in the order
+	 * * also swaps values in parameters
+	 * @returns nothing
+	 */
 	const upInOrder = () => {
 		const actualPosition = el.v_order;
 		if (actualPosition === 0) {
@@ -41,10 +47,24 @@ const Variant = ({ el, variants, setVariants }) => {
 
 			return item;
 		});
+		// swap columns in parameters
+		let parametersNew = updateParams();
+		parameters.forEach((param, index) => {
+			let paramValues = [...param.values];
+			//swap values
+			[paramValues[actualPosition - 1], paramValues[actualPosition]] = [paramValues[actualPosition], paramValues[actualPosition - 1]];
+			parametersNew[index].values = paramValues;
+		});
+		setParameters(parametersNew);
+
 		const sorted = updatedPositions.sort((a, b) => a.v_order - b.v_order);
 		setVariants(sorted);
 	};
 
+	/**
+	 * * Function for moving variant down in the order
+	 * @returns nothing
+	 */
 	const downInOrder = () => {
 		const actualPosition = el.v_order;
 		if (actualPosition === variants.length - 1) {
@@ -59,22 +79,69 @@ const Variant = ({ el, variants, setVariants }) => {
 
 			return item;
 		});
+
+		// swap columns in parameters
+		let parametersNew = updateParams();
+		parameters.forEach((param, index) => {
+			let paramValues = [...param.values];
+			//swap values
+			[paramValues[actualPosition], paramValues[actualPosition + 1]] = [paramValues[actualPosition + 1], paramValues[actualPosition]];
+			parametersNew[index].values = paramValues;
+		});
+		setParameters(parametersNew);
+
 		const sorted = updatedPositions.sort((a, b) => a.v_order - b.v_order);
 		setVariants(sorted);
 	};
 
-	const removeCategory = () => {
+	/**
+	 * * Function for deleting variant from variants state
+	 * @returns nothing
+	 */
+	const removeVariant = () => {
 		const pos = variants.map((e) => e.name).indexOf(refName.current.value);
+
 		if (pos >= 0) {
 			const reducedArray = [...variants];
 			reducedArray.splice(pos, 1);
-
+			//update order values
 			for (let index = 0; index < reducedArray.length; index++) {
 				reducedArray[index].v_order = index;
 			}
 			setVariants(reducedArray);
+			//delete values of removed variant
+			const updatedParams = parameters.map((el) => {
+				el.values.splice(pos, 1);
+				return el;
+			});
+
+			setParameters(updatedParams);
 		}
 	};
+
+	/**
+	 * * Function for update parameters values with current data
+	 * ? without this default values (loaded values from server) would presist even it was changed
+	 * @returns array[{name, p_order, values}]
+	 */
+	function updateParams() {
+		//get inputs
+		const inputs = document.querySelectorAll("tbody input");
+		//to know how many columns one row has
+		const varsCount = variants.length;
+
+		let values = [];
+		inputs.forEach((el) => {
+			values.push(el.value);
+		});
+
+		let updatedParams = [...parameters];
+		updatedParams.forEach((el) => {
+			el.values = values.splice(0, varsCount);
+		});
+
+		return updatedParams;
+	}
 
 	return (
 		<li>
@@ -86,7 +153,7 @@ const Variant = ({ el, variants, setVariants }) => {
 				<FontAwesomeIcon icon={faArrowDown} onClick={downInOrder} />
 				<FontAwesomeIcon icon={faArrowUp} onClick={upInOrder} />
 				<FontAwesomeIcon icon={disabled ? faPencil : faFloppyDisk} onClick={changeHandler} />
-				<FontAwesomeIcon icon={faTrashCan} onClick={removeCategory} />
+				<FontAwesomeIcon icon={faTrashCan} onClick={removeVariant} />
 			</div>
 		</li>
 	);
