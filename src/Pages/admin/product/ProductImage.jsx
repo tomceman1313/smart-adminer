@@ -2,12 +2,13 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
-import { useParams } from "react-router-dom";
 
 import css from "./Images.module.css";
 
 const ProductImage = ({ el, deleteImage }) => {
 	const [clicked, setClicked] = useState(false);
+
+	//TODO Change order feature
 
 	const onClickHandler = (e) => {
 		setClicked((prev) => !prev);
