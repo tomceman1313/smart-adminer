@@ -22,7 +22,7 @@ export function makeDateFormat(date, direction) {
 		return "0";
 	}
 
-	if (direction == "str") {
+	if (direction === "str") {
 		dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
 	} else {
 		let dateArray = dateStr.split("-");
@@ -60,7 +60,7 @@ export function createEventsArray(data) {
 export function isActive(start, end, css) {
 	const date = new Date();
 	const dateNow = Number(makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate()));
-	if (start == 0 || end == 0) {
+	if (start === 0 || end === 0) {
 		return <FontAwesomeIcon id={css.status_icon} icon={faMinus} style={{ color: "gray" }} title="Nedostupné" />;
 	}
 

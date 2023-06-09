@@ -332,3 +332,8 @@
 .images {
 	width: calc(100% - 120px);
 }
+
+.control_box {
+	margin-top: 40px;
+	text-align: center;
+}

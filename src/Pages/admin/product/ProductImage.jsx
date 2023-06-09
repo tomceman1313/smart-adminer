@@ -1,26 +1,40 @@
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCircleChevronLeft, faCircleChevronRight, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
 
+import { motion } from "framer-motion";
 import css from "./Images.module.css";
 
-const ProductImage = ({ el, deleteImage }) => {
+const ProductImage = ({ el, deleteImage, changeOrder }) => {
 	const [clicked, setClicked] = useState(false);
 
-	//TODO Change order feature
+	//moves image to left
+	function moveLeft() {
+		changeOrder(el, "left");
+	}
 
-	const onClickHandler = (e) => {
+	//moves image to right
+	function moveRight() {
+		changeOrder(el, "right");
+	}
+
+	function deleteHandler() {
 		setClicked((prev) => !prev);
-		if (e.target.localName !== "img") {
-			deleteImage(el);
+		deleteImage(el);
+	}
+
+	//show or hide controls
+	function showHide(e) {
+		if (e.target.localName === "img") {
+			setClicked((prev) => !prev);
 		}
-	};
+	}
 
 	return (
-		<div
+		<motion.div
 			className={css.image}
-			onClick={onClickHandler}
+			onClick={showHide}
 			initial={{ scale: 0.6 }}
 			animate={{ scale: 1 }}
 			exit={{ scale: 0.6 }}
@@ -30,12 +44,24 @@ const ProductImage = ({ el, deleteImage }) => {
 			}}
 		>
 			<img src={`${publicPath}/images/products/${el.name}`} alt="Obrázek článku" />
+
 			{clicked && (
-				<article id={el.id} key={255 + el.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-					<FontAwesomeIcon className={css.icon} icon={faTrashCan} />
-				</article>
+				<>
+					<FontAwesomeIcon className={css.order_arrow} icon={faCircleChevronLeft} onClick={moveLeft} />
+					<FontAwesomeIcon className={css.order_arrow} icon={faCircleChevronRight} onClick={moveRight} />
+					<motion.article
+						id={el.id}
+						key={"image-" + el.id}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						onClick={deleteHandler}
+					>
+						<FontAwesomeIcon className={css.icon} icon={faTrashCan} />
+					</motion.article>
+				</>
 			)}
-		</div>
+		</motion.div>
 	);
 };
 

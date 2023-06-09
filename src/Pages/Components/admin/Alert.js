@@ -16,7 +16,13 @@ const Alert = () => {
 	return (
 		<AnimatePresence>
 			{alert && (
-				<motion.div className={css.check_message} initial={{ y: -300, x: "-50%" }} animate={{ y: 50 }} exit={{ y: -300 }} transition={{ type: "spring", duration: 1 }}>
+				<motion.div
+					className={css.check_message}
+					initial={{ y: -300, x: "-50%" }}
+					animate={{ y: 50 }}
+					exit={{ y: -300 }}
+					transition={{ type: "spring", duration: 1 }}
+				>
 					<p>{alert.question}</p>
 					<button
 						onClick={() => {

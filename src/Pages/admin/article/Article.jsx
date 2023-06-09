@@ -120,9 +120,9 @@ const Article = () => {
 					<FontAwesomeIcon className={cssBasic.icon} icon={faMagnifyingGlass} />
 				</div>
 				<p>Článek je viditelný: </p>
-				<label className={css.switch}>
+				<label className="switch">
 					<input type="checkbox" {...register("active")} />
-					<span className={css.slider}></span>
+					<span className="slider"></span>
 				</label>
 			</section>
 

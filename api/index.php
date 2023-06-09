@@ -31,6 +31,12 @@ require __DIR__ . "/src/gateways/ProductsGateway.php";
 require __DIR__ . "/src/gateways/products/ManufacturerGateway.php";
 require __DIR__ . "/src/gateways/products/CategoryGateway.php";
 
+require __DIR__ . "/src/controllers/VacancyController.php";
+require __DIR__ . "/src/gateways/VacancyGateway.php";
+
+require __DIR__ . "/src/controllers/EmployeesController.php";
+require __DIR__ . "/src/gateways/EmployeesGateway.php";
+
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
 // header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
@@ -43,13 +49,19 @@ header("Access-Control-Allow-Origin: http://localhost:3000");
 //Production 
 //header("Access-Control-Allow-Origin: http://localhost/admin");
 header("Content-type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
+header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS");
 
 header("Access-Control-Allow-Credentials: true");
 
-header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization");
 
-
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+    header("Access-Control-Allow-Origin: http://localhost:3000");
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,Access-Control-Request-Headers, Authorization");
+    header("HTTP/1.1 200 OK");
+    die();
+}
 
 //$parts = explode("/", $_SERVER["REQUEST_URI"]);
 $database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
@@ -119,6 +131,17 @@ switch ($class) {
     case 'events':
         $gateway = new EventsGateway($database);
         $controller = new EventsConroller($gateway, $admin);
+        $controller->processRequest($action, $id);
+        break;
+
+    case 'vacancies':
+        $gateway = new VacancyGateway($database);
+        $controller = new VacancyConroller($gateway, $admin);
+        $controller->processRequest($action, $id);
+        break;
+    case 'employees':
+        $gateway = new EmployeesGateway($database);
+        $controller = new EmployeesConroller($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     default:

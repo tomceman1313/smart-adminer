@@ -1,15 +1,15 @@
-import { faHashtag, faInfo, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faInfo, faShoppingCart, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
 import { create, edit } from "../../modules/ApiFunctions";
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
-import { getProduct } from "../../modules/ApiProducts";
+import { getProduct, deleteProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
 
 import cssBasic from "../styles/Basic.module.css";
@@ -22,6 +22,8 @@ import Variants from "./Variants";
 export default function Product() {
 	const auth = useAuth();
 	const { id } = useParams();
+	let location = useLocation();
+	const navigate = useNavigate();
 	const { setMessage } = useInteraction();
 	//reference to parameters table (passed to Parameters)
 	const refTableParams = useRef(null);
@@ -33,7 +35,7 @@ export default function Product() {
 	const [parameters, setParameters] = useState([]);
 	const [detailText, setDetailText] = useState("");
 	const [images, setImages] = useState(null);
-	const { register, handleSubmit, setValue } = useForm();
+	const { register, handleSubmit, setValue, reset } = useForm();
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Produkt";
@@ -43,13 +45,25 @@ export default function Product() {
 
 		if (id) {
 			setData();
+		} else {
+			reset();
+			setVariants([]);
+			setParameters([]);
+			setDetailText("");
+			setPickedCategories([]);
+			setImages(null);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	}, [location]);
 
 	const onSubmit = async (data) => {
 		let imagesArray = [];
-		let order = images.length;
+		let order = images?.length ? images?.length : 0;
+
+		if (images?.length === 0 && data.images.length === 0) {
+			setMessage({ action: "alert", text: "Produkt nemůže být bez obrázku." });
+			return;
+		}
 		for (const file of data.images) {
 			const base64 = await convertBase64(file);
 			imagesArray.push({ file: base64, order: order });
@@ -68,12 +82,12 @@ export default function Product() {
 		} else {
 			create("products", data, setMessage, "Produkt vložen", "", auth);
 		}
-		console.log(data);
+		//console.log(data);
 	};
 
 	/**
-	 * * OnChange function for category select
-	 * ? Adds picked category to array of picked
+	 * * Adds selected category to array of picked
+	 * ? Triggered when user choose category from <select>
 	 * @param {event} e
 	 * @returns
 	 */
@@ -140,6 +154,9 @@ export default function Product() {
 		return variantParams;
 	};
 
+	/**
+	 * * Fill inputs with values of loaded article
+	 */
 	async function setData() {
 		const productData = await getProduct(id);
 		console.log(productData);
@@ -153,10 +170,12 @@ export default function Product() {
 		setImages(productData.images);
 		let parametersArray = [];
 
+		// set parameters array
 		productData.variants[0].parameters.forEach((item, index) => {
 			parametersArray.push({ name: item.name, p_order: index });
 		});
 
+		// set variants values for each parameter
 		productData.variants.forEach((variant) => {
 			variant.parameters.forEach((parameter, index) => {
 				if (!parametersArray[index].values) {
@@ -166,6 +185,11 @@ export default function Product() {
 			});
 		});
 		setParameters(parametersArray);
+	}
+
+	async function deleteHandler() {
+		await deleteProduct(id, auth, setMessage);
+		navigate(`/dashboard/products`);
 	}
 
 	return (
@@ -214,7 +238,7 @@ export default function Product() {
 						))}
 				</ul>
 
-				<p>Článek je viditelný: </p>
+				<p>Produkt je viditelný: </p>
 				<label className={css.switch}>
 					<input type="checkbox" {...register("active")} />
 					<span className={css.slider}></span>
@@ -227,9 +251,22 @@ export default function Product() {
 
 			<DetailText detailText={detailText} setDetailText={setDetailText} />
 
-			<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
+			<section className={css.images}>
+				<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
 
-			<button>Get</button>
+				<div className={css.control_box}>
+					<button>Uložit</button>
+					<button type="button" className="blue_button">
+						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
+						Náhled článku
+					</button>
+					{id && (
+						<button type="button" className="red_button" onClick={deleteHandler}>
+							Smazat
+						</button>
+					)}
+				</div>
+			</section>
 		</form>
 	);
 }

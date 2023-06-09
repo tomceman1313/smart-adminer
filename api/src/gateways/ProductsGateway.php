@@ -369,7 +369,7 @@ class ProductsGateway
         $stmt->execute([
             'id' => $product_id
         ]);
-
+        $order = 0;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $i_order = $row["i_order"];
             if ($i_order != 0) {
@@ -377,11 +377,12 @@ class ProductsGateway
             }
 
             $sql_image = "UPDATE product_images SET i_order = :order WHERE id = :id";
-            $stmt = $this->conn->prepare($sql_image);
-            $stmt->execute([
-                'i_order' => $i_order,
+            $stmt_inner = $this->conn->prepare($sql_image);
+            $stmt_inner->execute([
+                'order' => $order,
                 'id' => $row["id"]
             ]);
+            ++$order;
         }
     }
 }

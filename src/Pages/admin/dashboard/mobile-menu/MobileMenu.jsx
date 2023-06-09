@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faDisplay, faGear, faPowerOff, faCalendarDays, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faDisplay, faGear, faPowerOff, faCalendarDays, faShoppingCart, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AnimatePresence, motion, useCycle } from "framer-motion";
@@ -84,6 +84,23 @@ const MobileMenu = ({ logOut }) => {
 								</Link>
 								<Link to="/dashboard/register" onClick={setActiveLink} id="register">
 									Register
+								</Link>
+							</article>
+						</li>
+
+						<li>
+							<div id="employees" onClick={setActive}>
+								<FontAwesomeIcon className={css.icon} icon={faPeopleGroup} />
+								<label>Zaměstnanci</label>
+								<FontAwesomeIcon className={css.smallarrow} icon={faChevronDown} />
+							</div>
+
+							<article>
+								<Link to="/dashboard/employees" onClick={setActiveLink} id="vacancies">
+									Seznam zaměstnanců
+								</Link>
+								<Link to="/dashboard/vacancies" onClick={setActiveLink} id="vacancies">
+									Inzerované pozice
 								</Link>
 							</article>
 						</li>

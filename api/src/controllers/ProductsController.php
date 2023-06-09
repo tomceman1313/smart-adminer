@@ -51,7 +51,7 @@ class ProductsController
                         $id = $this->gateway->create($data["data"]);
                         http_response_code(200);
                         echo json_encode([
-                            "message" => "Event created",
+                            "message" => "Product created",
                             "data" => $id,
                             "token" => $authAction
                         ]);

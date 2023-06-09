@@ -1,8 +1,7 @@
 {
     "configurations": [
-
         {
-            "type": "pwa-chrome",
+            "type": "chrome",
             "name": "article",
             "request": "launch",
             "url": "http://localhost:3000/admin/dashboard/article/30"

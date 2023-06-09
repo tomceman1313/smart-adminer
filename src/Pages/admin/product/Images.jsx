@@ -11,12 +11,40 @@ import css from "./Product.module.css";
 
 export default function Images({ images, auth, setMessage, setImages, register }) {
 	const { id } = useParams();
+
+	function changeOrder(movedImage, direction) {
+		let updatedImages = structuredClone(images);
+		if (direction === "left") {
+			if (movedImage.i_order !== 0) {
+				const indexOfMovedImage = updatedImages.findIndex((obj) => obj.id === movedImage.id);
+				const imageOnTargetPosition = updatedImages[indexOfMovedImage - 1];
+				--movedImage.i_order;
+				++imageOnTargetPosition.i_order;
+				updatedImages[indexOfMovedImage - 1] = movedImage;
+				updatedImages[indexOfMovedImage] = imageOnTargetPosition;
+				setImages(updatedImages);
+			}
+		}
+
+		if (direction === "right") {
+			if (movedImage.i_order !== updatedImages.length - 1) {
+				const indexOfMovedImage = updatedImages.findIndex((obj) => obj.id === movedImage.id);
+				const imageOnTargetPosition = updatedImages[indexOfMovedImage + 1];
+				++movedImage.i_order;
+				--imageOnTargetPosition.i_order;
+				updatedImages[indexOfMovedImage + 1] = movedImage;
+				updatedImages[indexOfMovedImage] = imageOnTargetPosition;
+				setImages(updatedImages);
+			}
+		}
+	}
+
 	const remove = (el) => {
 		deleteImage(el.name, id, auth, setMessage);
 
 		const index = images.indexOf(el);
 		if (images.length === 1) {
-			setImages(null);
+			setImages([]);
 			return;
 		}
 		if (index > -1) {
@@ -32,7 +60,7 @@ export default function Images({ images, auth, setMessage, setImages, register }
 	};
 
 	return (
-		<section className={css.images}>
+		<div className={css.images}>
 			<h2>Obrázky</h2>
 			<h3>Přidat obrázky:</h3>
 			<div className={`${cssBasic.input_box}`}>
@@ -52,12 +80,12 @@ export default function Images({ images, auth, setMessage, setImages, register }
 					>
 						{images.map((img) => (
 							<SplideSlide key={img.id} className={css.slide}>
-								<ProductImage el={img} deleteImage={remove} />
+								<ProductImage el={img} deleteImage={remove} changeOrder={changeOrder} />
 							</SplideSlide>
 						))}
 					</Splide>
 				</div>
 			)}
-		</section>
+		</div>
 	);
 }

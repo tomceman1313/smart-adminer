@@ -37,6 +37,23 @@
 	cursor: pointer;
 }
 
+.order_arrow {
+	position: absolute;
+	top: 0;
+	right: 0;
+	color: white;
+	background-color: #333;
+	padding: 5px;
+	font-size: 25px;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+.order_arrow:nth-child(2) {
+	right: unset;
+	left: 0;
+}
+
 .icon {
 	color: white;
 	font-size: 25px;

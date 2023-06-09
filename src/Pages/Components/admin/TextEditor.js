@@ -11,6 +11,9 @@ const TextEditor = ({ value, setValue }) => {
 			["link", "image"],
 			["clean"],
 		],
+		clipboard: {
+			matchVisual: false,
+		},
 	};
 
 	let f = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image"];

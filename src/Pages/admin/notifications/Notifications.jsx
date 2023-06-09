@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Notifications.module.css";
+import { create, remove, edit } from "../../modules/ApiFunctions";
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,9 +15,6 @@ import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 const Notifications = () => {
 	const auth = useAuth();
 	const getAll = useApi("getAll");
-	const createNotification = useApi("create");
-	const editNotification = useApi("edit");
-	const removeNotification = useApi("remove");
 
 	const { setAlert, setMessage } = useInteraction();
 
@@ -50,6 +48,7 @@ const Notifications = () => {
 	 * @param {object} data
 	 */
 	const onSubmit = (data) => {
+		//FIXME check if path does not contain whitespace
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
@@ -57,7 +56,7 @@ const Notifications = () => {
 			return;
 		}
 
-		editNotification("notifications", data, setMessage, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		edit("notifications", data, setMessage, "Upozornění vytvořeno", auth);
 		editCont();
 		getData();
 	};
@@ -68,6 +67,7 @@ const Notifications = () => {
 	 * @param {object} data
 	 */
 	const onSubmitCreate = (data) => {
+		//FIXME check if path does not contain whitespace
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		if (data.start > data.end) {
@@ -75,7 +75,7 @@ const Notifications = () => {
 			return;
 		}
 
-		createNotification("notifications", data, setMessage, "Upozornění vytvořeno", "Upozornění nebylo vytvořeno", auth);
+		create("notifications", data, setMessage, "Upozornění vytvořeno", auth);
 		addCont();
 		getData();
 	};
@@ -85,8 +85,8 @@ const Notifications = () => {
 	 * ? Po potvrzení CheckMessage je volána tato funkce, která zajistí odstranění zvolené položky
 	 * @param {int} id
 	 */
-	const remove = (id) => {
-		removeNotification("notifications", id, setMessage, "Upozornění bylo odstřaněna", "Upozornění nebylo odstřaněna", auth);
+	const deleteHandler = (id) => {
+		remove("notifications", id, setMessage, "Upozornění bylo odstřaněna", auth);
 		editCont();
 		getData();
 	};
@@ -97,7 +97,7 @@ const Notifications = () => {
 	 */
 	const deleteNotification = () => {
 		const id = getValues("id");
-		setAlert({ id: id, question: "Smazat notifikaci?", positiveHandler: remove });
+		setAlert({ id: id, question: "Smazat notifikaci?", positiveHandler: deleteHandler });
 	};
 
 	/**
@@ -196,7 +196,7 @@ const Notifications = () => {
 				<button className="blue_button" onClick={editCont}>
 					Upravit položky
 				</button>
-				{/* // * Formulář pro editaci položek ceníku (class EDIT_PRICE) */}
+				{/* // * Form for editing   */}
 				<div className={css.edit_notification}>
 					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={editCont} />
 					<form onSubmit={handleSubmitUpdate(onSubmit)}>
@@ -207,7 +207,7 @@ const Notifications = () => {
 								{notifications &&
 									notifications.map((item) => (
 										<option key={item.id} value={item.title}>
-											{item.path}
+											{item.title}
 										</option>
 									))}
 							</select>

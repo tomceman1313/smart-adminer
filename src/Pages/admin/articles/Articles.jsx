@@ -5,6 +5,7 @@ import { getAll } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
+import PlusButton from "../../Components/basic/PlusButton";
 
 const Articles = () => {
 	const auth = useAuth();
@@ -24,6 +25,10 @@ const Articles = () => {
 		const id = e.currentTarget.id;
 		navigate(`/dashboard/article/${id}`);
 	};
+
+	function openNewImages() {
+		navigate("/dashboard/new-article");
+	}
 
 	return (
 		<div className={css.articles}>
@@ -45,6 +50,7 @@ const Articles = () => {
 						</article>
 					))}
 			</section>
+			<PlusButton onClick={openNewImages} />
 		</div>
 	);
 };

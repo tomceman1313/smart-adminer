@@ -26,6 +26,9 @@ import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
 import { refreshAccessToken, BASE_URL } from "../../modules/ApiFunctions";
 import useViewport from "../../Hooks/useViewport";
+import Vacancies from "../vacancies/Vacancies";
+import Vacancy from "../vacancy/Vacancy";
+import Employees from "../employees/Employees";
 
 export default function Dashboard() {
 	const navigate = useNavigate();
@@ -85,6 +88,10 @@ export default function Dashboard() {
 						<Route path="products" element={<Products />} />
 						<Route path="new-product" element={<Product />} />
 						<Route path="product/:id" element={<Product />} />
+						<Route path="vacancies" element={<Vacancies />} />
+						<Route path="vacancy" element={<Vacancy />} />
+						<Route path="vacancy/:id" element={<Vacancy />} />
+						<Route path="employees" element={<Employees />} />
 					</Route>
 					<Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.employee, ROLES.admin]} />}>
 						<Route path="profile" element={<Profile />} />

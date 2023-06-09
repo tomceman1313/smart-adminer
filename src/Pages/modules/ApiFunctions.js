@@ -54,7 +54,7 @@ export function getRoles(setState, auth) {
 	});
 }
 
-export async function create(apiClass, data, setMessage, positiveText, negativeText, auth) {
+export async function create(apiClass, data, setMessage, positiveText, auth) {
 	//console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
@@ -74,7 +74,7 @@ export async function create(apiClass, data, setMessage, positiveText, negativeT
 	setMessage({ action: "success", text: positiveText });
 }
 
-export async function edit(apiClass, data, setMessage, positiveText, negativeText, auth) {
+export async function edit(apiClass, data, setMessage, positiveText, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=update`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -93,7 +93,7 @@ export async function edit(apiClass, data, setMessage, positiveText, negativeTex
 	setMessage({ action: "success", text: positiveText });
 }
 
-export async function remove(apiClass, id, setMessage, positiveText, negativeText, auth) {
+export async function remove(apiClass, id, setMessage, positiveText, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -111,7 +111,7 @@ export async function remove(apiClass, id, setMessage, positiveText, negativeTex
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	setMessage({ action: "success", text: positiveText });
 }
-export function editRole(data, setAlert, positiveText, negativeText, auth) {
+export function editRole(data, setAlert, positiveText, auth) {
 	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -124,9 +124,9 @@ export function editRole(data, setAlert, positiveText, negativeText, auth) {
 				return false;
 			}
 			if (response.status === 200) {
-				setAlert({ action: "success", text: positiveText, timeout: 6000 });
+				setAlert({ action: "success", text: positiveText });
 			} else {
-				setAlert({ action: "failure", text: negativeText, timeout: 6000 });
+				setAlert({ action: "failure", text: "Operace se nezdařila" });
 			}
 
 			if (!response.ok) {

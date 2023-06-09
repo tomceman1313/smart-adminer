@@ -35,7 +35,7 @@ const Categories = ({ auth, setDocuments, setSelectedCategory, categories, setCa
 	};
 
 	const remove = (id) => {
-		deleteCategory(id, auth, setMessage, get);
+		deleteCategory(id, auth, setMessage);
 		get();
 	};
 

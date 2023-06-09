@@ -57,7 +57,7 @@ export async function deleteProduct(id, auth, setMessage) {
 }
 
 export async function deleteImage(name, id, auth, setMessage) {
-	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image`, {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image&id=${id}`, {
 		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ name: name, token: auth.userInfo.token }),

@@ -1,0 +1,32 @@
+.control_box {
+	text-align: center;
+}
+
+.btn_preview {
+	background-color: var(--main);
+	text-decoration-color: var(--main);
+}
+
+.btn_preview:hover {
+	background-color: var(--main-dark);
+}
+
+.btn_icon {
+	margin-right: 5px;
+}
+
+.half_cont {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.half {
+	width: calc(50% - 10px);
+}
+
+@media (max-width: 900px) {
+	.half {
+		width: 100%;
+	}
+}

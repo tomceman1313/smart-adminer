@@ -26,7 +26,7 @@ const NewDocument = ({ auth, setDocuments, categories }) => {
 		}
 		const date = new Date();
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-		await create("documents", data, setMessage, "Soubor vložen", "Soubor se nepodařilo vložit", auth);
+		await create("documents", data, setMessage, "Soubor vložen", auth);
 		reset();
 		getAll("documents", setDocuments, auth);
 	};
@@ -64,7 +64,11 @@ const NewDocument = ({ auth, setDocuments, categories }) => {
 				</form>
 			</section>
 
-			<AnimatePresence>{addMultiplePictures && <AddMultipleFiles auth={auth} close={() => setAddMultiplePictures(false)} refreshFiles={() => getAll("documents", setDocuments, auth)} />}</AnimatePresence>
+			<AnimatePresence>
+				{addMultiplePictures && (
+					<AddMultipleFiles auth={auth} close={() => setAddMultiplePictures(false)} refreshFiles={() => getAll("documents", setDocuments, auth)} />
+				)}
+			</AnimatePresence>
 		</>
 	);
 };
