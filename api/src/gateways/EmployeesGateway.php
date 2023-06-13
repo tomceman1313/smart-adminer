@@ -52,8 +52,8 @@ class EmployeesGateway
 
         $this->compress($image_name . "." . $imageExtension);
 
-        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, department, position, phone, email, image, notes) 
-        VALUES (:fname, :lname, :degree_before, :degree_after, :department, :position, :phone, :email, :image, :notes)";
+        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, email, image, notes) 
+        VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :email, :image, :notes)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -61,13 +61,24 @@ class EmployeesGateway
             'lname' => $data["lname"],
             'degree_before' => $data["degree_before"],
             'degree_after' => $data["degree_after"],
-            'department' => $data["department"],
             'position' => $data["position"],
             'phone' => $data["phone"],
             'email' => $data["email"],
             'image' => $image_name . "." . $imageExtension,
             'notes' => $data["notes"],
         ]);
+
+        $departments = $data["departments"];
+        $last_id = $this->conn->lastInsertId();
+
+        $sql_department = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
+        foreach ($departments as $item) {
+            $stmt = $this->conn->prepare($sql_department);
+            $stmt->execute([
+                'employee_id' => $last_id,
+                'department_id' => $item["id"]
+            ]);
+        }
     }
 
     public function update(array $data, $id): bool
@@ -91,7 +102,7 @@ class EmployeesGateway
             }
 
             $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-                degree_after = :degree_after, department = :department, position = :position, phone = :phone, email = :email, notes = :notes, image = :image WHERE id = :id";
+                degree_after = :degree_after, position = :position, phone = :phone, email = :email, notes = :notes, image = :image WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -100,7 +111,6 @@ class EmployeesGateway
                 'lname' => $data["lname"],
                 'degree_before' => $data["degree_before"],
                 'degree_after' => $data["degree_after"],
-                'department' => $data["department"],
                 'position' => $data["position"],
                 'phone' => $data["phone"],
                 'email' => $data["email"],
@@ -108,25 +118,44 @@ class EmployeesGateway
                 'notes' => $data["notes"],
                 'id' => $data["id"],
             ]);
+        } else {
+            $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
+            degree_after = :degree_after, position = :position, phone = :phone, email = :email, notes = :notes WHERE id = :id";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->execute([
+                'fname' => $data["fname"],
+                'lname' => $data["lname"],
+                'degree_before' => $data["degree_before"],
+                'degree_after' => $data["degree_after"],
+                'position' => $data["position"],
+                'phone' => $data["phone"],
+                'email' => $data["email"],
+                'notes' => $data["notes"],
+                'id' => $data["id"],
+            ]);
         }
 
-        $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-        degree_after = :degree_after, department = :department, position = :position, phone = :phone, email = :email, notes = :notes WHERE id = :id";
+        $departments = $data["departments"];
+        $sql_new_dep = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
+        foreach ($departments as $item) {
+            $stmt = $this->conn->prepare($sql_new_dep);
+            $stmt->execute([
+                'employee_id' => $id,
+                'department_id' => $item["id"]
+            ]);
+        }
 
-        $stmt = $this->conn->prepare($sql);
+        $departments = $data["departments_deleted"];
+        foreach ($departments as $item) {
+            $sql = "DELETE FROM employee_department WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
 
-        $stmt->execute([
-            'fname' => $data["fname"],
-            'lname' => $data["lname"],
-            'degree_before' => $data["degree_before"],
-            'degree_after' => $data["degree_after"],
-            'department' => $data["department"],
-            'position' => $data["position"],
-            'phone' => $data["phone"],
-            'email' => $data["email"],
-            'notes' => $data["notes"],
-            'id' => $data["id"],
-        ]);
+            $stmt->execute([
+                'id' => $id,
+            ]);
+        }
 
         return true;
     }
@@ -146,13 +175,16 @@ class EmployeesGateway
         }
 
         $sql = "DELETE FROM employees WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
 
+        $sql = "DELETE FROM employee_department WHERE employee_id = :employee_id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'employee_id' => $id,
+        ]);
 
         return true;
     }
@@ -192,7 +224,7 @@ class EmployeesGateway
 
     public function getDepartments(): array
     {
-        $sql = "SELECT * FROM employees";
+        $sql = "SELECT * FROM employees_departments";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -222,11 +254,11 @@ class EmployeesGateway
         $stmt->execute();
 
         //delete employees
-        $sql = "DELETE FROM employees WHERE department = :department";
+        $sql = "DELETE FROM employee_department WHERE department_id = :department_id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'department' => $id,
+            'department_id' => $id,
         ]);
 
 
