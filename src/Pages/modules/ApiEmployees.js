@@ -1,18 +1,5 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function get(id) {
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=get&id=${id}`, {
-		method: "GET",
-	});
-
-	if (response.status === 403) {
-		return null;
-	}
-
-	const data = await response.json();
-	return data.data;
-}
-
 export async function getAll() {
 	const response = await fetch(`${BASE_URL}/api/?class=employees&action=getall`, {
 		method: "GET",
@@ -23,7 +10,7 @@ export async function getAll() {
 	}
 
 	let data = await response.json();
-	return data.data;
+	return data;
 }
 
 export async function create(data, auth, setMessage) {
@@ -35,7 +22,7 @@ export async function create(data, auth, setMessage) {
 			"Authorization": bearer,
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 		},
-		body: JSON.stringify({ data: data }),
+		body: JSON.stringify(data),
 		credentials: "include",
 	});
 
@@ -68,7 +55,7 @@ export async function update(data, auth, setMessage) {
 	const responseData = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: "Inzerát byl upraven" });
+	setMessage({ action: "success", text: "Profil zaměstnance byl upraven" });
 }
 
 export async function remove(id, auth, setMessage) {
@@ -101,7 +88,7 @@ export async function getDepartments() {
 	}
 
 	let data = await response.json();
-	return data.data;
+	return data;
 }
 
 export async function createDepartment(data, auth, setMessage) {

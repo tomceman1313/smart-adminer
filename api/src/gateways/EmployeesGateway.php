@@ -16,6 +16,7 @@ class EmployeesGateway
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["departments"] = $this->getEmployeeDepartments($row["id"]);
             $data[] = $row;
         }
 
@@ -235,14 +236,32 @@ class EmployeesGateway
         return $data;
     }
 
-    public function createDepartment(array $data)
+    public function getEmployeeDepartments($id): array
     {
-        $sql = "INSERT INTO employees_departments (name) VALUES (name)";
+        $sql_categories = "SELECT * FROM employee_department WHERE employee_id = :id";
+        $stmt = $this->conn->prepare($sql_categories);
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    public function createDepartment($data)
+    {
+        $sql = "INSERT INTO employees_departments (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $data["name"]
         ]);
+
+        return $this->conn->lastInsertId();
     }
 
     public function deleteDepartment($id)

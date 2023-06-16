@@ -1,12 +1,16 @@
-.employees ul {
+.employees {
 	display: flex;
 	align-items: flex-start;
 	flex-wrap: wrap;
 	transition: all 0.5s;
 	margin: 0;
 }
-
+/*------------------------------------------------------- EmployeeBasicInfo component*/
 .employees li {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
 	width: calc(33% - 80px);
 	margin: 15px;
 	padding: 15px 25px;
@@ -16,33 +20,28 @@
 	border-radius: 8px;
 }
 
+.employees li img {
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+	margin-right: 10px;
+	border-radius: 8px;
+}
+
 .employees li div {
-	position: relative;
+	width: calc(100% - 100px);
 }
 
 .employees li div label {
 	display: block;
-}
-
-.employees li svg {
-	margin-right: 10px;
-}
-
-.employees li svg path {
-	margin-right: 10px;
-}
-
-.employees li div label:nth-of-type(1) {
 	font-size: 18px;
 	font-weight: 600;
 	text-transform: uppercase;
-	margin: 15px 0 5px 0;
+	margin: 0;
 }
 
-.employees li div label:nth-of-type(2) {
-	font-size: 18px;
-	font-weight: 400;
-	color: #333;
+.employees li div p {
+	margin: 0;
 }
 
 .show {
@@ -54,13 +53,22 @@
 	border: solid 1px var(--main-dark);
 	border-radius: 8px;
 	cursor: pointer;
+	text-align: center;
+	transition: all 1s;
+}
+
+.show svg {
+	transition: all 0.5s;
+}
+
+.rotate {
+	transform: rotate(180deg);
+	transform-origin: center center;
 }
 
 .employees li article {
 	display: flex;
 	flex-wrap: wrap;
-	transition: all 1s ease-in-out;
-	max-height: 0;
 	overflow: hidden;
 }
 
@@ -68,6 +76,10 @@
 	width: 100%;
 	display: block;
 	margin: 10px 0;
+}
+
+.employees article svg {
+	margin-right: 10px;
 }
 
 .employees article label:nth-of-type(1) {
@@ -83,36 +95,19 @@
 	text-transform: uppercase;
 	color: white;
 }
-
-.employees button:nth-of-type(2) {
-	background-color: var(--red);
-	text-decoration: underline var(--red);
-}
-
-.employees button:nth-of-type(2):hover {
-	background-color: var(--red-dark);
-	text-decoration: underline white;
-}
-
-.active {
-	max-height: 220px !important;
-}
-
-.rotate {
-	transform: rotate(180deg);
-	transform-origin: center center;
-}
-
+/*---------------------------------------------------------- Employee component*/
 .edit {
 	width: 50%;
 	padding: 15px 25px;
 	max-width: 500px;
+	max-height: 80vh;
 	position: fixed;
 	background-color: white;
-	top: 145px;
+	top: 90px;
 	border-radius: 8px;
 	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
 	overflow: hidden;
+	overflow-y: auto;
 }
 
 .edit input[type="submit"] {
@@ -140,6 +135,25 @@
 
 .edit h2 {
 	margin-top: 0;
+}
+
+.picked_categories {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.picked_categories li {
+	cursor: pointer;
+	background-color: var(--main-dark);
+	color: white;
+	padding: 5px 15px;
+	border-radius: 8px;
+	margin: 2px;
+	transition: all 0.5s;
+}
+
+.picked_categories li:hover {
+	background-color: var(--red);
 }
 
 @media (max-width: 1200px) {

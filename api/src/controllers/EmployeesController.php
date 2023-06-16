@@ -42,10 +42,7 @@ class EmployeesConroller
             case 'getall':
                 $result = $this->gateway->getAll();
                 http_response_code(201);
-                echo json_encode([
-                    "message" => "Data provided",
-                    "data" =>  $result
-                ]);
+                echo json_encode($result);
                 return;
             case 'get':
                 $result = $this->gateway->get($id);
@@ -60,8 +57,7 @@ class EmployeesConroller
                 $result = $this->gateway->getDepartments($id);
                 http_response_code(201);
                 echo json_encode([
-                    "message" => "Data provided",
-                    "data" =>  $result
+                    ...$result
                 ]);
                 return;
             default:
@@ -77,7 +73,7 @@ class EmployeesConroller
 
         switch ($action) {
             case 'create':
-                $id = $this->gateway->create($data["data"]);
+                $id = $this->gateway->create($data);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Item created",
@@ -103,7 +99,7 @@ class EmployeesConroller
                 ]);
                 break;
             case 'create-department':
-                $id = $this->gateway->createDepartment($data["data"]);
+                $id = $this->gateway->createDepartment($data);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Item created",

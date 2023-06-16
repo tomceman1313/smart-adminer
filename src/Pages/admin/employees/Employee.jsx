@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
 	faUserTag,
 	faAt,
@@ -17,14 +17,26 @@ import cssBasic from "../styles/Basic.module.css";
 import css from "./Employees.module.css";
 import InputBox from "../../Components/basic/InputBox";
 import { convertBase64, openImage, publicPath } from "../../modules/BasicFunctions";
+import { create, update } from "../../modules/ApiEmployees";
+import useInteraction from "../../Hooks/useInteraction";
 
 import { useForm } from "react-hook-form";
 
-export default function Employee({ employee, setEmployee, handleEdit }) {
-	//TODO Napojit na API metody
+export default function Employee({ employee, getData, setVisible, departments, auth }) {
+	const { setMessage } = useInteraction();
+
 	const { register, handleSubmit, reset, setValue } = useForm();
 	const [imageIsSet, setImageIsSet] = useState(null);
-	const [departments, setDepartments] = useState(null);
+	const [pickedDepartments, setPickedDepartments] = useState([]);
+	const deletedDepartments = useRef([]);
+	const originalDepartments = useRef([]);
+
+	useEffect(() => {
+		if (employee) {
+			setData();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [employee]);
 
 	async function onSubmit(data) {
 		if (data.image[0]) {
@@ -36,23 +48,60 @@ export default function Employee({ employee, setEmployee, handleEdit }) {
 		} else {
 			delete data.image;
 		}
-		handleEdit(data);
-		setEmployee(false);
+
+		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.includes(el));
+		if (employee) {
+			data.departments_deleted = deletedDepartments.current;
+			console.log(data);
+			//update(data, auth, setMessage);
+		} else {
+			delete data.id;
+			delete data.department_id;
+			create(data, auth, setMessage);
+		}
+		setVisible(false);
+		getData();
 	}
 
 	function setData() {
-		//TODO Naplnění daty
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
-		setValue("", employee);
+		//TODO Oddělení zaměstnance se musí načíst ve správném tvaru i se jménem (nyní je to bez id záznamu)
+		const departmentIdtoName = employee.departments.map((dep) => {
+			return departments.find((el) => el.id === dep.department_id);
+		});
+		console.log(departmentIdtoName);
+		setValue("degree_before", employee.degree_before);
+		setValue("fname", employee.fname);
+		setValue("lname", employee.lname);
+		setValue("degree_after", employee.degree_after);
+		setValue("phone", employee.phone);
+		setValue("email", employee.email);
+		setValue("position", employee.position);
+		setValue("notes", employee.notes);
+		setValue("id", employee.id);
+
+		setImageIsSet(employee.image);
+		setPickedDepartments(departmentIdtoName);
+		originalDepartments.current = departmentIdtoName;
 	}
+
+	const chooseCategory = (e) => {
+		const name = departments.filter((item) => item.id === parseInt(e.target.value));
+		const alreadyIn = pickedDepartments.find((item) => item.id === parseInt(e.target.value));
+		setValue("department_id", "default");
+		if (alreadyIn) {
+			return;
+		}
+
+		if (name.length !== 0) {
+			setPickedDepartments((prev) => [...prev, name[0]]);
+		}
+	};
+
+	const removeFromPicked = (e) => {
+		const removed = pickedDepartments.filter((item) => item.id !== parseInt(e.target.id));
+		deletedDepartments.current.push(parseInt(e.target.id));
+		setPickedDepartments(removed);
+	};
 
 	return (
 		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
@@ -61,7 +110,7 @@ export default function Employee({ employee, setEmployee, handleEdit }) {
 				id={css.close}
 				icon={faXmark}
 				onClick={() => {
-					setEmployee((prev) => !prev);
+					setVisible((prev) => !prev);
 					reset();
 				}}
 			/>
@@ -75,7 +124,7 @@ export default function Employee({ employee, setEmployee, handleEdit }) {
 				<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} isRequired={false} />
 
 				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("category_id")} required>
+					<select defaultValue={"default"} {...register("department_id")} onChange={chooseCategory} required>
 						<option value="default" disabled>
 							-- Zvolit oddělení --
 						</option>
@@ -89,6 +138,15 @@ export default function Employee({ employee, setEmployee, handleEdit }) {
 					<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
 				</div>
 
+				<ul className={css.picked_categories}>
+					{pickedDepartments &&
+						pickedDepartments.map((el) => (
+							<li key={`pickedDep-${el.id}`} id={el.id} onClick={removeFromPicked}>
+								{el.name}
+							</li>
+						))}
+				</ul>
+
 				<InputBox placeholder="Pozice" register={register} type="text" name="position" icon={faUserTag} isRequired={false} />
 
 				<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} isRequired={false} />
@@ -96,7 +154,7 @@ export default function Employee({ employee, setEmployee, handleEdit }) {
 				<div className={`${cssBasic.input_box}`}>
 					{imageIsSet ? (
 						<div className={cssBasic.image_box}>
-							<button type="button" onClick={() => openImage(`${publicPath}/images/vacancies/${imageIsSet}`)}>
+							<button type="button" onClick={() => openImage(`${publicPath}/images/employees/${imageIsSet}`)}>
 								Zobrazit obrázek
 							</button>
 							<button type="button" onClick={() => setImageIsSet(false)}>
