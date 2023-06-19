@@ -107,6 +107,14 @@ class EmployeesConroller
                     "token" => $authAction
                 ]);
                 break;
+            case 'update-department':
+                $id = $this->gateway->updateDepartment($data, $id);
+                http_response_code(201);
+                echo json_encode([
+                    "message" => "Item updated",
+                    "token" => $authAction
+                ]);
+                break;
             case 'delete-department':
                 $this->gateway->deleteDepartment($id);
                 http_response_code(200);

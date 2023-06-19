@@ -19,7 +19,7 @@ export async function create(data, auth, setMessage) {
 	const response = await fetch(`${BASE_URL}/api/?class=employees&action=create`, {
 		method: "POST",
 		headers: {
-			"Authorization": bearer,
+			Authorization: bearer,
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 		},
 		body: JSON.stringify(data),
@@ -56,6 +56,7 @@ export async function update(data, auth, setMessage) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
 	setMessage({ action: "success", text: "Profil zaměstnance byl upraven" });
+	return true;
 }
 
 export async function remove(id, auth, setMessage) {
@@ -97,10 +98,10 @@ export async function createDepartment(data, auth, setMessage) {
 	const response = await fetch(`${BASE_URL}/api/?class=employees&action=create-department`, {
 		method: "POST",
 		headers: {
-			"Authorization": bearer,
+			Authorization: bearer,
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 		},
-		body: JSON.stringify({ data: data }),
+		body: JSON.stringify(data),
 		credentials: "include",
 	});
 
@@ -113,6 +114,30 @@ export async function createDepartment(data, auth, setMessage) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
 	setMessage({ action: "success", text: "Oddělení bylo vytvořeno" });
+}
+
+export async function updateDepartment(data, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
+	const response = await fetch(`${BASE_URL}/api/?class=employees&action=update-department&id=${data.id}`, {
+		method: "PUT",
+		headers: {
+			Authorization: bearer,
+			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+		},
+		body: JSON.stringify(data),
+		credentials: "include",
+	});
+
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const responseData = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
+	setMessage({ action: "success", text: "Oddělení bylo upraveno" });
 }
 
 export async function removeDepartment(id, auth, setMessage) {

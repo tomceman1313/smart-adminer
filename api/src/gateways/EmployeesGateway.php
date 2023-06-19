@@ -14,9 +14,11 @@ class EmployeesGateway
         $sql = "SELECT * FROM employees";
         $stmt = $this->conn->query($sql);
 
+        $departments = $this->getDepartments();
+
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row["departments"] = $this->getEmployeeDepartments($row["id"]);
+            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
             $data[] = $row;
         }
 
@@ -148,13 +150,13 @@ class EmployeesGateway
             ]);
         }
 
-        $departments = $data["departments_deleted"];
-        foreach ($departments as $item) {
+        $departments_deleted = $data["departments_deleted"];
+        foreach ($departments_deleted as $item) {
             $sql = "DELETE FROM employee_department WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
 
             $stmt->execute([
-                'id' => $id,
+                'id' => $item,
             ]);
         }
 
@@ -236,22 +238,6 @@ class EmployeesGateway
         return $data;
     }
 
-    public function getEmployeeDepartments($id): array
-    {
-        $sql_categories = "SELECT * FROM employee_department WHERE employee_id = :id";
-        $stmt = $this->conn->prepare($sql_categories);
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
-    }
-
     public function createDepartment($data)
     {
         $sql = "INSERT INTO employees_departments (name) VALUES (:name)";
@@ -264,6 +250,19 @@ class EmployeesGateway
         return $this->conn->lastInsertId();
     }
 
+    public function updateDepartment($data, $id)
+    {
+        $sql = "UPDATE employees_departments SET name = :name WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $data["name"],
+            'id' => $id
+        ]);
+
+        return true;
+    }
+
     public function deleteDepartment($id)
     {
         //delete department
@@ -272,7 +271,7 @@ class EmployeesGateway
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        //delete employees
+        //delete employee_department
         $sql = "DELETE FROM employee_department WHERE department_id = :department_id";
         $stmt = $this->conn->prepare($sql);
 
@@ -282,5 +281,58 @@ class EmployeesGateway
 
 
         return true;
+    }
+
+    public function getEmployeeDepartments($id, $departments): array
+    {
+        $sql_categories = "SELECT * FROM employee_department WHERE employee_id = :id";
+        $stmt = $this->conn->prepare($sql_categories);
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            foreach ($departments as $value) {
+                if ($row["department_id"] == $value["id"]) {
+                    $row["name"] = $value["name"];
+                }
+            }
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+
+    public function create_all(array $data)
+    {
+        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, email, image, notes) 
+        VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :email, :image, :notes)";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'fname' => $data["fname"],
+            'lname' => $data["lname"],
+            'degree_before' => $data["degree_before"],
+            'degree_after' => $data["degree_after"],
+            'position' => $data["position"],
+            'phone' => $data["phone"],
+            'email' => $data["email"],
+            'image' => "",
+            'notes' => $data["notes"],
+        ]);
+
+        $departments = $data["departments"];
+        $last_id = $this->conn->lastInsertId();
+
+        $sql_department = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
+        foreach ($departments as $item) {
+            $stmt = $this->conn->prepare($sql_department);
+            $stmt->execute([
+                'employee_id' => $last_id,
+                'department_id' => $item["id"]
+            ]);
+        }
     }
 }

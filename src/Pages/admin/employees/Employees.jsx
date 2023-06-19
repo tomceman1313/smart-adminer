@@ -7,9 +7,9 @@ import { getAll, getDepartments, remove } from "../../modules/ApiEmployees";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
+import Departments from "./Departments";
 
 export default function Employees() {
-	//TODO Vytvořit ovládání na oddělení (createDepartment, removeDepartment, updateDepartment)
 	const auth = useAuth();
 	const { setMessage, setAlert } = useInteraction();
 	const [employees, setEmployees] = useState([]);
@@ -46,6 +46,14 @@ export default function Employees() {
 
 	return (
 		<>
+			<Departments
+				employees={employees}
+				setEmployees={setEmployees}
+				departments={departments}
+				setDepartments={setDepartments}
+				refreshAllData={getData}
+			/>
+
 			<section className="no-section">
 				<ul className={css.employees}>
 					{employees !== [] ? (

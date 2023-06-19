@@ -52,23 +52,17 @@ export default function Employee({ employee, getData, setVisible, departments, a
 		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.includes(el));
 		if (employee) {
 			data.departments_deleted = deletedDepartments.current;
-			console.log(data);
-			//update(data, auth, setMessage);
+			await update(data, auth, setMessage);
 		} else {
 			delete data.id;
 			delete data.department_id;
-			create(data, auth, setMessage);
+			await create(data, auth, setMessage);
 		}
-		setVisible(false);
 		getData();
+		setVisible(false);
 	}
 
 	function setData() {
-		//TODO Oddělení zaměstnance se musí načíst ve správném tvaru i se jménem (nyní je to bez id záznamu)
-		const departmentIdtoName = employee.departments.map((dep) => {
-			return departments.find((el) => el.id === dep.department_id);
-		});
-		console.log(departmentIdtoName);
 		setValue("degree_before", employee.degree_before);
 		setValue("fname", employee.fname);
 		setValue("lname", employee.lname);
@@ -80,8 +74,8 @@ export default function Employee({ employee, getData, setVisible, departments, a
 		setValue("id", employee.id);
 
 		setImageIsSet(employee.image);
-		setPickedDepartments(departmentIdtoName);
-		originalDepartments.current = departmentIdtoName;
+		setPickedDepartments(employee.departments);
+		originalDepartments.current = employee.departments;
 	}
 
 	const chooseCategory = (e) => {
