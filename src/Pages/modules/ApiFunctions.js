@@ -1,5 +1,5 @@
-//export const BASE_URL = "https://smart-studio.fun/admin";
-export const BASE_URL = "http://localhost:4300";
+export const BASE_URL = "https://smart-studio.fun/admin";
+//export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {

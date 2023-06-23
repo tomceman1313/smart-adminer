@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { faPencil, faFloppyDisk, faTrashCan, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faFloppyDisk, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import useInteraction from "../../Hooks/useInteraction";
 
 const Item = ({ el, remove, edit, show }) => {

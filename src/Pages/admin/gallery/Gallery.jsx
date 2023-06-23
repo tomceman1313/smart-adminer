@@ -6,7 +6,7 @@ import css from "./css/Gallery.module.css";
 import NewPicture from "./NewPicture";
 import Images from "./Images";
 import { useParams, useNavigate } from "react-router-dom";
-import { getByCategory } from "Pages/modules/ApiGallery";
+import { getByCategory } from "../../modules/ApiGallery";
 import { sliceDataBasedOnPageNumber } from "../../modules/BasicFunctions";
 
 const Gallery = () => {
