@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
@@ -11,6 +11,7 @@ import Departments from "./Departments";
 
 export default function Employees() {
 	const auth = useAuth();
+	const allEmployees = useRef([]);
 	const { setMessage, setAlert } = useInteraction();
 	const [employees, setEmployees] = useState([]);
 	const [employee, setEmployee] = useState(null);
@@ -25,6 +26,7 @@ export default function Employees() {
 
 	async function getData() {
 		const data = await getAll();
+		allEmployees.current = data;
 		setEmployees(data);
 
 		const departmentsData = await getDepartments();
@@ -52,6 +54,7 @@ export default function Employees() {
 				departments={departments}
 				setDepartments={setDepartments}
 				refreshAllData={getData}
+				allEmployees={allEmployees}
 			/>
 
 			<section className="no-section">
@@ -74,7 +77,14 @@ export default function Employees() {
 
 			<AnimatePresence>
 				{isEmployeeContVisible && (
-					<Employee employee={employee} getData={getData} setVisible={setIsEmployeeContVisible} departments={departments} auth={auth} />
+					<Employee
+						employee={employee}
+						setEmployee={setEmployee}
+						getData={getData}
+						setVisible={setIsEmployeeContVisible}
+						departments={departments}
+						auth={auth}
+					/>
 				)}
 			</AnimatePresence>
 

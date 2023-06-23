@@ -17,7 +17,12 @@ const Articles = () => {
 		document.getElementById("banner-title").innerHTML = "Články";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
 
-		getAll("articles", setArticles, auth);
+		const loadData = async () => {
+			const data = await getAll("articles", auth);
+			setArticles(data);
+		};
+
+		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

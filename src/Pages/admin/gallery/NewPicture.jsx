@@ -12,7 +12,7 @@ import cssBasic from "../styles/Basic.module.css";
 import AddMultiplePictures from "./AddMultiplePictures";
 import css from "./css/Gallery.module.css";
 
-const NewPicture = ({ auth, setImages, categories }) => {
+export default function NewPicture({ auth, setImages, categories }) {
 	const { setMessage } = useInteraction();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
@@ -30,11 +30,16 @@ const NewPicture = ({ auth, setImages, categories }) => {
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
 		data.category_id = pickedCategories;
-		await create("gallery", data, setMessage, "Obrázek vložen", "Obrázek se nepodařilo vložit", auth);
+		await create("gallery", data, setMessage, "Obrázek vložen", auth);
 		reset();
 		setPickedCategories([]);
-		getAll("gallery", setImages, auth);
+		loadData();
 	};
+
+	async function loadData() {
+		const data = await getAll("gallery", auth);
+		setImages(data);
+	}
 
 	const chooseCategory = (e) => {
 		const name = categories.filter((item) => item.id === parseInt(e.target.value));
@@ -100,12 +105,8 @@ const NewPicture = ({ auth, setImages, categories }) => {
 			</section>
 
 			<AnimatePresence>
-				{addMultiplePictures && (
-					<AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={() => getAll("gallery", setImages, auth)} />
-				)}
+				{addMultiplePictures && <AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={loadData} />}
 			</AnimatePresence>
 		</>
 	);
-};
-
-export default NewPicture;
+}

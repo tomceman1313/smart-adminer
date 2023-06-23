@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import useInteraction from "../../Hooks/useInteraction";
 import useAuth from "../../Hooks/useAuth";
-import { getDepartments, createDepartment, updateDepartment, removeDepartment } from "../../modules/ApiEmployees";
+import useInteraction from "../../Hooks/useInteraction";
+import { createDepartment, getDepartments, removeDepartment, updateDepartment } from "../../modules/ApiEmployees";
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,7 +10,7 @@ import Item from "../gallery/Item";
 
 import css from "./Departments.module.css";
 
-export default function Departments({ employees, setEmployees, departments, setDepartments, refreshAllData }) {
+export default function Departments({ employees, setEmployees, departments, setDepartments, refreshAllData, allEmployees }) {
 	//TODO Vytvořit samostaný komponent Item (nyní se při alertu ptá na odstranění kategorie)
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
@@ -22,7 +22,6 @@ export default function Departments({ employees, setEmployees, departments, setD
 	}
 
 	const create = async (data) => {
-		console.log(data);
 		await createDepartment(data, auth, setMessage);
 		setValue("name", "");
 		get();
@@ -39,8 +38,7 @@ export default function Departments({ employees, setEmployees, departments, setD
 	};
 
 	async function filterEmployeesByDepartment(id) {
-		//const departmentName = departments.filter((dep) => dep.id === id);
-		const filteredEmployees = await employees.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
+		const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
 		setEmployees(filteredEmployees);
 	}
 

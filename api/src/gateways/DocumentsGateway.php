@@ -26,33 +26,63 @@ class DocumentsGateway
     {
         $base64DataString = $data["file"];
         list($dataType, $fileData) = explode(';', $base64DataString);
-
-        // image file extension
+        // file extension
         $fileExtension = explode('/', $dataType)[1];
         if ($fileExtension == "plain") {
             $fileExtension = "txt";
         }
-        // base64-encoded image data
+        // base64-encoded file data
         list(, $encodedImageData) = explode(',', $fileData);
-
-
         // decode base64-encoded image data
         $decodedFileData = base64_decode($encodedImageData);
-
-        // save image data as file
+        // save data as file
         $file_name = str_replace(" ", "_", $data["file_name"]);
         file_put_contents("{$this->path}/files/documents/{$file_name}.{$fileExtension}", $decodedFileData);
 
-        $sql = "INSERT INTO documents (name, category_id, date) VALUES (:name, :category_id, :date)";
+        //create image
+        $base64DataString = $data["image"];
+        list($dataType, $imageData) = explode(';', $base64DataString);
+        // image file extension
+        $imageExtension = explode('/', $dataType)[1];
+        // base64-encoded image data
+        list(, $encodedImageData) = explode(',', $imageData);
+        // decode base64-encoded image data
+        $decodedImageData = base64_decode($encodedImageData);
+        // save image data as file
+        $image_name = uniqid();
+        file_put_contents("{$this->path}/images/documents/{$image_name}.{$imageExtension}", $decodedImageData);
+
+        $this->compress($image_name . "." . $imageExtension);
+
+        $sql = "INSERT INTO documents (title, description, image, name, category_id, date) VALUES (:title, :description, :image, :name, :category_id, :date)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'image' => $image_name . "." . $imageExtension,
             'name' => $file_name . ".{$fileExtension}",
             'category_id' => $data["category_id"],
             'date' => $data["date"]
         ]);
 
-        return $this->conn->lastInsertId();;
+        return $this->conn->lastInsertId();
+    }
+
+    public function update(array $data): bool
+    {
+        $sql = "UPDATE documents SET title = :title, description = :description, category_id = :category_id, date = :date WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'category_id' => $data["category_id"],
+            'date' => $data["date"],
+            'id' => $data["id"]
+        ]);
+
+        return true;
     }
 
     public function multipleCreate(array $data)
@@ -93,10 +123,15 @@ class DocumentsGateway
     public function delete(string $id): int
     {
         $document = $this->get($id);
-        $fileName = $document["name"];
 
+        $fileName = $document["name"];
         if (file_exists("{$this->path}/files/documents/{$fileName}")) {
             unlink("{$this->path}/files/documents/{$fileName}");
+        }
+
+        $imageName = $document["image"];
+        if ($imageName != "" && file_exists("{$this->path}/images/documents/{$imageName}")) {
+            unlink("{$this->path}/images/documents/{$imageName}");
         }
 
         $sql = "DELETE FROM documents WHERE id = :id";
@@ -123,8 +158,6 @@ class DocumentsGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -214,5 +247,38 @@ class DocumentsGateway
 
 
         return true;
+    }
+
+    private function compress($imageName)
+    {
+        $source = "{$this->path}/images/documents/{$imageName}";
+        // $quality = 75;
+        set_time_limit(10);
+        do {
+            if (file_exists($source)) {
+                $info = getimagesize($source);
+                $width = $info[0];
+                $height = $info[1];
+
+                if ($info['mime'] == 'image/jpeg')
+                    $image = imagecreatefromjpeg($source);
+
+                elseif ($info['mime'] == 'image/gif')
+                    $image = imagecreatefromgif($source);
+
+                elseif ($info['mime'] == 'image/png')
+                    $image = imagecreatefrompng($source);
+
+                if ($width > 750) {
+                    $aspectRatio = $width / $height;
+                    $imageResized = imagescale($image, 750, 750 / $aspectRatio);
+                } else {
+                    $imageResized = $image;
+                }
+
+                imagejpeg($imageResized, $source);
+                break;
+            }
+        } while (true);
     }
 }

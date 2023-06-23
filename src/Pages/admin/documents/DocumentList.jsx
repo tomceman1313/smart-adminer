@@ -1,19 +1,19 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useInteraction from "../../Hooks/useInteraction";
-import { getAll, remove } from "../../modules/ApiFunctions";
 import { multipleDelete } from "../../modules/ApiDocuments";
+import { remove } from "../../modules/ApiFunctions";
 
-import css from "./css/Documents.module.css";
-import Document from "./Document";
 import { AnimatePresence } from "framer-motion";
+import Document from "./Document";
+import css from "./css/Documents.module.css";
 
-const DocumentList = ({ documents, setDocuments, auth, selectedCategory, setSelectedCategory }) => {
+export default function DocumentList({ documents, loadData, auth, selectedCategory, setSelectedCategory, editDocument }) {
 	const { setMessage, setAlert } = useInteraction();
 	const [multiSelection, setMultiSelection] = useState(false);
 	const selectedDocuments = useRef(new Map());
 
 	useEffect(() => {
-		getAll("documents", setDocuments, auth);
+		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -22,8 +22,8 @@ const DocumentList = ({ documents, setDocuments, auth, selectedCategory, setSele
 	};
 
 	const deleteDocumentHandler = (id) => {
-		remove("documents", id, setMessage, "Dokument byl smazán", "Dokument se nepodařilo smazat", auth);
-		getAll("documents", setDocuments, auth);
+		remove("documents", id, setMessage, "Dokument byl smazán", auth);
+		loadData();
 	};
 
 	const deleteDocuments = () => {
@@ -32,12 +32,12 @@ const DocumentList = ({ documents, setDocuments, auth, selectedCategory, setSele
 		images.forEach((value) => {
 			ids.push(value);
 		});
-		setAlert({ id: ids, question: "Smazat obrázky?", positiveHandler: deleteDocumentsHandler });
+		setAlert({ id: ids, question: "Smazat dokumenty?", positiveHandler: deleteDocumentsHandler });
 	};
 
-	const deleteDocumentsHandler = async (ids) => {
+	const deleteDocumentsHandler = (ids) => {
 		multipleDelete(ids, auth, setMessage);
-		await getAll("documents", setDocuments, auth);
+		loadData();
 	};
 
 	const multiselectControl = () => {
@@ -49,7 +49,7 @@ const DocumentList = ({ documents, setDocuments, auth, selectedCategory, setSele
 
 	const resetFilter = () => {
 		setSelectedCategory(null);
-		getAll("documents", setDocuments, auth);
+		loadData();
 	};
 
 	return (
@@ -68,10 +68,20 @@ const DocumentList = ({ documents, setDocuments, auth, selectedCategory, setSele
 			</section>
 
 			<section className={`${css.document_list} no-section`}>
-				<AnimatePresence>{documents && documents.map((el) => <Document key={el.id} info={el} deleteDocument={deleteDocument} multiSelection={multiSelection} selectedDocuments={selectedDocuments} />)}</AnimatePresence>
+				<AnimatePresence>
+					{documents &&
+						documents.map((el) => (
+							<Document
+								key={el.id}
+								info={el}
+								deleteDocument={deleteDocument}
+								multiSelection={multiSelection}
+								selectedDocuments={selectedDocuments}
+								editDocument={editDocument}
+							/>
+						))}
+				</AnimatePresence>
 			</section>
 		</>
 	);
-};
-
-export default DocumentList;
+}

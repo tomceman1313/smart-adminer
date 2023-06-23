@@ -11,7 +11,7 @@ import Item from "../../../admin/gallery/Item";
 
 import css from "./Category.module.css";
 
-const Category = ({ setState, setSelectedCategory, categories, setCategories, apiClass }) => {
+const Category = ({ setState, categories, setCategories, apiClass, filterByCategory }) => {
 	const auth = useAuth();
 
 	const { setMessage } = useInteraction();
@@ -43,17 +43,11 @@ const Category = ({ setState, setSelectedCategory, categories, setCategories, ap
 		get();
 	};
 
-	const showCategory = (id) => {
-		getByCategory(id, setState, auth);
-		const categoryName = categories.filter((item) => item.id === id);
-		setSelectedCategory(categoryName[0].name);
-	};
-
 	return (
 		<section className={css.category}>
 			<h2>Kategorie</h2>
 			<ul className={css.category_list}>
-				{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={showCategory} />)}
+				{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={filterByCategory} />)}
 			</ul>
 			<h3>Přidat kategorii:</h3>
 			<form onSubmit={handleSubmit(create)}>

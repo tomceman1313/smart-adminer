@@ -29,12 +29,17 @@ export default function Products() {
 		getProducts(setProducts, 0);
 	}
 
+	async function filterByCategory(id) {
+		// const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
+		// setEmployees(filteredEmployees);
+	}
+
 	return (
 		<div className={css.products}>
 			<Category
 				auth={auth}
 				setState={setProducts}
-				setSelectedCategory={setSelectedCategory}
+				filterByCategory={filterByCategory}
 				categories={categories}
 				setCategories={setCategories}
 				apiClass="products"

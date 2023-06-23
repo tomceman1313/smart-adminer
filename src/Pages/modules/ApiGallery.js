@@ -83,7 +83,7 @@ export async function deleteCategory(id, auth, setMessage) {
  * * Functions for gallery
  */
 
-export async function getByCategory(id, setImages, auth) {
+export async function getByCategory(id, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getByCategory`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -97,9 +97,7 @@ export async function getByCategory(id, setImages, auth) {
 	}
 
 	const data = await response.json();
-
-	setImages(data.data);
-	return data;
+	return data.data;
 }
 
 export async function getImageCategories(id, setPickedCategories, auth) {
@@ -122,7 +120,6 @@ export async function getImageCategories(id, setPickedCategories, auth) {
 }
 
 export async function multipleCreate(data, auth) {
-	console.log({ data: data, token: auth.userInfo.token });
 	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=multipleCreate`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -136,7 +133,6 @@ export async function multipleCreate(data, auth) {
 	}
 
 	const rdata = await response.json();
-
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	return;
 }

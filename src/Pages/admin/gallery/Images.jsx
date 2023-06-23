@@ -1,27 +1,28 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useInteraction from "../../Hooks/useInteraction";
-import { edit, getAll, remove } from "../../modules/ApiFunctions";
+import { edit, remove } from "../../modules/ApiFunctions";
 import { multipleDelete } from "../../modules/ApiGallery";
+import Pagination from "../../Components/common/pagination/Pagination";
 
-import css from "./css/Images.module.css";
+import { AnimatePresence } from "framer-motion";
 import EditPicture from "./EditPicture";
 import Image from "./Image";
-import { AnimatePresence } from "framer-motion";
+import css from "./css/Images.module.css";
 
-const Images = ({ images, setImages, auth, selectedCategory, setSelectedCategory }) => {
+const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, setSelectedCategory }) => {
 	const { setMessage, setAlert } = useInteraction();
 	const [showEditCont, setShowEditCont] = useState(null);
 	const [multiSelection, setMultiSelection] = useState(false);
 	const selectedImages = useRef(new Map());
 
 	useEffect(() => {
-		getAll("gallery", setImages, auth);
+		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const editImage = (data) => {
-		edit("gallery", data, setMessage, "Obrázek byl upraven", "Obrázek se nepodařilo upravit", auth);
-		getAll("gallery", setImages, auth);
+		edit("gallery", data, setMessage, "Obrázek byl upraven", auth);
+		loadData();
 	};
 
 	const deleteImage = (e) => {
@@ -29,8 +30,8 @@ const Images = ({ images, setImages, auth, selectedCategory, setSelectedCategory
 	};
 
 	const deleteImageHandler = (id) => {
-		remove("gallery", id, setMessage, "Obrázek byl smazán", "Obrázek se nepodařilo smazat", auth);
-		getAll("gallery", setImages, auth);
+		remove("gallery", id, setMessage, "Obrázek byl smazán", auth);
+		loadData();
 	};
 
 	const deleteImages = () => {
@@ -44,7 +45,7 @@ const Images = ({ images, setImages, auth, selectedCategory, setSelectedCategory
 
 	const deleteImagesHandler = async (ids) => {
 		multipleDelete(ids, auth, setMessage);
-		await getAll("gallery", setImages, auth);
+		loadData();
 	};
 
 	const multiselectControl = () => {
@@ -56,7 +57,7 @@ const Images = ({ images, setImages, auth, selectedCategory, setSelectedCategory
 
 	const resetFilter = () => {
 		setSelectedCategory(null);
-		getAll("gallery", setImages, auth);
+		loadData();
 	};
 
 	return (
@@ -75,9 +76,24 @@ const Images = ({ images, setImages, auth, selectedCategory, setSelectedCategory
 			</section>
 
 			<section className={`${css.images} no-section`}>
-				<AnimatePresence>{images && images.map((el) => <Image key={el.id} el={el} deleteImage={deleteImage} setShowEditCont={setShowEditCont} multiSelection={multiSelection} selectedImages={selectedImages} />)}</AnimatePresence>
+				<AnimatePresence>
+					{images &&
+						images.map((el) => (
+							<Image
+								key={el.id}
+								el={el}
+								deleteImage={deleteImage}
+								setShowEditCont={setShowEditCont}
+								multiSelection={multiSelection}
+								selectedImages={selectedImages}
+							/>
+						))}
+				</AnimatePresence>
 			</section>
-			<AnimatePresence>{showEditCont && <EditPicture auth={auth} image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}</AnimatePresence>
+			{images && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/dashboard/gallery"} />}
+			<AnimatePresence>
+				{showEditCont && <EditPicture auth={auth} image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}
+			</AnimatePresence>
 		</>
 	);
 };

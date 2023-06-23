@@ -17,7 +17,12 @@ const Events = () => {
 		document.getElementById("banner-title").innerHTML = "Události";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte proběhlé nebo teprv plánované události";
 
-		getAll("events", setEvents, auth);
+		const loadData = async () => {
+			const data = await getAll("events", auth);
+			setEvents(data);
+		};
+
+		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [year]);
 

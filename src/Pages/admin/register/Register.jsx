@@ -23,7 +23,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useForm } from "react-hook-form";
-import useApi from "../../Hooks/useApi";
+import { create } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import useRolesApi from "../../Hooks/useRolesApi";
@@ -31,7 +31,6 @@ import useRolesApi from "../../Hooks/useRolesApi";
 export default function Register() {
 	const auth = useAuth();
 	const getRoles = useRolesApi("getroles");
-	const createUser = useApi("create");
 	const editRole = useRolesApi("update_role");
 
 	const { register, handleSubmit, reset } = useForm();
@@ -50,12 +49,12 @@ export default function Register() {
 	}, []);
 
 	const onSubmit = (data) => {
-		createUser("admin", data, setMessage, "Účet vytvořen", "Účet nebyl vytvořen", auth);
+		create("admin", data, setMessage, "Účet vytvořen", auth);
 		reset();
 	};
 
 	const onSubmitRoles = (data) => {
-		editRole(data, setMessage, "Práva byla upravena", "Práva nebyla upravena", auth);
+		editRole(data, setMessage, "Práva byla upravena", auth);
 		getRoles(setPrivileges, auth);
 		editRoles();
 	};
@@ -136,13 +135,6 @@ export default function Register() {
 							rewind: true,
 						}}
 						aria-labelledby="basic-example-heading"
-						// onMoved={(splide, newIndex) => {
-						// 	// eslint-disable-next-line
-						// 	console.log("moved", newIndex);
-
-						// 	// eslint-disable-next-line
-						// 	console.log("length", splide.length);
-						// }}
 					>
 						<SplideSlide className={css.slide}>
 							<PrivilegePrices css={css} privileges={privileges} isPermitted={isPermitted} />
