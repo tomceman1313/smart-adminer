@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import css from "./Pagination.module.css";
 
@@ -11,31 +12,40 @@ import css from "./Pagination.module.css";
  */
 export default function Pagination({ dataLength, numberOfItemsInPage, path }) {
 	const { page } = useParams();
-	let numberOfPages = dataLength / numberOfItemsInPage;
-	if (numberOfPages % 1 > 0) {
-		numberOfPages = parseInt(++numberOfPages);
-	}
-	let arrayOfNumberPages = [];
+	const [pages, setPages] = useState([]);
 
-	while (numberOfPages > 0) {
-		const number = parseInt(numberOfPages);
-		let active = number === parseInt(page) ? true : false;
-		if (!page) {
-			active = number === 1 ? true : false;
+	useEffect(() => {
+		let arrayOfNumberPages = [];
+		let numberOfPages = dataLength / numberOfItemsInPage;
+		if (numberOfPages % 1 > 0) {
+			numberOfPages = Math.ceil(numberOfPages);
 		}
-		arrayOfNumberPages.push({ pageNumber: number, isActive: active });
-		--numberOfPages;
-	}
 
-	arrayOfNumberPages.reverse();
+		while (numberOfPages > 0) {
+			const number = numberOfPages;
+			let active = number === Number(page) ? true : false;
+			if (!page) {
+				active = number === 1 ? true : false;
+			}
+			arrayOfNumberPages.push({ pageNumber: number, isActive: active });
+			--numberOfPages;
+		}
+		arrayOfNumberPages.reverse();
+		setPages(arrayOfNumberPages);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [page, dataLength]);
 
 	return (
 		<div className={css.pagination}>
-			{arrayOfNumberPages.map((item) => (
-				<Link to={`${path}/${item.pageNumber}`} key={`page-${item.pageNumber}`} className={item.isActive ? css.active : ""}>
-					{item.pageNumber}
-				</Link>
-			))}
+			{pages.length > 0 ? (
+				pages.map((item) => (
+					<Link href={`${path}/?page=${item.pageNumber}`} key={`page-${item.pageNumber}`} className={item.isActive ? css.active : ""}>
+						{item.pageNumber}
+					</Link>
+				))
+			) : (
+				<></>
+			)}
 		</div>
 	);
 }

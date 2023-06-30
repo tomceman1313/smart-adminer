@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react";
-import { getAll, test, remove } from "../../modules/ApiVacancies";
-import { makeDateFormat } from "../../modules/BasicFunctions";
+import { faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faPen } from "@fortawesome/free-solid-svg-icons";
-import css from "./Vacancies.module.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import PlusButton from "../../Components/basic/PlusButton";
+import { getAll, remove } from "../../modules/ApiVacancies";
+import { makeDateFormat } from "../../modules/BasicFunctions";
+import css from "./Vacancies.module.css";
 
 export default function Vacancies() {
 	const auth = useAuth();

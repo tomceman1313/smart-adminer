@@ -251,7 +251,7 @@ class GalleryGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM gallery";
+        $sql = "SELECT * FROM gallery ORDER BY id DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -283,7 +283,7 @@ class GalleryGateway
             return [];
         }
 
-        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ")";
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];
