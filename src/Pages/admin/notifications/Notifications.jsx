@@ -7,14 +7,13 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useForm } from "react-hook-form";
-import useApi from "../../Hooks/useApi";
+import { getAll } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { isActive, makeDateFormat } from "../../modules/BasicFunctions";
 
 const Notifications = () => {
 	const auth = useAuth();
-	const getAll = useApi("getAll");
 
 	const { setAlert, setMessage } = useInteraction();
 
@@ -32,15 +31,16 @@ const Notifications = () => {
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
 	useEffect(() => {
-		getData();
+		loadData();
 		document.getElementById("banner-title").innerHTML = "Upozornění";
 		document.getElementById("banner-desc").innerHTML = "Informujte své návštěvníky o mimořádných událostech";
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const getData = () => {
-		getAll("notifications", setNotifications, auth);
-	};
+	async function loadData() {
+		const data = await getAll("notifications", auth);
+		setNotifications(data);
+	}
 
 	/**
 	 * * POST
@@ -58,7 +58,7 @@ const Notifications = () => {
 
 		edit("notifications", data, setMessage, "Upozornění vytvořeno", auth);
 		editCont();
-		getData();
+		loadData();
 	};
 
 	/**
@@ -77,7 +77,7 @@ const Notifications = () => {
 
 		create("notifications", data, setMessage, "Upozornění vytvořeno", auth);
 		addCont();
-		getData();
+		loadData();
 	};
 
 	/**
@@ -88,7 +88,7 @@ const Notifications = () => {
 	const deleteHandler = (id) => {
 		remove("notifications", id, setMessage, "Upozornění bylo odstřaněna", auth);
 		editCont();
-		getData();
+		loadData();
 	};
 
 	/**

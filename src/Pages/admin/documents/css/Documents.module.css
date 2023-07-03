@@ -101,7 +101,7 @@
 }
 
 .document_list div.controls {
-	width: 100px;
+	width: 150px;
 	position: absolute;
 	border-radius: 0;
 	right: 0;
@@ -127,7 +127,8 @@
 }
 
 .delete_icon,
-.download_icon {
+.download_icon,
+.edit_icon {
 	color: white;
 	width: 20px;
 	height: 20px;
@@ -143,10 +144,18 @@
 }
 
 .download_icon {
-	background-color: var(--green);
+	background-color: var(--main);
 }
 
 .download_icon:hover {
+	background-color: var(--main-dark);
+}
+
+.edit_icon {
+	background-color: var(--green);
+}
+
+.edit_icon:hover {
 	background-color: var(--green-dark);
 }
 

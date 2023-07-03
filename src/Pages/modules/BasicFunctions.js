@@ -112,3 +112,21 @@ export function convertBase64(file) {
 		};
 	});
 }
+
+/**
+ * * Slice piece of array based on page number
+ * ? This function have to be imported inside loadData function instead of setState
+ * ? Also useEffect[page] have to be created for notice change and rerun this function for data change
+ * @param {array} data - source data
+ * @param {number} numberOfItemsPerPage - how many items will returned slice have
+ * @param {number} page - current page number
+ * @param {React.setState} setState - setState for set sliced array
+ */
+export function sliceDataBasedOnPageNumber(data, numberOfItemsPerPage, page, setState) {
+	const multiplier = page ? page - 1 : 0;
+	const start = numberOfItemsPerPage * multiplier;
+	const end = start + numberOfItemsPerPage;
+
+	const slicedData = data.slice(start, end);
+	setState(slicedData);
+}

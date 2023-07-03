@@ -77,7 +77,7 @@ export default function DesktopMenu({ logOut }) {
 					</div>
 
 					<article>
-						<Link to="/dashboard/employees" onClick={setActiveLink} id="vacancies">
+						<Link to="/dashboard/employees" onClick={setActiveLink} id="employees_list">
 							Seznam zaměstnanců
 						</Link>
 						<Link to="/dashboard/vacancies" onClick={setActiveLink} id="vacancies">

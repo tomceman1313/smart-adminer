@@ -84,19 +84,11 @@ class DocumentsConroller
                     ]);
                 } else {
                     $result = $this->gateway->update($data["data"]);
-                    if ($result) {
-                        http_response_code(200);
-                        echo json_encode([
-                            "message" => "Item edited",
-                            "token" => $authAction
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "Update failure",
-                            "token" => $authAction
-                        ]);
-                    }
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "Item edited",
+                        "token" => $authAction
+                    ]);
                 }
 
                 break;

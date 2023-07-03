@@ -167,4 +167,8 @@
 		width: calc(100% - 50px);
 		margin: 15px 0;
 	}
+
+	.edit {
+		width: calc(100% - 70px);
+	}
 }

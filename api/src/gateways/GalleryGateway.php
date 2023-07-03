@@ -121,6 +121,7 @@ class GalleryGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
+                $exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -131,6 +132,7 @@ class GalleryGateway
                 elseif ($info['mime'] == 'image/png')
                     $image = imagecreatefrompng($source);
 
+
                 if ($width > 1920) {
                     $aspectRatio = $width / $height;
                     $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
@@ -138,6 +140,19 @@ class GalleryGateway
                     $imageResized = $image;
                 }
 
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 8:
+                            $imageResized = imagerotate($imageResized, 90, 0);
+                            break;
+                        case 3:
+                            $imageResized = imagerotate($imageResized, 180, 0);
+                            break;
+                        case 6:
+                            $imageResized = imagerotate($imageResized, -90, 0);
+                            break;
+                    }
+                }
                 imagejpeg($imageResized, $source);
                 break;
             }
@@ -236,7 +251,7 @@ class GalleryGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM gallery";
+        $sql = "SELECT * FROM gallery ORDER BY id DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -268,7 +283,7 @@ class GalleryGateway
             return [];
         }
 
-        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ")";
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];

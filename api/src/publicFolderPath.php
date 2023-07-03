@@ -1,5 +1,5 @@
 <?php
-//testing
+// first is production
 $path = '../public';
-// production
+// testing
 //$path = '../';

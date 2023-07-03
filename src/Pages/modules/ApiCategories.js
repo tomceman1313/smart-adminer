@@ -72,22 +72,3 @@ export async function deleteCategory(id, auth, setMessage, apiClass) {
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	setMessage({ action: "success", text: "Kategorie byla smazána" });
 }
-
-export async function getByCategory(id, setImages, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getByCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ category_id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-
-	setImages(data.data);
-	return data;
-}

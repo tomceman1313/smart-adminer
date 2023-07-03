@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileWord, faCircle, faFilePdf, faFileZipper, faFileVideo, faFileImage, faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { faCircleCheck, faDownload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faDownload, faTrashCan, faPen } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 
 import css from "./css/Documents.module.css";
-const Document = ({ info, deleteDocument, multiSelection, selectedDocuments }) => {
+const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, editDocument }) => {
 	const [picked, setPicked] = useState(false);
 	const [showControls, setShowControls] = useState(false);
 	const [icon, setIcon] = useState(faFileLines);
@@ -62,6 +62,10 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments }) =
 		}
 	};
 
+	function showEditCont() {
+		editDocument(info);
+	}
+
 	return (
 		<motion.div
 			key={info.id}
@@ -78,8 +82,16 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments }) =
 			<label>{info.name}</label>
 			<AnimatePresence>
 				{showControls && (
-					<motion.div id={info.id} className={css.controls} initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "150%" }}>
+					<motion.div
+						id={info.id}
+						className={css.controls}
+						initial={{ x: "100%" }}
+						animate={{ x: 0 }}
+						exit={{ x: "150%" }}
+						transition={{ duration: 0.8 }}
+					>
 						<FontAwesomeIcon className={css.download_icon} icon={faDownload} onClick={downloadDocument} />
+						<FontAwesomeIcon className={css.edit_icon} icon={faPen} onClick={showEditCont} />
 						<FontAwesomeIcon className={css.delete_icon} icon={faTrashCan} onClick={deleteDocument} />
 					</motion.div>
 				)}

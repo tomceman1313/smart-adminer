@@ -3,7 +3,7 @@
 //export const BASE_URL = "https://smart-studio.fun/admin";
 export const BASE_URL = "http://localhost:4300";
 
-export async function getAll(apiClass, setState, auth) {
+export async function getAll(apiClass, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -18,9 +18,7 @@ export async function getAll(apiClass, setState, auth) {
 
 	const data = await response.json();
 
-	setState(data.data);
-
-	return data;
+	return data.data;
 }
 
 export function get(apiClass, id) {

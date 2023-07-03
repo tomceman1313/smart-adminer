@@ -22,7 +22,7 @@ import useInteraction from "../../Hooks/useInteraction";
 
 import { useForm } from "react-hook-form";
 
-export default function Employee({ employee, getData, setVisible, departments, auth }) {
+export default function Employee({ employee, setEmployee, getData, setVisible, departments, auth }) {
 	const { setMessage } = useInteraction();
 
 	const { register, handleSubmit, reset, setValue } = useForm();
@@ -59,7 +59,16 @@ export default function Employee({ employee, getData, setVisible, departments, a
 			await create(data, auth, setMessage);
 		}
 		getData();
+		resetForm();
 		setVisible(false);
+	}
+
+	function resetForm() {
+		reset({ degree_before: "", fname: "", lname: "", degree_after: "", phone: "", email: "", position: "", notes: "", id: "" });
+		setImageIsSet(false);
+		setPickedDepartments([]);
+		originalDepartments.current = null;
+		setEmployee(null);
 	}
 
 	function setData() {
@@ -105,7 +114,7 @@ export default function Employee({ employee, getData, setVisible, departments, a
 				icon={faXmark}
 				onClick={() => {
 					setVisible((prev) => !prev);
-					reset();
+					resetForm();
 				}}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>

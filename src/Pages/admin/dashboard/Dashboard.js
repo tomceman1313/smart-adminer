@@ -84,6 +84,7 @@ export default function Dashboard() {
 						<Route path="pricelist" element={<Pricelist />} />
 						<Route path="notifications" element={<Notifications />} />
 						<Route path="gallery" element={<Gallery />} />
+						<Route path="gallery/:page" element={<Gallery />} />
 						<Route path="documents" element={<Documents />} />
 						<Route path="products" element={<Products />} />
 						<Route path="new-product" element={<Product />} />
