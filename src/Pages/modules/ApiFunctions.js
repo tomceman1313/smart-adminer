@@ -1,3 +1,5 @@
+//before production change BASE_URL, publicFolderPath.php and publicPath (BasicFunctions.js)
+
 //export const BASE_URL = "https://smart-studio.fun/admin";
 export const BASE_URL = "http://localhost:4300";
 

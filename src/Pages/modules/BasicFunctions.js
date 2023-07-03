@@ -1,7 +1,10 @@
 import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+//dev
 export const publicPath = "/admin";
+//production
+//export const publicPath = "https://smart-studio.fun/admin";
 
 export function makeDate(year, month, day) {
 	let date = `${year}`;

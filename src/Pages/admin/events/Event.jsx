@@ -93,7 +93,7 @@ const Event = () => {
 			data.id = event.id;
 			updateEvent(data, auth, setMessage);
 		} else {
-			navigation("/dashboard/events", { replace: true });
+			//navigation("/dashboard/events", { replace: true });
 			createEvent(data, auth, setMessage, navigation);
 		}
 	};
