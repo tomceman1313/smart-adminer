@@ -39,7 +39,7 @@ const Documents = () => {
 				categories={categories}
 				setCategories={setCategories}
 			/>
-			<NewDocument auth={auth} setDocuments={setDocuments} categories={categories} />
+			<NewDocument auth={auth} refreshData={loadData} categories={categories} />
 			<DocumentList
 				auth={auth}
 				documents={documents}

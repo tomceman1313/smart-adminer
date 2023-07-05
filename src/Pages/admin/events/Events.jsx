@@ -67,7 +67,7 @@ const Events = () => {
 							</div>
 
 							<div>
-								<label>{makeDateFormat(event.date, "str")}</label>
+								<label>{makeDateFormat(event.date, "text")}</label>
 							</div>
 
 							<div>{isPermitted(event.active)}</div>

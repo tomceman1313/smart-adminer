@@ -41,11 +41,6 @@ require __DIR__ . "/src/gateways/EmployeesGateway.php";
 header("Access-Control-Allow-Origin: http://localhost:3000");
 // header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-// header("Content-type: application/json; charset=UTF-8, multipart/form-data");
-// header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD");
-
-// header("Access-Control-Allow-Credentials: true");
-
 //Production 
 //header("Access-Control-Allow-Origin: http://localhost");
 header("Content-type: application/json; charset=UTF-8");

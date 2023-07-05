@@ -63,7 +63,7 @@ const Articles = () => {
 							</div>
 
 							<div>
-								<label>{makeDateFormat(article.date, "str")}</label>
+								<label>{makeDateFormat(article.date, "text")}</label>
 							</div>
 
 							<div>{isPermitted(article.active)}</div>
