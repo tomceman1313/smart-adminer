@@ -93,8 +93,8 @@ const Event = () => {
 			data.id = event.id;
 			updateEvent(data, auth, setMessage);
 		} else {
-			//navigation("/dashboard/events", { replace: true });
-			createEvent(data, auth, setMessage, navigation);
+			await createEvent(data, auth, setMessage);
+			navigation("/dashboard/events");
 		}
 	};
 
@@ -119,9 +119,9 @@ const Event = () => {
 					<FontAwesomeIcon className={cssBasic.icon} icon={faMagnifyingGlass} />
 				</div>
 				<p>Událost je viditelná: </p>
-				<label className={css.switch}>
+				<label className="switch">
 					<input type="checkbox" {...register("active")} />
-					<span className={css.slider}></span>
+					<span className="slider"></span>
 				</label>
 			</section>
 

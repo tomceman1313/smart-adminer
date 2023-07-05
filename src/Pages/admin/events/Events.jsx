@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import { getAll } from "../../modules/ApiFunctions";
@@ -8,10 +8,11 @@ import css from "./css/Events.module.css";
 
 const Events = () => {
 	const auth = useAuth();
+	const navigate = useNavigate();
 
+	const allEvents = useRef([]);
 	const [events, setEvents] = useState(null);
 	const [year, setYear] = useState(new Date().getFullYear());
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Události";
@@ -19,12 +20,24 @@ const Events = () => {
 
 		const loadData = async () => {
 			const data = await getAll("events", auth);
+			allEvents.current = data;
 			setEvents(data);
 		};
 
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		const filteredByYear = allEvents.current.filter((el) => year === getEventYear(el.date));
+		setEvents(filteredByYear);
 	}, [year]);
+
+	function getEventYear(date) {
+		let slicedYear = date.toString();
+		slicedYear = slicedYear.slice(0, 4);
+		return Number(slicedYear);
+	}
 
 	const openEventDetails = (e) => {
 		const id = e.currentTarget.id;

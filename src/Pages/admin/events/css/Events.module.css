@@ -103,6 +103,11 @@
 .events_list p {
 	margin: 5px 0;
 	color: black;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	white-space: pre-wrap;
 }
 
 .events_list p:nth-of-type(2) {
@@ -117,7 +122,34 @@
 }
 
 @media (max-width: 650px) {
+	.filter {
+		padding: 20px;
+	}
+
+	.filter h2,
+	.filter label {
+		font-size: 1.1rem;
+	}
+
+	.filter label {
+		margin: 0 15px;
+	}
+
 	.events_list article {
 		width: calc(100% - 30px);
+	}
+}
+
+@media (max-width: 400px) {
+	.filter {
+		padding: 15px;
+	}
+
+	.events_list h3 {
+		font-size: 1rem;
+	}
+
+	.events_list p {
+		font-size: 0.8rem;
 	}
 }

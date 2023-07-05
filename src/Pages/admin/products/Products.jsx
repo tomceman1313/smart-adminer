@@ -36,14 +36,7 @@ export default function Products() {
 
 	return (
 		<div className={css.products}>
-			<Category
-				auth={auth}
-				setState={setProducts}
-				filterByCategory={filterByCategory}
-				categories={categories}
-				setCategories={setCategories}
-				apiClass="products"
-			/>
+			<Category filterByCategory={filterByCategory} categories={categories} setCategories={setCategories} apiClass="products" />
 
 			<section className={`${css.products_list} no-section`}>
 				{products ? (

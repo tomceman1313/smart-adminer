@@ -18,7 +18,19 @@ export async function getArticle(id, navigation) {
 	return article;
 }
 
-export async function createArticle(data, auth, setMessage, navigation) {
+export async function getByCategory(categoryId) {
+	const response = await fetch(`${BASE_URL}/api/?class=articles&action=get-by-category`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ category_id: categoryId }),
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
+export async function createArticle(data, auth, setMessage) {
 	const response = await fetch(BASE_URL + "/api/?class=articles&action=create", {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -28,7 +40,6 @@ export async function createArticle(data, auth, setMessage, navigation) {
 
 	if (response.status === 201) {
 		setMessage({ action: "success", text: "Uloženo" });
-		navigation("/dashboard/articles");
 	} else {
 		setMessage({ action: "failure", text: "Operace selhala" });
 	}

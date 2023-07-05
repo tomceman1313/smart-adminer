@@ -26,7 +26,8 @@ export function makeDateFormat(date, direction) {
 	}
 
 	if (direction === "str") {
-		dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		//dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		dateFormated = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
 	} else {
 		let dateArray = dateStr.split("-");
 		dateFormated = Number(dateArray[0] + dateArray[1] + dateArray[2]);

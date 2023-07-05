@@ -49,7 +49,7 @@ class EventsConroller
                     $userId = $this->admin->decodeToken($authAction);
                     if ($userId != null) {
                         $id = $this->gateway->create($data["data"], $userId);
-                        http_response_code(200);
+                        http_response_code(201);
                         echo json_encode([
                             "message" => "Event created",
                             "data" => $id,
