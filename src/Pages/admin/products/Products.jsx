@@ -8,6 +8,7 @@ import useInteraction from "../../Hooks/useInteraction";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Products.module.css";
+import PlusButton from "../../Components/basic/PlusButton";
 
 export default function Products() {
 	const auth = useAuth();
@@ -57,6 +58,8 @@ export default function Products() {
 					<p>Zatím nebyly vloženy žádné produkty</p>
 				)}
 			</section>
+
+			<PlusButton onClick={() => navigate(`/dashboard/new-product/`)} />
 		</div>
 	);
 }

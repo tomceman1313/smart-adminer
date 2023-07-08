@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import { getAll } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import Category from "../../Components/common/categories-component/Category";
+import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
+import PlusButton from "../../Components/basic/PlusButton";
+import { getByCategory } from "../../modules/ApiEvents";
 
 import css from "./css/Events.module.css";
 
@@ -13,16 +17,12 @@ const Events = () => {
 	const allEvents = useRef([]);
 	const [events, setEvents] = useState(null);
 	const [year, setYear] = useState(new Date().getFullYear());
+	const [categories, setCategories] = useState(null);
+	const [selectedCategory, setSelectedCategory] = useState(null);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Události";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte proběhlé nebo teprv plánované události";
-
-		const loadData = async () => {
-			const data = await getAll("events", auth);
-			allEvents.current = data;
-			setEvents(data);
-		};
 
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -32,6 +32,18 @@ const Events = () => {
 		const filteredByYear = allEvents.current.filter((el) => year === getEventYear(el.date));
 		setEvents(filteredByYear);
 	}, [year]);
+
+	async function loadData() {
+		setSelectedCategory(null);
+		const data = await getAll("events", auth);
+		allEvents.current = data;
+		filterByDate();
+	}
+
+	function filterByDate() {
+		const filteredByYear = allEvents.current.filter((el) => year === getEventYear(el.date));
+		setEvents(filteredByYear);
+	}
 
 	function getEventYear(date) {
 		let slicedYear = date.toString();
@@ -44,8 +56,17 @@ const Events = () => {
 		navigate(`/dashboard/event/${id}`);
 	};
 
+	async function filterByCategory(id) {
+		const data = await getByCategory(id);
+		const category = categories.find((el) => el.id === id);
+		setSelectedCategory(category.name);
+		setEvents(data);
+	}
+
 	return (
 		<div className={css.articles}>
+			<Category categories={categories} setCategories={setCategories} apiClass="events" filterByCategory={filterByCategory} />
+			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
 			<section className={css.filter}>
 				<h2>Filtrovat:</h2>
 				<div>
@@ -53,7 +74,7 @@ const Events = () => {
 					<label>{year}</label>
 					<button onClick={() => setYear((prev) => --prev)}>-</button>
 				</div>
-				<button className="blue_button">Reset</button>
+				<button className="green_button">Reset</button>
 			</section>
 
 			<section className={`${css.events_list} no-section`}>
@@ -74,6 +95,7 @@ const Events = () => {
 						</article>
 					))}
 			</section>
+			<PlusButton onClick={() => navigate(`/dashboard/new-event/`)} />
 		</div>
 	);
 };

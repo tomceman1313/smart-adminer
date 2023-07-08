@@ -37,10 +37,6 @@ const Articles = () => {
 		navigate(`/dashboard/article/${id}`);
 	};
 
-	function openNewArticle() {
-		navigate("/dashboard/new-article");
-	}
-
 	async function filterByCategory(id) {
 		const data = await getByCategory(id);
 		const category = categories.find((el) => el.id === id);
@@ -70,7 +66,7 @@ const Articles = () => {
 						</article>
 					))}
 			</section>
-			<PlusButton onClick={openNewArticle} />
+			<PlusButton onClick={() => navigate("/dashboard/new-article/")} />
 		</div>
 	);
 };
