@@ -6,7 +6,7 @@ import { remove } from "../../modules/ApiFunctions";
 import { AnimatePresence } from "framer-motion";
 import Document from "./Document";
 import css from "./css/Documents.module.css";
-
+//TODO refresh po smazání dokumentu
 export default function DocumentList({ documents, loadData, auth, selectedCategory, setSelectedCategory, editDocument }) {
 	const { setMessage, setAlert } = useInteraction();
 	const [multiSelection, setMultiSelection] = useState(false);
