@@ -167,7 +167,7 @@ class DocumentsGateway
 
     function getByCategory(string $category_id): array
     {
-        $sql = "SELECT * FROM documents WHERE category_id=:id";
+        $sql = "SELECT * FROM documents WHERE category_id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -177,6 +177,11 @@ class DocumentsGateway
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (file_exists("{$this->path}/files/documents/" . $row["name"])) {
+                $row["size"] = filesize("{$this->path}/files/documents/" . $row["name"]);
+            } else {
+                $row["size"] = 8.1;
+            }
             $data[] = $row;
         }
 
