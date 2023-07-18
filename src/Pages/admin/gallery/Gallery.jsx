@@ -49,13 +49,7 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
-			<Category
-				setState={setImages}
-				filterByCategory={filterImagesByCategory}
-				categories={categories}
-				setCategories={setCategories}
-				apiClass="gallery"
-			/>
+			<Category filterByCategory={filterImagesByCategory} categories={categories} setCategories={setCategories} apiClass="gallery" />
 			<NewPicture auth={auth} setImages={setImages} categories={categories} />
 			<Images
 				images={images}

@@ -18,6 +18,18 @@ export async function getEvent(id, token, navigation) {
 	return article;
 }
 
+export async function getByCategory(categoryId) {
+	const response = await fetch(`${BASE_URL}/api/?class=events&action=get-by-category`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		body: JSON.stringify({ category_id: categoryId }),
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
 export async function createEvent(data, auth, setMessage) {
 	const response = await fetch(BASE_URL + "/api/?class=events&action=create", {
 		method: "POST",

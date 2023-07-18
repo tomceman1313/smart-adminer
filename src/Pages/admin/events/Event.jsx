@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { createEvent, deleteEvent, getEvent, updateEvent } from "../../modules/ApiEvents";
 import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
+import { getCategories } from "../../modules/ApiCategories";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
@@ -24,6 +25,7 @@ const Event = () => {
 
 	const { id } = useParams();
 	const [event, setEvent] = useState(null);
+	const [categories, setCategories] = useState(null);
 
 	const { register, handleSubmit, setValue, reset } = useForm();
 	const [imageIsSet, setImageIsSet] = useState(false);
@@ -49,6 +51,7 @@ const Event = () => {
 			setEvent(null);
 			setUnderEventImages(null);
 		}
+		getCategories(setCategories, "events");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
@@ -93,8 +96,8 @@ const Event = () => {
 			data.id = event.id;
 			updateEvent(data, auth, setMessage);
 		} else {
-			//navigation("/dashboard/events", { replace: true });
-			createEvent(data, auth, setMessage, navigation);
+			await createEvent(data, auth, setMessage);
+			navigation("/dashboard/events");
 		}
 	};
 
@@ -119,9 +122,9 @@ const Event = () => {
 					<FontAwesomeIcon className={cssBasic.icon} icon={faMagnifyingGlass} />
 				</div>
 				<p>Událost je viditelná: </p>
-				<label className={css.switch}>
+				<label className="switch">
 					<input type="checkbox" {...register("active")} />
-					<span className={css.slider}></span>
+					<span className="slider"></span>
 				</label>
 			</section>
 
@@ -136,9 +139,12 @@ const Event = () => {
 						<option value="default" disabled>
 							-- Kategorie události --
 						</option>
-						<option value="1">Novinky</option>
-						<option value="2">Politika</option>
-						<option value="3">Sport</option>
+						{categories &&
+							categories.map((el) => (
+								<option key={`category-${el.name}`} value={el.id}>
+									{el.name}
+								</option>
+							))}
 					</select>
 					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
 				</div>

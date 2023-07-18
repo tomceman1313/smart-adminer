@@ -16,6 +16,7 @@ import useInteraction from "../../Hooks/useInteraction";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 import ImageList from "./ImageList";
+import { getCategories } from "../../modules/ApiCategories";
 
 const Article = () => {
 	const auth = useAuth();
@@ -24,6 +25,7 @@ const Article = () => {
 
 	const { id } = useParams();
 	const [article, setArticle] = useState(null);
+	const [categories, setCategories] = useState(null);
 
 	const { register, handleSubmit, setValue, reset } = useForm();
 	const [imageIsSet, setImageIsSet] = useState(false);
@@ -49,6 +51,7 @@ const Article = () => {
 			setArticle(null);
 			setUnderArticleImages(null);
 		}
+		getCategories(setCategories, "articles");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
@@ -93,9 +96,8 @@ const Article = () => {
 			data.id = article.id;
 			updateArticle(data, auth, setMessage);
 		} else {
-			console.log(data);
-			navigation("/dashboard/articles", { replace: true });
-			createArticle(data, auth, setMessage, navigation);
+			await createArticle(data, auth, setMessage);
+			navigation("/dashboard/articles");
 		}
 	};
 
@@ -137,9 +139,12 @@ const Article = () => {
 						<option value="default" disabled>
 							-- Kategorie článku --
 						</option>
-						<option value="1">Novinky</option>
-						<option value="2">Politika</option>
-						<option value="3">Sport</option>
+						{categories &&
+							categories.map((el) => (
+								<option key={`category-${el.name}`} value={el.id}>
+									{el.name}
+								</option>
+							))}
 					</select>
 					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
 				</div>

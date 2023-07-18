@@ -79,7 +79,7 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, edi
 			}}
 		>
 			<FontAwesomeIcon className={css.file_icon} icon={multiSelection ? (picked ? faCircleCheck : faCircle) : icon} />
-			<label>{info.name}</label>
+			<label>{info.title}</label>
 			<AnimatePresence>
 				{showControls && (
 					<motion.div

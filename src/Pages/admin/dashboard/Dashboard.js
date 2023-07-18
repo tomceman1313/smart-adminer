@@ -97,11 +97,9 @@ export default function Dashboard() {
 					<Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.employee, ROLES.admin]} />}>
 						<Route path="profile" element={<Profile />} />
 						<Route path="articles" element={<Articles />} />
-						<Route path="article" element={<Article />} />
 						<Route path="new-article" element={<Article />} />
 						<Route path="article/:id" element={<Article />} />
 						<Route path="events" element={<Events />} />
-						<Route path="event" element={<Event />} />
 						<Route path="new-event" element={<Event />} />
 						<Route path="event/:id" element={<Event />} />
 					</Route>

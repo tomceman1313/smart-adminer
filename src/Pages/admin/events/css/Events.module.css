@@ -7,16 +7,17 @@
 }
 
 .filter {
-	background-color: var(--main);
+	background-color: var(--green);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	flex-wrap: wrap;
 	padding: 30px 50px;
 }
 
 .filter h2 {
 	width: auto;
-	font-size: 28px;
+	font-size: 1.5rem;
 	margin: 0;
 	color: white;
 }
@@ -28,7 +29,7 @@
 
 .filter label {
 	margin: 0 30px;
-	font-size: 24px;
+	font-size: 1.5rem;
 	color: white;
 	font-weight: 600;
 }
@@ -103,6 +104,11 @@
 .events_list p {
 	margin: 5px 0;
 	color: black;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	white-space: pre-wrap;
 }
 
 .events_list p:nth-of-type(2) {
@@ -116,8 +122,50 @@
 	}
 }
 
+@media (max-width: 900px) {
+	.filter {
+		padding: 20px;
+	}
+
+	.filter h2,
+	.filter label {
+		font-size: 1.3rem;
+	}
+}
+
 @media (max-width: 650px) {
+	.filter {
+		padding: 20px;
+	}
+
+	.filter h2,
+	.filter label {
+		font-size: 1.1rem;
+	}
+
+	.filter label {
+		margin: 0 15px;
+	}
+
 	.events_list article {
 		width: calc(100% - 30px);
+	}
+}
+
+@media (max-width: 400px) {
+	.filter {
+		padding: 15px;
+	}
+
+	.filter button {
+		padding: 5px 12px;
+	}
+
+	.events_list h3 {
+		font-size: 1rem;
+	}
+
+	.events_list p {
+		font-size: 0.8rem;
 	}
 }

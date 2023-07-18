@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useInteraction from "../../../Hooks/useInteraction";
 import useAuth from "../../../Hooks/useAuth";
-import { createCategory, deleteCategory, getByCategory, getCategories, updateCategory } from "../../../modules/ApiCategories";
+import { createCategory, deleteCategory, getCategories, updateCategory } from "../../../modules/ApiCategories";
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
@@ -11,11 +11,9 @@ import Item from "../../../admin/gallery/Item";
 
 import css from "./Category.module.css";
 
-const Category = ({ setState, categories, setCategories, apiClass, filterByCategory }) => {
+const Category = ({ categories, setCategories, apiClass, filterByCategory }) => {
 	const auth = useAuth();
-
 	const { setMessage } = useInteraction();
-
 	const { register, handleSubmit, setValue } = useForm();
 
 	useEffect(() => {

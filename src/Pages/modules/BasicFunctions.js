@@ -2,9 +2,9 @@ import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@forta
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //dev
-export const publicPath = "/admin";
+//export const publicPath = "/admin";
 //production
-//export const publicPath = "https://smart-studio.fun/admin";
+export const publicPath = "https://smart-studio.fun/admin";
 
 export function makeDate(year, month, day) {
 	let date = `${year}`;
@@ -14,6 +14,12 @@ export function makeDate(year, month, day) {
 	return date;
 }
 
+/**
+ *
+ * @param {nulber} date - date number (20230720)
+ * @param {string} direction - str = yyyy-MM-DD, text = DD.MM.yyyy
+ * @returns {string}
+ */
 export function makeDateFormat(date, direction) {
 	let dateStr = date.toString();
 	let dateFormated;
@@ -27,6 +33,10 @@ export function makeDateFormat(date, direction) {
 
 	if (direction === "str") {
 		dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		//dateFormated = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
+	} else if (direction === "text") {
+		//dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		dateFormated = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
 	} else {
 		let dateArray = dateStr.split("-");
 		dateFormated = Number(dateArray[0] + dateArray[1] + dateArray[2]);

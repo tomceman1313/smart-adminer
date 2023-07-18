@@ -9,6 +9,65 @@ class EventsGateway
         $this->path = $path;
     }
 
+    public function get(string $id): array
+    {
+        $sql = "SELECT * FROM events WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "SELECT id, name FROM event_images WHERE event_id = :id AND type = 'under'";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $images = [];
+        // boolean values have to converted manualy, represented by 0/1 by default
+        // $row["bool column"] = (bool) $row["bool column];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $images[] = $row;
+        }
+        $data["images"] = $images;
+        return $data;
+    }
+
+    public function getByCategory(string $category_id): array
+    {
+        $sql = "SELECT * FROM events WHERE category = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $category_id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getAll(): array
+    {
+        $sql = "SELECT * FROM events";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        // boolean values have to converted manualy, represented by 0/1 by default
+        // $row["bool column"] = (bool) $row["bool column];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
 
     public function create(array $data, int $userId): bool
     {
@@ -59,49 +118,6 @@ class EventsGateway
         }
 
         return true;
-    }
-
-    public function get(string $id): array
-    {
-        $sql = "SELECT * FROM events WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $sql = "SELECT id, name FROM event_images WHERE event_id = :id AND type = 'under'";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $images = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $images[] = $row;
-        }
-        $data["images"] = $images;
-        return $data;
-    }
-
-    function getAll(): array
-    {
-        $sql = "SELECT * FROM events";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
     }
 
     public function update(array $data): bool
@@ -237,6 +253,69 @@ class EventsGateway
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return $data;
+    }
+
+    public function getCategories(): array
+    {
+        $sql = "SELECT * FROM event_category ORDER BY name";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    public function createCategory(array $data): bool
+    {
+        $sql = "INSERT INTO event_category (name) VALUES (:name)";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $data["name"]
+        ]);
+
+        return true;
+    }
+
+    public function updateCategory(array $data): bool
+    {
+        $sql = "UPDATE event_category SET name = :name WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $data["name"],
+            'id' => $data["id"]
+        ]);
+
+        return true;
+    }
+
+    public function deleteCategory(string $id): int
+    {
+        $sql = "DELETE FROM event_category WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $sql_select = "SELECT * FROM events WHERE category = :id";
+        $stmt_select = $this->conn->prepare($sql_select);
+
+        $stmt_select->execute([
+            'id' => $id
+        ]);
+
+        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+            $this->delete($row["id"]);
+        }
+
+        return true;
     }
 
     private function compress($imageName)

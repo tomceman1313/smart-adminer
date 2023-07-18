@@ -15,6 +15,9 @@ export default function Pagination({ dataLength, numberOfItemsInPage, path }) {
 	const [pages, setPages] = useState([]);
 
 	useEffect(() => {
+		if (!dataLength) {
+			return;
+		}
 		let arrayOfNumberPages = [];
 		let numberOfPages = dataLength / numberOfItemsInPage;
 		if (numberOfPages % 1 > 0) {
@@ -39,7 +42,7 @@ export default function Pagination({ dataLength, numberOfItemsInPage, path }) {
 		<div className={css.pagination}>
 			{pages.length > 0 ? (
 				pages.map((item) => (
-					<Link href={`${path}/?page=${item.pageNumber}`} key={`page-${item.pageNumber}`} className={item.isActive ? css.active : ""}>
+					<Link to={`${path}/${item.pageNumber}`} key={`page-${item.pageNumber}`} className={item.isActive ? css.active : ""}>
 						{item.pageNumber}
 					</Link>
 				))

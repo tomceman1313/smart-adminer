@@ -8,6 +8,7 @@ import useInteraction from "../../Hooks/useInteraction";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Products.module.css";
+import PlusButton from "../../Components/basic/PlusButton";
 
 export default function Products() {
 	const auth = useAuth();
@@ -36,14 +37,7 @@ export default function Products() {
 
 	return (
 		<div className={css.products}>
-			<Category
-				auth={auth}
-				setState={setProducts}
-				filterByCategory={filterByCategory}
-				categories={categories}
-				setCategories={setCategories}
-				apiClass="products"
-			/>
+			<Category filterByCategory={filterByCategory} categories={categories} setCategories={setCategories} apiClass="products" />
 
 			<section className={`${css.products_list} no-section`}>
 				{products ? (
@@ -64,6 +58,8 @@ export default function Products() {
 					<p>Zatím nebyly vloženy žádné produkty</p>
 				)}
 			</section>
+
+			<PlusButton onClick={() => navigate(`/dashboard/new-product/`)} />
 		</div>
 	);
 }
