@@ -15,9 +15,11 @@ class AdminController
 
     private function userControl(string $action): void
     {
+        $data = json_decode(file_get_contents("php://input"), true);
+
         switch ($action) {
             case 'getall':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -36,7 +38,7 @@ class AdminController
                 break;
 
             case 'get':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -55,7 +57,7 @@ class AdminController
                 break;
 
             case 'verify':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $result = $this->gateway->checkUser($data);
                 if ($result) {
                     http_response_code(201);
@@ -71,7 +73,7 @@ class AdminController
                 break;
 
             case 'create':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -90,7 +92,7 @@ class AdminController
                 break;
 
             case 'update':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $current = $this->gateway->get($data['data']["id"]);
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
@@ -117,7 +119,7 @@ class AdminController
 
                 break;
             case 'delete':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -136,7 +138,7 @@ class AdminController
                 break;
 
             case 'getroles':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -155,7 +157,7 @@ class AdminController
                 break;
 
             case 'update_role':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(3));
                 if (!$authAction) {
                     http_response_code(403);
@@ -175,7 +177,7 @@ class AdminController
 
                 break;
             case 'auth':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $response = $this->gateway->auth($data);
                 http_response_code(200);
                 if ($response != "wrong") {
@@ -215,7 +217,7 @@ class AdminController
                 break;
 
             case 'change_password':
-                $data = json_decode(file_get_contents("php://input"), true);
+
                 $authAction = $this->gateway->authAction($data["token"], array(1, 2, 3));
                 if (!$authAction) {
                     http_response_code(403);

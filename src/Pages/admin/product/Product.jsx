@@ -78,9 +78,9 @@ export default function Product() {
 		if (id) {
 			data.id = id;
 			data.images = images;
-			edit("products", data, setMessage, "Produkt upraven", "", auth);
+			edit("products", data, setMessage, "Produkt upraven", auth);
 		} else {
-			create("products", data, setMessage, "Produkt vložen", "", auth);
+			create("products", data, setMessage, "Produkt vložen", auth);
 		}
 		//console.log(data);
 	};

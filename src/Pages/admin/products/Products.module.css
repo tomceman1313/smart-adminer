@@ -19,8 +19,9 @@
 }
 
 .product {
-	width: 25%;
 	position: relative;
+	width: calc(25% - 20px);
+	margin: 10px;
 	background-color: var(--main-dark);
 	color: white;
 	border-radius: 8px;

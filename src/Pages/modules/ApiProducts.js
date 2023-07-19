@@ -1,7 +1,7 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function getProducts(setState, offset) {
-	const response = await fetch(`${BASE_URL}/api/?class=products&action=getall&offset=${offset}`, {
+export async function getProducts(setState) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=getall`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",

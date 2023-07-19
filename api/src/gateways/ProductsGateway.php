@@ -74,25 +74,34 @@ class ProductsGateway
         return $data;
     }
 
-    function getAll($offset): array
+    function getAll(): array
     {
-        $sql = "SELECT * FROM products LIMIT 5 OFFSET :offset";
+        $sql = "SELECT * FROM products";
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->execute([
-            'offset' => $offset
-        ]);
+        $stmt->execute();
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $sql_product_image = "SELECT name FROM product_images WHERE product_id= :id AND i_order = 0 LIMIT 1";
-            $stmt = $this->conn->prepare($sql_product_image);
+            $stmt_image = $this->conn->prepare($sql_product_image);
 
-            $stmt->execute([
+            $stmt_image->execute([
                 'id' => $row["id"]
             ]);
-            $image = $stmt->fetch(PDO::FETCH_ASSOC);
+            $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
+
+            $sql_product_price = "SELECT price FROM product_variants WHERE product_id= :id AND v_order = 0 LIMIT 1";
+            $stmt_price = $this->conn->prepare($sql_product_price);
+
+            $stmt_price->execute([
+                'id' => $row["id"]
+            ]);
+            $price = $stmt_price->fetch(PDO::FETCH_ASSOC);
+
+
             $row["image"] = $image["name"];
+            $row["price"] = $price["price"];
             $data[] = $row;
         }
 

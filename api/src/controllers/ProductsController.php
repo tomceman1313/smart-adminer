@@ -27,7 +27,7 @@ class ProductsController
         }
         switch ($action) {
             case 'getall':
-                $data = $this->gateway->getAll($offset);
+                $data = $this->gateway->getAll();
                 http_response_code(200);
                 echo json_encode($data);
                 break;

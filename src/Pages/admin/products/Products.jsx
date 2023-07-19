@@ -22,12 +22,12 @@ export default function Products() {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Produkty";
 		document.getElementById("banner-desc").innerHTML = "Přehled vytvořených produktů, správa kategorií a slev";
-		getProducts(setProducts, 0);
+		getProducts(setProducts);
 	}, []);
 
 	async function deleteHandler(id) {
 		await deleteProduct(id, auth, setMessage);
-		getProducts(setProducts, 0);
+		getProducts(setProducts);
 	}
 
 	async function filterByCategory(id) {
