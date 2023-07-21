@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories, multipleCreate } from "../../modules/ApiGallery";
+import { multipleCreate } from "../../modules/ApiGallery";
+import { getCategories } from "../../modules/ApiCategories";
 import useInteraction from "../../Hooks/useInteraction";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
@@ -12,12 +13,12 @@ import css from "./css/Gallery.module.css";
 
 const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	const { setMessage } = useInteraction();
-	const [category, setCategory] = useState(null);
+	const [categories, setCategories] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
 
 	useEffect(() => {
-		getCategories(auth, setCategory);
+		getCategories(setCategories, "gallery");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -41,7 +42,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	};
 
 	const chooseCategory = (e) => {
-		const name = category.filter((item) => item.id === parseInt(e.target.value));
+		const name = categories.filter((item) => item.id === parseInt(e.target.value));
 		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
 		setValue("category_id", "default");
 		if (alreadyIn) {
@@ -59,7 +60,13 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	};
 
 	return (
-		<motion.section className={css.add_images_cont} initial={{ y: "-250%", x: "-50%" }} animate={{ y: "-50%" }} exit={{ y: "-250%" }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section
+			className={css.add_images_cont}
+			initial={{ y: "-250%", x: "-50%" }}
+			animate={{ y: "-50%" }}
+			exit={{ y: "-250%" }}
+			transition={{ type: "spring", duration: 1 }}
+		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
 			<h2>Přidání obrázků</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -68,8 +75,8 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 						<option value="default" disabled>
 							-- Přiřadit kategorii --
 						</option>
-						{category &&
-							category.map((el) => (
+						{categories &&
+							categories.map((el) => (
 								<option key={el.id} value={el.id}>
 									{el.name}
 								</option>

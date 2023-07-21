@@ -1,18 +1,5 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function getAll() {
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=getall`, {
-		method: "GET",
-	});
-
-	if (response.status === 403) {
-		return null;
-	}
-
-	let data = await response.json();
-	return data;
-}
-
 export async function create(data, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
@@ -57,26 +44,6 @@ export async function update(data, auth, setMessage) {
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
 	setMessage({ action: "success", text: "Profil zaměstnance byl upraven" });
 	return true;
-}
-
-export async function remove(id, auth, setMessage) {
-	const bearer = `Bearer ${auth.userInfo.token}`;
-
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=delete&id=${id}`, {
-		method: "DELETE",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: "Profil zaměstnance byl smazán" });
 }
 
 export async function getDepartments() {

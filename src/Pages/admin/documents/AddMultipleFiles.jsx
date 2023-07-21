@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories, multipleCreate } from "../../modules/ApiDocuments";
+import { multipleCreate } from "../../modules/ApiDocuments";
+import { getCategories } from "../../modules/ApiCategories";
 import useInteraction from "../../Hooks/useInteraction";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
@@ -16,7 +17,7 @@ const AddMultipleFiles = ({ auth, close, refreshFiles }) => {
 	const { register, handleSubmit, reset } = useForm();
 
 	useEffect(() => {
-		getCategories(auth, setCategory);
+		getCategories(setCategory, "documents");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -39,7 +40,13 @@ const AddMultipleFiles = ({ auth, close, refreshFiles }) => {
 	};
 
 	return (
-		<motion.section className={css.add_files_cont} initial={{ y: "-250%", x: "-50%" }} animate={{ y: "-50%" }} exit={{ y: "-250%" }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section
+			className={css.add_files_cont}
+			initial={{ y: "-250%", x: "-50%" }}
+			animate={{ y: "-50%" }}
+			exit={{ y: "-250%" }}
+			transition={{ type: "spring", duration: 1 }}
+		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
 			<h2>Přidání souborů</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>

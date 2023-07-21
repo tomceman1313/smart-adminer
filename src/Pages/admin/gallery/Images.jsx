@@ -20,45 +20,46 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const editImage = (data) => {
-		edit("gallery", data, setMessage, "Obrázek byl upraven", auth);
+	async function editImage(data) {
+		await edit("gallery", data, setMessage, "Obrázek byl upraven", auth);
 		loadData();
-	};
+	}
 
 	const deleteImage = (e) => {
 		setAlert({ id: e.target.parentNode.id, question: "Smazat obrázek?", positiveHandler: deleteImageHandler });
 	};
 
-	const deleteImageHandler = (id) => {
-		remove("gallery", id, setMessage, "Obrázek byl smazán", auth);
+	async function deleteImageHandler(id) {
+		await remove("gallery", id, setMessage, "Obrázek byl smazán", auth);
 		loadData();
-	};
+	}
 
-	const deleteImages = () => {
+	function deleteImages() {
 		let images = selectedImages.current;
 		let ids = [];
 		images.forEach((value) => {
 			ids.push(value);
 		});
 		setAlert({ id: ids, question: "Smazat obrázky?", positiveHandler: deleteImagesHandler });
-	};
+	}
 
-	const deleteImagesHandler = async (ids) => {
-		multipleDelete(ids, auth, setMessage);
+	async function deleteImagesHandler(ids) {
+		await multipleDelete(ids, auth, setMessage);
 		loadData();
-	};
+		setMultiSelection(false);
+	}
 
-	const multiselectControl = () => {
+	function multiselectControl() {
 		if (multiSelection) {
 			selectedImages.current = new Map();
 		}
 		setMultiSelection((prev) => !prev);
-	};
+	}
 
-	const resetFilter = () => {
+	function resetFilter() {
 		setSelectedCategory(null);
 		loadData();
-	};
+	}
 
 	return (
 		<>
@@ -91,9 +92,7 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 				</AnimatePresence>
 			</section>
 			{images && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/dashboard/gallery"} />}
-			<AnimatePresence>
-				{showEditCont && <EditPicture auth={auth} image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}
-			</AnimatePresence>
+			<AnimatePresence>{showEditCont && <EditPicture image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}</AnimatePresence>
 		</>
 	);
 };

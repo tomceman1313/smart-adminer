@@ -17,7 +17,7 @@ import cssBasic from "../styles/Basic.module.css";
 import css from "./Employees.module.css";
 import InputBox from "../../Components/basic/InputBox";
 import { convertBase64, openImage, publicPath } from "../../modules/BasicFunctions";
-import { create, update } from "../../modules/ApiEmployees";
+import { create, edit } from "../../modules/ApiFunctions";
 import useInteraction from "../../Hooks/useInteraction";
 
 import { useForm } from "react-hook-form";
@@ -52,11 +52,11 @@ export default function Employee({ employee, setEmployee, getData, setVisible, d
 		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.includes(el));
 		if (employee) {
 			data.departments_deleted = deletedDepartments.current;
-			await update(data, auth, setMessage);
+			await edit("employees", data, setMessage, "Profil zaměstnance byl upraven", auth);
 		} else {
 			delete data.id;
 			delete data.department_id;
-			await create(data, auth, setMessage);
+			await create("employees", data, setMessage, "Profil zaměstnance byl vytvořen", auth);
 		}
 		getData();
 		resetForm();

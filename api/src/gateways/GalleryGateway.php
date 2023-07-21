@@ -111,54 +111,6 @@ class GalleryGateway
         return true;
     }
 
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/gallery/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                $exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 1920) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                imagejpeg($imageResized, $source);
-                break;
-            }
-        } while (true);
-    }
-
     public function update(array $data): bool
     {
         $sql = "UPDATE gallery SET title = :title, description = :description WHERE id = :id";
@@ -203,7 +155,7 @@ class GalleryGateway
         return true;
     }
 
-    public function delete(string $id): int
+    public function delete(string $id)
     {
         $image = $this->get($id);
         $imageName = $image["name"];
@@ -236,9 +188,6 @@ class GalleryGateway
 
             $stmt->execute();
         }
-
-
-        return true;
     }
 
     public function multipleDelete(array $ids)
@@ -313,7 +262,7 @@ class GalleryGateway
             return [];
         }
 
-        $sql = "SELECT * FROM gallery_category WHERE id IN (" . implode(',', $ids) . ")";
+        $sql = "SELECT * FROM gallery_categories WHERE id IN (" . implode(',', $ids) . ")";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -326,7 +275,7 @@ class GalleryGateway
 
     function getCategories(): array
     {
-        $sql = "SELECT * FROM gallery_category ORDER BY name";
+        $sql = "SELECT * FROM gallery_categories ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -341,7 +290,7 @@ class GalleryGateway
 
     public function createCategory(array $data): bool
     {
-        $sql = "INSERT INTO gallery_category (name) VALUES (:name)";
+        $sql = "INSERT INTO gallery_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -353,7 +302,7 @@ class GalleryGateway
 
     public function updateCategory(array $data): bool
     {
-        $sql = "UPDATE gallery_category SET name = :name WHERE id = :id";
+        $sql = "UPDATE gallery_categories SET name = :name WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -367,7 +316,7 @@ class GalleryGateway
 
     public function deleteCategory(string $id): int
     {
-        $sql = "DELETE FROM gallery_category WHERE id = :id";
+        $sql = "DELETE FROM gallery_categories WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -396,8 +345,51 @@ class GalleryGateway
         return true;
     }
 
-    public function test()
+    private function compress($imageName)
     {
-        return $this->path;
+        $source = "{$this->path}/images/gallery/{$imageName}";
+        // $quality = 75;
+        set_time_limit(10);
+        do {
+            if (file_exists($source)) {
+                $info = getimagesize($source);
+                $width = $info[0];
+                $height = $info[1];
+                $exif = exif_read_data($source);
+
+                if ($info['mime'] == 'image/jpeg')
+                    $image = imagecreatefromjpeg($source);
+
+                elseif ($info['mime'] == 'image/gif')
+                    $image = imagecreatefromgif($source);
+
+                elseif ($info['mime'] == 'image/png')
+                    $image = imagecreatefrompng($source);
+
+
+                if ($width > 1920) {
+                    $aspectRatio = $width / $height;
+                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
+                } else {
+                    $imageResized = $image;
+                }
+
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 8:
+                            $imageResized = imagerotate($imageResized, 90, 0);
+                            break;
+                        case 3:
+                            $imageResized = imagerotate($imageResized, 180, 0);
+                            break;
+                        case 6:
+                            $imageResized = imagerotate($imageResized, -90, 0);
+                            break;
+                    }
+                }
+                imagejpeg($imageResized, $source);
+                break;
+            }
+        } while (true);
     }
 }

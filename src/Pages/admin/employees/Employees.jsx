@@ -3,12 +3,13 @@ import { useEffect, useState, useRef } from "react";
 import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { getAll, getDepartments, remove } from "../../modules/ApiEmployees";
+import { getDepartments } from "../../modules/ApiEmployees";
+import { getAll, remove } from "../../modules/ApiFunctions";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
 import Departments from "./Departments";
-
+//TODO indikace vybraného oddělení s možností resetu filtru
 export default function Employees() {
 	const auth = useAuth();
 	const allEmployees = useRef([]);
@@ -21,11 +22,11 @@ export default function Employees() {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Seznam zaměstnanců";
 		document.getElementById("banner-desc").innerHTML = "Tvorba a správa zaměstnaneckých profilů";
-		getData();
+		loadData();
 	}, []);
 
-	async function getData() {
-		const data = await getAll();
+	async function loadData() {
+		const data = await getAll("employees");
 		allEmployees.current = data;
 		setEmployees(data);
 
@@ -38,8 +39,8 @@ export default function Employees() {
 	}
 
 	async function deleteHandler(id) {
-		await remove(id, auth, setMessage);
-		getData();
+		await remove("employees", id, setMessage, "Profil zaměstnance byl odstraněn", auth);
+		loadData();
 	}
 
 	function deleteEmployee(id) {
@@ -49,11 +50,10 @@ export default function Employees() {
 	return (
 		<>
 			<Departments
-				employees={employees}
 				setEmployees={setEmployees}
 				departments={departments}
 				setDepartments={setDepartments}
-				refreshAllData={getData}
+				refreshAllData={loadData}
 				allEmployees={allEmployees}
 			/>
 
@@ -80,7 +80,7 @@ export default function Employees() {
 					<Employee
 						employee={employee}
 						setEmployee={setEmployee}
-						getData={getData}
+						getData={loadData}
 						setVisible={setIsEmployeeContVisible}
 						departments={departments}
 						auth={auth}

@@ -38,7 +38,7 @@ const Notifications = () => {
 	}, []);
 
 	async function loadData() {
-		const data = await getAll("notifications", auth);
+		const data = await getAll("notifications");
 		setNotifications(data);
 	}
 
@@ -47,7 +47,7 @@ const Notifications = () => {
 	 * ? Funkce pro submit formuláře pro editaci položek ceníku
 	 * @param {object} data
 	 */
-	const onSubmit = (data) => {
+	async function onSubmit(data) {
 		//FIXME check if path does not contain whitespace
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
@@ -56,17 +56,17 @@ const Notifications = () => {
 			return;
 		}
 
-		edit("notifications", data, setMessage, "Upozornění vytvořeno", auth);
+		await edit("notifications", data, setMessage, "Upozornění bylo upraveno", auth);
 		editCont();
 		loadData();
-	};
+	}
 
 	/**
 	 * * POST
 	 * ? Funkce pro submit formuláře pro vytvoření položek ceníku
 	 * @param {object} data
 	 */
-	const onSubmitCreate = (data) => {
+	async function onSubmitCreate(data) {
 		//FIXME check if path does not contain whitespace
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
@@ -75,21 +75,21 @@ const Notifications = () => {
 			return;
 		}
 
-		create("notifications", data, setMessage, "Upozornění vytvořeno", auth);
+		await create("notifications", data, setMessage, "Upozornění vytvořeno", auth);
 		addCont();
 		loadData();
-	};
+	}
 
 	/**
 	 * * DELETE request na api
 	 * ? Po potvrzení CheckMessage je volána tato funkce, která zajistí odstranění zvolené položky
 	 * @param {int} id
 	 */
-	const deleteHandler = (id) => {
-		remove("notifications", id, setMessage, "Upozornění bylo odstřaněna", auth);
+	async function deleteHandler(id) {
+		await remove("notifications", id, setMessage, "Upozornění bylo odstřaněna", auth);
 		editCont();
 		loadData();
-	};
+	}
 
 	/**
 	 * * Click Handler pro smazání notifikace

@@ -3,36 +3,32 @@
 //export const BASE_URL = "https://smart-studio.fun/admin";
 export const BASE_URL = "http://localhost:4300";
 
-export async function getAll(apiClass, auth) {
+export async function getAll(apiClass) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ token: auth.userInfo.token }),
-		credentials: "include",
+		method: "GET",
 	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
 
 	const data = await response.json();
 
-	return data.data;
+	return data;
 }
 
-export function get(apiClass, id) {
-	fetch(`${BASE_URL}/api/?class=${apiClass}&action=get`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id }),
-		credentials: "include",
-	}).then((response) => {
-		response.text().then((_data) => {
-			const data = JSON.parse(_data);
-			return data;
-		});
+export async function get(apiClass, id) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=get&id=${id}`, {
+		method: "GET",
 	});
+
+	const data = await response.json();
+	return data;
+}
+
+export async function getByCategory(apiClass, id) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getByCategory&id=${id}`, {
+		method: "GET",
+	});
+
+	const data = await response.json();
+	return data;
 }
 
 export function getRoles(setState, auth) {
@@ -55,11 +51,14 @@ export function getRoles(setState, auth) {
 }
 
 export async function create(apiClass, data, setMessage, positiveText, auth) {
-	//console.log(JSON.stringify({ data: data, token: auth.userInfo.token }));
+	const bearer = `Bearer ` + auth.userInfo.token;
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		headers: {
+			"Authorization": bearer,
+			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+		},
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -75,10 +74,12 @@ export async function create(apiClass, data, setMessage, positiveText, auth) {
 }
 
 export async function edit(apiClass, data, setMessage, positiveText, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=update`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		method: "PUT",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -94,10 +95,12 @@ export async function edit(apiClass, data, setMessage, positiveText, auth) {
 }
 
 export async function remove(apiClass, id, setMessage, positiveText, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+	const bearer = `Bearer ${auth.userInfo.token}`;
+
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete&id=${id}`, {
+		method: "DELETE",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ token: auth.userInfo.token }),
 		credentials: "include",
 	});
 

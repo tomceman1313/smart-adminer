@@ -1,17 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
-import { getAll } from "../../modules/ApiFunctions";
-import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import PlusButton from "../../Components/basic/PlusButton";
 import Category from "../../Components/common/categories-component/Category";
 import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
-import PlusButton from "../../Components/basic/PlusButton";
-import { getByCategory } from "../../modules/ApiEvents";
+import { getAll, getByCategory } from "../../modules/ApiFunctions";
+import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./css/Events.module.css";
 
 const Events = () => {
-	const auth = useAuth();
 	const navigate = useNavigate();
 
 	const allEvents = useRef([]);
@@ -35,7 +32,7 @@ const Events = () => {
 
 	async function loadData() {
 		setSelectedCategory(null);
-		const data = await getAll("events", auth);
+		const data = await getAll("events");
 		allEvents.current = data;
 		filterByDate();
 	}
@@ -57,10 +54,11 @@ const Events = () => {
 	};
 
 	async function filterByCategory(id) {
-		const data = await getByCategory(id);
+		const data = await getByCategory("events", id);
+		allEvents.current = data;
 		const category = categories.find((el) => el.id === id);
 		setSelectedCategory(category.name);
-		setEvents(data);
+		filterByDate();
 	}
 
 	return (

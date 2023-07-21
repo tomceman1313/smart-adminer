@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { createArticle, deleteArticle, getArticle, updateArticle } from "../../modules/ApiArticles";
 import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
+import { get, create, edit, remove } from "../../modules/ApiFunctions";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
@@ -56,17 +56,17 @@ const Article = () => {
 	}, [location]);
 
 	async function getData() {
-		const data = await getArticle(id, auth.userInfo.token, navigation);
-		setArticle(data.data);
-		setValue("title", data.data.title);
-		setValue("description", data.data.description);
-		setValue("date", makeDateFormat(data.data.date, "str"));
-		setValue("active", data.data.active);
-		setValue("category", data.data.category);
-		setBody(data.data.body);
-		originalImages.current = checkInnerImage(data.data.body);
+		const data = await get("articles", id);
+		setArticle(data);
+		setValue("title", data.title);
+		setValue("description", data.description);
+		setValue("date", makeDateFormat(data.date, "str"));
+		setValue("active", data.active);
+		setValue("category", data.category);
+		setBody(data.body);
+		originalImages.current = checkInnerImage(data.body);
 		setImageIsSet(true);
-		setUnderArticleImages(data.data.images.length === 0 ? null : data.data.images);
+		setUnderArticleImages(data.images.length === 0 ? null : data.images);
 	}
 
 	const onSubmit = async (data) => {
@@ -94,19 +94,19 @@ const Article = () => {
 
 		if (article) {
 			data.id = article.id;
-			updateArticle(data, auth, setMessage);
+			edit("articles", data, setMessage, "Článek byl upraven", auth);
 		} else {
-			await createArticle(data, auth, setMessage);
+			await create("articles", data, setMessage, "Článek byl vytvořen", auth);
 			navigation("/dashboard/articles");
 		}
 	};
 
-	const remove = () => {
-		deleteArticle(article.id, auth, setMessage, navigation);
+	const removeHandler = () => {
+		remove("articles", article.id, setMessage, "Článek byl smazán", auth);
 	};
 
 	const removeArticle = () => {
-		setAlert({ id: id, question: "Smazat článek?", positiveHandler: remove });
+		setAlert({ id: id, question: "Smazat článek?", positiveHandler: removeHandler });
 	};
 
 	return (

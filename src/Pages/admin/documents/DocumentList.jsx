@@ -6,7 +6,7 @@ import { remove } from "../../modules/ApiFunctions";
 import { AnimatePresence } from "framer-motion";
 import Document from "./Document";
 import css from "./css/Documents.module.css";
-//TODO refresh po smazání dokumentu
+
 export default function DocumentList({ documents, loadData, auth, selectedCategory, setSelectedCategory, editDocument }) {
 	const { setMessage, setAlert } = useInteraction();
 	const [multiSelection, setMultiSelection] = useState(false);
@@ -21,10 +21,10 @@ export default function DocumentList({ documents, loadData, auth, selectedCatego
 		setAlert({ id: e.target.parentNode.id, question: "Smazat dokument?", positiveHandler: deleteDocumentHandler });
 	};
 
-	const deleteDocumentHandler = (id) => {
-		remove("documents", id, setMessage, "Dokument byl smazán", auth);
+	async function deleteDocumentHandler(id) {
+		await remove("documents", id, setMessage, "Dokument byl smazán", auth);
 		loadData();
-	};
+	}
 
 	const deleteDocuments = () => {
 		let images = selectedDocuments.current;
@@ -35,10 +35,10 @@ export default function DocumentList({ documents, loadData, auth, selectedCatego
 		setAlert({ id: ids, question: "Smazat dokumenty?", positiveHandler: deleteDocumentsHandler });
 	};
 
-	const deleteDocumentsHandler = (ids) => {
-		multipleDelete(ids, auth, setMessage);
+	async function deleteDocumentsHandler(ids) {
+		await multipleDelete(ids, auth, setMessage);
 		loadData();
-	};
+	}
 
 	const multiselectControl = () => {
 		if (multiSelection) {

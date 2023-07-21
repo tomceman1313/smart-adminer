@@ -244,7 +244,7 @@ class EventsGateway
     public function getCategory(string $id): array
     {
 
-        $sql = "SELECT * FROM event_category WHERE id = :id LIMIT 1";
+        $sql = "SELECT * FROM events_categories WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -257,7 +257,7 @@ class EventsGateway
 
     public function getCategories(): array
     {
-        $sql = "SELECT * FROM event_category ORDER BY name";
+        $sql = "SELECT * FROM events_categories ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -270,7 +270,7 @@ class EventsGateway
 
     public function createCategory(array $data): bool
     {
-        $sql = "INSERT INTO event_category (name) VALUES (:name)";
+        $sql = "INSERT INTO events_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -282,7 +282,7 @@ class EventsGateway
 
     public function updateCategory(array $data): bool
     {
-        $sql = "UPDATE event_category SET name = :name WHERE id = :id";
+        $sql = "UPDATE events_categories SET name = :name WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -296,7 +296,7 @@ class EventsGateway
 
     public function deleteCategory(string $id): int
     {
-        $sql = "DELETE FROM event_category WHERE id = :id";
+        $sql = "DELETE FROM events_categories WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 

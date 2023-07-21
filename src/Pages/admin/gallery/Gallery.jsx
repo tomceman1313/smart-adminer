@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import Category from "../../Components/common/categories-component/Category";
-import { getAll } from "../../modules/ApiFunctions";
+import { getAll, getByCategory } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
 import css from "./css/Gallery.module.css";
 import NewPicture from "./NewPicture";
 import Images from "./Images";
 import { useParams, useNavigate } from "react-router-dom";
-import { getByCategory } from "../../modules/ApiGallery";
 import { sliceDataBasedOnPageNumber } from "../../modules/BasicFunctions";
 
 const Gallery = () => {
@@ -24,23 +23,25 @@ const Gallery = () => {
 		document.getElementById("banner-desc").innerHTML = "Správa fotek v galerii a tvorba kategorií pro jejich rozřazení";
 	}, []);
 
+	// Remove page number when selected category is changed
 	useEffect(() => {
 		navigate("/dashboard/gallery/");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedCategory]);
 
+	// Load only part of data based on page number
 	useEffect(() => {
 		sliceDataBasedOnPageNumber(allLoadedImages.current, 12, page, setImages);
 	}, [page]);
 
 	async function loadData() {
-		const data = await getAll("gallery", auth);
+		const data = await getAll("gallery");
 		allLoadedImages.current = data;
 		sliceDataBasedOnPageNumber(data, 12, page, setImages);
 	}
 
 	async function filterImagesByCategory(id) {
-		const data = await getByCategory(id, auth);
+		const data = await getByCategory("gallery", id);
 		allLoadedImages.current = data;
 		sliceDataBasedOnPageNumber(data, 12, page, setImages);
 		const categoryName = categories.filter((item) => item.id === id);

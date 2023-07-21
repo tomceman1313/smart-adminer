@@ -1,129 +1,23 @@
 import { BASE_URL } from "./ApiFunctions";
-//const BASE_URL = "http://localhost:4300";
 
-export async function getCategories(auth, setState) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getCategories`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ token: auth.userInfo.token }),
-		credentials: "include",
+export async function getImageCategories(id, setPickedCategories) {
+	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getImageCategories&id=${id}`, {
+		method: "GET",
 	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
 
 	const data = await response.json();
-	setState(data.data);
-	return data;
-}
+	setPickedCategories(data);
 
-export async function createCategory(data, auth, setMessage) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=createCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const rdata = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla přidána" });
-}
-
-export async function updateCategory(data, auth, setMessage) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=updateCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const rdata = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla upravena" });
-	return;
-}
-
-export async function deleteCategory(id, auth, setMessage) {
-	console.log(auth.userInfo);
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=deleteCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: "Kategorie byla smazána" });
-	return;
-}
-
-/**
- * * Functions for gallery
- */
-
-export async function getByCategory(id, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getByCategory`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ category_id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-	return data.data;
-}
-
-export async function getImageCategories(id, setPickedCategories, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getImageCategories`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ image_id: id, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const data = await response.json();
-
-	setPickedCategories(data.data);
 	return data;
 }
 
 export async function multipleCreate(data, auth) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=multipleCreate`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -138,10 +32,12 @@ export async function multipleCreate(data, auth) {
 }
 
 export async function multipleDelete(ids, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=multipleDelete`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: ids, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: ids }),
 		credentials: "include",
 	});
 

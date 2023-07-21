@@ -242,7 +242,7 @@ class ArticlesGateway
     public function getCategory(string $id): array
     {
 
-        $sql = "SELECT * FROM article_category WHERE id = :id LIMIT 1";
+        $sql = "SELECT * FROM articles_categories WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -255,7 +255,7 @@ class ArticlesGateway
 
     public function getCategories(): array
     {
-        $sql = "SELECT * FROM article_category ORDER BY name";
+        $sql = "SELECT * FROM articles_categories ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -268,7 +268,7 @@ class ArticlesGateway
 
     public function createCategory(array $data): bool
     {
-        $sql = "INSERT INTO article_category (name) VALUES (:name)";
+        $sql = "INSERT INTO articles_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -280,7 +280,7 @@ class ArticlesGateway
 
     public function updateCategory(array $data): bool
     {
-        $sql = "UPDATE article_category SET name = :name WHERE id = :id";
+        $sql = "UPDATE articles_categories SET name = :name WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -294,7 +294,7 @@ class ArticlesGateway
 
     public function deleteCategory(string $id): int
     {
-        $sql = "DELETE FROM article_category WHERE id = :id";
+        $sql = "DELETE FROM articles_categories WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -312,7 +312,6 @@ class ArticlesGateway
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $this->delete($row["id"]);
         }
-
 
         return true;
     }

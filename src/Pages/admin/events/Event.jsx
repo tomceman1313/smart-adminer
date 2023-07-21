@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { createEvent, deleteEvent, getEvent, updateEvent } from "../../modules/ApiEvents";
+import { get, create, edit, remove } from "../../modules/ApiFunctions";
 import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
 import { getCategories } from "../../modules/ApiCategories";
 
@@ -43,7 +43,7 @@ const Event = () => {
 		document.getElementById("banner-title").innerHTML = "Událost";
 		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte proběhlé nebo teprv plánované události";
 		if (id) {
-			getData();
+			loadData();
 		} else {
 			reset();
 			setBody("");
@@ -55,18 +55,18 @@ const Event = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
-	async function getData() {
-		const data = await getEvent(id, auth.userInfo.token, navigation);
-		setEvent(data.data);
-		setValue("title", data.data.title);
-		setValue("description", data.data.description);
-		setValue("date", makeDateFormat(data.data.date, "str"));
-		setValue("active", data.data.active);
-		setValue("category", data.data.category);
-		setBody(data.data.body);
-		originalImages.current = checkInnerImage(data.data.body);
+	async function loadData() {
+		const data = await get("events", id);
+		setEvent(data);
+		setValue("title", data.title);
+		setValue("description", data.description);
+		setValue("date", makeDateFormat(data.date, "str"));
+		setValue("active", data.active);
+		setValue("category", data.category);
+		setBody(data.body);
+		originalImages.current = checkInnerImage(data.body);
 		setImageIsSet(true);
-		setUnderEventImages(data.data.images.length === 0 ? null : data.data.images);
+		setUnderEventImages(data.images.length === 0 ? null : data.images);
 	}
 
 	const onSubmit = async (data) => {
@@ -94,19 +94,20 @@ const Event = () => {
 
 		if (event) {
 			data.id = event.id;
-			updateEvent(data, auth, setMessage);
+			edit("events", data, setMessage, "Událost byla upravena", auth);
 		} else {
-			await createEvent(data, auth, setMessage);
+			await create("events", data, setMessage, "Událost byla upravena", auth);
 			navigation("/dashboard/events");
 		}
 	};
 
-	const remove = () => {
-		deleteEvent(event.id, auth, setMessage, navigation);
-	};
+	async function removeHandler() {
+		await remove("events", event.id, setMessage, "Událost byla odstraněna", auth);
+		navigation("/dashboard/events");
+	}
 
 	const removeArticle = () => {
-		setAlert({ id: id, question: "Smazat událost?", positiveHandler: remove });
+		setAlert({ id: id, question: "Smazat událost?", positiveHandler: removeHandler });
 	};
 
 	return (

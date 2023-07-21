@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
-import { getAll } from "../../modules/ApiFunctions";
-import { getByCategory } from "../../modules/ApiArticles";
+import { getAll, getByCategory } from "../../modules/ApiFunctions";
+
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
@@ -11,7 +10,6 @@ import Category from "../../Components/common/categories-component/Category";
 import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
 
 const Articles = () => {
-	const auth = useAuth();
 	const navigate = useNavigate();
 
 	const [articles, setArticles] = useState(null);
@@ -28,7 +26,7 @@ const Articles = () => {
 
 	async function loadData() {
 		setSelectedCategory(null);
-		const data = await getAll("articles", auth);
+		const data = await getAll("articles");
 		setArticles(data);
 	}
 
@@ -38,7 +36,7 @@ const Articles = () => {
 	};
 
 	async function filterByCategory(id) {
-		const data = await getByCategory(id);
+		const data = await getByCategory("articles", id);
 		const category = categories.find((el) => el.id === id);
 		setSelectedCategory(category.name);
 		setArticles(data);

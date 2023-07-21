@@ -10,7 +10,7 @@ import Item from "../gallery/Item";
 
 import css from "./Departments.module.css";
 
-export default function Departments({ employees, setEmployees, departments, setDepartments, refreshAllData, allEmployees }) {
+export default function Departments({ setEmployees, departments, setDepartments, refreshAllData, allEmployees }) {
 	//TODO Vytvořit samostaný komponent Item (nyní se při alertu ptá na odstranění kategorie)
 	const auth = useAuth();
 	const { setMessage } = useInteraction();

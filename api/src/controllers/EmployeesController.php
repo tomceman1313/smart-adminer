@@ -73,7 +73,7 @@ class EmployeesConroller
 
         switch ($action) {
             case 'create':
-                $id = $this->gateway->create($data);
+                $id = $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Item created",

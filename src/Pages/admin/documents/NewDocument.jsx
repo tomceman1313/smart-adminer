@@ -28,6 +28,8 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 		if (data.image[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
+		} else {
+			delete data.image;
 		}
 		if (data.date) {
 			data.date = makeDateFormat(data.date);

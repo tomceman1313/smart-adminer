@@ -12,15 +12,17 @@ export async function getCategories(setState, apiClass) {
 	}
 
 	const data = await response.json();
-	setState(data.data);
+	setState(data);
 	return data;
 }
 
 export async function createCategory(data, auth, setMessage, apiClass) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=createCategory`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -36,10 +38,12 @@ export async function createCategory(data, auth, setMessage, apiClass) {
 }
 
 export async function updateCategory(data, auth, setMessage, apiClass) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=updateCategory`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -55,10 +59,11 @@ export async function updateCategory(data, auth, setMessage, apiClass) {
 }
 
 export async function deleteCategory(id, auth, setMessage, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=deleteCategory`, {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=deleteCategory&id=${id}`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
 	});
 

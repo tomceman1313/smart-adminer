@@ -3,22 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
-import { getCategories, getImageCategories } from "../../modules/ApiGallery";
+import { getImageCategories } from "../../modules/ApiGallery";
+import { getCategories } from "../../modules/ApiCategories";
 import { motion } from "framer-motion";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./css/Gallery.module.css";
 
-const EditPicture = ({ auth, image, edit, close }) => {
+const EditPicture = ({ image, edit, close }) => {
 	const [category, setCategory] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
 
 	useEffect(() => {
-		getCategories(auth, setCategory);
+		getCategories(setCategory, "gallery");
 		setValue("title", image.title);
 		setValue("description", image.description);
-		getImageCategories(image.id, setPickedCategories, auth);
+		getImageCategories(image.id, setPickedCategories);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -50,7 +51,13 @@ const EditPicture = ({ auth, image, edit, close }) => {
 	};
 
 	return (
-		<motion.section className={css.edit_image_cont} initial={{ y: "-250%", x: "-50%" }} animate={{ y: "-50%" }} exit={{ y: "-250%" }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section
+			className={css.edit_image_cont}
+			initial={{ y: "-250%", x: "-50%" }}
+			animate={{ y: "-50%" }}
+			exit={{ y: "-250%" }}
+			transition={{ type: "spring", duration: 1 }}
+		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
 			<h2>Úprava informací</h2>
 			<form onSubmit={handleSubmit(updateImage)}>
