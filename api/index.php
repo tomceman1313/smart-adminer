@@ -120,7 +120,7 @@ switch ($class) {
 
     case 'documents':
         $gateway = new DocumentsGateway($database);
-        $controller = new DocumentsConroller($gateway, $admin);
+        $controller = new DocumentsController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     case 'events':

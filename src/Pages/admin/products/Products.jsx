@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Category from "../../Components/common/categories-component/Category";
 import useAuth from "../../Hooks/useAuth";
-import { getProducts, deleteProduct } from "../../modules/ApiProducts";
+import { deleteProduct } from "../../modules/ApiProducts";
+import { getAll } from "../../modules/ApiFunctions";
 import useInteraction from "../../Hooks/useInteraction";
-import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Products.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
-
+//TODO Filter & výrobci panel
 export default function Products() {
 	const auth = useAuth();
 	const navigate = useNavigate();
@@ -22,12 +23,17 @@ export default function Products() {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Produkty";
 		document.getElementById("banner-desc").innerHTML = "Přehled vytvořených produktů, správa kategorií a slev";
-		getProducts(setProducts);
+		loadData();
 	}, []);
+
+	async function loadData() {
+		const data = await getAll("products");
+		setProducts(data);
+	}
 
 	async function deleteHandler(id) {
 		await deleteProduct(id, auth, setMessage);
-		getProducts(setProducts);
+		loadData();
 	}
 
 	async function filterByCategory(id) {

@@ -19,8 +19,6 @@ export async function getProducts(setState) {
 export async function getProduct(id) {
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=get&id=${id}`, {
 		method: "GET",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		credentials: "include",
 	});
 
 	if (response.status === 403) {
@@ -38,10 +36,11 @@ export async function getProduct(id) {
 }
 
 export async function deleteProduct(id, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete&id=${id}`, {
 		method: "DELETE",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
 	});
 
@@ -57,10 +56,12 @@ export async function deleteProduct(id, auth, setMessage) {
 }
 
 export async function deleteImage(name, id, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image&id=${id}`, {
 		method: "DELETE",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ name: name, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ name: name }),
 		credentials: "include",
 	});
 

@@ -39,8 +39,7 @@
 	padding: 0 55px;
 	background-color: var(--main);
 	left: 0;
-	top: 100%;
-	transition: all 1s;
+	top: 0;
 	color: white;
 }
 
@@ -100,6 +99,12 @@
 	.edit_notification form,
 	.add_notification form {
 		width: calc(100% - 60px);
+	}
+}
+
+@media (max-width: 700px) {
+	.notifications section:nth-of-type(1) {
+		min-height: 480px;
 	}
 }
 

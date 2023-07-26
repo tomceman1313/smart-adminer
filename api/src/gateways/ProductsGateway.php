@@ -314,9 +314,9 @@ class ProductsGateway
                     $image = imagecreatefrompng($source);
 
 
-                if ($width > 1920) {
+                if ($width > 1200) {
                     $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
+                    $imageResized = imagescale($image, 1200, 1200 / $aspectRatio);
                 } else {
                     $imageResized = $image;
                 }

@@ -21,6 +21,19 @@ class PricelistGateway
 
         return $data;
     }
+    //unused
+    public function get(string $id): array
+    {
+        $sql = "SELECT * FROM pricelist WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data;
+    }
 
     public function create(array $data): string
     {
@@ -36,19 +49,6 @@ class PricelistGateway
         ]);
 
         return $this->conn->lastInsertId();
-    }
-
-    public function get(string $id): array
-    {
-        $sql = "SELECT * FROM pricelist WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
     }
 
     public function update(array $data): int

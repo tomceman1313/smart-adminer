@@ -1,4 +1,4 @@
-import { faHashtag, faInfo, faShoppingCart, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faInfo, faShoppingCart, faEye, faCopyright } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -7,9 +7,9 @@ import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
-import { create, edit } from "../../modules/ApiFunctions";
+import { create, edit, remove } from "../../modules/ApiFunctions";
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
-import { getProduct, deleteProduct } from "../../modules/ApiProducts";
+import { getProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
 
 import cssBasic from "../styles/Basic.module.css";
@@ -24,7 +24,7 @@ export default function Product() {
 	const { id } = useParams();
 	let location = useLocation();
 	const navigate = useNavigate();
-	const { setMessage } = useInteraction();
+	const { setMessage, setAlert } = useInteraction();
 	//reference to parameters table (passed to Parameters)
 	const refTableParams = useRef(null);
 
@@ -56,7 +56,7 @@ export default function Product() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
 
-	const onSubmit = async (data) => {
+	async function onSubmit(data) {
 		let imagesArray = [];
 		let order = images?.length ? images?.length : 0;
 
@@ -78,12 +78,12 @@ export default function Product() {
 		if (id) {
 			data.id = id;
 			data.images = images;
+			console.log(data);
 			edit("products", data, setMessage, "Produkt upraven", auth);
 		} else {
 			create("products", data, setMessage, "Produkt vložen", auth);
 		}
-		//console.log(data);
-	};
+	}
 
 	/**
 	 * * Adds selected category to array of picked
@@ -91,7 +91,7 @@ export default function Product() {
 	 * @param {event} e
 	 * @returns
 	 */
-	const chooseCategory = (e) => {
+	function chooseCategory(e) {
 		//gets name from categories via id
 		const name = categories.filter((item) => item.id === parseInt(e.target.value));
 		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
@@ -103,19 +103,19 @@ export default function Product() {
 		if (name.length !== 0) {
 			setPickedCategories((prev) => [...prev, name[0]]);
 		}
-	};
+	}
 
-	const removeFromPicked = (e) => {
+	function removeFromPicked(e) {
 		const removed = pickedCategories.filter((item) => item.id !== parseInt(e.target.id));
 		setPickedCategories(removed);
-	};
+	}
 
 	/**
 	 * * Function for getting paramteres assigned to variants
 	 * ? Used when form is submitted
 	 * @returns {Array} [...,[{name: "width", value: 122}, {name: "height", value: 1222}]]
 	 */
-	const getParams = async () => {
+	async function getParams() {
 		//array of table inputs
 		const paramInputs = refTableParams.current?.querySelectorAll("input");
 
@@ -125,7 +125,6 @@ export default function Product() {
 		// final array with all params for each variant
 		let variantParams = [];
 		const variantsCount = variants.length;
-		const parametersCount = parameters.length;
 		// counter for assigning params to correct variant
 		let counter = 0;
 		// counter for assigning correct parameter name
@@ -140,19 +139,14 @@ export default function Product() {
 
 			if (counter === variantsCount - 1) {
 				counter = 0;
+				++paramCounter;
 			} else {
 				++counter;
-			}
-
-			if (paramCounter === parametersCount - 1) {
-				paramCounter = 0;
-			} else {
-				++paramCounter;
 			}
 		});
 
 		return variantParams;
-	};
+	}
 
 	/**
 	 * * Fill inputs with values of loaded article
@@ -171,25 +165,31 @@ export default function Product() {
 		let parametersArray = [];
 
 		// set parameters array
-		productData.variants[0].parameters.forEach((item, index) => {
-			parametersArray.push({ name: item.name, p_order: index });
-		});
-
-		// set variants values for each parameter
-		productData.variants.forEach((variant) => {
-			variant.parameters.forEach((parameter, index) => {
-				if (!parametersArray[index].values) {
-					parametersArray[index].values = [];
-				}
-				parametersArray[index].values.push(parameter.value);
+		if (productData.variants[0].parameters?.length) {
+			productData.variants[0].parameters.forEach((item, index) => {
+				parametersArray.push({ name: item.name, p_order: index });
 			});
-		});
+
+			// set variants values for each parameter
+			productData.variants.forEach((variant) => {
+				variant.parameters.forEach((parameter, index) => {
+					if (!parametersArray[index].values) {
+						parametersArray[index].values = [];
+					}
+					parametersArray[index].values.push(parameter.value);
+				});
+			});
+		}
 		setParameters(parametersArray);
 	}
 
 	async function deleteHandler() {
-		await deleteProduct(id, auth, setMessage);
+		await remove("products", id, setMessage, "Produkt byl smazán", auth);
 		navigate(`/dashboard/products`);
+	}
+
+	function deleteProduct() {
+		setAlert({ id: id, question: "Smazat produkt?", positiveHandler: deleteHandler });
 	}
 
 	return (
@@ -211,7 +211,7 @@ export default function Product() {
 								</option>
 							))}
 					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
+					<FontAwesomeIcon className={cssBasic.icon} icon={faCopyright} />
 				</div>
 
 				<div className={cssBasic.input_box}>
@@ -258,10 +258,10 @@ export default function Product() {
 					<button>Uložit</button>
 					<button type="button" className="blue_button">
 						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
-						Náhled článku
+						Náhled produktu
 					</button>
 					{id && (
-						<button type="button" className="red_button" onClick={deleteHandler}>
+						<button type="button" className="red_button" onClick={deleteProduct}>
 							Smazat
 						</button>
 					)}

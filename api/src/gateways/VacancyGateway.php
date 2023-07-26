@@ -166,9 +166,9 @@ class VacancyGateway
                     $image = imagecreatefrompng($source);
 
 
-                if ($width > 1920) {
+                if ($width > 1500) {
                     $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
+                    $imageResized = imagescale($image, 1500, 1500 / $aspectRatio);
                 } else {
                     $imageResized = $image;
                 }

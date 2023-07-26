@@ -2,9 +2,7 @@ import { BASE_URL } from "./ApiFunctions";
 
 export async function getManufacturers(setState) {
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=getManufacturers`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		credentials: "include",
+		method: "GET",
 	});
 
 	if (response.status === 403) {
@@ -12,15 +10,17 @@ export async function getManufacturers(setState) {
 	}
 
 	const data = await response.json();
-	setState(data.data);
+	setState(data);
 	return data;
 }
 
 export async function createManufacturer(data, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=createManufacturer`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -36,10 +36,12 @@ export async function createManufacturer(data, auth, setMessage) {
 }
 
 export async function updateManufacturer(data, auth, setMessage) {
+	const bearer = `Bearer ` + auth.userInfo.token;
+
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=updateManufacturer`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		method: "PUT",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
@@ -55,10 +57,11 @@ export async function updateManufacturer(data, auth, setMessage) {
 }
 
 export async function deleteManufacturer(id, auth, setMessage) {
-	const response = await fetch(`${BASE_URL}/api/?class=products&action=deleteManufacturer`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: id, token: auth.userInfo.token }),
+	const bearer = `Bearer ` + auth.userInfo.token;
+
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=deleteManufacturer&id=${id}`, {
+		method: "DELETE",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
 	});
 

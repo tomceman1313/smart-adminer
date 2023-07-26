@@ -7,6 +7,34 @@ class NotificationsGateway
         $this->conn = $database->getConnection();
     }
 
+    function getAll(): array
+    {
+        $sql = "SELECT * FROM notifications";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        // boolean values have to converted manualy, represented by 0/1 by default
+        // $row["bool column"] = (bool) $row["bool column];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+    //unused
+    public function get(string $id): array
+    {
+        $sql = "SELECT * FROM notifications WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data;
+    }
+
     public function create(array $data): bool
     {
         if ($data["start"] > $data["end"]) {
@@ -25,19 +53,6 @@ class NotificationsGateway
         ]);
 
         return true;
-    }
-
-    public function get(string $id): array
-    {
-        $sql = "SELECT * FROM notifications WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
     }
 
     public function update(array $data): bool
@@ -75,20 +90,5 @@ class NotificationsGateway
 
 
         return true;
-    }
-
-    function getAll(): array
-    {
-        $sql = "SELECT * FROM notifications";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
     }
 }
