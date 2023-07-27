@@ -80,6 +80,7 @@ if (isset($_GET["id"])) {
     $id = $_GET["id"];
 }
 $admin = new AdminGateway($database);
+
 switch ($class) {
     case 'products':
         $gateway = new ProductsGateway($database);

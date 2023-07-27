@@ -41,28 +41,15 @@ class VacancyConroller
         switch ($action) {
             case 'getall':
                 $result = $this->gateway->getAll();
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Data provided",
-                    "data" =>  $result
-                ]);
+                http_response_code(200);
+                echo json_encode($result);
                 return;
+
             case 'get':
                 $result = $this->gateway->get($id);
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Data provided",
-                    "data" =>  $result
-                ]);
+                http_response_code(200);
+                echo json_encode($result);
                 return;
-            case 'test':
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Data provided"
-                ]);
-                return;
-            default:
-                break;
         }
 
         if (!$authAction) {
@@ -77,7 +64,7 @@ class VacancyConroller
                 $id = $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
-                    "message" => "Item created",
+                    "message" => "Created",
                     "data" => $id,
                     "token" => $authAction
                 ]);
@@ -86,7 +73,7 @@ class VacancyConroller
                 $result = $this->gateway->update($data["data"], $id);
                 http_response_code(200);
                 echo json_encode([
-                    "message" => "Item edited",
+                    "message" => "Updated",
                     "token" => $authAction
                 ]);
                 break;
@@ -95,7 +82,7 @@ class VacancyConroller
                 $this->gateway->delete($id);
                 http_response_code(200);
                 echo json_encode([
-                    "message" => "Item deleted",
+                    "message" => "Deleted",
                     "token" => $authAction
                 ]);
                 break;
