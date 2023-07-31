@@ -294,13 +294,12 @@ class EmployeesGateway
             'department_id' => $id,
         ]);
 
-
         return true;
     }
 
     public function getEmployeeDepartments($id, $departments): array
     {
-        $sql_categories = "SELECT * FROM employee_department WHERE employee_id = :id";
+        $sql_categories = "SELECT department_id FROM employee_department WHERE employee_id = :id";
         $stmt = $this->conn->prepare($sql_categories);
         $stmt->execute([
             'id' => $id

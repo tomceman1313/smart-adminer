@@ -53,7 +53,7 @@ class DocumentsController
                 return;
             case 'getCategories':
                 $result = $this->gateway->getCategories();
-                http_response_code(201);
+                http_response_code(200);
                 echo json_encode($result);
                 return;
         }

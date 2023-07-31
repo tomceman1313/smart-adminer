@@ -207,9 +207,17 @@ class DocumentsGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
+
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_number_of_docs = "SELECT COUNT(*) as count FROM documents WHERE category_id = :id";
+            $stmt_count = $this->conn->prepare($sql_number_of_docs);
+            $stmt_count->execute([
+                'id' => $row["id"]
+            ]);
+            $count = $stmt_count->fetch(PDO::FETCH_ASSOC);
+
+            $row["count"] = $count["count"];
+
             $data[] = $row;
         }
 
