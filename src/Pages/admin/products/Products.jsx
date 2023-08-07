@@ -10,6 +10,7 @@ import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Products.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
+import Manufacturers from "./Manufacturers";
 //TODO Filter & výrobci panel
 export default function Products() {
 	const auth = useAuth();
@@ -18,6 +19,7 @@ export default function Products() {
 
 	const [products, setProducts] = useState();
 	const [categories, setCategories] = useState(null);
+	const [manufacturers, setManufacturers] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 
 	useEffect(() => {
@@ -41,10 +43,15 @@ export default function Products() {
 		// setEmployees(filteredEmployees);
 	}
 
+	async function filterByManufacturer(id) {
+		// const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
+		// setEmployees(filteredEmployees);
+	}
+
 	return (
 		<div className={css.products}>
 			<Category filterByCategory={filterByCategory} categories={categories} setCategories={setCategories} apiClass="products" />
-
+			<Manufacturers manufacturers={manufacturers} setManufacturers={setManufacturers} filterByManufacturer={filterByManufacturer} />
 			<section className={`${css.products_list} no-section`}>
 				{products ? (
 					products.map((item) => (
