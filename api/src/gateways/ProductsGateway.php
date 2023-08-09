@@ -110,7 +110,8 @@ class ProductsGateway
 
     function getByCategory($id): array
     {
-        $sql = "SELECT * FROM products WHERE id = :id";
+        //TODO dodělat
+        $sql = "SELECT * FROM product_categories WHERE category_id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -123,7 +124,7 @@ class ProductsGateway
             $stmt_image = $this->conn->prepare($sql_product_image);
 
             $stmt_image->execute([
-                'id' => $row["id"]
+                'id' => $row["product_id"]
             ]);
             $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
 
@@ -131,7 +132,7 @@ class ProductsGateway
             $stmt_price = $this->conn->prepare($sql_product_price);
 
             $stmt_price->execute([
-                'id' => $row["id"]
+                'id' => $row["product_id"]
             ]);
             $price = $stmt_price->fetch(PDO::FETCH_ASSOC);
 
@@ -139,6 +140,51 @@ class ProductsGateway
             $row["image"] = $image["name"];
             $row["price"] = $price["price"];
             $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getByIds($data): array
+    {
+        $ids = implode(",", array_map(function ($item) {
+            return $item['product_id'];
+        }, $data));
+
+        $sql = "SELECT * FROM products WHERE id in (" . $ids . ")";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $variants_ids = implode(",", array_map(function ($item) {
+            return $item['variant_id'];
+        }, $data));
+
+        $sql_variants = "SELECT * FROM product_variants WHERE id in (" . $variants_ids . ")";
+        $stmt_variants = $this->conn->prepare($sql_variants);
+
+        $stmt_variants->execute();
+
+        $data_variants = [];
+        while ($row = $stmt_variants->fetch(PDO::FETCH_ASSOC)) {
+            $data_variants[] = $row;
+        }
+
+
+        $data = [];
+        $counter = 0;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_product_image = "SELECT name FROM product_images WHERE product_id= :id AND i_order = 0 LIMIT 1";
+            $stmt_image = $this->conn->prepare($sql_product_image);
+
+            $stmt_image->execute([
+                'id' => $row["id"]
+            ]);
+            $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
+
+            $row["image"] = $image["name"];
+            $row["variant"] = $data_variants[$counter];
+            $data[] = $row;
+            ++$counter;
         }
 
         return $data;

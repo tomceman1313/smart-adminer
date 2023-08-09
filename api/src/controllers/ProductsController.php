@@ -57,6 +57,12 @@ class ProductsController
                 echo json_encode($data);
                 return;
 
+            case 'getByIds':
+                $data = $this->gateway->getByIds($data);
+                http_response_code(200);
+                echo json_encode($data);
+                return;
+
             case 'getCategories':
                 $result = $this->category->getCategories();
                 http_response_code(201);
