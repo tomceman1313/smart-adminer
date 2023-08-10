@@ -110,7 +110,6 @@ class ProductsGateway
 
     function getByCategory($id): array
     {
-        //TODO dodělat
         $sql = "SELECT * FROM product_categories WHERE category_id = :id";
         $stmt = $this->conn->prepare($sql);
 

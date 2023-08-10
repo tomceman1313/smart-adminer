@@ -69,7 +69,7 @@ const Article = () => {
 		setUnderArticleImages(data.images.length === 0 ? null : data.images);
 	}
 
-	const onSubmit = async (data) => {
+	async function onSubmit(data) {
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "articles");
 		if (data.image[0]) {
@@ -99,15 +99,16 @@ const Article = () => {
 			await create("articles", data, setMessage, "Článek byl vytvořen", auth);
 			navigation("/dashboard/articles");
 		}
-	};
+	}
 
-	const removeHandler = () => {
-		remove("articles", article.id, setMessage, "Článek byl smazán", auth);
-	};
+	async function removeHandler() {
+		await remove("articles", article.id, setMessage, "Článek byl smazán", auth);
+		navigation("/dashboard/articles");
+	}
 
-	const removeArticle = () => {
+	async function removeArticle() {
 		setAlert({ id: id, question: "Smazat článek?", positiveHandler: removeHandler });
-	};
+	}
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>

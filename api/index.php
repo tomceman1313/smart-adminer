@@ -39,7 +39,6 @@ require __DIR__ . "/src/gateways/EmployeesGateway.php";
 
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
-// header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 //Production 
 //header("Access-Control-Allow-Origin: http://localhost");
@@ -60,6 +59,8 @@ if ($method == "OPTIONS") {
 
 //$parts = explode("/", $_SERVER["REQUEST_URI"]);
 $database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
+
+//production
 //$database = new Database("localhost", "u351850998_dbtest", "u351850998_admin_test", "Tomikz13");
 $class = null;
 $action = null;

@@ -1,7 +1,7 @@
 //before production change BASE_URL, publicFolderPath.php and publicPath (BasicFunctions.js)
 
-//export const BASE_URL = "https://smart-studio.fun/admin";
-export const BASE_URL = "http://localhost:4300";
+export const BASE_URL = "https://smart-studio.fun/admin";
+//export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {
@@ -55,7 +55,7 @@ export async function create(apiClass, data, setMessage, positiveText, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=create`, {
 		method: "POST",
 		headers: {
-			"Authorization": bearer,
+			Authorization: bearer,
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 		},
 		body: JSON.stringify({ data: data }),
