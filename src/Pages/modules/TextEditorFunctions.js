@@ -4,6 +4,7 @@ export async function formatBody(body, arrayInsideImages, location) {
 	let bodyContent = body;
 
 	let newBody = bodyContent;
+	newBody = newBody.replaceAll("<p><br></p>", "");
 	const regexImage = /(data:image\/(png|jpg|jpeg);base64,)(.*?)(?=["])/g;
 	while (true) {
 		if (newBody.match(regexImage)) {

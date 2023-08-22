@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { deleteImage } from "../../modules/ApiProducts";
 import { useParams } from "react-router-dom";
-import ProductImage from "./inner-components/ProductImage";
+import ProductImage from "./ProductImage";
 
 import cssBasic from "../styles/Basic.module.css";
-import css from "./styles/Images.module.css";
+import css from "./Product.module.css";
 
 export default function Images({ images, auth, setMessage, setImages, register }) {
 	const { id } = useParams();
-	const [width, setWidth] = useState(window.screen.width);
-	useEffect(() => {
-		window.addEventListener("resize", resize);
-
-		function resize() {
-			setWidth(window.innerWidth);
-		}
-
-		return document.removeEventListener("resize", resize);
-	}, []);
 
 	function changeOrder(movedImage, direction) {
 		let updatedImages = structuredClone(images);
@@ -83,7 +73,7 @@ export default function Images({ images, auth, setMessage, setImages, register }
 					<Splide
 						className={css.splide}
 						options={{
-							perPage: width > 700 ? 4 : 2,
+							perPage: 4,
 							height: "auto",
 							rewind: true,
 						}}

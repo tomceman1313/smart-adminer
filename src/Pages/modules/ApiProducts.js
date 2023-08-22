@@ -27,11 +27,6 @@ export async function getProduct(id) {
 
 	let data = await response.json();
 
-	data.variants.map((el) => {
-		el.parameters = JSON.parse(el.parameters);
-		return el;
-	});
-
 	return data;
 }
 

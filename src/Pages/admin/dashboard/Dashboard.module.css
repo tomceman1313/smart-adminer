@@ -152,21 +152,21 @@ section {
 }
 
 /* width */
-::-webkit-scrollbar {
+html::-webkit-scrollbar {
 	width: 10px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track {
 	background: var(--gray);
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
 	background: #888;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover {
 	background: #555;
 }

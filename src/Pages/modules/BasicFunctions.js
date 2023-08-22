@@ -6,6 +6,23 @@ export const publicPath = "/admin";
 //production
 //export const publicPath = "https://smart-studio.fun/admin";
 
+/**
+ ** Creates random ID for temporary use
+ * @returns number
+ */
+export function createUniqId() {
+	const now = new Date();
+	const id = now.getHours() + now.getMinutes() + now.getSeconds() + now.getMilliseconds() * Math.round(Math.random() * 100);
+	return id;
+}
+
+/**
+ ** Creates date string
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ * @returns string (20230817)
+ */
 export function makeDate(year, month, day) {
 	let date = `${year}`;
 

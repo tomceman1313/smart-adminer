@@ -1,35 +1,34 @@
-import { useRef } from "react";
-import useInteraction from "../../Hooks/useInteraction";
+import { useRef, useState } from "react";
 
-import Variant from "./inner-components/Variant";
-import css from "./styles/Product.module.css";
+import css from "./Product.module.css";
+import Variant from "./Variant";
 
 export default function Variants({ variants, setVariants, parameters, setParameters }) {
-	const { setMessage } = useInteraction();
-
 	const refName = useRef(null);
 	const refPrice = useRef(null);
 	const refInStock = useRef(null);
 
+	const [usedNameMessage, setUsedNameMessage] = useState(null);
+
 	const addVariant = () => {
 		const variantAdded = [
 			...variants,
-			{
-				name: refName.current.value,
-				price: refPrice.current.value,
-				in_stock: refInStock.current.value,
-				v_order: variants.length,
-				id: variants.length,
-			},
+			{ name: refName.current.value, price: refPrice.current.value, in_stock: refInStock.current.value, v_order: variants.length },
 		];
 		if (variants.filter((item) => item.name === refName.current.value).length > 0) {
-			setMessage({ action: "alert", text: "Varianta se shodným názvem již je vytvořena." });
+			setUsedNameMessage(true);
 			refName.current.value = "";
 			refName.current.focus();
+			setTimeout(() => {
+				setUsedNameMessage(null);
+			}, 5000);
 			return;
 		}
 
-		let parametersUpdated = [...parameters, { variant: refName.current.value, params: [] }];
+		let parametersUpdated = parameters.map((el) => {
+			el.values.push("");
+			return el;
+		});
 		setParameters(parametersUpdated);
 
 		refName.current.value = "";
@@ -47,12 +46,11 @@ export default function Variants({ variants, setVariants, parameters, setParamet
 						<label>Název</label>
 						<label>Kusů skladem</label>
 						<label>Cena</label>
-						<label></label>
 					</li>
 				)}
 				{variants.length > 0 ? (
 					variants.map((item) => (
-						<Variant key={`var-${item.id}-${item.v_order}`} el={item} variants={variants} setVariants={setVariants} setParameters={setParameters} />
+						<Variant key={item.name} el={item} variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
 					))
 				) : (
 					<p>- Pro tento produkt nebyly zatím vytvořeny žádné varianty</p>
@@ -65,8 +63,9 @@ export default function Variants({ variants, setVariants, parameters, setParamet
 				<input type="number" placeholder="Cena" ref={refPrice} />
 
 				<button type="button" onClick={addVariant}>
-					Přidat
+					Uložit
 				</button>
+				{usedNameMessage && <p>Jméno kategorie už je použito!</p>}
 			</div>
 		</section>
 	);

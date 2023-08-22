@@ -93,6 +93,7 @@ class ProductsController
                     "data" => $id,
                     "token" => $authAction
                 ]);
+                break;
 
             case 'update':
                 $this->gateway->update($data["data"]);

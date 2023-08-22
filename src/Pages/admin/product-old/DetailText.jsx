@@ -1,7 +1,7 @@
 import React from "react";
 import TextEditor from "../../Components/admin/TextEditor";
 
-import css from "./styles/Product.module.css";
+import css from "./Product.module.css";
 
 export default function DetailText({ detailText, setDetailText }) {
 	return (
