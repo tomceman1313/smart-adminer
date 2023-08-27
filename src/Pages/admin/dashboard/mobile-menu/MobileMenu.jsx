@@ -2,7 +2,16 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { faIdCard, faNewspaper } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faDisplay, faGear, faPowerOff, faCalendarDays, faShoppingCart, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+	faChevronDown,
+	faDisplay,
+	faGear,
+	faPowerOff,
+	faCalendarDays,
+	faShoppingCart,
+	faPeopleGroup,
+	faBasketShopping,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AnimatePresence, motion, useCycle } from "framer-motion";
@@ -175,6 +184,20 @@ const MobileMenu = ({ logOut }) => {
 								</Link>
 								<Link to="/dashboard/new-product" onClick={setActiveLink} id="new-product">
 									Nový produkt
+								</Link>
+							</article>
+						</li>
+
+						<li>
+							<div id="orders-cont" onClick={setActive}>
+								<FontAwesomeIcon className={css.icon} icon={faBasketShopping} />
+								<label>Objednávky</label>
+								<FontAwesomeIcon className={css.smallarrow} icon={faChevronDown} />
+							</div>
+
+							<article>
+								<Link to="/dashboard/orders" onClick={setActiveLink} id="orders">
+									Přehled objednávek
 								</Link>
 							</article>
 						</li>

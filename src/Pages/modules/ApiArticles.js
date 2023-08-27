@@ -5,7 +5,7 @@ export async function deleteImage(name, auth, setMessage) {
 	const response = await fetch(`${BASE_URL}/api/?class=articles&action=delete-image`, {
 		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ name: name, token: auth.userInfo.token }),
+		body: JSON.stringify({ name: name }),
 		credentials: "include",
 	});
 

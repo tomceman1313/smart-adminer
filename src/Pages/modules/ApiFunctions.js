@@ -100,7 +100,6 @@ export async function remove(apiClass, id, setMessage, positiveText, auth) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=delete&id=${id}`, {
 		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ token: auth.userInfo.token }),
 		credentials: "include",
 	});
 
@@ -118,7 +117,7 @@ export function editRole(data, setAlert, positiveText, auth) {
 	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data, token: auth.userInfo.token }),
+		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	})
 		.then((response) => {

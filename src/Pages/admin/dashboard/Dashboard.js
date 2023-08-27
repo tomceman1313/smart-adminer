@@ -29,6 +29,7 @@ import useViewport from "../../Hooks/useViewport";
 import Vacancies from "../vacancies/Vacancies";
 import Vacancy from "../vacancy/Vacancy";
 import Employees from "../employees/Employees";
+import Orders from "../orders/Orders";
 
 export default function Dashboard() {
 	const navigate = useNavigate();
@@ -89,6 +90,7 @@ export default function Dashboard() {
 						<Route path="products" element={<Products />} />
 						<Route path="new-product" element={<Product />} />
 						<Route path="product/:id" element={<Product />} />
+						<Route path="orders/" element={<Orders />} />
 						<Route path="vacancies" element={<Vacancies />} />
 						<Route path="vacancy" element={<Vacancy />} />
 						<Route path="vacancy/:id" element={<Vacancy />} />
