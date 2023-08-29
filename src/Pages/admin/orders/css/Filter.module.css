@@ -1,12 +1,24 @@
 /*---------------------------------------------- FILTER*/
 .filter {
+	position: fixed;
+	top: 50%;
+	right: 10px;
 	display: flex;
 	flex-wrap: wrap;
-	width: calc(100% - 50px);
+	width: calc(80% - 50px);
+	max-width: 800px;
 	padding: 25px;
-	border: solid 1px var(--gray);
 	border-radius: 8px;
 	overflow: hidden;
+	background-color: var(--green);
+	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
+}
+
+.filter h3 {
+	width: 100%;
+	margin: 0;
+	margin-bottom: 10px;
+	color: var(--main-dark);
 }
 
 .filter_param {
@@ -15,12 +27,6 @@
 	flex-wrap: wrap;
 	align-items: center;
 	padding: 10px;
-}
-
-.filter_param h3 {
-	width: 100%;
-	margin: 0;
-	margin-bottom: 10px;
 }
 
 .filter_param div {
@@ -39,4 +45,21 @@
 	padding: 5px;
 	border: solid 1px var(--gray);
 	border-radius: 8px;
+}
+
+#close {
+	color: var(--red);
+	position: absolute;
+	font-size: 22px;
+	top: 0;
+	right: 0;
+	padding: 16px 20px;
+	background-color: var(--green);
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+#close:hover {
+	color: white;
+	background-color: var(--red);
 }

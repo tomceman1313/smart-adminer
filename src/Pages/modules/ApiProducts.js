@@ -16,6 +16,21 @@ export async function getProducts(setState) {
 	return data;
 }
 
+export async function getProductByIds(ids) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=getByIds`, {
+		method: "POST",
+		body: JSON.stringify(ids),
+	});
+
+	if (response.status === 403) {
+		return null;
+	}
+
+	let data = await response.json();
+
+	return data;
+}
+
 export async function getProduct(id) {
 	const response = await fetch(`${BASE_URL}/api/?class=products&action=get&id=${id}`, {
 		method: "GET",

@@ -1,15 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { filterOrders, getShippingTypes } from "../../modules/ApiOrders";
 import Order from "./Order";
+import OrderDetail from "./OrderDetail";
 
+import Filter from "./Filter";
 import css from "./Orders.module.css";
-import OrderIdSearchBar from "./filters/OrderIdSearchBar";
-import StatusSelector from "./filters/StatusSelector";
-import { filterOrders } from "../../modules/ApiOrders";
-import DateSelector from "./filters/DateSelector";
-import ShippingSelector from "./filters/ShippingSelector";
-import PaymentSelector from "./filters/PaymentSelector";
 
 const DEFAULT_FILTER_VALUES = {
 	status: [],
@@ -21,16 +18,15 @@ const DEFAULT_FILTER_VALUES = {
 export default function Orders() {
 	const [orders, setOrders] = useState(null);
 	const [filterValues, setFilterValues] = useState(DEFAULT_FILTER_VALUES);
+	const [isFilterVisible, setIsFilterVisible] = useState(null);
 
-	const [isIdSearchBarVisible, setIsIdSearchBarVisible] = useState(false);
-	const [isStatusSelectorVisible, setIsStatusSelectorVisible] = useState(false);
-	const [isDateSelectorVisible, setIsDateSelectorVisible] = useState(false);
-	const [isShippingSelectorVisible, setIsShippingSelectorVisible] = useState(false);
-	const [isPaymentSelectorVisible, setIsPaymentSelectorVisible] = useState(false);
+	const [orderId, setOrderId] = useState(null);
+	const [shippingTypes, setShippingTypes] = useState(null);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Objednávky";
 		document.getElementById("banner-desc").innerHTML = "Přehled obdržených objednávek, možnost jejich vyřízení";
+		loadData();
 	}, []);
 
 	useEffect(() => {
@@ -42,94 +38,55 @@ export default function Orders() {
 		setOrders(filterData);
 	}
 
+	async function loadData() {
+		const _shipping_types = await getShippingTypes();
+		setShippingTypes(_shipping_types);
+	}
+
 	return (
 		<div className={css.orders}>
 			<section>
-				<ul>
-					<li className={css.table_head}>
+				<ul className={css.orders_list}>
+					<li className={css.table_head} onClick={() => setIsFilterVisible(true)}>
 						<AnimatePresence>
 							<div key="searchId" className={css.head_column}>
-								<p onClick={() => setIsIdSearchBarVisible((prev) => !prev)} style={{ cursor: "pointer" }}>
-									Číslo objednávky
-								</p>
-								{isIdSearchBarVisible && (
-									<motion.div className={`${css.search_bar} ${css.filter_param}`}>
-										<OrderIdSearchBar setOrders={setOrders} />
-									</motion.div>
-								)}
+								<p style={{ cursor: "pointer" }}>Číslo objednávky</p>
 							</div>
 
 							<div key="orderStatus" className={css.head_column}>
-								<p onClick={() => setIsStatusSelectorVisible((prev) => !prev)} style={{ cursor: "pointer" }}>
-									Stav
-								</p>
-								{isStatusSelectorVisible && (
-									<motion.div className={css.status_selector + " " + css.filter_param}>
-										<StatusSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-									</motion.div>
-								)}
+								<p style={{ cursor: "pointer" }}>Stav</p>
 							</div>
 
 							<div key="orderDate" className={css.head_column}>
-								<p onClick={() => setIsDateSelectorVisible((prev) => !prev)} style={{ cursor: "pointer" }}>
-									Datum objednání
-								</p>
-								{isDateSelectorVisible && (
-									<motion.div className={css.date_selector + " " + css.filter_param}>
-										<DateSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-									</motion.div>
-								)}
+								<p style={{ cursor: "pointer" }}>Datum objednání</p>
 							</div>
 
 							<div key="shipping" className={css.head_column}>
-								<p onClick={() => setIsShippingSelectorVisible((prev) => !prev)} style={{ cursor: "pointer" }}>
-									Doprava
-								</p>
-								{isShippingSelectorVisible && (
-									<motion.div className={css.shipping_selector + " " + css.filter_param}>
-										<ShippingSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-									</motion.div>
-								)}
+								<p style={{ cursor: "pointer" }}>Doprava</p>
 							</div>
 
 							<div key="paymentType" className={css.head_column}>
-								<p onClick={() => setIsPaymentSelectorVisible((prev) => !prev)} style={{ cursor: "pointer" }}>
-									Způsob platby
-								</p>
-								{isPaymentSelectorVisible && (
-									<motion.div className={css.payment_selector + " " + css.filter_param}>
-										<PaymentSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-									</motion.div>
-								)}
+								<p style={{ cursor: "pointer" }}>Způsob platby</p>
 							</div>
-
-							{/* <div className={css.filter}>
-								<div className={`${css.status_selector} ${css.filter_param}`}>
-									<h3>Status:</h3>
-									<StatusSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-								</div>
-
-								<div className={`${css.date_selector} ${css.filter_param}`}>
-									<h3>Období:</h3>
-									<DateSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-								</div>
-
-								<div className={`${css.shipping_selector} ${css.filter_param}`}>
-									<h3>Doprava:</h3>
-									<ShippingSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-								</div>
-
-								<div className={`${css.payment_selector} ${css.filter_param}`}>
-									<h3>Způsob platby:</h3>
-									<PaymentSelector filterValues={filterValues} setFilterValues={setFilterValues} />
-								</div>
-							</div> */}
 						</AnimatePresence>
 					</li>
 
-					{orders && orders.length !== 0 ? orders.map((el) => <Order el={el} key={`order-${el.id}`} />) : <p>Nebyly nalezeny žádné objednávky</p>}
+					{orders && orders.length !== 0 ? (
+						orders.map((el) => <Order el={el} key={`order-${el.id}`} setOrderId={setOrderId} />)
+					) : (
+						<p>Nebyly nalezeny žádné objednávky</p>
+					)}
 				</ul>
 			</section>
+			<AnimatePresence>
+				{orderId && <OrderDetail id={orderId} setVisible={setOrderId} shippingTypes={shippingTypes} reloadData={loadData} />}
+			</AnimatePresence>
+
+			<AnimatePresence>
+				{isFilterVisible && (
+					<Filter filterValues={filterValues} setFilterValues={setFilterValues} setOrders={setOrders} setVisible={setIsFilterVisible} />
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }

@@ -1,9 +1,9 @@
-.orders ul {
+.orders_list {
 	overflow-x: auto;
 	min-height: 300px;
 }
 
-.orders li {
+.orders_list li {
 	display: flex;
 	width: calc(100% - 32px);
 	min-width: 800px;
@@ -13,31 +13,26 @@
 	border-radius: 8px;
 }
 
-.orders li label {
+.orders_list li label {
 	display: block;
 	width: calc(20% - 10px);
 	margin: 0 5px;
 }
 
-.orders li.table_head {
+.orders_list li.table_head {
 	border: none;
 	font-weight: bold;
 	flex-wrap: wrap;
+	padding-bottom: 0;
+	padding-top: 0;
+	background-color: var(--main);
 }
 
 .head_column {
 	position: relative;
 	width: calc(20% - 10px);
 	margin: 0 5px;
-}
-
-.search_bar {
-	position: absolute;
-	display: flex;
-	padding: 10px;
-	border: solid 1px var(--gray);
-	border-radius: 8px;
-	background-color: white;
+	color: white;
 }
 
 .search_bar svg {
@@ -49,8 +44,16 @@
 	margin-left: 10px;
 }
 /*---------------------------------------------- FILTER*/
+.orders_list li.filter {
+	justify-content: space-between;
+	align-items: flex-start;
+	border: none;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
 .filter_param {
-	/* position: absolute; */
+	width: calc(20% - 30px);
 	padding: 10px;
 	border: solid 1px var(--gray);
 	border-radius: 8px;
@@ -71,6 +74,7 @@
 
 .filter_param input[type="date"] {
 	display: block;
+	width: calc(100% - 20px);
 	padding: 5px;
 	margin: 5px 0;
 }

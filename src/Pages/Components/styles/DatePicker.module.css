@@ -7,7 +7,7 @@
 	height: 50px;
 }
 
-.half{
+.half {
 	width: calc(50% - 20px);
 }
 
@@ -47,29 +47,32 @@
 	transition: all 0.5s;
 	color: var(--main-dark);
 	background-color: transparent;
-    border-radius: 8px 0 0 8px; 
+	border-radius: 8px 0 0 8px;
 	padding: 17px;
 }
 
-.input_box label{
+.input_box label {
 	position: absolute;
 	top: -12px;
 	left: 40px;
-    padding: 3px 8px;
-    border-radius: 4px;
+	padding: 3px 8px;
+	border-radius: 4px;
 	font-size: 14px;
 	color: white;
-    background-color: white;
-    z-index: 1;
-
+	background-color: white;
+	z-index: 1;
 }
 
-.blue label{
+.blue label {
 	background-color: var(--main);
 }
 
-.green label{
+.green label {
 	background-color: var(--green);
+}
+
+.gray label {
+	color: #333;
 }
 
 .white_color svg {
@@ -85,7 +88,7 @@
 }
 
 @media (max-width: 700px) {
-    .half{
-        width: 100%;
-    }
+	.half {
+		width: 100%;
+	}
 }

@@ -1,0 +1,83 @@
+.edit {
+	width: 50%;
+	padding: 15px 25px;
+	max-width: 500px;
+	max-height: 80vh;
+	position: fixed;
+	background-color: white;
+	top: 90px;
+	border-radius: 8px;
+	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+.edit ul {
+	min-height: auto;
+	margin-bottom: 40px;
+}
+
+.edit li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	min-width: auto;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	padding: 10px;
+}
+
+.edit li img {
+	width: 80px;
+}
+
+.edit li b {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin: 0 10px;
+}
+
+.edit li input {
+	width: 35px;
+	text-align: center;
+	padding: 0;
+}
+
+.edit li span label {
+	width: 30px;
+	margin: 0;
+}
+
+.edit input[type="submit"] {
+	padding: 10px 20px;
+	font-size: 16px;
+	margin-top: 0;
+}
+
+#close {
+	color: var(--red);
+	position: absolute;
+	font-size: 22px;
+	top: 0;
+	right: 0;
+	padding: 16px 20px;
+	background-color: white;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+#close:hover {
+	color: white;
+	background-color: var(--red);
+}
+
+.edit h2 {
+	margin-top: 0;
+}
+
+@media (max-width: 700px) {
+	.edit {
+		width: calc(100% - 70px);
+	}
+}

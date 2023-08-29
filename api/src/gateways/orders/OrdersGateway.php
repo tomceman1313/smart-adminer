@@ -194,7 +194,7 @@ class OrdersGateway
     public function update(array $data)
     {
         $sql = "UPDATE customers SET fname = :fname, lname = :lname, address = :address, city = :city, postal_code = :postal_code, phone = :phone, email = :email, 
-        company_name = :company_name, ic = :ic, dic = :dic, delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address :delivery_address, delivery_city = :delivery_city, 
+        company_name = :company_name, ic = :ic, dic = :dic, delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address = :delivery_address, delivery_city = :delivery_city, 
         delivery_postal_code = :delivery_postal_code WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
@@ -218,7 +218,7 @@ class OrdersGateway
             'delivery_postal_code' => $data["delivery_postal_code"]
         ]);
 
-        $sql = "UPDATE orders SET status_code = :status_code, payment_type = :payment_type, shipping_type_id = :shipping_type_id, comments = :comments WHERE id = :id";
+        $sql = "UPDATE orders SET status_code = :status_code, payment_type = :payment_type, shipping_type_id = :shipping_type_id, shipped_date = :shipped_date, completed_date = :completed_date, comments = :comments WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -226,6 +226,8 @@ class OrdersGateway
             'status_code' => $data["status_code"],
             'payment_type' => $data["payment_type"],
             'shipping_type_id' => $data["shipping_type_id"],
+            'shipped_date' => $data["shipped_date"],
+            'completed_date' => $data["completed_date"],
             'comments' => $data["comments"]
         ]);
 
@@ -252,19 +254,19 @@ class OrdersGateway
             ]);
         }
 
-        $added_products = $data["added_products"];
+        // $added_products = $data["added_products"];
 
-        foreach ($added_products as $product) {
-            $sqlVariant = "INSERT INTO ordered_products (order_id, product_id, price_piece, quantity) VALUES (:order_id, :product_id, :price_piece, :quantity)";
-            $stmt = $this->conn->prepare($sqlVariant);
+        // foreach ($added_products as $product) {
+        //     $sqlVariant = "INSERT INTO ordered_products (order_id, product_id, price_piece, quantity) VALUES (:order_id, :product_id, :price_piece, :quantity)";
+        //     $stmt = $this->conn->prepare($sqlVariant);
 
-            $stmt->execute([
-                'order_id' => $data["order_id"],
-                'product_id' => $product["product_id"],
-                'price_piece' => $product["price_piece"],
-                'quantity' => $product["quantity"],
-            ]);
-        }
+        //     $stmt->execute([
+        //         'order_id' => $data["order_id"],
+        //         'product_id' => $product["product_id"],
+        //         'price_piece' => $product["price_piece"],
+        //         'quantity' => $product["quantity"],
+        //     ]);
+        // }
     }
 
     public function updateStatus(array $data)
@@ -280,10 +282,11 @@ class OrdersGateway
 
     public function delete(string $id)
     {
-        $sql = "DELETE order.*, customer.* FROM orders AS o LEFT JOIN customers AS c ON o.customer_id = c.id WHERE o.id = :id";
+        $sql = "DELETE o.*, c.* FROM orders AS o LEFT JOIN customers AS c ON o.customer_id = c.id WHERE o.id = :id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'id' => $id
+        ]);
 
         $sql = "DELETE FROM ordered_products WHERE order_id = :id";
         $stmt = $this->conn->prepare($sql);
