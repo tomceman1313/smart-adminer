@@ -47,8 +47,14 @@ class OrdersController
                 echo json_encode($data);
                 return;
 
+            case 'getStatusCodes':
+                $data = $this->gateway->getStatusCodes();
+                http_response_code(200);
+                echo json_encode($data);
+                return;
+
             case 'getShippingTypes':
-                $data = $this->gateway->getShippingTypes($id);
+                $data = $this->gateway->getShippingTypes();
                 http_response_code(200);
                 echo json_encode($data);
                 return;

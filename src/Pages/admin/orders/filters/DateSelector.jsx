@@ -1,36 +1,54 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { makeDate, makeDateFormat } from "../../../modules/BasicFunctions";
+import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
+import useInteraction from "../../../Hooks/useInteraction";
 
-export default function DateSelector({ filterValues, setFilterValues }) {
+export default function DateSelector() {
+	const { selectedDates } = useOrdersFilterValues();
+	const { setMessage } = useInteraction();
+
 	const [start, setStart] = useState("");
 	const [end, setEnd] = useState("");
 
 	useEffect(() => {
-		const selectedDates = {};
+		if (selectedDates.current.start) {
+			setStart(makeDateFormat(selectedDates.current.start, "str"));
+		}
+
+		if (selectedDates.current.end) {
+			setEnd(makeDateFormat(selectedDates.current.end, "str"));
+		}
+	}, []);
+
+	useEffect(() => {
+		const currentlySelectedDates = {};
 
 		if (start !== "" || end !== "") {
 			if (start !== "") {
-				selectedDates.start = makeDateFormat(start);
+				currentlySelectedDates.start = makeDateFormat(start);
 			} else {
-				selectedDates.start = 20230101;
+				currentlySelectedDates.start = 20230101;
 			}
 
 			if (end !== "") {
-				selectedDates.end = makeDateFormat(end);
+				currentlySelectedDates.end = makeDateFormat(end);
 			} else {
 				const todaysDate = new Date();
-				selectedDates.end = Number(makeDate(todaysDate.getFullYear(), todaysDate.getMonth() + 1, todaysDate.getDate()));
+				currentlySelectedDates.end = Number(makeDate(todaysDate.getFullYear(), todaysDate.getMonth() + 1, todaysDate.getDate()));
+			}
+
+			if (currentlySelectedDates.start > currentlySelectedDates.end) {
+				setMessage({ action: "alert", text: "Počáteční datum nemůže být později než konečné!" });
+				return;
 			}
 		}
 
-		if (JSON.stringify(filterValues.order_date) === JSON.stringify(selectedDates)) {
+		if (JSON.stringify(selectedDates.current) === JSON.stringify(currentlySelectedDates)) {
 			return;
 		}
 
-		setFilterValues((prev) => {
-			return { ...prev, order_date: selectedDates };
-		});
+		selectedDates.current = currentlySelectedDates;
 	}, [start, end]);
 
 	return (

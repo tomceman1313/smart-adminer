@@ -59,6 +59,20 @@ class OrdersGateway
         return $data;
     }
 
+    public function getStatusCodes(): array
+    {
+        $sql = "SELECT * FROM order_status";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
 
     public function getShippingTypes(): array
     {
@@ -99,9 +113,9 @@ class OrdersGateway
             $parameters["shipping_type"] = implode(",", $filterData["shipping_type"]);
         }
 
-        if (isset($filterData["payment_type"]) && count($filterData["payment_type"]) > 0) {
-            $sql[] = " payment_type IN ( :payment_type )";
-            $parameters["payment_type"] = implode(",", $filterData["payment_type"]);
+        if (isset($filterData["payment_method"]) && count($filterData["payment_method"]) > 0) {
+            $sql[] = " payment_method IN ( :payment_method )";
+            $parameters["payment_method"] = implode(",", $filterData["payment_method"]);
         }
 
         if ($sql) {
@@ -163,12 +177,12 @@ class OrdersGateway
         ]);
 
         $customer_id = $this->conn->lastInsertId();
-        $sql = "INSERT INTO orders (status_code, payment_type, shipping_type_id, order_date, customer_id, comments) VALUES (:status_code, :payment_type, :shipping_type_id, :order_date, :customer_id, :comments)";
+        $sql = "INSERT INTO orders (status_code, payment_method, shipping_type_id, order_date, customer_id, comments) VALUES (:status_code, :payment_method, :shipping_type_id, :order_date, :customer_id, :comments)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'status_code' => $data["status_code"],
-            'payment_type' => $data["payment_type"],
+            'payment_method' => $data["payment_method"],
             'shipping_type_id' => $data["shipping_type_id"],
             'order_date' => $data["order_date"],
             'customer_id' => $customer_id,
@@ -218,13 +232,13 @@ class OrdersGateway
             'delivery_postal_code' => $data["delivery_postal_code"]
         ]);
 
-        $sql = "UPDATE orders SET status_code = :status_code, payment_type = :payment_type, shipping_type_id = :shipping_type_id, shipped_date = :shipped_date, completed_date = :completed_date, comments = :comments WHERE id = :id";
+        $sql = "UPDATE orders SET status_code = :status_code, payment_method = :payment_method, shipping_type_id = :shipping_type_id, shipped_date = :shipped_date, completed_date = :completed_date, comments = :comments WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'id' => $data["order_id"],
             'status_code' => $data["status_code"],
-            'payment_type' => $data["payment_type"],
+            'payment_method' => $data["payment_method"],
             'shipping_type_id' => $data["shipping_type_id"],
             'shipped_date' => $data["shipped_date"],
             'completed_date' => $data["completed_date"],

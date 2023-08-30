@@ -19,6 +19,15 @@ export async function filterOrders(filterValues) {
 	return data;
 }
 
+export async function getStatusCodes() {
+	const response = await fetch(`${BASE_URL}/api/?class=orders&action=getStatusCodes`, {
+		method: "GET",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
 export async function getShippingTypes() {
 	const response = await fetch(`${BASE_URL}/api/?class=orders&action=getShippingTypes`, {
 		method: "GET",

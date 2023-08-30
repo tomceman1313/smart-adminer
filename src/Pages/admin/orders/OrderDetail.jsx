@@ -140,7 +140,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 	}
 
 	return (
-		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1.5 }}>
 			<h2>Objednávka č.: {order?.id}</h2>
 			<FontAwesomeIcon
 				id={css.close}

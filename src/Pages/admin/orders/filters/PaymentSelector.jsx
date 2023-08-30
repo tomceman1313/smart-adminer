@@ -1,45 +1,52 @@
 import { useState, useEffect } from "react";
+import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
 
-export default function PaymentSelector({ filterValues, setFilterValues }) {
-	const [selectedPaymentTypes, setSelectedPaymentTypes] = useState({});
-	const [shippingTypes] = useState([
-		{ value: "cash", name: "Hotovost" },
-		{ value: "card", name: "Kartou" },
-		{ value: "bank_account", name: "Převodem na účet" },
+export default function PaymentSelector() {
+	const { selectedPaymentMethods } = useOrdersFilterValues();
+	const [paymentMethods, setPaymentMethods] = useState([
+		{ name: "cash", publicName: "Hotovost", value: false },
+		{ name: "card", publicName: "Kartou", value: false },
+		{ name: "bank_account", publicName: "Převodem na účet", value: false },
 	]);
 
 	useEffect(() => {
-		const selectedIds = [];
-
-		for (const [key, value] of Object.entries(selectedPaymentTypes)) {
-			if (value) {
-				selectedIds.push(key);
-			}
+		if (selectedPaymentMethods.current.length > 0) {
+			setPaymentMethods((prev) => {
+				return prev.map((method) => {
+					if (selectedPaymentMethods.current.find((item) => item === method.name)) {
+						method.value = true;
+					}
+					return method;
+				});
+			});
 		}
-
-		if (Object.values(filterValues.payment_type).toString() === selectedIds.toString()) return;
-
-		setFilterValues((prev) => {
-			return { ...prev, payment_type: selectedIds };
-		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedPaymentTypes]);
+	}, []);
+
+	useEffect(() => {
+		if (!paymentMethods) {
+			return;
+		}
+		const selectedNames = paymentMethods.filter((method) => method.value).map((method) => method.name);
+		selectedPaymentMethods.current = selectedNames;
+	}, [paymentMethods, selectedPaymentMethods]);
 
 	return (
 		<>
-			{shippingTypes.map((type) => (
-				<div key={type.value}>
+			{paymentMethods.map((method, index) => (
+				<div key={method.name}>
 					<input
-						id={type.value}
+						id={method.name}
 						type="checkbox"
-						value={selectedPaymentTypes[type.value]}
+						checked={method.value}
 						onChange={(e) =>
-							setSelectedPaymentTypes((prev) => {
-								return { ...prev, [type.value]: e.target.checked };
+							setPaymentMethods((prev) => {
+								prev[index].value = e.target.checked;
+								return [...prev];
 							})
 						}
 					/>
-					<label htmlFor={type.value}>{type.name}</label>
+					<label htmlFor={method.name}>{method.publicName}</label>
 				</div>
 			))}
 		</>

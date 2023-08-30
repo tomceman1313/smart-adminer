@@ -1,49 +1,63 @@
 import { useEffect, useState } from "react";
+import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
+import { getStatusCodes } from "../../../modules/ApiOrders";
 
-export default function StatusSelector({ filterValues, setFilterValues }) {
-	const [selectedStatuses, setSelectedStatuses] = useState({ pending: false, shipped: false, completed: false, cancelled: false });
-	const [statuses] = useState([
-		{ id: 1, value: "pending", name: "Přijata" },
-		{ id: 2, value: "shipped", name: "Odeslána" },
-		{ id: 3, value: "completed", name: "Dokončena" },
-		{ id: 4, value: "cancelled", name: "Zrušena" },
-	]);
+export default function StatusSelector() {
+	const { selectedStatusCodes } = useOrdersFilterValues();
+	const [statuses, setStatuses] = useState(null);
 
 	useEffect(() => {
-		const selectedIds = [];
-
-		for (const [key, value] of Object.entries(selectedStatuses)) {
-			if (value) {
-				const statusId = statuses.find((item) => item.value === key)?.id;
-				selectedIds.push(statusId);
-			}
-		}
-
-		if (Object.values(filterValues.status).toString() === selectedIds.toString()) return;
-
-		setFilterValues((prev) => {
-			return { ...prev, status: selectedIds };
-		});
+		loadStatusCodes();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedStatuses]);
+	}, []);
+
+	useEffect(() => {
+		if (!statuses) {
+			return;
+		}
+		const selectedIds = statuses?.filter((status) => status.value).map((status) => status.id);
+		selectedStatusCodes.current = selectedIds;
+	}, [statuses, selectedStatusCodes]);
+
+	async function loadStatusCodes() {
+		const _status_codes = await getStatusCodes();
+
+		let statusesWithValues = [];
+
+		if (selectedStatusCodes.current.length === 0) {
+			statusesWithValues = await _status_codes.map((status) => {
+				return { ...status, value: false };
+			});
+		} else {
+			statusesWithValues = await _status_codes.map((status) => {
+				if (selectedStatusCodes.current.find((item) => item === status.id)) {
+					return { ...status, value: true };
+				}
+				return { ...status, value: false };
+			});
+		}
+		setStatuses(statusesWithValues);
+	}
 
 	return (
 		<>
-			{statuses.map((status) => (
-				<div key={status.name}>
-					<input
-						id={status.value}
-						type="checkbox"
-						value={selectedStatuses[status.value]}
-						onChange={(e) =>
-							setSelectedStatuses((prev) => {
-								return { ...prev, [status.value]: e.target.checked };
-							})
-						}
-					/>
-					<label htmlFor={status.name}>{status.name}</label>
-				</div>
-			))}
+			{statuses &&
+				statuses.map((status, index) => (
+					<div key={status.name}>
+						<input
+							id={status.name}
+							type="checkbox"
+							checked={status.value}
+							onChange={(e) =>
+								setStatuses((prev) => {
+									prev[index].value = e.target.checked;
+									return [...prev];
+								})
+							}
+						/>
+						<label htmlFor={status.name}>{status.public_name}</label>
+					</div>
+				))}
 		</>
 	);
 }

@@ -1,56 +1,57 @@
-import { useState, useEffect } from "react";
-import { getShippingTypes } from "../../../modules/ApiOrders";
+import { useEffect, useState } from "react";
+import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
 
-export default function ShippingSelector({ filterValues, setFilterValues }) {
-	const [selectedShippingTypes, setSelectedShippingTypes] = useState({});
+export default function ShippingSelector({ loadedShippingTypes }) {
+	const { selectedShippingTypes } = useOrdersFilterValues();
 	const [shippingTypes, setShippingTypes] = useState(null);
 
 	useEffect(() => {
 		loadData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
-		const selectedIds = [];
-		for (const [key, value] of Object.entries(selectedShippingTypes)) {
-			if (value) {
-				const typeId = shippingTypes.find((item) => item.name === key)?.id;
-				if (typeId) {
-					selectedIds.push(typeId);
-				}
-			}
+		if (!shippingTypes) {
+			return;
 		}
-
-		//checks if selectedStatuses are equal as filterStatuses
-		const currentShippingTypes = Object.values(filterValues.shipping_type);
-		if (currentShippingTypes.toString() === selectedIds.toString()) return;
-
-		setFilterValues((prev) => {
-			return { ...prev, shipping_type: selectedIds };
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedShippingTypes]);
+		const selectedIds = shippingTypes.filter((shippingType) => shippingType.value).map((shippingType) => shippingType.id);
+		selectedShippingTypes.current = selectedIds;
+	}, [shippingTypes, selectedShippingTypes]);
 
 	async function loadData() {
-		const _shippingTypes = await getShippingTypes();
-		setShippingTypes(_shippingTypes);
+		let shippingTypesWithValues = [];
+		if (selectedShippingTypes.current.length === 0) {
+			shippingTypesWithValues = await loadedShippingTypes.map((shippingType) => {
+				return { ...shippingType, value: false };
+			});
+		} else {
+			shippingTypesWithValues = await loadedShippingTypes.map((shippingType) => {
+				if (selectedShippingTypes.current.find((item) => item === shippingType.id)) {
+					return { ...shippingType, value: true };
+				}
+				return { ...shippingType, value: false };
+			});
+		}
+		setShippingTypes(shippingTypesWithValues);
 	}
 
 	return (
 		<>
 			{shippingTypes &&
-				shippingTypes.map((el) => (
-					<div key={el.name}>
+				shippingTypes.map((shippingType, index) => (
+					<div key={shippingType.name}>
 						<input
-							id={el.name}
+							id={shippingType.name}
 							type="checkbox"
-							value={selectedShippingTypes[el.name]}
+							checked={shippingType.value}
 							onChange={(e) =>
-								setSelectedShippingTypes((prev) => {
-									return { ...prev, [el.name]: e.target.checked };
+								setShippingTypes((prev) => {
+									prev[index].value = e.target.checked;
+									return [...prev];
 								})
 							}
 						/>
-						<label htmlFor={el.name}>{el.name}</label>
+						<label htmlFor={shippingType.name}>{shippingType.name}</label>
 					</div>
 				))}
 		</>

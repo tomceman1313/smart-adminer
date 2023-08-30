@@ -7,17 +7,10 @@ import OrderDetail from "./OrderDetail";
 
 import Filter from "./Filter";
 import css from "./Orders.module.css";
-
-const DEFAULT_FILTER_VALUES = {
-	status: [],
-	order_date: {},
-	shipping_type: [],
-	payment_type: {},
-};
+import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
 
 export default function Orders() {
 	const [orders, setOrders] = useState(null);
-	const [filterValues, setFilterValues] = useState(DEFAULT_FILTER_VALUES);
 	const [isFilterVisible, setIsFilterVisible] = useState(null);
 
 	const [orderId, setOrderId] = useState(null);
@@ -29,16 +22,9 @@ export default function Orders() {
 		loadData();
 	}, []);
 
-	useEffect(() => {
-		loadFilteredData();
-	}, [filterValues]);
-
-	async function loadFilteredData() {
-		const filterData = await filterOrders(filterValues);
-		setOrders(filterData);
-	}
-
 	async function loadData() {
+		const _orders = await filterOrders([]);
+		setOrders(_orders);
 		const _shipping_types = await getShippingTypes();
 		setShippingTypes(_shipping_types);
 	}
@@ -78,15 +64,13 @@ export default function Orders() {
 					)}
 				</ul>
 			</section>
-			<AnimatePresence>
-				{orderId && <OrderDetail id={orderId} setVisible={setOrderId} shippingTypes={shippingTypes} reloadData={loadData} />}
-			</AnimatePresence>
 
-			<AnimatePresence>
-				{isFilterVisible && (
-					<Filter filterValues={filterValues} setFilterValues={setFilterValues} setOrders={setOrders} setVisible={setIsFilterVisible} />
-				)}
-			</AnimatePresence>
+			<OrdersFilterValuesProvider>
+				<AnimatePresence>
+					{orderId && <OrderDetail key="orderDetail" id={orderId} setVisible={setOrderId} shippingTypes={shippingTypes} reloadData={loadData} />}
+					{isFilterVisible && <Filter key="filter" setOrders={setOrders} setVisible={setIsFilterVisible} shippingTypes={shippingTypes} />}
+				</AnimatePresence>
+			</OrdersFilterValuesProvider>
 		</div>
 	);
 }
