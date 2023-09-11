@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { getAll, remove } from "../../modules/ApiVacancies";
+import { getAll, remove } from "../../modules/ApiFunctions";
 import { makeDateFormat } from "../../modules/BasicFunctions";
 import css from "./Vacancies.module.css";
 
@@ -22,7 +22,7 @@ export default function Vacancies() {
 	}, []);
 
 	async function getData() {
-		const data = await getAll();
+		const data = await getAll("vacancies");
 		setVacancies(data);
 	}
 

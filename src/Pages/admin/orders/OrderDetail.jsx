@@ -80,7 +80,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		setValue("dic", _order.customer.dic ? _order.customer.dic : "");
 
 		setValue("status_code", _order.status_code);
-		setValue("payment_type", _order.payment_type);
+		setValue("payment_method", _order.payment_method);
 		setValue("shipping_type_id", _order.shipping_type_id);
 	}
 
@@ -178,7 +178,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 				</div>
 
 				<div className={cssBasic.input_box}>
-					<select {...register("payment_type")} required>
+					<select {...register("payment_method")} required>
 						<option value="cash">Hotově</option>
 						<option value="card">Online kartou</option>
 						<option value="bank_account">Převodem na účet</option>

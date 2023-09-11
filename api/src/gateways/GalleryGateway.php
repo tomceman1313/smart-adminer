@@ -8,6 +8,74 @@ class GalleryGateway
         $this->path = $path;
     }
 
+    function getAll($page): array
+    {
+        //$sql = "SELECT * FROM gallery ORDER BY id DESC LIMIT 10 OFFSET :offset";
+        $sql = "SELECT * FROM gallery ORDER BY id DESC";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+
+        $data = [];
+        // boolean values have to converted manualy, represented by 0/1 by default
+        // $row["bool column"] = (bool) $row["bool column];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getByCategory(string $category_id): array
+    {
+        $sql = "SELECT * FROM image_category WHERE category_id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $category_id
+        ]);
+
+        $ids = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ids[] = $row["image_id"];
+        }
+
+        if (sizeof($ids) == 0) {
+            return [];
+        }
+
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getByCategoryName(string $category_name): array
+    {
+        $sql = "SELECT gallery.* FROM gallery_categories INNER JOIN image_category ON gallery_categories.id = image_category.category_id 
+        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function get(string $id): array
     {
         $sql = "SELECT * FROM gallery WHERE id = :id LIMIT 1";
@@ -195,52 +263,6 @@ class GalleryGateway
         foreach ($ids as $image) {
             $this->delete($image);
         }
-    }
-
-
-    function getAll(): array
-    {
-        $sql = "SELECT * FROM gallery ORDER BY id DESC";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
-    }
-
-    function getByCategory(string $category_id): array
-    {
-        $sql = "SELECT * FROM image_category WHERE category_id=:id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $category_id
-        ]);
-
-        $ids = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $ids[] = $row["image_id"];
-        }
-
-        if (sizeof($ids) == 0) {
-            return [];
-        }
-
-        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
     }
 
     function getImageCategories(string $image_id): array

@@ -22,6 +22,42 @@ class DocumentsGateway
         return $data;
     }
 
+    function getAll(): array
+    {
+        $sql = "SELECT * FROM documents ORDER BY id DESC";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getByCategory(string $category_id): array
+    {
+        $sql = "SELECT * FROM documents WHERE category_id = :id ORDER BY id DESC";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $category_id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (file_exists("{$this->path}/files/documents/" . $row["name"])) {
+                $row["size"] = filesize("{$this->path}/files/documents/" . $row["name"]);
+            } else {
+                $row["size"] = 8.1;
+            }
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function create(array $data): bool
     {
         $base64DataString = $data["file"];
@@ -162,43 +198,6 @@ class DocumentsGateway
         foreach ($ids as $document) {
             $this->delete($document);
         }
-    }
-
-
-    function getAll(): array
-    {
-        $sql = "SELECT * FROM documents";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
-    }
-
-    function getByCategory(string $category_id): array
-    {
-        $sql = "SELECT * FROM documents WHERE category_id = :id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $category_id
-        ]);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if (file_exists("{$this->path}/files/documents/" . $row["name"])) {
-                $row["size"] = filesize("{$this->path}/files/documents/" . $row["name"]);
-            } else {
-                $row["size"] = 8.1;
-            }
-            $data[] = $row;
-        }
-
-        return $data;
     }
 
     function getCategories(): array

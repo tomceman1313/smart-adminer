@@ -91,7 +91,7 @@ class OrdersGateway
 
     public function filterOrders($filterData): array
     {
-        $query = "SELECT o.*, os.name as status_name, st.name as shipping_type FROM orders 
+        $query = "SELECT o.*, os.name as status_name, os.public_name, st.name as shipping_type FROM orders 
         AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id";
 
         $sql = [];
@@ -122,12 +122,22 @@ class OrdersGateway
             $query .= ' WHERE' . implode(' AND ', $sql);
         }
 
+        $query .= " ORDER BY o.order_date";
+
         $stmt = $this->conn->prepare($query);
 
         $stmt->execute($parameters);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_price_sum = "SELECT SUM(price_piece * quantity) as order_sum_price FROM ordered_products WHERE order_id = :order_id";
+            $stmt_price_sum = $this->conn->prepare($sql_price_sum);
+            $stmt_price_sum->execute([
+                'order_id' => $row["id"]
+            ]);
+
+            $price = $stmt_price_sum->fetch(PDO::FETCH_ASSOC);
+            $row["price_sum"] = intval($price["order_sum_price"]);
             $data[] = $row;
         }
 

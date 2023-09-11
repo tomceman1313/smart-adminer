@@ -1,5 +1,5 @@
 <?php
-class GalleryConroller
+class GalleryController
 {
     public function __construct(GalleryGateway $gateway, AdminGateway $adminGateway)
     {
@@ -16,16 +16,21 @@ class GalleryConroller
     private function controller(string $action): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $offset = 0;
+        $page = 0;
         $id = 0;
+        $name = "";
         $authAction = false;
 
-        if (isset($_GET["offset"])) {
-            $offset = $_GET["offset"];
+        if (isset($_GET["page"])) {
+            $page = $_GET["page"];
         }
         if (isset($_GET["id"])) {
             $id = $_GET["id"];
         }
+        if (isset($_GET["name"])) {
+            $name = $_GET["name"];
+        }
+
         if (isset($_SERVER["HTTP_AUTHORIZATION"])) {
             list($type, $token) = explode(" ", $_SERVER["HTTP_AUTHORIZATION"], 2);
             if (strcasecmp($type, "Bearer") == 0) {
@@ -39,13 +44,19 @@ class GalleryConroller
 
         switch ($action) {
             case 'getall':
-                $result = $this->gateway->getAll();
+                $result = $this->gateway->getAll($page);
                 http_response_code(200);
                 echo json_encode($result);
                 return;
 
             case 'getByCategory':
                 $result = $this->gateway->getByCategory($id);
+                http_response_code(200);
+                echo json_encode($result);
+                return;
+
+            case 'getByCategoryName':
+                $result = $this->gateway->getByCategoryName($name);
                 http_response_code(200);
                 echo json_encode($result);
                 return;

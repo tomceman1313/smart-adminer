@@ -52,7 +52,8 @@ class VacancyGateway
         return $data;
     }
 
-    public function update(array $data, $id): bool
+    //FIXME - update obrázku nefunguje
+    public function update(array $data, $id)
     {
         if (isset($data["image"])) {
             $base64DataString = $data["image"];
@@ -71,7 +72,7 @@ class VacancyGateway
             if (file_exists("{$this->path}/images/vacancies/{$data["previous_image"]}")) {
                 unlink("{$this->path}/images/vacancies/{$data["previous_image"]}");
             }
-
+            echo $image_name . "." . $imageExtension;
             $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
                 date = :date, active = :active, image = :image WHERE id = :id";
 
@@ -86,6 +87,7 @@ class VacancyGateway
                 'image' => $image_name . "." . $imageExtension,
                 'id' => $id
             ]);
+            return;
         }
 
         $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
@@ -101,8 +103,6 @@ class VacancyGateway
             'active' => $data["active"],
             'id' => $id
         ]);
-
-        return true;
     }
 
     public function delete($id)

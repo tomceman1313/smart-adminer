@@ -7,7 +7,7 @@ import TextEditor from "../../Components/admin/TextEditor";
 import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { create, remove, update, get } from "../../modules/ApiVacancies";
+import { get, remove, edit, create } from "../../modules/ApiFunctions";
 import { convertBase64, openImage, publicPath, makeDateFormat } from "../../modules/BasicFunctions";
 
 import cssBasic from "../styles/Basic.module.css";
@@ -40,7 +40,7 @@ export default function Vacancy() {
 	}, [location]);
 
 	async function setData() {
-		const data = await get(id);
+		const data = await get("vacancies", id);
 		//console.log(data);
 		setValue("title", data.title);
 		setValue("description", data.description);
@@ -66,17 +66,18 @@ export default function Vacancy() {
 
 		if (id) {
 			data.id = id;
-			update(data, auth, setMessage);
+			console.log(JSON.stringify({ data: data }));
+			//edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
 		} else {
 			console.log(data);
 			navigation("/dashboard/vacancies", { replace: true });
-			create(data, auth, setMessage);
+			create("vacancies", data, setMessage, "Inzerát by vytvořen", auth);
 		}
 	}
 
 	function deleteHandler(id) {
 		navigation("/dashboard/vacancies", { replace: true });
-		remove(id, auth, setMessage);
+		remove("vacancies", id, setMessage, "Inzerát byl odstraněn", auth);
 	}
 
 	async function deleteVacancy() {

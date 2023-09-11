@@ -25,6 +25,7 @@ export default function Orders() {
 	async function loadData() {
 		const _orders = await filterOrders([]);
 		setOrders(_orders);
+		console.log(_orders);
 		const _shipping_types = await getShippingTypes();
 		setShippingTypes(_shipping_types);
 	}
@@ -52,7 +53,7 @@ export default function Orders() {
 							</div>
 
 							<div key="paymentType" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Způsob platby</p>
+								<p style={{ cursor: "pointer" }}>Celková cena</p>
 							</div>
 						</AnimatePresence>
 					</li>

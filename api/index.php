@@ -119,7 +119,7 @@ switch ($class) {
         break;
     case 'gallery':
         $gateway = new GalleryGateway($database);
-        $controller = new GalleryConroller($gateway, $admin);
+        $controller = new GalleryController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
 

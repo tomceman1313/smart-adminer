@@ -17,12 +17,12 @@ class ProductsController
     private function controller(string $action): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $offset = 0;
+        $page = 0;
         $id = 0;
         $authAction = false;
 
         if (isset($_GET["offset"])) {
-            $offset = $_GET["offset"];
+            $page = $_GET["offset"];
         }
         if (isset($_GET["id"])) {
             $id = $_GET["id"];
