@@ -67,11 +67,11 @@ export default function Vacancy() {
 		if (id) {
 			data.id = id;
 			console.log(JSON.stringify({ data: data }));
-			//edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
+			edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
 		} else {
 			console.log(data);
-			navigation("/dashboard/vacancies", { replace: true });
 			create("vacancies", data, setMessage, "Inzerát by vytvořen", auth);
+			navigation("/dashboard/vacancies", { replace: true });
 		}
 	}
 
