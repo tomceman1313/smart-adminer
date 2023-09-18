@@ -23,15 +23,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useForm } from "react-hook-form";
-import { create } from "../../modules/ApiFunctions";
+import { create, getRoles, editRole } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import useRolesApi from "../../Hooks/useRolesApi";
 
 export default function Register() {
 	const auth = useAuth();
-	const getRoles = useRolesApi("getroles");
-	const editRole = useRolesApi("update_role");
 
 	const { register, handleSubmit, reset } = useForm();
 	const { register: registerUpdateRole, handleSubmit: handleRoleUpdate } = useForm();

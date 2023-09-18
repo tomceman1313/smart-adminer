@@ -1,13 +1,15 @@
 import { React, useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
-import { getAll, edit, remove } from "../../modules/ApiFunctions";
+import { getAllWithAuth, edit, remove } from "../../modules/ApiFunctions";
 import UserList from "./UserList";
 import useInteraction from "../../Hooks/useInteraction";
-
+import PlusButton from "../../Components/basic/PlusButton";
+import { useNavigate } from "react-router-dom";
 import css from "./Profiles.module.css";
 
 export default function Profiles() {
 	const auth = useAuth();
+	const navigate = useNavigate();
 	const { setMessage } = useInteraction();
 
 	const [users, setUsers] = useState(null);
@@ -20,7 +22,7 @@ export default function Profiles() {
 	}, []);
 
 	async function loadData() {
-		const data = await getAll("admin", auth);
+		const data = await getAllWithAuth("admin", auth);
 		setUsers(data);
 	}
 
@@ -41,6 +43,7 @@ export default function Profiles() {
 	return (
 		<section className="no-section" style={{ position: "relative" }}>
 			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={deleteHandler} css={css} />}</div>
+			<PlusButton onClick={() => navigate(`/dashboard/new-product/`)} />
 		</section>
 	);
 }

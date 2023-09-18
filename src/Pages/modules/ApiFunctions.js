@@ -31,23 +31,18 @@ export async function getByCategory(apiClass, id) {
 	return data;
 }
 
-export function getRoles(setState, auth) {
-	fetch(`${BASE_URL}/api/?class=admin&action=getroles`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ token: auth.userInfo.token }),
+export async function getRoles(setState, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=getroles`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
-	}).then((response) => {
-		if (response.status === 403) {
-			auth.setUserInfo(null);
-			return false;
-		}
-		response.text().then((_data) => {
-			const data = JSON.parse(_data);
-			setState(data.data);
-			auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		});
 	});
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	setState(data.data);
+	return data.data;
 }
 
 export async function create(apiClass, data, setMessage, positiveText, auth) {
@@ -113,6 +108,33 @@ export async function remove(apiClass, id, setMessage, positiveText, auth) {
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	setMessage({ action: "success", text: positiveText });
 }
+
+export async function getAllWithAuth(apiClass, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getall`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	return data.data;
+}
+
+export async function getWithAuth(apiClass, id, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=get&id=${id}`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	return data.data;
+}
+
 export function editRole(data, setAlert, positiveText, auth) {
 	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {
 		method: "POST",
@@ -161,17 +183,6 @@ export function refreshAccessToken(navigate, from, auth) {
 			auth.setUserInfo(data.user);
 		});
 	});
-}
-
-export async function testFetch() {
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=test`, {
-		method: "GET",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		credentials: "include",
-	});
-
-	const data = await response.json();
-	return data;
 }
 
 export async function getUserData(auth) {
