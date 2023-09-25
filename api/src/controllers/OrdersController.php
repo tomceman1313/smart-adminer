@@ -75,7 +75,8 @@ class OrdersController
                 $id = $this->gateway->create($data);
                 http_response_code(200);
                 echo json_encode([
-                    "message" => "Created"
+                    "message" => "Created",
+                    "id" => $id
                 ]);
                 return;
         }

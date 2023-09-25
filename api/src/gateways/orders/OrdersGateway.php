@@ -11,7 +11,6 @@ class OrdersGateway
 
     public function get(string $id): array
     {
-        //product
         $sql = "SELECT o.*, os.name as status_name, st.name as shipping_type FROM orders AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id WHERE o.id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
@@ -28,13 +27,21 @@ class OrdersGateway
 
         //ordered_products
         $ordered_products = [];
-        $sql = "SELECT * FROM ordered_products WHERE order_id = :order_id";
+        $sql = "SELECT ordered_products.*, products.name as product_name, product_images.name as image FROM ordered_products INNER JOIN products ON ordered_products.product_id = products.id
+         INNER JOIN product_images ON product_images.product_id = products.id WHERE ordered_products.order_id = :order_id AND product_images.i_order = 0";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'order_id' => $id
         ]);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_variant = "SELECT name FROM product_variant WHERE id = :variant_id LIMIT 1";
+            $stmt_variant = $this->conn->prepare($sql_variant);
+            $stmt_variant->execute([
+                'variant_id' => $row["variant_id"]
+            ]);
+            $variant = $stmt_variant->fetch(PDO::FETCH_ASSOC);
+            $row["variant_name"] = $variant["name"];
             $ordered_products[] = $row;
         }
         $data["customer"] = $customer;
@@ -176,7 +183,7 @@ class OrdersGateway
             'postal_code' => $data["postal_code"],
             'phone' => $data["phone"],
             'email' => $data["email"],
-            'company_name' => $data["company_name"],
+            'company_name' => isset($data["company_name"]) ? $data["company_name"] : "",
             'ic' => isset($data["ic"]) ? $data["ic"] : "",
             'dic' => isset($data["dic"]) ? $data["dic"] : "",
             'delivery_fname' => isset($data["delivery_fname"]) ? $data["delivery_fname"] : "",
@@ -203,16 +210,18 @@ class OrdersGateway
         $ordered_products = $data["ordered_products"];
 
         foreach ($ordered_products as $product) {
-            $sqlVariant = "INSERT INTO ordered_products (order_id, product_id, price_piece, quantity) VALUES (:order_id, :product_id, :price_piece, :quantity)";
+            $sqlVariant = "INSERT INTO ordered_products (order_id, product_id, variant_id, price_piece, quantity) VALUES (:order_id, :product_id, :variant_id, :price_piece, :quantity)";
             $stmt = $this->conn->prepare($sqlVariant);
 
             $stmt->execute([
                 'order_id' => $order_id,
                 'product_id' => $product["product_id"],
+                'variant_id' => $product["variant_id"],
                 'price_piece' => $product["price_piece"],
                 'quantity' => $product["quantity"],
             ]);
         }
+        return $order_id;
     }
 
     public function update(array $data)

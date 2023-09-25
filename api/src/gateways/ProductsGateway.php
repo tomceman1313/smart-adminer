@@ -147,14 +147,6 @@ class ProductsGateway
 
     function getByIds($data): array
     {
-        $ids = implode(",", array_map(function ($item) {
-            return $item['product_id'];
-        }, $data));
-
-        $sql = "SELECT * FROM products WHERE id in (" . $ids . ")";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-
         $variants_ids = implode(",", array_map(function ($item) {
             return $item['variant_id'];
         }, $data));
@@ -164,28 +156,29 @@ class ProductsGateway
 
         $stmt_variants->execute();
 
-        $data_variants = [];
-        while ($row = $stmt_variants->fetch(PDO::FETCH_ASSOC)) {
-            $data_variants[] = $row;
-        }
-
-
         $data = [];
-        $counter = 0;
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt_variants->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "SELECT * FROM products WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                "id" => $row["product_id"]
+            ]);
+            $product_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
             $sql_product_image = "SELECT name FROM product_images WHERE product_id= :id AND i_order = 0 LIMIT 1";
             $stmt_image = $this->conn->prepare($sql_product_image);
 
             $stmt_image->execute([
-                'id' => $row["id"]
+                'id' => $row["product_id"]
             ]);
             $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
 
-            $row["image"] = $image["name"];
-            $row["variant"] = $data_variants[$counter];
-            $data[] = $row;
-            ++$counter;
+            $product_data["image"] = $image["name"];
+            $product_data["variant"] = $row;
+            $data[] = $product_data;
         }
+
+
 
         return $data;
     }
