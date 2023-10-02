@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
+import CheckBox from "../../../Components/basic/checkbox/CheckBox";
 
 export default function PaymentSelector() {
 	const { selectedPaymentMethods } = useOrdersFilterValues();
@@ -31,23 +32,18 @@ export default function PaymentSelector() {
 		selectedPaymentMethods.current = selectedNames;
 	}, [paymentMethods, selectedPaymentMethods]);
 
+	function onChange(index) {
+		const newValue = !paymentMethods[index].value;
+		setPaymentMethods((prev) => {
+			prev[index].value = newValue;
+			return [...prev];
+		});
+	}
+
 	return (
 		<>
 			{paymentMethods.map((method, index) => (
-				<div key={method.name}>
-					<input
-						id={method.name}
-						type="checkbox"
-						checked={method.value}
-						onChange={(e) =>
-							setPaymentMethods((prev) => {
-								prev[index].value = e.target.checked;
-								return [...prev];
-							})
-						}
-					/>
-					<label htmlFor={method.name}>{method.publicName}</label>
-				</div>
+				<CheckBox key={method.name} name={method.publicName} checked={method.value} onChange={() => onChange(index)} />
 			))}
 		</>
 	);

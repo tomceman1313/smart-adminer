@@ -41,12 +41,6 @@
 	font-weight: normal;
 }
 
-.filter_param input[type="date"] {
-	padding: 5px;
-	border: solid 1px var(--gray);
-	border-radius: 8px;
-}
-
 #close {
 	color: var(--red);
 	position: absolute;
@@ -62,6 +56,21 @@
 #close:hover {
 	color: white;
 	background-color: var(--red);
+}
+
+@media (max-width: 1600px) {
+	.filter {
+		max-height: calc(100vh - 250px);
+		overflow-y: auto;
+	}
+}
+
+@media (max-width: 700px) {
+	.filter {
+		width: calc(100% - 70px);
+		padding: 25px;
+		right: 10px;
+	}
 }
 
 /*----------------------------------- Order ID search bar*/
@@ -88,3 +97,12 @@
 }
 
 /*----------------------------------- Order ID search bar*/
+
+.date_selector {
+	width: calc(100% - 10px);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+}

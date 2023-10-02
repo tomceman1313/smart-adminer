@@ -32,7 +32,6 @@ export function makeDate(year, month, day) {
 }
 
 /**
- *
  * @param {nulber} date - date number (20230720)
  * @param {string} direction - str = yyyy-MM-DD, text = DD.MM.yyyy
  * @returns {string}

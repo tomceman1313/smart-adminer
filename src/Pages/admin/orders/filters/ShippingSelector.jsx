@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
+import CheckBox from "../../../Components/basic/checkbox/CheckBox";
 
 export default function ShippingSelector({ loadedShippingTypes }) {
 	const { selectedShippingTypes } = useOrdersFilterValues();
@@ -35,24 +36,19 @@ export default function ShippingSelector({ loadedShippingTypes }) {
 		setShippingTypes(shippingTypesWithValues);
 	}
 
+	function onChange(index) {
+		const newValue = !shippingTypes[index].value;
+		setShippingTypes((prev) => {
+			prev[index].value = newValue;
+			return [...prev];
+		});
+	}
+
 	return (
 		<>
 			{shippingTypes &&
 				shippingTypes.map((shippingType, index) => (
-					<div key={shippingType.name}>
-						<input
-							id={shippingType.name}
-							type="checkbox"
-							checked={shippingType.value}
-							onChange={(e) =>
-								setShippingTypes((prev) => {
-									prev[index].value = e.target.checked;
-									return [...prev];
-								})
-							}
-						/>
-						<label htmlFor={shippingType.name}>{shippingType.name}</label>
-					</div>
+					<CheckBox key={shippingType.name} name={shippingType.name} checked={shippingType.value} onChange={() => onChange(index)} />
 				))}
 		</>
 	);

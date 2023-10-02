@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { makeDate, makeDateFormat } from "../../../modules/BasicFunctions";
 import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
 import useInteraction from "../../../Hooks/useInteraction";
+import DatePicker from "../../../Components/basic/date-picker-state/DatePicker";
 
 export default function DateSelector() {
 	const { selectedDates } = useOrdersFilterValues();
@@ -53,8 +54,14 @@ export default function DateSelector() {
 
 	return (
 		<>
-			<input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
-			<input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
+			<DatePicker
+				value={start}
+				onChange={(e) => setStart(e.target.value)}
+				placeholder="Počáteční datum"
+				white={true}
+				additionalClasses="green half"
+			/>
+			<DatePicker value={end} onChange={(e) => setEnd(e.target.value)} placeholder="Koncové datum" white={true} additionalClasses="green half" />
 		</>
 	);
 }

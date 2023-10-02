@@ -1,0 +1,26 @@
+.checkbox {
+	width: 250px;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: white;
+}
+
+.circle {
+	position: relative;
+	min-width: 20px;
+	min-height: 20px;
+	margin: 0 !important;
+	font-size: 1rem;
+	border: solid 1px white;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.circle svg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

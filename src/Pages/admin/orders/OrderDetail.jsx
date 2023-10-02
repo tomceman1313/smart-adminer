@@ -28,10 +28,9 @@ import css from "./css/OrderDetail.module.css";
 
 import { useForm } from "react-hook-form";
 import DatePicker from "../../Components/basic/DatePicker";
-import { makeDateFormat } from "../../modules/BasicFunctions";
 import useAuth from "../../Hooks/useAuth";
-import { getProductByIds } from "../../modules/ApiProducts";
-import { publicPath } from "../../modules/BasicFunctions";
+import { makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import DeliveryCredentialsForm from "./detail/DeliveryCredentialsForm";
 
 export default function OrderDetail({ id, setVisible, shippingTypes, reloadData }) {
 	const { setMessage, setAlert } = useInteraction();
@@ -50,11 +49,8 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		const _order = await get("orders", id);
 		_order.deleted_products = [];
 		setOrder(_order);
-		console.log(_order);
-
-		const _products = await getProductByIds(_order.ordered_products);
-		console.log(_products);
-		setProducts(_products);
+		console.log("order", _order);
+		setProducts(_order.ordered_products);
 
 		setValue("order_date", makeDateFormat(_order.order_date, "str"));
 		setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
@@ -68,12 +64,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		setValue("address", _order.customer.address);
 		setValue("city", _order.customer.city);
 		setValue("postal_code", _order.customer.postal_code);
-
-		setValue("delivery_fname", _order.customer.delivery_fname);
-		setValue("delivery_lname", _order.customer.delivery_lname);
-		setValue("delivery_address", _order.customer.delivery_address);
-		setValue("delivery_city", _order.customer.delivery_city);
-		setValue("delivery_postal_code", _order.customer.delivery_postal_code ? _order.customer.delivery_postal_code : "");
 
 		setValue("company_name", _order.customer.company_name);
 		setValue("ic", _order.customer.ic ? _order.customer.ic : "");
@@ -153,9 +143,9 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 				<ul>
 					{products &&
 						products.map((el, index) => (
-							<li key={`ordered-product-${el.id}`}>
+							<li key={`ordered-product-${el.variant_id}`}>
 								<img src={`${publicPath}/images/products/${el.image}`} alt={el.name} />
-								<b>{el.name}</b>
+								<b>{`${el.product_name} - ${el.variant_name}`}</b>
 								<span>
 									<input defaultValue={order.ordered_products[index]?.quantity} type="number" onChange={(e) => productQuantityChanged(e, index)} />
 									<label> ks</label>
@@ -231,12 +221,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 				<InputBox placeholder="Město" register={register} name="city" icon={faLocationPin} isRequired={true} />
 				<InputBox placeholder="PSČ" register={register} name="postal_code" icon={faBullseye} isRequired={true} />
 
-				<h3>Doručovací údaje:</h3>
-				<InputBox placeholder="Křestní jméno" register={register} name="delivery_fname" icon={faImagePortrait} />
-				<InputBox placeholder="Příjmení" register={register} name="delivery_lname" icon={faIdBadge} />
-				<InputBox placeholder="Adresa (ulice, č.p.)" register={register} name="delivery_address" icon={faLocationDot} />
-				<InputBox placeholder="Město" register={register} name="delivery_city" icon={faLocationPin} />
-				<InputBox placeholder="PSČ" register={register} name="delivery_postal_code" icon={faBullseye} />
+				<DeliveryCredentialsForm register={register} customer={order?.customer} />
 
 				<h3>Nákup na firmu:</h3>
 				<InputBox placeholder="Název firmy" register={register} name="company_name" icon={faCopyright} />
@@ -244,7 +229,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 				<InputBox placeholder="DIČ" register={register} name="dic" icon={faHandHoldingDollar} />
 
 				<button>Uložit</button>
-				<button type="button" onClick={deleteOrder}>
+				<button type="button" className="red_button" onClick={deleteOrder}>
 					Smazat
 				</button>
 			</form>

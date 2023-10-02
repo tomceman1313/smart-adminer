@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useOrdersFilterValues from "../../../Hooks/useOrdersFilterValues";
 import { getStatusCodes } from "../../../modules/ApiOrders";
+import CheckBox from "../../../Components/basic/checkbox/CheckBox";
 
 export default function StatusSelector() {
 	const { selectedStatusCodes } = useOrdersFilterValues();
@@ -39,24 +40,19 @@ export default function StatusSelector() {
 		setStatuses(statusesWithValues);
 	}
 
+	function changeStatuses(index) {
+		const newValue = !statuses[index].value;
+		setStatuses((prev) => {
+			prev[index].value = newValue;
+			return [...prev];
+		});
+	}
+
 	return (
 		<>
 			{statuses &&
 				statuses.map((status, index) => (
-					<div key={status.name}>
-						<input
-							id={status.name}
-							type="checkbox"
-							checked={status.value}
-							onChange={(e) =>
-								setStatuses((prev) => {
-									prev[index].value = e.target.checked;
-									return [...prev];
-								})
-							}
-						/>
-						<label htmlFor={status.name}>{status.public_name}</label>
-					</div>
+					<CheckBox key={status.name} name={status.public_name} checked={status.value} onChange={() => changeStatuses(index)} />
 				))}
 		</>
 	);

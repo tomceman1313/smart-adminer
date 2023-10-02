@@ -65,7 +65,7 @@ export default function Filter({ setOrders, setVisible, shippingTypes }) {
 			</div>
 
 			<h3>Zobrazit pouze určité období:</h3>
-			<div className={`${css.date_selector} ${css.filter_param}`}>
+			<div className={`${css.date_selector}`}>
 				<DateSelector />
 			</div>
 

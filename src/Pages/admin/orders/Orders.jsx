@@ -35,27 +35,25 @@ export default function Orders() {
 			<section>
 				<ul className={css.orders_list}>
 					<li className={css.table_head} onClick={() => setIsFilterVisible(true)}>
-						<AnimatePresence>
-							<div key="searchId" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Číslo objednávky</p>
-							</div>
+						<div key="searchId" className={css.head_column}>
+							<p style={{ cursor: "pointer" }}>Číslo objednávky</p>
+						</div>
 
-							<div key="orderStatus" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Stav</p>
-							</div>
+						<div key="orderStatus" className={css.head_column}>
+							<p style={{ cursor: "pointer" }}>Stav</p>
+						</div>
 
-							<div key="orderDate" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Datum objednání</p>
-							</div>
+						<div key="orderDate" className={css.head_column}>
+							<p style={{ cursor: "pointer" }}>Datum objednání</p>
+						</div>
 
-							<div key="shipping" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Doprava</p>
-							</div>
+						<div key="shipping" className={css.head_column}>
+							<p style={{ cursor: "pointer" }}>Doprava</p>
+						</div>
 
-							<div key="paymentType" className={css.head_column}>
-								<p style={{ cursor: "pointer" }}>Celková cena</p>
-							</div>
-						</AnimatePresence>
+						<div key="paymentType" className={css.head_column}>
+							<p style={{ cursor: "pointer" }}>Celková cena</p>
+						</div>
 					</li>
 
 					{orders && orders.length !== 0 ? (
