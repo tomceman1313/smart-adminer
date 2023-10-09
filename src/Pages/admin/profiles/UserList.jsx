@@ -5,22 +5,22 @@ import { faAt, faCaretDown, faIdBadge, faMobileScreen, faUser } from "@fortaweso
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useInteraction from "../../Hooks/useInteraction";
 
-function UserList({ data, handleEdit, handleDelete, css }) {
+function privilegeToName(privilege) {
+	switch (privilege) {
+		case 1:
+			return "Uživatel";
+		case 2:
+			return "Zaměstnanec";
+		case 3:
+			return "Admin";
+		default:
+			return "Uživatel";
+	}
+}
+
+export default function UserList({ data, handleEdit, handleDelete, css }) {
 	const { setAlert } = useInteraction();
 	const [show, setShow] = useState(false);
-
-	const privilegeToName = (privilege) => {
-		switch (privilege) {
-			case 1:
-				return "Uživatel";
-			case 2:
-				return "Zaměstnanec";
-			case 3:
-				return "Admin";
-			default:
-				return "Uživatel";
-		}
-	};
 
 	const showMoreInfo = (e) => {
 		const el = e.target.parentNode;
@@ -38,9 +38,7 @@ function UserList({ data, handleEdit, handleDelete, css }) {
 	};
 
 	const userData = async (id) => {
-		let userData = await data.filter((user) => {
-			return user.id === id;
-		});
+		let userData = await data.find((user) => user.id === id);
 		setShow(userData);
 	};
 
@@ -58,10 +56,7 @@ function UserList({ data, handleEdit, handleDelete, css }) {
 								<FontAwesomeIcon icon={faUser} />
 								{user.username}
 							</label>
-							<label>
-								{/* <FontAwesomeIcon icon={faArrowUpWideShort} /> */}
-								{privilegeToName(user.privilege)}
-							</label>
+							<label>{privilegeToName(user.privilege)}</label>
 							<FontAwesomeIcon icon={faCaretDown} className={css.show} onClick={showMoreInfo} />
 						</div>
 						<article>
@@ -85,5 +80,3 @@ function UserList({ data, handleEdit, handleDelete, css }) {
 		</div>
 	);
 }
-
-export default UserList;

@@ -1,48 +1,41 @@
 import { faUnlock, faUnlockKeyhole } from "@fortawesome/free-solid-svg-icons";
+import { AnimatePresence, motion } from "framer-motion";
+import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
+import useAuth from "../../Hooks/useAuth";
+import { changePassword } from "../../modules/ApiFunctions";
+
 import css from "./NewPassword.module.css";
 
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import useUserApi from "../../Hooks/useUserApi";
-import useAuth from "../../Hooks/useAuth";
-import { motion, AnimatePresence } from "framer-motion";
-
-const NewPassword = ({ state, setState, setAlert }) => {
+const NewPassword = ({ isVisible, close, setMessage }) => {
 	const auth = useAuth();
-	const changePassword = useUserApi("password");
 	const { register, handleSubmit, reset } = useForm();
-	const [identical, setIdentical] = useState(false);
 
 	const onSubmit = async (data) => {
 		if (data.password !== data.passwordCheck) {
-			setIdentical(true);
+			setMessage({ action: "alert", text: "Hesla se neshodují" });
 			return;
 		}
 
-		if (data.password === "") {
-			return;
-		}
 		data.id = auth.userInfo.id;
 		const result = await changePassword(data, auth);
 
 		if (!result) {
-			setAlert({ action: "failure", text: "Heslo se nepodařilo změnit", timeout: 6000 });
+			setMessage({ action: "failure", text: "Heslo se nepodařilo změnit" });
 			return;
 		}
-		setAlert({ action: "success", text: "Heslo bylo úspěšně změněno", timeout: 6000 });
-		setState(null);
+		setMessage({ action: "success", text: "Heslo bylo úspěšně změněno" });
+		close();
 	};
 
 	const hide = () => {
-		setIdentical(false);
 		reset();
-		setState(null);
+		close();
 	};
 
 	return (
 		<AnimatePresence>
-			{state && (
+			{isVisible && (
 				<motion.form
 					className={css.new_password_cont}
 					onSubmit={handleSubmit(onSubmit)}
@@ -54,9 +47,24 @@ const NewPassword = ({ state, setState, setAlert }) => {
 						bounce: 0.5,
 					}}
 				>
-					<InputBox placeholder="Nové heslo" type="password" register={register} name="password" icon={faUnlockKeyhole} white={true} />
-					<InputBox placeholder="Heslo znovu" type="password" register={register} name="passwordCheck" icon={faUnlock} white={true} />
-					{identical && <p style={{ color: "white" }}>Zadaná hesla nejsou stejná nebo heslo není vyplněno!</p>}
+					<InputBox
+						placeholder="Nové heslo"
+						type="password"
+						register={register}
+						name="password"
+						icon={faUnlockKeyhole}
+						white={true}
+						isRequired={true}
+					/>
+					<InputBox
+						placeholder="Heslo znovu"
+						type="password"
+						register={register}
+						name="passwordCheck"
+						icon={faUnlock}
+						white={true}
+						isRequired={true}
+					/>
 					<div>
 						<button type="submit">Změnit</button>
 						<button type="button" onClick={hide}>

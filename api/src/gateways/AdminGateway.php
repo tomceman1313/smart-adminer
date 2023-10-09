@@ -40,7 +40,7 @@ class AdminGateway
 
     public function get(string $id): array
     {
-        $sql = "SELECT * FROM users WHERE id = :id";
+        $sql = "SELECT id, username, privilege, tel, email, fname, lname FROM users WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);

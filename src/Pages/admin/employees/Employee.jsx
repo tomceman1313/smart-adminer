@@ -12,17 +12,17 @@ import {
 	faBuildingUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { motion } from "framer-motion";
-import cssBasic from "../styles/Basic.module.css";
-import css from "./Employees.module.css";
+import { motion, AnimatePresence } from "framer-motion";
 import InputBox from "../../Components/basic/InputBox";
 import { convertBase64, openImage, publicPath } from "../../modules/BasicFunctions";
 import { create, edit } from "../../modules/ApiFunctions";
 import useInteraction from "../../Hooks/useInteraction";
-
 import { useForm } from "react-hook-form";
 
-export default function Employee({ employee, setEmployee, getData, setVisible, departments, auth }) {
+import cssBasic from "../styles/Basic.module.css";
+import css from "./Employees.module.css";
+
+export default function Employee({ employee, setEmployee, getData, departments, auth }) {
 	const { setMessage } = useInteraction();
 
 	const { register, handleSubmit, reset, setValue } = useForm();
@@ -32,7 +32,8 @@ export default function Employee({ employee, setEmployee, getData, setVisible, d
 	const originalDepartments = useRef([]);
 
 	useEffect(() => {
-		if (employee) {
+		if (employee?.id) {
+			console.log(employee);
 			setData();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,7 +61,7 @@ export default function Employee({ employee, setEmployee, getData, setVisible, d
 		}
 		getData();
 		resetForm();
-		setVisible(false);
+		setEmployee(false);
 	}
 
 	function resetForm() {
@@ -90,7 +91,7 @@ export default function Employee({ employee, setEmployee, getData, setVisible, d
 	const chooseCategory = (e) => {
 		const name = departments.filter((item) => item.id === parseInt(e.target.value));
 		const alreadyIn = pickedDepartments.find((item) => item.id === parseInt(e.target.value));
-		setValue("department_id", "default");
+		setValue("department_id", "");
 		if (alreadyIn) {
 			return;
 		}
@@ -107,74 +108,78 @@ export default function Employee({ employee, setEmployee, getData, setVisible, d
 	};
 
 	return (
-		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
-			<h2>Profil zaměstnance</h2>
-			<FontAwesomeIcon
-				id={css.close}
-				icon={faXmark}
-				onClick={() => {
-					setVisible((prev) => !prev);
-					resetForm();
-				}}
-			/>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<InputBox placeholder="Titul před jménem" register={register} type="text" name="degree_before" icon={faUserGraduate} isRequired={false} />
-				<InputBox placeholder="Křestní jméno" register={register} type="text" name="fname" icon={faImagePortrait} isRequired={true} />
-				<InputBox placeholder="Příjmení" register={register} type="text" name="lname" icon={faIdBadge} isRequired={true} />
-				<InputBox placeholder="Titul za jménem" register={register} type="text" name="degree_after" icon={faUserGraduate} isRequired={false} />
+		<AnimatePresence>
+			{employee && (
+				<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
+					<h2>Profil zaměstnance</h2>
+					<FontAwesomeIcon
+						id={css.close}
+						icon={faXmark}
+						onClick={() => {
+							setEmployee(null);
+							resetForm();
+						}}
+					/>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<InputBox placeholder="Titul před jménem" register={register} type="text" name="degree_before" icon={faUserGraduate} />
+						<InputBox placeholder="Křestní jméno" register={register} type="text" name="fname" icon={faImagePortrait} isRequired={true} />
+						<InputBox placeholder="Příjmení" register={register} type="text" name="lname" icon={faIdBadge} isRequired={true} />
+						<InputBox placeholder="Titul za jménem" register={register} type="text" name="degree_after" icon={faUserGraduate} />
 
-				<InputBox placeholder="Telefon" register={register} type="tel" name="phone" icon={faMobileScreen} isRequired={false} />
-				<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} isRequired={false} />
+						<InputBox placeholder="Telefon" register={register} type="tel" name="phone" icon={faMobileScreen} />
+						<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} />
 
-				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("department_id")} onChange={chooseCategory} required>
-						<option value="default" disabled>
-							-- Zvolit oddělení --
-						</option>
-						{departments &&
-							departments.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
+						<div className={cssBasic.input_box}>
+							<select defaultValue={""} {...register("department_id")} onChange={chooseCategory} required>
+								<option value="" disabled>
+									-- Zvolit oddělení --
 								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
-				</div>
-
-				<ul className={css.picked_categories}>
-					{pickedDepartments &&
-						pickedDepartments.map((el) => (
-							<li key={`pickedDep-${el.id}`} id={el.id} onClick={removeFromPicked}>
-								{el.name}
-							</li>
-						))}
-				</ul>
-
-				<InputBox placeholder="Pozice" register={register} type="text" name="position" icon={faUserTag} isRequired={false} />
-
-				<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} isRequired={false} />
-
-				<div className={`${cssBasic.input_box}`}>
-					{imageIsSet ? (
-						<div className={cssBasic.image_box}>
-							<button type="button" onClick={() => openImage(`${publicPath}/images/employees/${imageIsSet}`)}>
-								Zobrazit obrázek
-							</button>
-							<button type="button" onClick={() => setImageIsSet(false)}>
-								Změnit obrázek
-							</button>
+								{departments &&
+									departments.map((el) => (
+										<option key={el.id} value={el.id}>
+											{el.name}
+										</option>
+									))}
+							</select>
+							<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
 						</div>
-					) : (
-						<input type="file" {...register("image")} accept="image/*" required />
-					)}
 
-					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-				</div>
+						<ul className={css.picked_categories}>
+							{pickedDepartments &&
+								pickedDepartments.map((el) => (
+									<li key={`pickedDep-${el.id}`} id={el.id} onClick={removeFromPicked}>
+										{el.name}
+									</li>
+								))}
+						</ul>
 
-				<input type="hidden" {...register("id")} />
+						<InputBox placeholder="Pozice" register={register} type="text" name="position" icon={faUserTag} isRequired={true} />
 
-				<button>Uložit</button>
-			</form>
-		</motion.section>
+						<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} />
+
+						<div className={`${cssBasic.input_box}`}>
+							{imageIsSet ? (
+								<div className={cssBasic.image_box}>
+									<button type="button" onClick={() => openImage(`${publicPath}/images/employees/${imageIsSet}`)}>
+										Zobrazit obrázek
+									</button>
+									<button type="button" onClick={() => setImageIsSet(false)}>
+										Změnit obrázek
+									</button>
+								</div>
+							) : (
+								<input type="file" {...register("image")} accept="image/*" required />
+							)}
+
+							<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
+						</div>
+
+						<input type="hidden" {...register("id")} />
+
+						<button>Uložit</button>
+					</form>
+				</motion.section>
+			)}
+		</AnimatePresence>
 	);
 }

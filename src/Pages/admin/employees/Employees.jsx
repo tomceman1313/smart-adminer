@@ -1,4 +1,3 @@
-import { AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
@@ -9,15 +8,18 @@ import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
 import Departments from "./Departments";
-//TODO indikace vybraného oddělení s možností resetu filtru
+import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
+
 export default function Employees() {
 	const auth = useAuth();
-	const allEmployees = useRef([]);
 	const { setMessage, setAlert } = useInteraction();
+
+	const allEmployees = useRef([]);
+
 	const [employees, setEmployees] = useState([]);
 	const [employee, setEmployee] = useState(null);
-	const [isEmployeeContVisible, setIsEmployeeContVisible] = useState(false);
 	const [departments, setDepartments] = useState(null);
+	const [selectedDepartment, setSelectedDepartment] = useState(null);
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Seznam zaměstnanců";
@@ -34,8 +36,10 @@ export default function Employees() {
 		setDepartments(departmentsData);
 	}
 
-	function newEmployee() {
-		setIsEmployeeContVisible([]);
+	async function filterEmployeesByDepartment(id, name) {
+		const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
+		setEmployees(filteredEmployees);
+		setSelectedDepartment(name);
 	}
 
 	async function deleteHandler(id) {
@@ -47,6 +51,11 @@ export default function Employees() {
 		setAlert({ id: id, question: "Opravdu si přejete smazat profil zaměstnance?", positiveHandler: deleteHandler });
 	}
 
+	function resetFilter() {
+		setEmployees(allEmployees.current);
+		setSelectedDepartment(null);
+	}
+
 	return (
 		<>
 			<Departments
@@ -54,20 +63,16 @@ export default function Employees() {
 				departments={departments}
 				setDepartments={setDepartments}
 				refreshAllData={loadData}
-				allEmployees={allEmployees}
+				filterEmployeesByDepartment={filterEmployeesByDepartment}
 			/>
+
+			<FilterNotifier selectedCategory={selectedDepartment} resetHandler={resetFilter} />
 
 			<section className="no-section">
 				<ul className={css.employees}>
-					{employees !== [] ? (
+					{employees.length > 0 ? (
 						employees.map((user) => (
-							<EmployeeBasicInfo
-								key={"employeeinfo-" + user.id}
-								user={user}
-								setEmployee={setEmployee}
-								deleteEmployee={deleteEmployee}
-								setIsEmployeeContVisible={setIsEmployeeContVisible}
-							/>
+							<EmployeeBasicInfo key={"employeeinfo-" + user.id} user={user} setEmployee={setEmployee} deleteEmployee={deleteEmployee} />
 						))
 					) : (
 						<section>Nejsou vloženy žádné profily zaměstnanců</section>
@@ -75,20 +80,9 @@ export default function Employees() {
 				</ul>
 			</section>
 
-			<AnimatePresence>
-				{isEmployeeContVisible && (
-					<Employee
-						employee={employee}
-						setEmployee={setEmployee}
-						getData={loadData}
-						setVisible={setIsEmployeeContVisible}
-						departments={departments}
-						auth={auth}
-					/>
-				)}
-			</AnimatePresence>
+			<Employee employee={employee} setEmployee={setEmployee} getData={loadData} departments={departments} auth={auth} />
 
-			<PlusButton onClick={newEmployee} />
+			<PlusButton onClick={() => setEmployee({})} />
 		</>
 	);
 }

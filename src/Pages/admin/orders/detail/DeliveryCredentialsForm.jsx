@@ -34,7 +34,7 @@ export default function DeliveryCredentialsForm({ register, customer }) {
 							/>
 						</>
 					) : (
-						<button>Přidat</button>
+						<button type="button">Přidat</button>
 					)}
 				</div>
 			)}

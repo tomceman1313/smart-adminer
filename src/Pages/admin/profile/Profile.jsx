@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react";
-import cssBasic from "../styles/Basic.module.css";
+import { useEffect, useState } from "react";
 import css from "./Profile.module.css";
-
-import Alert from "../../Components/admin/Alert";
-
 import useAuth from "../../Hooks/useAuth";
-import { BASE_URL, getUserData } from "../../modules/ApiFunctions";
-
+import { edit, getUserData } from "../../modules/ApiFunctions";
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
+import InputBox from "../../Components/basic/InputBox";
 import NewPassword from "./NewPassword";
+import useInteraction from "../../Hooks/useInteraction";
 
 const Profile = () => {
 	const auth = useAuth();
-
-	const [alert, setAlert] = useState(null);
+	const { setMessage } = useInteraction();
 	const [editInfo, setEditInfo] = useState(false);
-	const [password, setPassword] = useState(null);
-
-	const { register: registerUserInfo, handleSubmit: handleSubmitUserInfo, setValue, setFocus } = useForm();
+	const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+	const { register, handleSubmit, setValue, setFocus } = useForm();
 
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Správa profilu";
@@ -29,8 +23,7 @@ const Profile = () => {
 	}, []);
 
 	async function getUserInfo() {
-		const data = await getUserData(auth);
-		const userData = data.data;
+		const userData = await getUserData(auth);
 
 		setValue("username", userData.username);
 		setValue("fname", userData.fname);
@@ -40,7 +33,7 @@ const Profile = () => {
 		setValue("id", userData.id);
 	}
 
-	const onSumbitUserInfo = (data) => {
+	const onSubmitUserInfo = (data) => {
 		if (!editInfo) {
 			setFocus("username");
 			document.getElementById("submit").innerHTML = "Uložit";
@@ -51,53 +44,38 @@ const Profile = () => {
 		document.getElementById("submit").innerHTML = "Upravit";
 		setEditInfo(!editInfo);
 
-		fetch(BASE_URL + "/api/?class=admin&action=update", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			body: JSON.stringify({ token: auth.userInfo.token, data: data }),
-		}).then((response) => {
-			if (response.status === 200) {
-				setAlert({ action: "success", text: "Uloženo", timeout: 6000 });
-				getUserInfo();
-			}
-		});
-	};
-
-	const handleChangePassword = () => {
-		setPassword((prev) => !prev);
+		edit("admin", data, setMessage, "Profil upraven", auth);
 	};
 
 	return (
 		<div className={css.profile}>
 			<section className={css.user_info}>
-				<form onSubmit={handleSubmitUserInfo(onSumbitUserInfo)}>
+				<form onSubmit={handleSubmit(onSubmitUserInfo)}>
 					<h2>Uživatelské údaje</h2>
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...registerUserInfo("username")} autoComplete="new-password" readOnly={!editInfo} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faUser} />
-					</div>
 
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Jméno" {...registerUserInfo("fname")} autoComplete="new-password" readOnly={!editInfo} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faImagePortrait} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Příjmení" {...registerUserInfo("lname")} autoComplete="new-password" readOnly={!editInfo} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faIdBadge} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="phone" placeholder="Telefon" {...registerUserInfo("tel")} autoComplete="new-password" readOnly={!editInfo} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faMobileScreen} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="email" placeholder="Email" {...registerUserInfo("email")} autoComplete="new-password" readOnly={!editInfo} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faAt} />
-					</div>
-					<input type="hidden" {...registerUserInfo("id")} />
-					<button type="button" onClick={handleChangePassword}>
+					<InputBox
+						type="text"
+						name="username"
+						placeholder="Uživatelské jméno"
+						register={register}
+						icon={faUser}
+						isRequired={true}
+						readOnly={!editInfo}
+					/>
+					<InputBox
+						type="text"
+						name="fname"
+						placeholder="Křestní jméno"
+						register={register}
+						icon={faImagePortrait}
+						isRequired={true}
+						readOnly={!editInfo}
+					/>
+					<InputBox type="text" name="lname" placeholder="Příjmení" register={register} icon={faIdBadge} isRequired={true} readOnly={!editInfo} />
+					<InputBox type="phone" name="tel" placeholder="Telefon" register={register} icon={faMobileScreen} isRequired={true} readOnly={!editInfo} />
+					<InputBox type="email" name="email" placeholder="Email" register={register} icon={faAt} isRequired={true} readOnly={!editInfo} />
+					<input type="hidden" {...register("id")} />
+					<button type="button" onClick={() => setIsNewPasswordVisible(true)}>
 						Změnit heslo
 					</button>
 					<button type="submit" id="submit">
@@ -105,8 +83,7 @@ const Profile = () => {
 					</button>
 				</form>
 			</section>
-			{alert && <Alert action={alert.action} text={alert.text} timeout={alert.timeout} setAlert={setAlert} />}
-			<NewPassword state={password} setState={setPassword} setAlert={setAlert} />
+			<NewPassword isVisible={isNewPasswordVisible} close={() => setIsNewPasswordVisible(false)} setMessage={setMessage} />
 		</div>
 	);
 };

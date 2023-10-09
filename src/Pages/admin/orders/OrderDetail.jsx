@@ -1,17 +1,10 @@
 import {
-	faAt,
 	faBarsProgress,
 	faBuilding,
 	faBuildingUser,
-	faBullseye,
 	faCommentDots,
 	faCopyright,
 	faHandHoldingDollar,
-	faIdBadge,
-	faImagePortrait,
-	faLocationDot,
-	faLocationPin,
-	faPhone,
 	faReceipt,
 	faSquareCheck,
 	faTruckFast,
@@ -23,14 +16,29 @@ import { useEffect, useState } from "react";
 import InputBox from "../../Components/basic/InputBox";
 import useInteraction from "../../Hooks/useInteraction";
 import { edit, get, remove } from "../../modules/ApiFunctions";
-import cssBasic from "../styles/Basic.module.css";
 import css from "./css/OrderDetail.module.css";
 
 import { useForm } from "react-hook-form";
 import DatePicker from "../../Components/basic/DatePicker";
+import Select from "../../Components/basic/select/Select";
 import useAuth from "../../Hooks/useAuth";
-import { makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import { makeDateFormat } from "../../modules/BasicFunctions";
 import DeliveryCredentialsForm from "./detail/DeliveryCredentialsForm";
+import InvoiceCredentialsForm from "./detail/InvoiceCredentialsForm";
+import OrderedProducts from "./detail/OrderedProducts";
+
+const PAYMENT_METHODS = [
+	{ value: "cash", name: "Hotově" },
+	{ value: "card", name: "Online kartou" },
+	{ value: "bank_account", name: "Převodem na účet" },
+];
+
+const ORDER_STATUSES = [
+	{ id: 1, name: "Přijata" },
+	{ id: 2, name: "Odeslána" },
+	{ id: 3, name: "Dokončena" },
+	{ id: 4, name: "Zrušena" },
+];
 
 export default function OrderDetail({ id, setVisible, shippingTypes, reloadData }) {
 	const { setMessage, setAlert } = useInteraction();
@@ -56,14 +64,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
 		setValue("completed_date", makeDateFormat(_order.completed_date, "str"));
 		setValue("comments", _order.comments);
-
-		setValue("fname", _order.customer.fname);
-		setValue("lname", _order.customer.lname);
-		setValue("phone", _order.customer.phone);
-		setValue("email", _order.customer.email);
-		setValue("address", _order.customer.address);
-		setValue("city", _order.customer.city);
-		setValue("postal_code", _order.customer.postal_code);
 
 		setValue("company_name", _order.customer.company_name);
 		setValue("ic", _order.customer.ic ? _order.customer.ic : "");
@@ -95,30 +95,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		setVisible(false);
 	}
 
-	function productQuantityChanged(e, index) {
-		const newQuantity = Number(e.target.value);
-		const updatedOrder = JSON.parse(JSON.stringify(order));
-		if (newQuantity === 0) {
-			e.target.value = 1;
-			setAlert({ id: index, question: "Opravdu si přejete smazat produkt z objednávky?", positiveHandler: deleteProductFromOrdered });
-		} else {
-			updatedOrder.ordered_products[index].quantity = newQuantity;
-		}
-		setOrder(updatedOrder);
-	}
-
-	function deleteProductFromOrdered(index) {
-		const updatedOrder = JSON.parse(JSON.stringify(order));
-		const updatedProducts = JSON.parse(JSON.stringify(products));
-
-		const deletedProduct = updatedOrder.ordered_products.splice(index, 1);
-		updatedProducts.splice(index, 1);
-
-		updatedOrder.deleted_products.push(deletedProduct);
-		setProducts(updatedProducts);
-		setOrder(updatedOrder);
-	}
-
 	function deleteOrder() {
 		setAlert({ id: order.id, question: "Opravdu si přejete smazat objednávku?", positiveHandler: deleteOrderHandler });
 	}
@@ -140,54 +116,13 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 				}}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<ul>
-					{products &&
-						products.map((el, index) => (
-							<li key={`ordered-product-${el.variant_id}`}>
-								<img src={`${publicPath}/images/products/${el.image}`} alt={el.name} />
-								<b>{`${el.product_name} - ${el.variant_name}`}</b>
-								<span>
-									<input defaultValue={order.ordered_products[index]?.quantity} type="number" onChange={(e) => productQuantityChanged(e, index)} />
-									<label> ks</label>
-								</span>
-								<label>{`${order.ordered_products[index]?.price_piece * order.ordered_products[index]?.quantity} Kč`}</label>
-							</li>
-						))}
-				</ul>
+				<OrderedProducts order={order} products={products} setOrder={setOrder} setProducts={setProducts} />
 
 				<h3>Informace o objednávce:</h3>
 
-				<div className={cssBasic.input_box}>
-					<select {...register("status_code")} required>
-						<option value="1">Přijata</option>
-						<option value="2">Odeslána</option>
-						<option value="3">Dokončena</option>
-						<option value="4">Zrušena</option>
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faBarsProgress} />
-				</div>
-
-				<div className={cssBasic.input_box}>
-					<select {...register("payment_method")} required>
-						<option value="cash">Hotově</option>
-						<option value="card">Online kartou</option>
-						<option value="bank_account">Převodem na účet</option>
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
-				</div>
-
-				{shippingTypes && (
-					<div className={cssBasic.input_box}>
-						<select {...register("shipping_type_id")} required>
-							{shippingTypes.map((el) => (
-								<option key={`shipping-type-${el.id}`} value={el.id}>
-									{el.name}
-								</option>
-							))}
-						</select>
-						<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
-					</div>
-				)}
+				<Select name="status_code" register={register} icon={faBarsProgress} options={ORDER_STATUSES} />
+				<Select name="payment_method" register={register} icon={faBuildingUser} options={PAYMENT_METHODS} />
+				<Select name="shipping_type_id" register={register} icon={faBuildingUser} options={shippingTypes} />
 
 				<DatePicker
 					placeholder="Datum objednání"
@@ -196,10 +131,17 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 					name="order_date"
 					icon={faReceipt}
 					isRequired={true}
-					additionalClasses="gray"
+					additionalClasses="gray half"
 				/>
 
-				<DatePicker placeholder="Datum odeslání" register={register} type="date" name="shipped_date" icon={faTruckFast} additionalClasses="gray" />
+				<DatePicker
+					placeholder="Datum odeslání"
+					register={register}
+					type="date"
+					name="shipped_date"
+					icon={faTruckFast}
+					additionalClasses="gray half"
+				/>
 
 				<DatePicker
 					placeholder="Datum dokončení"
@@ -207,19 +149,12 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 					type="date"
 					name="completed_date"
 					icon={faSquareCheck}
-					additionalClasses="gray"
+					additionalClasses="gray half"
 				/>
 
 				<InputBox placeholder="Poznámky" register={register} type="text" name="comments" icon={faCommentDots} />
 
-				<h3>Fakturační údaje:</h3>
-				<InputBox placeholder="Křestní jméno" register={register} name="fname" icon={faImagePortrait} isRequired={true} />
-				<InputBox placeholder="Příjmení" register={register} name="lname" icon={faIdBadge} isRequired={true} />
-				<InputBox placeholder="Telefon" register={register} type="tel" name="phone" icon={faPhone} isRequired={true} />
-				<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} isRequired={true} />
-				<InputBox placeholder="Adresa (ulice, č.p.)" register={register} name="address" icon={faLocationDot} isRequired={true} />
-				<InputBox placeholder="Město" register={register} name="city" icon={faLocationPin} isRequired={true} />
-				<InputBox placeholder="PSČ" register={register} name="postal_code" icon={faBullseye} isRequired={true} />
+				<InvoiceCredentialsForm register={register} customer={order?.customer} />
 
 				<DeliveryCredentialsForm register={register} customer={order?.customer} />
 

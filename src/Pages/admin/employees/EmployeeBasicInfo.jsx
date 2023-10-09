@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
 import css from "./Employees.module.css";
 
-export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee, setIsEmployeeContVisible }) {
+export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee }) {
 	const [isMoreInfoVisible, setIsMoreInfoVisible] = useState(false);
 	const arrowIcon = useRef(null);
 
@@ -15,7 +15,6 @@ export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee, s
 	}
 
 	function showAllInfo() {
-		setIsEmployeeContVisible(true);
 		setEmployee(user);
 	}
 

@@ -26,6 +26,8 @@ import { useForm } from "react-hook-form";
 import { create, getRoles, editRole } from "../../modules/ApiFunctions";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
+import InputBox from "../../Components/basic/InputBox";
+import Select from "../../Components/basic/select/Select";
 
 export default function Register() {
 	const auth = useAuth();
@@ -46,6 +48,10 @@ export default function Register() {
 	}, []);
 
 	const onSubmit = (data) => {
+		if (data.password_check !== data.password) {
+			setMessage({ action: "alert", text: "Hesla nejsou stejná." });
+			return;
+		}
 		create("admin", data, setMessage, "Účet vytvořen", auth);
 		reset();
 	};
@@ -70,53 +76,24 @@ export default function Register() {
 		<div className={css.register}>
 			<section>
 				<h2>Nový uživatel</h2>
-				<form onSubmit={handleSubmit(onSubmit)} autoComplete="new-password">
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...register("username")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faUser} />
-					</div>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<InputBox type="text" name="username" placeholder="Uživatelské jméno" register={register} icon={faUser} isRequired={true} />
+					<InputBox type="text" name="fname" placeholder="Křestní jméno" register={register} icon={faImagePortrait} isRequired={true} />
+					<InputBox type="text" name="lname" placeholder="Příjmení" register={register} icon={faIdBadge} isRequired={true} />
+					<InputBox type="phone" name="tel" placeholder="Telefon" register={register} icon={faMobileScreen} isRequired={true} />
+					<InputBox type="email" name="email" placeholder="Email" register={register} icon={faAt} isRequired={true} />
+					<InputBox type="password" name="password" placeholder="Heslo" register={register} icon={faUnlock} isRequired={true} />
+					<InputBox type="password" name="password_check" placeholder="Heslo znovu" register={register} icon={faLock} isRequired={true} />
 
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Jméno" {...register("fname")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faImagePortrait} />
-					</div>
+					{privileges && (
+						<Select
+							name="privilege"
+							options={privileges.map((item) => ({ id: item.role, name: item.name }))}
+							register={register}
+							icon={faArrowUpWideShort}
+						/>
+					)}
 
-					<div className={cssBasic.input_box}>
-						<input type="text" placeholder="Příjmení" {...register("lname")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faIdBadge} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="phone" placeholder="Telefon" {...register("tel")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faMobileScreen} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="email" placeholder="Email" {...register("email")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faAt} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo" {...register("password")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faUnlock} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<input type="password" placeholder="Heslo znovu" {...register("password_check")} autoComplete="off" />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faLock} />
-					</div>
-
-					<div className={cssBasic.input_box}>
-						<select defaultValue={"default"} {...register("privilege")}>
-							<option value="default" disabled>
-								-- Práva nového účtu --
-							</option>
-							<option value="1">Uživatel</option>
-							<option value="2">Zaměstnanec</option>
-							<option value="3">Admin</option>
-						</select>
-						<FontAwesomeIcon className={cssBasic.icon} icon={faArrowUpWideShort} />
-					</div>
 					<input type="submit" />
 				</form>
 			</section>

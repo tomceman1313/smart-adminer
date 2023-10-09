@@ -186,10 +186,10 @@ export function refreshAccessToken(navigate, from, auth) {
 }
 
 export async function getUserData(auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ id: auth.userInfo.id, token: auth.userInfo.token }),
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get&id=${auth.userInfo.id}`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
 	});
 
@@ -200,25 +200,7 @@ export async function getUserData(auth) {
 
 	const data = await response.json();
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	return data;
-}
-
-export async function editUserData(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return false;
-	}
-
-	const data = await response.json();
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	return data;
+	return data.data;
 }
 
 export async function changePassword(postData, auth) {

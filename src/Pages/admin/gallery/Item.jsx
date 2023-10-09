@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState } from "react";
 import useInteraction from "../../Hooks/useInteraction";
 
-const Item = ({ el, remove, edit, show }) => {
+const Item = ({ el, remove, edit, show, deleteQuestion }) => {
 	const [disabled, setDisabled] = useState(true);
 	const inputRef = useRef(null);
 	const { setAlert } = useInteraction();
@@ -23,7 +23,7 @@ const Item = ({ el, remove, edit, show }) => {
 	const removeCategory = () => {
 		setAlert({
 			id: el.id,
-			question: "Opravdu si přejete odstranit kategorii?",
+			question: deleteQuestion ? deleteQuestion : "Opravdu si přejete odstranit kategorii?",
 			positiveHandler: remove,
 		});
 	};

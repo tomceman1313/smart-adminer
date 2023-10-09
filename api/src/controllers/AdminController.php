@@ -113,10 +113,9 @@ class AdminController
                 break;
 
             case 'get':
-                $result = $this->gateway->get($data["id"]);
+                $result = $this->gateway->get($id);
                 http_response_code(200);
                 echo json_encode([
-                    "message" => "Data provided",
                     "data" => $result,
                     "token" => $authAction
                 ]);

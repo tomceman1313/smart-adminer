@@ -43,7 +43,7 @@ export default function Profiles() {
 	return (
 		<section className="no-section" style={{ position: "relative" }}>
 			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={deleteHandler} css={css} />}</div>
-			<PlusButton onClick={() => navigate(`/dashboard/new-product/`)} />
+			<PlusButton onClick={() => navigate(`/dashboard/register/`)} />
 		</section>
 	);
 }

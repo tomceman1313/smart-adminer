@@ -2,16 +2,13 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { createDepartment, getDepartments, removeDepartment, updateDepartment } from "../../modules/ApiEmployees";
-
 import { faFont } from "@fortawesome/free-solid-svg-icons";
-
 import InputBox from "../../Components/basic/InputBox";
 import Item from "../gallery/Item";
 
 import css from "./Departments.module.css";
 
-export default function Departments({ setEmployees, departments, setDepartments, refreshAllData, allEmployees }) {
-	//TODO Vytvořit samostaný komponent Item (nyní se při alertu ptá na odstranění kategorie)
+export default function Departments({ setEmployees, departments, setDepartments, refreshAllData, filterEmployeesByDepartment }) {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
@@ -37,16 +34,21 @@ export default function Departments({ setEmployees, departments, setDepartments,
 		refreshAllData();
 	};
 
-	async function filterEmployeesByDepartment(id) {
-		const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
-		setEmployees(filteredEmployees);
-	}
-
 	return (
 		<section className={css.departments}>
 			<h2>Oddělení</h2>
 			<ul className={css.departments_list}>
-				{departments && departments.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={filterEmployeesByDepartment} />)}
+				{departments &&
+					departments.map((el) => (
+						<Item
+							key={el.id}
+							el={el}
+							remove={remove}
+							edit={update}
+							show={() => filterEmployeesByDepartment(el.id, el.name)}
+							deleteQuestion="Opravdu si přejete odstranit oddělení?"
+						/>
+					))}
 			</ul>
 			<h3>Přidat oddělení:</h3>
 			<form onSubmit={handleSubmit(create)}>
