@@ -20,6 +20,10 @@ export async function formatBody(body, arrayInsideImages, location) {
 	}
 }
 
+export function removeEmptyParagraphs(body) {
+	return body.replaceAll("<p><br></p>", "");
+}
+
 export function checkInnerImage(sourceString) {
 	const regex = /innerimage\d*.\w*/g;
 	const found = sourceString.match(regex);

@@ -26,6 +26,11 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory }) => 
 	};
 
 	const create = async (data) => {
+		data.name = data.name.trim();
+		if (categories.find((category) => category.name === data.name)) {
+			setMessage({ action: "alert", text: "Kategorie s tímto názvem již existuje" });
+			return;
+		}
 		await createCategory(data, auth, setMessage, apiClass);
 		setValue("name", "");
 		get();
@@ -47,6 +52,7 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory }) => 
 			<ul className={css.category_list}>
 				{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={filterByCategory} />)}
 			</ul>
+			<div className={css.blur}></div>
 			<h3>Přidat kategorii:</h3>
 			<form onSubmit={handleSubmit(create)}>
 				<InputBox placeholder={"Název kategorie"} name={"name"} register={register} type={"text"} icon={faFont} white={false} isRequired={true} />

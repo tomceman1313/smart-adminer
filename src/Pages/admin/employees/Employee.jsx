@@ -33,7 +33,6 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 
 	useEffect(() => {
 		if (employee?.id) {
-			console.log(employee);
 			setData();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps

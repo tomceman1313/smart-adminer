@@ -9,6 +9,7 @@ import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { get, remove, edit, create } from "../../modules/ApiFunctions";
 import { convertBase64, openImage, publicPath, makeDateFormat } from "../../modules/BasicFunctions";
+import { removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Vacancy.module.css";
@@ -53,7 +54,8 @@ export default function Vacancy() {
 
 	async function onSubmit(data) {
 		data.date = makeDateFormat(data.date);
-		data.detail = detailText;
+		data.detail = removeEmptyParagraphs(detailText);
+		data.active = data.active ? 1 : 0;
 		if (data.image[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
@@ -66,10 +68,9 @@ export default function Vacancy() {
 
 		if (id) {
 			data.id = id;
-			console.log(JSON.stringify({ data: data }));
-			edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
+			await edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
+			setData();
 		} else {
-			console.log(data);
 			create("vacancies", data, setMessage, "Inzerát by vytvořen", auth);
 			navigation("/dashboard/vacancies", { replace: true });
 		}

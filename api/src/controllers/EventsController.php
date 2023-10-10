@@ -114,8 +114,7 @@ class EventsConroller
             case 'delete-image':
                 $result = $this->gateway->deleteImage($data["name"]);
                 echo json_encode([
-                    "message" => "Deleted",
-                    "token" => $data["token"]
+                    "token" => $authAction
                 ]);
                 break;
 

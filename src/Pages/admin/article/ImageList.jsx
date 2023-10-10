@@ -1,17 +1,16 @@
-import ArticleImage from "./ArticleImage";
-import css from "./Article.module.css";
-import { deleteImage as deleteImageArticles } from "../../modules/ApiArticles";
-import { deleteImage as deleteImageEvents } from "../../modules/ApiEvents";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
+import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
+import { deleteImage } from "../../modules/ApiFunctions";
+import css from "./Article.module.css";
+import ArticleImage from "./ArticleImage";
 
-const ImageList = ({ images, auth, setMessage, setImages, location }) => {
+const ImageList = ({ images, setImages, location }) => {
+	const auth = useAuth();
+	const { setMessage } = useInteraction();
 	const remove = (el) => {
-		if (location === "articles") {
-			deleteImageArticles(el.name, auth, setMessage);
-		} else if (location === "events") {
-			deleteImageEvents(el.name, auth, setMessage);
-		}
+		deleteImage(location, el.name, auth, setMessage);
 		const index = images.indexOf(el);
 		if (images.length === 1) {
 			setImages(null);

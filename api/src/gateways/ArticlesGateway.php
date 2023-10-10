@@ -135,8 +135,8 @@ class ArticlesGateway
             $image_name = uniqid();
             file_put_contents("{$this->path}/images/articles/{$image_name}.{$imageExtension}", $decodedImageData);
 
-            if (file_exists("{$this->path}/images/events/{$data["prevImage"]}")) {
-                unlink("{$this->path}/images/events/{$data["prevImage"]}");
+            if (file_exists("{$this->path}/images/articles/{$data["prevImage"]}")) {
+                unlink("{$this->path}/images/articles/{$data["prevImage"]}");
             }
 
             $this->compress($image_name . "." . $imageExtension);

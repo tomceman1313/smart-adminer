@@ -1,24 +1,26 @@
-import { useEffect, useState, useRef } from "react";
-import TextEditor from "../../Components/admin/TextEditor";
-import { formatBody, checkInnerImage, findDeletedImages } from "../../modules/TextEditorFunctions";
-
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import TextEditor from "../../Components/admin/TextEditor";
+import InputBox from "../../Components/basic/InputBox";
+import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
 
-import { faCalendarDays, faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { create, edit, get, remove } from "../../modules/ApiFunctions";
 import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
-import { get, create, edit, remove } from "../../modules/ApiFunctions";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import DatePicker from "../../Components/basic/DatePicker";
+import Select from "../../Components/basic/select/Select";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
+import { getCategories } from "../../modules/ApiCategories";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
-import ImageList from "./ImageList";
-import { getCategories } from "../../modules/ApiCategories";
-
-const Article = () => {
+import ImagesUnderArticle from "./ImagesUnderArticle";
+//TODO dodělat náhled článku
+export default function Article() {
 	const auth = useAuth();
 
 	const { setMessage, setAlert } = useInteraction();
@@ -72,6 +74,7 @@ const Article = () => {
 	async function onSubmit(data) {
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "articles");
+		data.active = data.active ? 1 : 0;
 		if (data.image[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
@@ -94,7 +97,8 @@ const Article = () => {
 
 		if (article) {
 			data.id = article.id;
-			edit("articles", data, setMessage, "Článek byl upraven", auth);
+			await edit("articles", data, setMessage, "Článek byl upraven", auth);
+			getData();
 		} else {
 			await create("articles", data, setMessage, "Článek byl vytvořen", auth);
 			navigation("/dashboard/articles");
@@ -114,14 +118,10 @@ const Article = () => {
 		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 			<section>
 				<h2>Základní informace</h2>
-				<div className={cssBasic.input_box}>
-					<input type="text" placeholder="Titulek" {...register("title")} required />
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHeading} />
-				</div>
-				<div className={cssBasic.input_box}>
-					<input type="text" placeholder="Popisek" {...register("description")} />
-					<FontAwesomeIcon className={cssBasic.icon} icon={faMagnifyingGlass} />
-				</div>
+
+				<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
+				<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
+
 				<p>Článek je viditelný: </p>
 				<label className="switch">
 					<input type="checkbox" {...register("active")} />
@@ -131,24 +131,9 @@ const Article = () => {
 
 			<section>
 				<h2>Doplňující informace</h2>
-				<div className={cssBasic.input_box} title="Datum zveřejnění">
-					<input type="date" {...register("date")} autoComplete="new-password" required />
-					<FontAwesomeIcon className={cssBasic.icon} icon={faCalendarDays} />
-				</div>
-				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("category")}>
-						<option value="default" disabled>
-							-- Kategorie článku --
-						</option>
-						{categories &&
-							categories.map((el) => (
-								<option key={`category-${el.name}`} value={el.id}>
-									{el.name}
-								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-				</div>
+
+				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
+				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie článku --" />
 
 				<div className={cssBasic.input_box} title="">
 					{imageIsSet ? (
@@ -172,18 +157,12 @@ const Article = () => {
 				<h2>Text článku</h2>
 				<TextEditor value={body} setValue={setBody} />
 
-				<div>
-					<h2>Obrázky pod článkem:</h2>
-					<h3>Přidat obrázky:</h3>
-					<div className={`${cssBasic.input_box}`}>
-						<input type="file" accept="image/*" {...register("images")} multiple />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-					</div>
-
-					{underArticleImages && (
-						<ImageList images={underArticleImages} auth={auth} setMessage={setMessage} setImages={setUnderArticleImages} location="articles" />
-					)}
-				</div>
+				<ImagesUnderArticle
+					register={register}
+					underArticleImages={underArticleImages}
+					setUnderArticleImages={setUnderArticleImages}
+					location="articles"
+				/>
 
 				<div className={css.control_box}>
 					<button>Uložit</button>
@@ -200,6 +179,4 @@ const Article = () => {
 			</section>
 		</form>
 	);
-};
-
-export default Article;
+}

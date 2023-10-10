@@ -6,7 +6,7 @@ import PlusButton from "../../Components/basic/PlusButton";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getAll, remove } from "../../modules/ApiFunctions";
-import { makeDateFormat } from "../../modules/BasicFunctions";
+import { makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 import css from "./Vacancies.module.css";
 
 export default function Vacancies() {
@@ -51,6 +51,7 @@ export default function Vacancies() {
 					{vacancies ? (
 						vacancies.map((el) => (
 							<li key={`vac-${el.id}`}>
+								<img src={`${publicPath}/images/vacancies/${el.image}`} alt="" />
 								<div>
 									<b>{el.title}</b>
 									<label>{makeDateFormat(el.date, "str")}</label>

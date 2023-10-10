@@ -1,14 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PlusButton from "../../Components/basic/PlusButton";
+import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { getDepartments } from "../../modules/ApiEmployees";
 import { getAll, remove } from "../../modules/ApiFunctions";
+import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
-import Departments from "./Departments";
-import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
 
 export default function Employees() {
 	const auth = useAuth();
@@ -31,9 +30,6 @@ export default function Employees() {
 		const data = await getAll("employees");
 		allEmployees.current = data;
 		setEmployees(data);
-
-		const departmentsData = await getDepartments();
-		setDepartments(departmentsData);
 	}
 
 	async function filterEmployeesByDepartment(id, name) {
@@ -59,7 +55,6 @@ export default function Employees() {
 	return (
 		<>
 			<Departments
-				setEmployees={setEmployees}
 				departments={departments}
 				setDepartments={setDepartments}
 				refreshAllData={loadData}

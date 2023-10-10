@@ -20,7 +20,6 @@ const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, 
 				defaultValue={defaultValue}
 				placeholder={placeholder}
 				{...register(name)}
-				autoComplete="new-password"
 				required={isRequired && true}
 				accept={accept}
 				readOnly={readOnly}
