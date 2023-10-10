@@ -19,6 +19,8 @@ import css from "./styles/Product.module.css";
 import Variants from "./Variants";
 import Parameters from "./Parameters";
 import { formatBody, checkInnerImage, findDeletedImages } from "../../modules/TextEditorFunctions";
+import Switch from "../../Components/basic/switch/Switch";
+import Select from "../../Components/basic/select/Select";
 
 export default function ProductNew() {
 	const auth = useAuth();
@@ -103,7 +105,7 @@ export default function ProductNew() {
 			data.id = id;
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
-			console.log(data);
+			//console.log(data);
 			await edit("products", data, setMessage, "Produkt upraven", auth);
 		} else {
 			await create("products", data, setMessage, "Produkt vložen", auth);
@@ -151,21 +153,7 @@ export default function ProductNew() {
 				<h2>Základní informace:</h2>
 				<InputBox placeholder="Název" register={register} type="text" name="name" icon={faShoppingCart} isRequired={true} />
 				<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={true} />
-
-				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("manufacturer_id")} required>
-						<option value="default" disabled>
-							-- Přiřadit výrobce --
-						</option>
-						{manufacturers &&
-							manufacturers.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
-								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faCopyright} />
-				</div>
+				<Select name="manufacturer_id" options={manufacturers} icon={faCopyright} register={register} placeholderValue="-- Přiřadit výrobce --" />
 
 				<div className={cssBasic.input_box}>
 					<select defaultValue={"default"} {...register("categories")} onChange={chooseCategory}>
@@ -190,16 +178,10 @@ export default function ProductNew() {
 							</li>
 						))}
 				</ul>
-
-				<p>Produkt je viditelný: </p>
-				<label className="switch">
-					<input type="checkbox" {...register("active")} />
-					<span className="slider"></span>
-				</label>
+				<Switch name="active" register={register} label="Produkt je viditelný:" />
 			</section>
 
 			<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
-
 			{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
 
 			<DetailText detailText={detailText} setDetailText={setDetailText} />

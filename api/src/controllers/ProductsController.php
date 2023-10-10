@@ -117,7 +117,7 @@ class ProductsController
                 $result = $this->gateway->deleteImageWithUpdate($data["name"], $id);
                 echo json_encode([
                     "message" => "Image deleted",
-                    "token" => $data["token"]
+                    "token" => $authAction
                 ]);
                 break;
 

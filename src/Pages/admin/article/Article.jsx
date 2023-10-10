@@ -3,35 +3,32 @@ import { useForm } from "react-hook-form";
 import TextEditor from "../../Components/admin/TextEditor";
 import InputBox from "../../Components/basic/InputBox";
 import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
-
-import { faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faHashtag, faHeading, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { create, edit, get, remove } from "../../modules/ApiFunctions";
-import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
-
+import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../Components/basic/DatePicker";
+import ImageInput from "../../Components/basic/image-input/ImageInput";
 import Select from "../../Components/basic/select/Select";
+import Switch from "../../Components/basic/switch/Switch";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 import ImagesUnderArticle from "./ImagesUnderArticle";
+
 //TODO dodělat náhled článku
 export default function Article() {
 	const auth = useAuth();
-
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
+	const { register, handleSubmit, setValue, reset } = useForm();
+
 	const [article, setArticle] = useState(null);
 	const [categories, setCategories] = useState(null);
-
-	const { register, handleSubmit, setValue, reset } = useForm();
-	const [imageIsSet, setImageIsSet] = useState(false);
-
 	const [body, setBody] = useState("");
 	const [underArticleImages, setUnderArticleImages] = useState(null);
 
@@ -49,7 +46,6 @@ export default function Article() {
 		} else {
 			reset();
 			setBody("");
-			setImageIsSet(false);
 			setArticle(null);
 			setUnderArticleImages(null);
 		}
@@ -67,7 +63,6 @@ export default function Article() {
 		setValue("category", data.category);
 		setBody(data.body);
 		originalImages.current = checkInnerImage(data.body);
-		setImageIsSet(true);
 		setUnderArticleImages(data.images.length === 0 ? null : data.images);
 	}
 
@@ -103,6 +98,7 @@ export default function Article() {
 			await create("articles", data, setMessage, "Článek byl vytvořen", auth);
 			navigation("/dashboard/articles");
 		}
+		reset();
 	}
 
 	async function removeHandler() {
@@ -118,45 +114,21 @@ export default function Article() {
 		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 			<section>
 				<h2>Základní informace</h2>
-
 				<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
 				<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
-
-				<p>Článek je viditelný: </p>
-				<label className="switch">
-					<input type="checkbox" {...register("active")} />
-					<span className="slider"></span>
-				</label>
+				<Switch name="active" label="Článek je viditelný:" register={register} />
 			</section>
 
 			<section>
 				<h2>Doplňující informace</h2>
-
 				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
 				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie článku --" />
-
-				<div className={cssBasic.input_box} title="">
-					{imageIsSet ? (
-						<div className={cssBasic.image_box}>
-							<button type="button" onClick={() => openImage(`${publicPath}/images/articles/${article.image}`)}>
-								Zobrazit obrázek
-							</button>
-							<button type="button" onClick={() => setImageIsSet(false)}>
-								Změnit obrázek
-							</button>
-						</div>
-					) : (
-						<input type="file" {...register("image")} accept="image/*" required />
-					)}
-
-					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-				</div>
+				<ImageInput image={article?.image} name="image" path="articles" register={register} />
 			</section>
 
 			<section>
 				<h2>Text článku</h2>
 				<TextEditor value={body} setValue={setBody} />
-
 				<ImagesUnderArticle
 					register={register}
 					underArticleImages={underArticleImages}

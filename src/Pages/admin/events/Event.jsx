@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import TextEditor from "../../Components/admin/TextEditor";
 import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
-
 import { useForm } from "react-hook-form";
-
-import { faEye, faHashtag, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faHashtag, faHeading, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { getCategories } from "../../modules/ApiCategories";
 import { create, edit, get, remove } from "../../modules/ApiFunctions";
-import { convertBase64, makeDateFormat, openImage, publicPath } from "../../modules/BasicFunctions";
-
+import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../Components/basic/DatePicker";
 import InputBox from "../../Components/basic/InputBox";
+import ImageInput from "../../Components/basic/image-input/ImageInput";
 import Select from "../../Components/basic/select/Select";
+import Switch from "../../Components/basic/switch/Switch";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import css from "../article/Article.module.css";
@@ -23,16 +21,13 @@ import cssBasic from "../styles/Basic.module.css";
 
 const Event = () => {
 	const auth = useAuth();
-
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
+	const { register, handleSubmit, setValue, reset } = useForm();
+
 	const [event, setEvent] = useState(null);
 	const [categories, setCategories] = useState(null);
-
-	const { register, handleSubmit, setValue, reset } = useForm();
-	const [imageIsSet, setImageIsSet] = useState(false);
-
 	const [body, setBody] = useState("");
 	const [underEventImages, setUnderEventImages] = useState(null);
 
@@ -50,7 +45,6 @@ const Event = () => {
 		} else {
 			reset();
 			setBody("");
-			setImageIsSet(false);
 			setEvent(null);
 			setUnderEventImages(null);
 		}
@@ -68,7 +62,6 @@ const Event = () => {
 		setValue("category", data.category);
 		setBody(data.body);
 		originalImages.current = checkInnerImage(data.body);
-		setImageIsSet(true);
 		setUnderEventImages(data.images.length === 0 ? null : data.images);
 	}
 
@@ -76,7 +69,7 @@ const Event = () => {
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "events");
 		data.active = data.active ? 1 : 0;
-		if (data.image[0]) {
+		if (data.image?.[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
 			if (event) {
@@ -120,45 +113,21 @@ const Event = () => {
 		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 			<section>
 				<h2>Základní informace</h2>
-
 				<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
 				<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
-
-				<p>Událost je viditelná: </p>
-				<label className="switch">
-					<input type="checkbox" {...register("active")} />
-					<span className="slider"></span>
-				</label>
+				<Switch name="active" label="Událost je viditelná:" register={register} />
 			</section>
 
 			<section>
 				<h2>Doplňující informace</h2>
-
 				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
 				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie události --" />
-
-				<div className={cssBasic.input_box} title="">
-					{imageIsSet ? (
-						<div className={cssBasic.image_box}>
-							<button type="button" onClick={() => openImage(`${publicPath}/images/events/${event.image}`)}>
-								Zobrazit obrázek
-							</button>
-							<button type="button" onClick={() => setImageIsSet(false)}>
-								Změnit obrázek
-							</button>
-						</div>
-					) : (
-						<input type="file" {...register("image")} accept="image/*" required />
-					)}
-
-					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-				</div>
+				{event && <ImageInput image={event.image} name="image" path="events" register={register} />}
 			</section>
 
 			<section>
 				<h2>Text události</h2>
 				<TextEditor value={body} setValue={setBody} />
-
 				<ImagesUnderArticle register={register} underArticleImages={underEventImages} setUnderArticleImages={setUnderEventImages} location="events" />
 
 				<div className={css.control_box}>

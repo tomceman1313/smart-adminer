@@ -1,15 +1,4 @@
-import {
-	faBarsProgress,
-	faBuilding,
-	faBuildingUser,
-	faCommentDots,
-	faCopyright,
-	faHandHoldingDollar,
-	faReceipt,
-	faSquareCheck,
-	faTruckFast,
-	faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBarsProgress, faBuildingUser, faCommentDots, faReceipt, faSquareCheck, faTruckFast, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -23,6 +12,7 @@ import DatePicker from "../../Components/basic/DatePicker";
 import Select from "../../Components/basic/select/Select";
 import useAuth from "../../Hooks/useAuth";
 import { makeDateFormat } from "../../modules/BasicFunctions";
+import CompanyCredentialsForm from "./detail/CompanyCredentialsForm";
 import DeliveryCredentialsForm from "./detail/DeliveryCredentialsForm";
 import InvoiceCredentialsForm from "./detail/InvoiceCredentialsForm";
 import OrderedProducts from "./detail/OrderedProducts";
@@ -91,7 +81,8 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 
 		data.customer_id = order.customer.id;
 		console.log(data);
-		edit("orders", data, setMessage, "Objednávka byla upravena", auth);
+		await edit("orders", data, setMessage, "Objednávka byla upravena", auth);
+		reloadData();
 		setVisible(false);
 	}
 
@@ -156,17 +147,19 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 
 				<InvoiceCredentialsForm register={register} customer={order?.customer} />
 
-				<DeliveryCredentialsForm register={register} customer={order?.customer} />
+				{order && (
+					<>
+						<DeliveryCredentialsForm register={register} customer={order?.customer} />
+						<CompanyCredentialsForm register={register} customer={order?.customer} />
+					</>
+				)}
 
-				<h3>Nákup na firmu:</h3>
-				<InputBox placeholder="Název firmy" register={register} name="company_name" icon={faCopyright} />
-				<InputBox placeholder="IČ" register={register} name="ic" icon={faBuilding} />
-				<InputBox placeholder="DIČ" register={register} name="dic" icon={faHandHoldingDollar} />
-
-				<button>Uložit</button>
-				<button type="button" className="red_button" onClick={deleteOrder}>
-					Smazat
-				</button>
+				<div className={css.buttons_box}>
+					<button>Uložit</button>
+					<button type="button" className="red_button" onClick={deleteOrder}>
+						Smazat
+					</button>
+				</div>
 			</form>
 		</motion.section>
 	);

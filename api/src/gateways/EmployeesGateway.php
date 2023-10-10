@@ -84,7 +84,7 @@ class EmployeesGateway
         }
     }
 
-    public function update(array $data, $id): bool
+    public function update(array $data): bool
     {
         if (isset($data["image"])) {
             $base64DataString = $data["image"];
@@ -145,18 +145,19 @@ class EmployeesGateway
         foreach ($departments as $item) {
             $stmt = $this->conn->prepare($sql_new_dep);
             $stmt->execute([
-                'employee_id' => $id,
+                'employee_id' => $data["id"],
                 'department_id' => $item["id"]
             ]);
         }
 
         $departments_deleted = $data["departments_deleted"];
         foreach ($departments_deleted as $item) {
-            $sql = "DELETE FROM employee_department WHERE id = :id";
+            $sql = "DELETE FROM employee_department WHERE employee_id = :employee_id AND department_id = :department_id";
             $stmt = $this->conn->prepare($sql);
 
             $stmt->execute([
-                'id' => $item,
+                'employee_id' => $data["id"],
+                'department_id' => $item,
             ]);
         }
 

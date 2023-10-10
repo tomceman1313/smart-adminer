@@ -65,10 +65,10 @@ export async function deleteProduct(id, auth, setMessage) {
 	setMessage({ action: "success", text: "Produkt byl smazán" });
 }
 
-export async function deleteImage(name, id, auth, setMessage) {
+export async function deleteImage(name, productId, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image&id=${id}`, {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=delete-image&id=${productId}`, {
 		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		body: JSON.stringify({ name: name }),

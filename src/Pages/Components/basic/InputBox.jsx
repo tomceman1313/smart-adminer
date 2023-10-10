@@ -23,6 +23,7 @@ const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, 
 				required={isRequired && true}
 				accept={accept}
 				readOnly={readOnly}
+				pattern="\S(.*\S)?"
 			/>
 			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 		</div>

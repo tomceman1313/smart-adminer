@@ -1,0 +1,87 @@
+.input_box {
+	width: calc(100%);
+	position: relative;
+	border: 1px solid #d6dde1;
+	border-radius: 8px;
+	margin-bottom: 20px;
+	height: 50px;
+	overflow: hidden;
+}
+
+.input_box input {
+	position: absolute;
+	left: 60px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: calc(100% - 60px);
+	height: 35px;
+	background-color: transparent;
+	padding: 5px 0;
+	color: #333;
+	font-size: 16px;
+	transition: all 0.5s;
+}
+
+.input_box input[type="file"] {
+	line-height: 35px;
+	font-size: 14px;
+}
+
+.input_box input:focus ~ .icon {
+	background-color: var(--main-dark);
+	color: white;
+}
+
+.input_box input::placeholder {
+	color: #333;
+}
+
+.icon {
+	font-size: 16px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	transition: all 0.5s;
+	color: var(--main-dark);
+	background-color: transparent;
+	padding: 17px;
+}
+
+.input_box label {
+	position: absolute;
+	top: -2px;
+	left: 60px;
+	font-size: 14px;
+	color: black;
+}
+
+.image_box {
+	position: absolute;
+	left: 60px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: calc(100% - 70px);
+	height: 35px;
+	transition: all 0.5s;
+}
+
+.image_box button {
+	height: 100%;
+	width: 50%;
+	padding: 0 10px;
+	margin: 0;
+	font-size: 12px;
+}
+
+.image_box button:nth-of-type(1) {
+	background-color: var(--main-dark);
+	text-decoration: underline var(--main-dark);
+}
+.image_box button:nth-of-type(1):hover {
+	text-decoration: underline white;
+}
+
+.image_box button:nth-of-type(2) {
+	background-color: var(--green-dark);
+}

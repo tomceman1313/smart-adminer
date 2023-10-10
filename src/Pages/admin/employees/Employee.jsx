@@ -1,24 +1,24 @@
-import { useState, useEffect, useRef } from "react";
 import {
-	faUserTag,
 	faAt,
+	faBuildingUser,
+	faCommentDots,
 	faIdBadge,
 	faImagePortrait,
 	faMobileScreen,
-	faXmark,
 	faUserGraduate,
-	faImage,
-	faCommentDots,
-	faBuildingUser,
+	faUserTag,
+	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { motion, AnimatePresence } from "framer-motion";
-import InputBox from "../../Components/basic/InputBox";
-import { convertBase64, openImage, publicPath } from "../../modules/BasicFunctions";
-import { create, edit } from "../../modules/ApiFunctions";
-import useInteraction from "../../Hooks/useInteraction";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import InputBox from "../../Components/basic/InputBox";
+import useInteraction from "../../Hooks/useInteraction";
+import { create, edit } from "../../modules/ApiFunctions";
+import { convertBase64 } from "../../modules/BasicFunctions";
 
+import ImageInput from "../../Components/basic/image-input/ImageInput";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Employees.module.css";
 
@@ -26,7 +26,6 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	const { setMessage } = useInteraction();
 
 	const { register, handleSubmit, reset, setValue } = useForm();
-	const [imageIsSet, setImageIsSet] = useState(null);
 	const [pickedDepartments, setPickedDepartments] = useState([]);
 	const deletedDepartments = useRef([]);
 	const originalDepartments = useRef([]);
@@ -39,7 +38,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	}, [employee]);
 
 	async function onSubmit(data) {
-		if (data.image[0]) {
+		if (data.image?.[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
 			if (employee) {
@@ -48,9 +47,9 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 		} else {
 			delete data.image;
 		}
-
 		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.includes(el));
-		if (employee) {
+		console.log(data);
+		if (employee?.id) {
 			data.departments_deleted = deletedDepartments.current;
 			await edit("employees", data, setMessage, "Profil zaměstnance byl upraven", auth);
 		} else {
@@ -65,13 +64,13 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 
 	function resetForm() {
 		reset({ degree_before: "", fname: "", lname: "", degree_after: "", phone: "", email: "", position: "", notes: "", id: "" });
-		setImageIsSet(false);
 		setPickedDepartments([]);
 		originalDepartments.current = null;
 		setEmployee(null);
 	}
 
 	function setData() {
+		console.log(employee);
 		setValue("degree_before", employee.degree_before);
 		setValue("fname", employee.fname);
 		setValue("lname", employee.lname);
@@ -82,14 +81,13 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 		setValue("notes", employee.notes);
 		setValue("id", employee.id);
 
-		setImageIsSet(employee.image);
 		setPickedDepartments(employee.departments);
 		originalDepartments.current = employee.departments;
 	}
 
 	const chooseCategory = (e) => {
 		const name = departments.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedDepartments.find((item) => item.id === parseInt(e.target.value));
+		const alreadyIn = pickedDepartments.find((item) => item.department_id === parseInt(e.target.value));
 		setValue("department_id", "");
 		if (alreadyIn) {
 			return;
@@ -101,7 +99,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	};
 
 	const removeFromPicked = (e) => {
-		const removed = pickedDepartments.filter((item) => item.id !== parseInt(e.target.id));
+		const removed = pickedDepartments.filter((item) => item.department_id !== parseInt(e.target.id));
 		deletedDepartments.current.push(parseInt(e.target.id));
 		setPickedDepartments(removed);
 	};
@@ -129,7 +127,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 						<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} />
 
 						<div className={cssBasic.input_box}>
-							<select defaultValue={""} {...register("department_id")} onChange={chooseCategory} required>
+							<select defaultValue={""} {...register("department_id")} onChange={chooseCategory}>
 								<option value="" disabled>
 									-- Zvolit oddělení --
 								</option>
@@ -146,7 +144,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 						<ul className={css.picked_categories}>
 							{pickedDepartments &&
 								pickedDepartments.map((el) => (
-									<li key={`pickedDep-${el.id}`} id={el.id} onClick={removeFromPicked}>
+									<li key={`pickedDep-${el.department_id}`} id={el.department_id} onClick={removeFromPicked}>
 										{el.name}
 									</li>
 								))}
@@ -156,22 +154,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 
 						<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} />
 
-						<div className={`${cssBasic.input_box}`}>
-							{imageIsSet ? (
-								<div className={cssBasic.image_box}>
-									<button type="button" onClick={() => openImage(`${publicPath}/images/employees/${imageIsSet}`)}>
-										Zobrazit obrázek
-									</button>
-									<button type="button" onClick={() => setImageIsSet(false)}>
-										Změnit obrázek
-									</button>
-								</div>
-							) : (
-								<input type="file" {...register("image")} accept="image/*" required />
-							)}
-
-							<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-						</div>
+						<ImageInput name="image" image={employee.image} path="employees" register={register} />
 
 						<input type="hidden" {...register("id")} />
 

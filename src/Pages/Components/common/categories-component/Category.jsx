@@ -26,7 +26,6 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory }) => 
 	};
 
 	const create = async (data) => {
-		data.name = data.name.trim();
 		if (categories.find((category) => category.name === data.name)) {
 			setMessage({ action: "alert", text: "Kategorie s tímto názvem již existuje" });
 			return;

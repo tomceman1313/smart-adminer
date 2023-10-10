@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { faBullseye, faIdBadge, faImagePortrait, faLocationDot, faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import InputBox from "../../../Components/basic/InputBox";
 
 export default function DeliveryCredentialsForm({ register, customer }) {
+	const [isVisible, setIsVisible] = useState(customer?.delivery_address ? true : false);
 	return (
 		<>
 			{customer && (
 				<div>
 					<h3>Doručovací údaje:</h3>
-					{customer.delivery_address ? (
+					{isVisible ? (
 						<>
 							<InputBox
 								placeholder="Křestní jméno"
@@ -34,7 +36,9 @@ export default function DeliveryCredentialsForm({ register, customer }) {
 							/>
 						</>
 					) : (
-						<button type="button">Přidat</button>
+						<button type="button" onClick={() => setIsVisible(true)}>
+							Přidat
+						</button>
 					)}
 				</div>
 			)}

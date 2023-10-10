@@ -15,7 +15,6 @@ const PRIVILEGES = [
 
 const UserForm = ({ userData, setState, handleEdit }) => {
 	const { register, handleSubmit, reset } = useForm();
-
 	const onSubmit = (data) => {
 		handleEdit(data);
 		setState(false);
@@ -66,7 +65,7 @@ const UserForm = ({ userData, setState, handleEdit }) => {
 						/>
 
 						<InputBox
-							type="phone"
+							type="tel"
 							name="tel"
 							placeholder="Telefon"
 							defaultValue={userData.tel}

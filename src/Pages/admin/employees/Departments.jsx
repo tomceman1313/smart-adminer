@@ -25,7 +25,6 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 	}
 
 	const create = async (data) => {
-		data.name = data.name.trim();
 		if (departments.find((dep) => dep.name === data.name)) {
 			setMessage({ action: "alert", text: "Oddělení s tímto názvem již existuje" });
 			return;
@@ -62,6 +61,7 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 						/>
 					))}
 			</ul>
+			<div className={css.blur}></div>
 			<h3>Přidat oddělení:</h3>
 			<form onSubmit={handleSubmit(create)}>
 				<InputBox placeholder={"Název oddělení"} name={"name"} register={register} type={"text"} icon={faFont} white={false} isRequired={true} />
