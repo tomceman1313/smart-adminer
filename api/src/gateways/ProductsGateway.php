@@ -111,7 +111,7 @@ class ProductsGateway
 
     function getByCategory($id): array
     {
-        $sql = "SELECT * FROM product_categories WHERE category_id = :id";
+        $sql = "SELECT product_id as id FROM product_categories WHERE category_id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -124,7 +124,7 @@ class ProductsGateway
             $stmt_image = $this->conn->prepare($sql_product_image);
 
             $stmt_image->execute([
-                'id' => $row["product_id"]
+                'id' => $row["id"]
             ]);
             $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
 
@@ -132,13 +132,33 @@ class ProductsGateway
             $stmt_price = $this->conn->prepare($sql_product_price);
 
             $stmt_price->execute([
-                'id' => $row["product_id"]
+                'id' => $row["id"]
             ]);
             $price = $stmt_price->fetch(PDO::FETCH_ASSOC);
 
 
             $row["image"] = $image["name"];
             $row["price"] = $price["price"];
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    /** 
+     * * Get product by i
+     */
+    public function getByName($name)
+    {
+        $sql = "SELECT * FROM products WHERE name LIKE :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => "%" . $name . "%"
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
 
@@ -182,6 +202,63 @@ class ProductsGateway
 
         return $data;
     }
+
+    public function filterProducts($filterData): array
+    {
+        $query = "SELECT products.* FROM products INNER JOIN product_categories ON product_categories.product_id = products.id";
+
+        $sql = [];
+        $values = [];
+
+        if (isset($filterData["manufacturers"]) && count($filterData["manufacturers"]) > 0) {
+            $in = join(',', array_fill(0, count($filterData["manufacturers"]), '?'));
+            $sql[] = " manufacturer_id IN ( $in )";
+            array_push($values, ...$filterData["manufacturers"]);
+        }
+
+        if (isset($filterData["categories"]) && count($filterData["categories"]) > 0) {
+            $in = join(',', array_fill(0, count($filterData["categories"]), '?'));
+            $sql[] = " product_categories.category_id IN ( $in )";
+            array_push($values, ...$filterData["categories"]);
+        }
+
+        if ($sql) {
+            $query .= ' WHERE' . implode(' AND ', $sql);
+        }
+
+        //$query .= " ORDER BY o.order_date";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute($values);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_product_image = "SELECT name FROM product_images WHERE product_id= :id AND i_order = 0 LIMIT 1";
+            $stmt_image = $this->conn->prepare($sql_product_image);
+
+            $stmt_image->execute([
+                'id' => $row["id"]
+            ]);
+            $image = $stmt_image->fetch(PDO::FETCH_ASSOC);
+
+            $sql_product_price = "SELECT price FROM product_variant WHERE product_id= :id AND v_order = 0 LIMIT 1";
+            $stmt_price = $this->conn->prepare($sql_product_price);
+
+            $stmt_price->execute([
+                'id' => $row["id"]
+            ]);
+            $price = $stmt_price->fetch(PDO::FETCH_ASSOC);
+
+
+            $row["image"] = $image["name"];
+            $row["price"] = $price["price"];
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
 
     public function create(array $data)
     {
@@ -235,8 +312,8 @@ class ProductsGateway
         }
 
         foreach ($data["categories"] as $category) {
-            $sqlCatogory = "INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)";
-            $stmt = $this->conn->prepare($sqlCatogory);
+            $sql_category = "INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)";
+            $stmt = $this->conn->prepare($sql_category);
 
             $stmt->execute([
                 'product_id' => $last_id,
@@ -399,7 +476,7 @@ class ProductsGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
-                $exif = exif_read_data($source);
+                @$exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -431,7 +508,16 @@ class ProductsGateway
                             break;
                     }
                 }
-                imagejpeg($imageResized, $source);
+                if ($info['mime'] == 'image/jpeg')
+                    imagejpeg($imageResized, $source);
+                elseif ($info['mime'] == 'image/gif')
+                    imagegif($imageResized, $source);
+                elseif ($info['mime'] == 'image/png') {
+                    imagesavealpha($imageResized, true);
+                    imagepng($imageResized, $source);
+                } else
+                    imagejpeg($imageResized, $source);
+
                 break;
             }
         } while (true);
@@ -505,5 +591,21 @@ class ProductsGateway
             ]);
             ++$order;
         }
+    }
+
+    public function checkNameAvailability($name)
+    {
+        $sql = "SELECT COUNT(1) FROM products WHERE name = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $name
+        ]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result["COUNT(1)"] == 0) {
+            return true;
+        }
+        return false;
     }
 }

@@ -21,7 +21,17 @@ export default function NewPriceListItem({ loadData, close }) {
 	async function onSubmitCreate(data) {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
-		if (data.start > data.end) {
+		if (data.special_price !== "" && (data.start === "0" || data.end === "0")) {
+			setMessage({ action: "alert", text: "Při určené akční ceně musí být definováno i doba jejího trvání" });
+			return;
+		}
+
+		if (data.special_price === "") {
+			data.start = "";
+			data.end = "";
+		}
+
+		if (Number(data.start) > Number(data.end)) {
 			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně" });
 			return;
 		}
@@ -49,19 +59,10 @@ export default function NewPriceListItem({ loadData, close }) {
 					additionalClasses="half"
 				/>
 
-				<InputBox
-					type="text"
-					name="special_price"
-					icon={faTags}
-					placeholder="Akční cena"
-					register={register}
-					white={true}
-					isRequired={true}
-					additionalClasses="half"
-				/>
+				<InputBox type="text" name="special_price" icon={faTags} placeholder="Akční cena" register={register} white={true} additionalClasses="half" />
 
-				<DatePicker name="start" register={register} white={true} isRequired={true} placeholder="Počáteční datum" additionalClasses="half green" />
-				<DatePicker name="end" register={register} white={true} isRequired={true} placeholder="Konečné datum" additionalClasses="half green" />
+				<DatePicker name="start" register={register} white={true} placeholder="Počáteční datum" additionalClasses="half green" />
+				<DatePicker name="end" register={register} white={true} placeholder="Konečné datum" additionalClasses="half green" />
 				<button type="submit">Uložit</button>
 			</form>
 		</motion.div>

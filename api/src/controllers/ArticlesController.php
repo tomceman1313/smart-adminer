@@ -1,5 +1,5 @@
 <?php
-class ArticlesConroller
+class ArticlesController
 {
     public function __construct(ArticlesGateway $gateway, AdminGateway $adminGateway)
     {

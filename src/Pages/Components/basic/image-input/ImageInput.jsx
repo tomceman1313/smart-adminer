@@ -4,15 +4,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { openImage, publicPath } from "../../../modules/BasicFunctions";
 
-export default function ImageInput({ name, register, path, image }) {
+export default function ImageInput({ name, register, path, image, additionalClasses }) {
 	const [imageIsSet, setImageIsSet] = useState(image ? true : false);
+	let divClassName = `${css.input_box}`;
+	if (additionalClasses) {
+		if (additionalClasses.includes("half")) {
+			divClassName += ` ${css.half}`;
+		}
+	}
 
 	useEffect(() => {
 		image ? setImageIsSet(true) : setImageIsSet(false);
 	}, [image]);
 
 	return (
-		<div className={css.input_box}>
+		<div className={divClassName}>
 			{imageIsSet ? (
 				<div className={css.image_box}>
 					<button type="button" onClick={() => openImage(`${publicPath}/images/${path}/${image}`)}>

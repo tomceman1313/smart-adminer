@@ -17,7 +17,7 @@ export default function Login() {
 
 	const navigate = useNavigate();
 	const location = useLocation();
-	let from = location?.state?.from || "/dashboard";
+	let from = location?.state?.from || "/";
 
 	const auth = useAuth();
 

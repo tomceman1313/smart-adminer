@@ -19,6 +19,8 @@ const Documents = () => {
 	useEffect(() => {
 		document.getElementById("banner-title").innerHTML = "Dokumentový server";
 		document.getElementById("banner-desc").innerHTML = "Správa dokumentů a tvorba kategorií pro jejich rozřazení";
+
+		loadData();
 	}, []);
 
 	const editDocument = (info) => {
@@ -40,25 +42,25 @@ const Documents = () => {
 
 	return (
 		<div className={css.documents}>
-			<Category categories={categories} setCategories={setCategories} apiClass="documents" filterByCategory={filterByCategory} />
+			<Category
+				categories={categories}
+				setCategories={setCategories}
+				apiClass="documents"
+				filterByCategory={filterByCategory}
+				reloadData={loadData}
+			/>
 			<NewDocument auth={auth} refreshData={loadData} categories={categories} />
 			<DocumentList
 				auth={auth}
 				documents={documents}
-				loadData={loadData}
+				reloadData={loadData}
 				selectedCategory={selectedCategory}
 				setSelectedCategory={setSelectedCategory}
 				editDocument={editDocument}
 			/>
 			<AnimatePresence>
 				{editedDocument && (
-					<EditDocument
-						editedDocument={editedDocument}
-						auth={auth}
-						categories={categories}
-						setDocuments={setDocuments}
-						setVisible={setEditedDocument}
-					/>
+					<EditDocument editedDocument={editedDocument} auth={auth} categories={categories} refreshData={loadData} setVisible={setEditedDocument} />
 				)}
 			</AnimatePresence>
 		</div>

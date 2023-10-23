@@ -50,7 +50,7 @@ const Events = () => {
 
 	const openEventDetails = (e) => {
 		const id = e.currentTarget.id;
-		navigate(`/dashboard/event/${id}`);
+		navigate(`/event/${id}`);
 	};
 
 	async function filterByCategory(id) {
@@ -63,7 +63,7 @@ const Events = () => {
 
 	return (
 		<div className={css.articles}>
-			<Category categories={categories} setCategories={setCategories} apiClass="events" filterByCategory={filterByCategory} />
+			<Category categories={categories} setCategories={setCategories} apiClass="events" filterByCategory={filterByCategory} reloadData={loadData} />
 			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
 			<section className={css.filter}>
 				<h2>Filtrovat:</h2>
@@ -93,7 +93,7 @@ const Events = () => {
 						</article>
 					))}
 			</section>
-			<PlusButton onClick={() => navigate(`/dashboard/new-event/`)} />
+			<PlusButton onClick={() => navigate(`/new-event/`)} />
 		</div>
 	);
 };

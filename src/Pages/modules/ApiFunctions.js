@@ -1,6 +1,6 @@
 //before production change BASE_URL, publicFolderPath.php and publicPath (BasicFunctions.js)
 
-//export const BASE_URL = "https://smart-studio.fun/admin";
+//export const BASE_URL = "https://smart-studio.cz/demo/sulicka/admin";
 export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass) {
@@ -16,6 +16,16 @@ export async function getAll(apiClass) {
 export async function get(apiClass, id) {
 	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=get&id=${id}`, {
 		method: "GET",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
+export async function checkNameAvailability(apiClass, name) {
+	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=checkNameAvailability`, {
+		method: "POST",
+		body: JSON.stringify({ name: name }),
 	});
 
 	const data = await response.json();
@@ -188,7 +198,7 @@ export function editRole(data, setAlert, positiveText, auth) {
 }
 
 export function refreshAccessToken(navigate, from, auth) {
-	let fromPath = "/dashboard";
+	let fromPath = "/";
 	if (from) {
 		fromPath = from;
 	}

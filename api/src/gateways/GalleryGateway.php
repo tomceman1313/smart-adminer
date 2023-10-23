@@ -99,11 +99,8 @@ class GalleryGateway
 
         // base64-encoded image data
         list(, $encodedImageData) = explode(',', $imageData);
-
-
         // decode base64-encoded image data
         $decodedImageData = base64_decode($encodedImageData);
-
         // save image data as file
         $image_name = uniqid();
         if (file_put_contents("{$this->path}/images/gallery/{$image_name}.{$imageExtension}", $decodedImageData)) {
@@ -377,7 +374,7 @@ class GalleryGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
-                $exif = exif_read_data($source);
+                @$exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -389,9 +386,9 @@ class GalleryGateway
                     $image = imagecreatefrompng($source);
 
 
-                if ($width > 1920) {
+                if ($width > 1600) {
                     $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
+                    $imageResized = imagescale($image, 1600, 1600 / $aspectRatio);
                 } else {
                     $imageResized = $image;
                 }
@@ -409,7 +406,17 @@ class GalleryGateway
                             break;
                     }
                 }
-                imagejpeg($imageResized, $source);
+
+                if ($info['mime'] == 'image/jpeg')
+                    imagejpeg($imageResized, $source);
+                elseif ($info['mime'] == 'image/gif')
+                    imagegif($imageResized, $source);
+                elseif ($info['mime'] == 'image/png') {
+                    imagesavealpha($imageResized, true);
+                    imagepng($imageResized, $source);
+                } else
+                    imagejpeg($imageResized, $source);
+
                 break;
             }
         } while (true);

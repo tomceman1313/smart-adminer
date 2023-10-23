@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //dev
 export const publicPath = "/admin";
 //production
-//export const publicPath = "https://smart-studio.fun/admin";
+//export const publicPath = "https://smart-studio.cz/demo/sulicka/admin";
 
 /**
  ** Creates random ID for temporary use
@@ -38,7 +38,7 @@ export function makeDate(year, month, day) {
  */
 export function makeDateFormat(date, direction) {
 	let dateStr = date.toString();
-	let dateFormated;
+	let dateFormatted;
 	if (date === 0) {
 		return "";
 	}
@@ -48,16 +48,16 @@ export function makeDateFormat(date, direction) {
 	}
 
 	if (direction === "str") {
-		dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
-		//dateFormated = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
+		dateFormatted = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		//dateFormatted = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
 	} else if (direction === "text") {
-		//dateFormated = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
-		dateFormated = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
+		//dateFormatted = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		dateFormatted = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
 	} else {
 		let dateArray = dateStr.split("-");
-		dateFormated = Number(dateArray[0] + dateArray[1] + dateArray[2]);
+		dateFormatted = Number(dateArray[0] + dateArray[1] + dateArray[2]);
 	}
-	return dateFormated;
+	return dateFormatted;
 }
 
 /**

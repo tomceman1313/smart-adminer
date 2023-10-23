@@ -91,7 +91,7 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 						))}
 				</AnimatePresence>
 			</section>
-			{images && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/dashboard/gallery"} />}
+			{images && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/gallery"} />}
 			<AnimatePresence>{showEditCont && <EditPicture image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}</AnimatePresence>
 		</>
 	);

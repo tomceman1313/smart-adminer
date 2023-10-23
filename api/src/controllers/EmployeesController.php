@@ -1,5 +1,5 @@
 <?php
-class EmployeesConroller
+class EmployeesController
 {
     public function __construct(EmployeesGateway $gateway, AdminGateway $adminGateway)
     {
@@ -69,6 +69,7 @@ class EmployeesConroller
             echo json_encode([
                 "message" => "Access denied"
             ]);
+            return;
         }
 
         switch ($action) {

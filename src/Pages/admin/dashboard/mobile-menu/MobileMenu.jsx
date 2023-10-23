@@ -88,10 +88,10 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/users" onClick={setActiveLink} id="users">
+								<Link to="/users" onClick={setActiveLink} id="users">
 									Seznam uživatelů
 								</Link>
-								<Link to="/dashboard/register" onClick={setActiveLink} id="register">
+								<Link to="/register" onClick={setActiveLink} id="register">
 									Register
 								</Link>
 							</article>
@@ -105,10 +105,10 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/employees" onClick={setActiveLink} id="employees_list">
+								<Link to="/employees" onClick={setActiveLink} id="employees_list">
 									Seznam zaměstnanců
 								</Link>
-								<Link to="/dashboard/vacancies" onClick={setActiveLink} id="vacancies">
+								<Link to="/vacancies" onClick={setActiveLink} id="vacancies">
 									Inzerované pozice
 								</Link>
 							</article>
@@ -122,16 +122,16 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/pricelist" onClick={setActiveLink} id="pricelist">
+								<Link to="/pricelist" onClick={setActiveLink} id="pricelist">
 									Ceník
 								</Link>
-								<Link to="/dashboard/gallery" onClick={setActiveLink} id="gallery">
+								<Link to="/gallery" onClick={setActiveLink} id="gallery">
 									Galerie
 								</Link>
-								<Link to="/dashboard/documents" onClick={setActiveLink} id="documents">
+								<Link to="/documents" onClick={setActiveLink} id="documents">
 									Dokumenty
 								</Link>
-								<Link to="/dashboard/notifications" onClick={setActiveLink} id="notifications">
+								<Link to="/notifications" onClick={setActiveLink} id="notifications">
 									Upozornění
 								</Link>
 							</article>
@@ -145,10 +145,10 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/articles" onClick={setActiveLink} id="allArticles">
+								<Link to="/articles" onClick={setActiveLink} id="allArticles">
 									Přehled článků
 								</Link>
-								<Link to="/dashboard/new-article" onClick={setActiveLink} id="new-article">
+								<Link to="/new-article" onClick={setActiveLink} id="new-article">
 									Nový článek
 								</Link>
 							</article>
@@ -162,10 +162,10 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/events" onClick={setActiveLink} id="events">
+								<Link to="/events" onClick={setActiveLink} id="events">
 									Přehled událostí
 								</Link>
-								<Link to="/dashboard/new-event" onClick={setActiveLink} id="new-event">
+								<Link to="/new-event" onClick={setActiveLink} id="new-event">
 									Nová událost
 								</Link>
 							</article>
@@ -179,10 +179,10 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/products" onClick={setActiveLink} id="products">
+								<Link to="/products" onClick={setActiveLink} id="products">
 									Přehled produktů
 								</Link>
-								<Link to="/dashboard/new-product" onClick={setActiveLink} id="new-product">
+								<Link to="/new-product" onClick={setActiveLink} id="new-product">
 									Nový produkt
 								</Link>
 							</article>
@@ -196,7 +196,7 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/orders" onClick={setActiveLink} id="orders">
+								<Link to="/orders" onClick={setActiveLink} id="orders">
 									Přehled objednávek
 								</Link>
 							</article>
@@ -210,7 +210,7 @@ const MobileMenu = ({ logOut }) => {
 							</div>
 
 							<article>
-								<Link to="/dashboard/profile" onClick={setActiveLink} id="profile">
+								<Link to="/profile" onClick={setActiveLink} id="profile">
 									Uživatelský profil
 								</Link>
 							</article>

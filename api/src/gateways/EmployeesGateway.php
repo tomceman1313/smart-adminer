@@ -79,7 +79,7 @@ class EmployeesGateway
             $stmt = $this->conn->prepare($sql_department);
             $stmt->execute([
                 'employee_id' => $last_id,
-                'department_id' => $item["id"]
+                'department_id' => $item["department_id"]
             ]);
         }
     }
@@ -146,7 +146,7 @@ class EmployeesGateway
             $stmt = $this->conn->prepare($sql_new_dep);
             $stmt->execute([
                 'employee_id' => $data["id"],
-                'department_id' => $item["id"]
+                'department_id' => $item["department_id"]
             ]);
         }
 
@@ -203,7 +203,7 @@ class EmployeesGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
-                $exif = exif_read_data($source);
+                @$exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -235,7 +235,15 @@ class EmployeesGateway
                             break;
                     }
                 }
-                imagejpeg($imageResized, $source);
+                if ($info['mime'] == 'image/jpeg')
+                    imagejpeg($imageResized, $source);
+                elseif ($info['mime'] == 'image/gif')
+                    imagegif($imageResized, $source);
+                elseif ($info['mime'] == 'image/png') {
+                    imagesavealpha($imageResized, true);
+                    imagepng($imageResized, $source);
+                } else
+                    imagejpeg($imageResized, $source);
                 break;
             }
         } while (true);

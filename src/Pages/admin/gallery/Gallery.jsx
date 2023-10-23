@@ -25,7 +25,7 @@ const Gallery = () => {
 
 	// Remove page number when selected category is changed
 	useEffect(() => {
-		navigate("/dashboard/gallery/");
+		navigate("/gallery/");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedCategory]);
 
@@ -38,6 +38,7 @@ const Gallery = () => {
 		const data = await getAll("gallery");
 		allLoadedImages.current = data;
 		sliceDataBasedOnPageNumber(data, 12, page, setImages);
+		setSelectedCategory(null);
 	}
 
 	async function filterImagesByCategory(id) {
@@ -50,7 +51,13 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
-			<Category filterByCategory={filterImagesByCategory} categories={categories} setCategories={setCategories} apiClass="gallery" />
+			<Category
+				filterByCategory={filterImagesByCategory}
+				categories={categories}
+				setCategories={setCategories}
+				apiClass="gallery"
+				reloadData={loadData}
+			/>
 			<NewPicture auth={auth} setImages={setImages} categories={categories} />
 			<Images
 				images={images}

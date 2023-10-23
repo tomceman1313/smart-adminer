@@ -52,14 +52,22 @@ class OrdersGateway
 
     public function getAll(): array
     {
-        $sql = "SELECT o.*, os.name AS status_name, st.name AS shipping_type FROM orders 
-        AS o INNER JOIN order_status AS os ON o.status_code = os.id INNER JOIN shipping_type AS st ON o.shipping_type_id = st.id";
+        $sql = "SELECT o.*, os.name as status_name, os.public_name, st.name as shipping_type FROM orders 
+        AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute();
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_price_sum = "SELECT SUM(price_piece * quantity) as order_sum_price FROM ordered_products WHERE order_id = :order_id";
+            $stmt_price_sum = $this->conn->prepare($sql_price_sum);
+            $stmt_price_sum->execute([
+                'order_id' => $row["id"]
+            ]);
+
+            $price = $stmt_price_sum->fetch(PDO::FETCH_ASSOC);
+            $row["price_sum"] = intval($price["order_sum_price"]);
             $data[] = $row;
         }
 
@@ -102,27 +110,30 @@ class OrdersGateway
         AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id";
 
         $sql = [];
-        $parameters = [];
+        $values = [];
 
         if (isset($filterData["status"]) && count($filterData["status"]) > 0) {
-            $sql[] = " status_code IN ( :status )";
-            $parameters["status"] = implode(",", $filterData["status"]);
+            $in = join(',', array_fill(0, count($filterData["status"]), '?'));
+            $sql[] = " status_code IN ( $in )";
+            array_push($values, ...$filterData["status"]);
         }
 
         if (isset($filterData["order_date"]["start"])) {
-            $sql[] = " order_date BETWEEN :date_start AND :date_end";
-            $parameters["date_start"] =  $filterData["order_date"]["start"];
-            $parameters["date_end"] = $filterData["order_date"]["end"];
+            $sql[] = " order_date BETWEEN ? AND ?";
+            array_push($values, $filterData["order_date"]["start"]);
+            array_push($values, $filterData["order_date"]["end"]);
         }
 
         if (isset($filterData["shipping_type"]) && count($filterData["shipping_type"]) > 0) {
-            $sql[] = " shipping_type_id IN ( :shipping_type )";
-            $parameters["shipping_type"] = implode(",", $filterData["shipping_type"]);
+            $in = join(',', array_fill(0, count($filterData["shipping_type"]), '?'));
+            $sql[] = " shipping_type_id IN ( $in )";
+            array_push($values, ...$filterData["shipping_type"]);
         }
 
         if (isset($filterData["payment_method"]) && count($filterData["payment_method"]) > 0) {
-            $sql[] = " payment_method IN ( :payment_method )";
-            $parameters["payment_method"] = implode(",", $filterData["payment_method"]);
+            $in = join(',', array_fill(0, count($filterData["payment_method"]), '?'));
+            $sql[] = " payment_method IN ( $in )";
+            array_push($values, ...$filterData["payment_method"]);
         }
 
         if ($sql) {
@@ -133,7 +144,7 @@ class OrdersGateway
 
         $stmt = $this->conn->prepare($query);
 
-        $stmt->execute($parameters);
+        $stmt->execute($values);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -154,15 +165,23 @@ class OrdersGateway
     public function findById($id): array
     {
         $sql = "SELECT o.*, os.name as status_name, st.name as shipping_type FROM orders 
-        AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id WHERE o.id = :id LIMIT 1";
+        AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id WHERE o.id LIKE :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'id' => $id
+            'id' => $id . "%"
         ]);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql_price_sum = "SELECT SUM(price_piece * quantity) as order_sum_price FROM ordered_products WHERE order_id = :order_id";
+            $stmt_price_sum = $this->conn->prepare($sql_price_sum);
+            $stmt_price_sum->execute([
+                'order_id' => $row["id"]
+            ]);
+
+            $price = $stmt_price_sum->fetch(PDO::FETCH_ASSOC);
+            $row["price_sum"] = intval($price["order_sum_price"]);
             $data[] = $row;
         }
 

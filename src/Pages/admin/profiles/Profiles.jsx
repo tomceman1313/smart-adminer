@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
-import { getAllWithAuth, edit, remove } from "../../modules/ApiFunctions";
+import { getAllWithAuth, edit, remove, checkNameAvailability } from "../../modules/ApiFunctions";
 import UserList from "./UserList";
 import useInteraction from "../../Hooks/useInteraction";
 import PlusButton from "../../Components/basic/PlusButton";
@@ -26,24 +26,31 @@ export default function Profiles() {
 		setUsers(data);
 	}
 
-	const deleteHandler = (id) => {
-		remove("admin", id, setMessage, "Profil odstraněn", auth);
+	async function deleteHandler(id) {
+		await remove("admin", id, setMessage, "Profil odstraněn", auth);
 		let list = document.querySelector(`.${css.users} ul`);
 		list.style.opacity = 1;
 		loadData();
-	};
+	}
 
-	const handleEdit = (data) => {
-		edit("admin", data, setMessage, "Profil byl upraven", auth);
+	async function handleEdit(data, previousUserName) {
+		const isAvailable = await checkNameAvailability("admin", data.username);
+		if (previousUserName !== data.username && !isAvailable) {
+			setMessage({ action: "alert", text: "Zvolené uživatelské jméno je již obsazené" });
+			return false;
+		}
+
+		await edit("admin", data, setMessage, "Profil byl upraven", auth);
 		let list = document.querySelector(`.${css.users} ul`);
 		list.style.opacity = 1;
 		loadData();
-	};
+		return true;
+	}
 
 	return (
 		<section className="no-section" style={{ position: "relative" }}>
 			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={deleteHandler} css={css} />}</div>
-			<PlusButton onClick={() => navigate(`/dashboard/register/`)} />
+			<PlusButton onClick={() => navigate(`/register/`)} />
 		</section>
 	);
 }

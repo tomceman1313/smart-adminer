@@ -69,8 +69,14 @@ export default function Article() {
 	async function onSubmit(data) {
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "articles");
+
+		if (data.body === "") {
+			setMessage({ action: "alert", text: "Vyplňte text článku" });
+			return;
+		}
+
 		data.active = data.active ? 1 : 0;
-		if (data.image[0]) {
+		if (data.image?.[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
 			if (article) {
@@ -96,14 +102,14 @@ export default function Article() {
 			getData();
 		} else {
 			await create("articles", data, setMessage, "Článek byl vytvořen", auth);
-			navigation("/dashboard/articles");
+			navigation("/articles");
 		}
 		reset();
 	}
 
 	async function removeHandler() {
 		await remove("articles", article.id, setMessage, "Článek byl smazán", auth);
-		navigation("/dashboard/articles");
+		navigation("/articles");
 	}
 
 	async function removeArticle() {
@@ -121,7 +127,7 @@ export default function Article() {
 
 			<section>
 				<h2>Doplňující informace</h2>
-				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
+				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" isRequired={true} />
 				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie článku --" />
 				<ImageInput image={article?.image} name="image" path="articles" register={register} />
 			</section>
@@ -138,10 +144,10 @@ export default function Article() {
 
 				<div className={css.control_box}>
 					<button>Uložit</button>
-					<button type="button" className={css.btn_preview}>
+					{/* <button type="button" className={css.btn_preview}>
 						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 						Náhled článku
-					</button>
+					</button> */}
 					{article && (
 						<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
 							Smazat

@@ -57,6 +57,21 @@ class ProductsController
                 echo json_encode($data);
                 return;
 
+            case 'getByName':
+                if (isset($_GET["name"])) {
+                    $name = $_GET["name"];
+                    $data = $this->gateway->getByName($name);
+                    http_response_code(200);
+                    echo json_encode($data);
+                }
+                return;
+
+            case 'filter':
+                $response = $this->gateway->filterProducts($data);
+                http_response_code(200);
+                echo json_encode($response);
+                return;
+
             case 'getByIds':
                 $data = $this->gateway->getByIds($data);
                 http_response_code(200);
@@ -72,6 +87,11 @@ class ProductsController
             case 'getManufacturers':
                 $result = $this->manufacturer->getAll();
                 http_response_code(201);
+                echo json_encode($result);
+                return;
+            case 'checkNameAvailability':
+                $result = $this->gateway->checkNameAvailability($data["name"]);
+                http_response_code(200);
                 echo json_encode($result);
                 return;
         }

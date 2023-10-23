@@ -85,3 +85,7 @@
 .image_box button:nth-of-type(2) {
 	background-color: var(--green-dark);
 }
+
+.half {
+	width: calc(50% - 20px);
+}

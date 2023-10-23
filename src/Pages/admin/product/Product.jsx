@@ -7,7 +7,7 @@ import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
-import { create, edit, remove } from "../../modules/ApiFunctions";
+import { create, edit, remove, checkNameAvailability } from "../../modules/ApiFunctions";
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
 import { getProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
@@ -35,6 +35,7 @@ export default function ProductNew() {
 	const [variants, setVariants] = useState([]);
 	const [parameters, setParameters] = useState([]);
 	const [detailText, setDetailText] = useState("");
+	const originalProduct = useRef({});
 	const originalImages = useRef([]);
 	const [images, setImages] = useState(null);
 	const { register, handleSubmit, setValue, reset } = useForm();
@@ -60,7 +61,7 @@ export default function ProductNew() {
 
 	async function setData() {
 		const productData = await getProduct(id);
-		console.log(productData);
+		originalProduct.current = productData;
 		setValue("manufacturer_id", productData.manufacturer_id);
 		setValue("name", productData.name);
 		setValue("description", productData.description);
@@ -76,8 +77,16 @@ export default function ProductNew() {
 	}
 
 	async function onSubmit(data) {
+		const isAvailable = await checkNameAvailability("products", data.name);
+
 		if (variants.length === 0) {
-			setMessage({ action: "alert", text: "Produkt musí obsahovat minimálně jednu variantu." });
+			setMessage({ action: "alert", text: "Produkt musí obsahovat minimálně jednu variantu" });
+			return;
+		}
+
+		if ((images?.length === 0 || images === null) && data.images.length === 0) {
+			console.log(images);
+			setMessage({ action: "alert", text: "Produkt musí obsahovat minimálně jeden obrázek" });
 			return;
 		}
 
@@ -86,6 +95,7 @@ export default function ProductNew() {
 			item.parameters = params;
 			return item;
 		});
+
 		data.variants = variantsWithParams;
 		const detailInnerImages = [];
 		data.detail = await formatBody(detailText, detailInnerImages, "products");
@@ -102,14 +112,25 @@ export default function ProductNew() {
 
 		data.categories = pickedCategories;
 		if (id) {
+			if (originalProduct.current.name !== data.name && !isAvailable) {
+				setMessage({ action: "alert", text: "Produkt s tímto názvem již existuje" });
+				return;
+			}
 			data.id = id;
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
-			//console.log(data);
+			console.log(data);
 			await edit("products", data, setMessage, "Produkt upraven", auth);
+			reset();
+			setData();
 		} else {
+			if (!isAvailable) {
+				setMessage({ action: "alert", text: "Produkt s tímto názvem již existuje" });
+				return;
+			}
+			console.log(data);
 			await create("products", data, setMessage, "Produkt vložen", auth);
-			navigate(`/dashboard/products`);
+			navigate(`/products`);
 		}
 	}
 
@@ -140,7 +161,7 @@ export default function ProductNew() {
 
 	async function deleteHandler() {
 		await remove("products", id, setMessage, "Produkt byl smazán", auth);
-		navigate(`/dashboard/products`);
+		navigate(`/products`);
 	}
 
 	function deleteProduct() {
@@ -190,10 +211,10 @@ export default function ProductNew() {
 				<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
 				<div className={css.control_box}>
 					<button>Uložit</button>
-					<button type="button" className="blue_button">
+					{/* <button type="button" className="blue_button">
 						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 						Náhled produktu
-					</button>
+					</button> */}
 					{id && (
 						<button type="button" className="red_button" onClick={deleteProduct}>
 							Smazat

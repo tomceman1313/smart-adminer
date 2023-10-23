@@ -23,7 +23,7 @@
 	background-color: var(--green);
 	width: 100%;
 	max-width: 400px;
-	z-index: 1;
+	z-index: 3;
 }
 
 .add_files_cont button {

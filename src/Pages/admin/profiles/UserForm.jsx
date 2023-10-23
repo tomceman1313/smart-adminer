@@ -15,10 +15,12 @@ const PRIVILEGES = [
 
 const UserForm = ({ userData, setState, handleEdit }) => {
 	const { register, handleSubmit, reset } = useForm();
-	const onSubmit = (data) => {
-		handleEdit(data);
-		setState(false);
-	};
+	async function onSubmit(data) {
+		const result = await handleEdit(data, userData.username);
+		if (result) {
+			setState(false);
+		}
+	}
 
 	return (
 		<AnimatePresence>

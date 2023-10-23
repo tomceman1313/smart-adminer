@@ -91,6 +91,11 @@ class AdminController
                     ]);
                 }
                 return;
+            case 'checkNameAvailability':
+                $result = $this->gateway->checkNameAvailability($data["name"]);
+                http_response_code(200);
+                echo json_encode($result);
+                return;
         }
 
         if (!$authAction) {

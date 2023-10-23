@@ -47,8 +47,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 		} else {
 			delete data.image;
 		}
-		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.includes(el));
-		console.log(data);
+		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.find((dep) => dep.name === el.name));
 		if (employee?.id) {
 			data.departments_deleted = deletedDepartments.current;
 			await edit("employees", data, setMessage, "Profil zaměstnance byl upraven", auth);
@@ -65,7 +64,8 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	function resetForm() {
 		reset({ degree_before: "", fname: "", lname: "", degree_after: "", phone: "", email: "", position: "", notes: "", id: "" });
 		setPickedDepartments([]);
-		originalDepartments.current = null;
+		originalDepartments.current = [];
+		deletedDepartments.current = [];
 		setEmployee(null);
 	}
 
@@ -86,15 +86,14 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	}
 
 	const chooseCategory = (e) => {
-		const name = departments.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedDepartments.find((item) => item.department_id === parseInt(e.target.value));
+		const selectedDepartment = departments.find((item) => item.id === parseInt(e.target.value));
+		const alreadyIn = pickedDepartments.find((item) => item.department_id === selectedDepartment.id);
 		setValue("department_id", "");
 		if (alreadyIn) {
 			return;
 		}
-
-		if (name.length !== 0) {
-			setPickedDepartments((prev) => [...prev, name[0]]);
+		if (selectedDepartment) {
+			setPickedDepartments((prev) => [...prev, { department_id: selectedDepartment.id, name: selectedDepartment.name }]);
 		}
 	};
 

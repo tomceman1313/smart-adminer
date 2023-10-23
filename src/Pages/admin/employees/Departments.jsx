@@ -42,6 +42,7 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 
 	const remove = async (id) => {
 		await removeDepartment(id, auth, setMessage);
+		get();
 		refreshAllData();
 	};
 

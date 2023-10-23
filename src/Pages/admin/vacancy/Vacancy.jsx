@@ -1,4 +1,4 @@
-import { faCalendarDays, faEye, faHeading, faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays, faEye, faHeading, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -7,10 +7,12 @@ import TextEditor from "../../Components/admin/TextEditor";
 import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { get, remove, edit, create } from "../../modules/ApiFunctions";
-import { convertBase64, openImage, publicPath, makeDateFormat } from "../../modules/BasicFunctions";
+import { create, edit, get, remove } from "../../modules/ApiFunctions";
+import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import { removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 
+import ImageInput from "../../Components/basic/image-input/ImageInput";
+import Switch from "../../Components/basic/switch/Switch";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Vacancy.module.css";
 
@@ -21,7 +23,6 @@ export default function Vacancy() {
 	const { register, setValue, handleSubmit, reset } = useForm();
 	const [vacancy, setVacancy] = useState(null);
 	const [detailText, setDetailText] = useState(null);
-	const [imageIsSet, setImageIsSet] = useState(false);
 
 	const { id } = useParams();
 	let location = useLocation();
@@ -35,7 +36,6 @@ export default function Vacancy() {
 		} else {
 			reset();
 			setDetailText("");
-			setImageIsSet(false);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
@@ -47,7 +47,6 @@ export default function Vacancy() {
 		setValue("description", data.description);
 		setValue("date", makeDateFormat(data.date, "str"));
 		setValue("active", data.active);
-		setImageIsSet(data.image);
 		setDetailText(data.detail);
 		setVacancy(data);
 	}
@@ -56,6 +55,12 @@ export default function Vacancy() {
 		data.date = makeDateFormat(data.date);
 		data.detail = removeEmptyParagraphs(detailText);
 		data.active = data.active ? 1 : 0;
+
+		if (data.detail === "") {
+			setMessage({ action: "alert", text: "Detailní popis musí být vyplněn" });
+			return;
+		}
+
 		if (data.image[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
@@ -71,13 +76,13 @@ export default function Vacancy() {
 			await edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
 			setData();
 		} else {
-			create("vacancies", data, setMessage, "Inzerát by vytvořen", auth);
-			navigation("/dashboard/vacancies", { replace: true });
+			await create("vacancies", data, setMessage, "Inzerát by vytvořen", auth);
+			navigation("/vacancies", { replace: true });
 		}
 	}
 
 	function deleteHandler(id) {
-		navigation("/dashboard/vacancies", { replace: true });
+		navigation("/vacancies", { replace: true });
 		remove("vacancies", id, setMessage, "Inzerát byl odstraněn", auth);
 	}
 
@@ -99,29 +104,10 @@ export default function Vacancy() {
 							<FontAwesomeIcon className={cssBasic.icon} icon={faCalendarDays} />
 						</div>
 
-						<div className={`${cssBasic.input_box} ${css.half}`}>
-							{imageIsSet ? (
-								<div className={cssBasic.image_box}>
-									<button type="button" onClick={() => openImage(`${publicPath}/images/vacancies/${imageIsSet}`)}>
-										Zobrazit obrázek
-									</button>
-									<button type="button" onClick={() => setImageIsSet(false)}>
-										Změnit obrázek
-									</button>
-								</div>
-							) : (
-								<input type="file" {...register("image")} accept="image/*" required />
-							)}
-
-							<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-						</div>
+						<ImageInput image={vacancy?.image} name="image" path="vacancies" register={register} additionalClasses="half" />
 					</div>
 
-					<p>Inzerát je viditelný: </p>
-					<label className="switch">
-						<input type="checkbox" {...register("active")} />
-						<span className="slider"></span>
-					</label>
+					<Switch name="active" label="Inzerát je viditelný:" register={register} />
 				</section>
 
 				<section className={css.detail}>
@@ -129,10 +115,10 @@ export default function Vacancy() {
 					<TextEditor value={detailText} setValue={setDetailText} />
 					<div className={css.control_box}>
 						<button>Uložit</button>
-						<button type="button" className="blue_button">
+						{/* <button type="button" className="blue_button">
 							<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 							Náhled inzerátu
-						</button>
+						</button> */}
 						{id && (
 							<button type="button" className="red_button" onClick={deleteVacancy}>
 								Smazat

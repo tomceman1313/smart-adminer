@@ -67,7 +67,7 @@ if ($method == "OPTIONS") {
 $database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
 
 //production
-//$database = new Database("localhost", "u351850998_dbtest", "u351850998_admin_test", "Tomikz13");
+//$database = new Database("localhost", "u351850998_cms", "u351850998_tomas", "Tomikz13");
 $class = null;
 $action = null;
 $id = null;
@@ -105,19 +105,19 @@ switch ($class) {
         break;
     case 'pricelist':
         $gateway = new PricelistGateway($database);
-        $controller = new PricelistConroller($gateway, $admin);
+        $controller = new PricelistController($gateway, $admin);
 
         $controller->processRequest($action, $id);
         break;
     case 'notifications':
         $gateway = new NotificationsGateway($database);
-        $controller = new NotificationsConroller($gateway, $admin);
+        $controller = new NotificationsController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
 
     case 'articles':
         $gateway = new ArticlesGateway($database);
-        $controller = new ArticlesConroller($gateway, $admin);
+        $controller = new ArticlesController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     case 'gallery':
@@ -133,18 +133,18 @@ switch ($class) {
         break;
     case 'events':
         $gateway = new EventsGateway($database);
-        $controller = new EventsConroller($gateway, $admin);
+        $controller = new EventsController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
 
     case 'vacancies':
         $gateway = new VacancyGateway($database);
-        $controller = new VacancyConroller($gateway, $admin);
+        $controller = new VacancyController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     case 'employees':
         $gateway = new EmployeesGateway($database);
-        $controller = new EmployeesConroller($gateway, $admin);
+        $controller = new EmployeesController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     case 'orders':

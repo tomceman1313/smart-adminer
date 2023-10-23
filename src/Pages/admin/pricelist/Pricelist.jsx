@@ -11,7 +11,6 @@ import PlusButton from "../../Components/basic/PlusButton";
 
 const Pricelist = () => {
 	const [prices, setPrices] = useState(null);
-
 	const [events, setEvents] = useState([]);
 
 	const [priceItem, setPriceItem] = useState(false);
@@ -59,7 +58,7 @@ const Pricelist = () => {
 								<tr key={item.id} onClick={() => setPriceItem(item)}>
 									<td>{item.name}</td>
 									<td>{item.price} Kč</td>
-									<td>{item.special_price} Kč</td>
+									<td>{item.special_price !== 0 ? item.special_price : "---"} Kč</td>
 									<td>{isActive(item.special_price_start, item.special_price_end, css)}</td>
 								</tr>
 							))}

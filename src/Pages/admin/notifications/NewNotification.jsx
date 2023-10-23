@@ -20,11 +20,10 @@ export default function NewNotification({ loadData, setShowCreateNotification })
 	const { register, handleSubmit, reset } = useForm();
 
 	async function onSubmitCreate(data) {
-		//FIXME check if path does not contain whitespace
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
-		if (data.start > data.end) {
-			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně", timeout: 6000 });
+		if (Number(data.start) > Number(data.end)) {
+			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně" });
 			return;
 		}
 
@@ -42,14 +41,11 @@ export default function NewNotification({ loadData, setShowCreateNotification })
 		<motion.div className={css.add_notification} initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ duration: 0.7 }}>
 			<FontAwesomeIcon id={css.close} icon={faXmark} onClick={hide} />
 			<form onSubmit={handleSubmit(onSubmitCreate)}>
-				<h2>Nová položka</h2>
+				<h2>Nová notifikace</h2>
 
 				<InputBox type="text" name="title" icon={faHeading} placeholder="Nadpis" register={register} white={true} isRequired={true} />
-
 				<InputBox type="text" name="path" icon={faGlobe} placeholder="Url adresa" register={register} white={true} isRequired={true} />
-
 				<InputBox type="text" name="text" icon={faQuoteRight} placeholder="Text upozornění" register={register} white={true} isRequired={true} />
-
 				<DatePicker name="start" register={register} white={true} isRequired={true} placeholder="Počáteční datum" additionalClasses="half green" />
 				<DatePicker name="end" register={register} white={true} isRequired={true} placeholder="Konečné datum" additionalClasses="half green" />
 				<button type="submit">Uložit</button>

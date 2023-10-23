@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileWord, faCircle, faFilePdf, faFileZipper, faFileVideo, faFileImage, faFileLines } from "@fortawesome/free-regular-svg-icons";
 import { faCircleCheck, faDownload, faTrashCan, faPen } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
+import { publicPath } from "../../modules/BasicFunctions";
 
 import css from "./css/Documents.module.css";
 const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, editDocument }) => {
@@ -36,7 +37,7 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, edi
 	};
 
 	const downloadDocument = () => {
-		window.open(`/admin/files/documents/${info.name}`, "_blank").focus();
+		window.open(`${publicPath}/files/documents/${info.name}`, "_blank").focus();
 	};
 
 	const setFileIcon = (format) => {

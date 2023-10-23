@@ -68,6 +68,12 @@ const Event = () => {
 	const onSubmit = async (data) => {
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "events");
+
+		if (data.body === "") {
+			setMessage({ action: "alert", text: "Vyplňte text události" });
+			return;
+		}
+
 		data.active = data.active ? 1 : 0;
 		if (data.image?.[0]) {
 			const base64 = await convertBase64(data.image[0]);
@@ -94,15 +100,16 @@ const Event = () => {
 			await edit("events", data, setMessage, "Událost byla upravena", auth);
 			loadData();
 		} else {
+			console.log(data);
 			await create("events", data, setMessage, "Událost byla upravena", auth);
-			navigation("/dashboard/events");
+			navigation("/events");
 		}
 		reset();
 	};
 
 	async function removeHandler() {
 		await remove("events", event.id, setMessage, "Událost byla odstraněna", auth);
-		navigation("/dashboard/events");
+		navigation("/events");
 	}
 
 	const removeArticle = () => {
@@ -122,7 +129,7 @@ const Event = () => {
 				<h2>Doplňující informace</h2>
 				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
 				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie události --" />
-				{event && <ImageInput image={event.image} name="image" path="events" register={register} />}
+				<ImageInput image={event?.image} name="image" path="events" register={register} />
 			</section>
 
 			<section>
@@ -132,10 +139,10 @@ const Event = () => {
 
 				<div className={css.control_box}>
 					<button>Uložit</button>
-					<button type="button" className={css.btn_preview}>
+					{/* <button type="button" className={css.btn_preview}>
 						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 						Náhled události
-					</button>
+					</button> */}
 					{event && (
 						<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
 							Smazat

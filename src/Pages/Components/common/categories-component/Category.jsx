@@ -11,17 +11,17 @@ import Item from "../../../admin/gallery/Item";
 
 import css from "./Category.module.css";
 
-const Category = ({ categories, setCategories, apiClass, filterByCategory }) => {
+const Category = ({ categories, setCategories, apiClass, filterByCategory, reloadData }) => {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
 
 	useEffect(() => {
-		get();
+		loadCategories();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const get = () => {
+	const loadCategories = () => {
 		getCategories(setCategories, apiClass);
 	};
 
@@ -32,17 +32,23 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory }) => 
 		}
 		await createCategory(data, auth, setMessage, apiClass);
 		setValue("name", "");
-		get();
+		loadCategories();
 	};
 
 	const update = async (data) => {
 		await updateCategory(data, auth, setMessage, apiClass);
-		get();
+		loadCategories();
+		if (reloadData) {
+			reloadData();
+		}
 	};
 
 	const remove = async (id) => {
 		await deleteCategory(id, auth, setMessage, apiClass);
-		get();
+		loadCategories();
+		if (reloadData) {
+			reloadData();
+		}
 	};
 
 	return (

@@ -32,7 +32,7 @@ const Articles = () => {
 
 	const openArticleDetails = (e) => {
 		const id = e.currentTarget.id;
-		navigate(`/dashboard/article/${id}`);
+		navigate(`/article/${id}`);
 	};
 
 	async function filterByCategory(id) {
@@ -44,7 +44,7 @@ const Articles = () => {
 
 	return (
 		<div className={css.articles}>
-			<Category categories={categories} setCategories={setCategories} apiClass="articles" filterByCategory={filterByCategory} />
+			<Category categories={categories} setCategories={setCategories} apiClass="articles" filterByCategory={filterByCategory} reloadData={loadData} />
 			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
 			<section className={`${css.articles_list} no-section`}>
 				{articles &&
@@ -64,7 +64,7 @@ const Articles = () => {
 						</article>
 					))}
 			</section>
-			<PlusButton onClick={() => navigate("/dashboard/new-article/")} />
+			<PlusButton onClick={() => navigate("/new-article/")} />
 		</div>
 	);
 };

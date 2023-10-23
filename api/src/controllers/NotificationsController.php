@@ -1,5 +1,5 @@
 <?php
-class NotificationsConroller
+class NotificationsController
 {
     public function __construct(NotificationsGateway $gateway, AdminGateway $adminGateway)
     {

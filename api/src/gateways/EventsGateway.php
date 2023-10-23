@@ -56,7 +56,7 @@ class EventsGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM events";
+        $sql = "SELECT * FROM events ORDER BY date DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -328,7 +328,7 @@ class EventsGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
-                $exif = exif_read_data($source);
+                @$exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -360,7 +360,15 @@ class EventsGateway
                             break;
                     }
                 }
-                imagejpeg($imageResized, $source);
+                if ($info['mime'] == 'image/jpeg')
+                    imagejpeg($imageResized, $source);
+                elseif ($info['mime'] == 'image/gif')
+                    imagegif($imageResized, $source);
+                elseif ($info['mime'] == 'image/png') {
+                    imagesavealpha($imageResized, true);
+                    imagepng($imageResized, $source);
+                } else
+                    imagejpeg($imageResized, $source);
                 break;
             }
         } while (true);

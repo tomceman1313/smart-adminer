@@ -2,7 +2,7 @@
   "name": "plugins-dev",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://smart-studio.fun/admin",
+  "homepage": "/admin",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",

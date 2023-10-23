@@ -1,5 +1,5 @@
 <?php
-class EventsConroller
+class EventsController
 {
     public function __construct(EventsGateway $gateway, AdminGateway $adminGateway)
     {

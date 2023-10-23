@@ -258,4 +258,20 @@ class AdminGateway
         ]);
         return true;
     }
+
+    public function checkNameAvailability($name)
+    {
+        $sql = "SELECT COUNT(1) FROM users WHERE username = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $name
+        ]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result["COUNT(1)"] == 0) {
+            return true;
+        }
+        return false;
+    }
 }

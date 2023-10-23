@@ -27,15 +27,11 @@ export default function Vacancies() {
 	}
 
 	function openVacancy(id) {
-		navigate(`/dashboard/vacancy/${id}`);
-	}
-
-	function newVacancy() {
-		navigate(`/dashboard/vacancy`);
+		navigate(`/vacancy/${id}`);
 	}
 
 	async function deleteHandler(id) {
-		await remove(id, auth, setMessage);
+		await remove("vacancies", id, setMessage, "Inzerát byl odstraněn", auth);
 		getData();
 	}
 
@@ -65,7 +61,7 @@ export default function Vacancies() {
 					)}
 				</ul>
 			</section>
-			<PlusButton onClick={newVacancy} />
+			<PlusButton onClick={() => navigate(`/vacancy`)} />
 		</>
 	);
 }

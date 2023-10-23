@@ -10,6 +10,7 @@ import { convertBase64, makeDate, makeDateFormat } from "../../modules/BasicFunc
 import { AnimatePresence } from "framer-motion";
 import cssBasic from "../styles/Basic.module.css";
 import AddMultipleFiles from "./AddMultipleFiles";
+import Select from "../../Components/basic/select/Select";
 
 const NewDocument = ({ auth, refreshData, categories }) => {
 	const { setMessage } = useInteraction();
@@ -51,22 +52,9 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 			<section>
 				<h2>Nový soubor</h2>
 				<form onSubmit={handleSubmit(createNew)}>
-					<InputBox placeholder="Název" register={register} type="text" name="title" icon={faHeading} isRequired={false} />
+					<InputBox placeholder="Název" register={register} type="text" name="title" icon={faHeading} isRequired={true} />
 					<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={false} />
-					<div className={cssBasic.input_box}>
-						<select defaultValue={"default"} {...register("category_id")} required>
-							<option value="default" disabled>
-								-- Přiřadit kategorii --
-							</option>
-							{categories &&
-								categories.map((el) => (
-									<option key={el.id} value={el.id}>
-										{el.name}
-									</option>
-								))}
-						</select>
-						<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-					</div>
+					<Select name="category_id" options={categories} register={register} placeholderValue="-- Přiřadit kategorii --" icon={faHashtag} />
 
 					<InputBox placeholder="Soubor" register={register} type="file" name="image" icon={faImage} isRequired={false} accept="image/*" />
 					<InputBox placeholder="Soubor" register={register} type="file" name="file" icon={faFile} isRequired={true} accept="*" />

@@ -1,10 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./Pages/context/AuthContext";
 
-import Dashboard from "./Pages/admin/dashboard/Dashboard";
-import Register from "./Pages/admin/register/Register";
-import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import Dashboard from "./Pages/admin/dashboard/Dashboard";
 import { InteractionProvider } from "./Pages/context/InteractionContext";
 
 function App() {
@@ -14,10 +12,8 @@ function App() {
 				<InteractionProvider>
 					<BrowserRouter basename="/admin">
 						<Routes>
-							<Route path="/" element={<Home />} />
+							<Route path="/*" element={<Dashboard />} />
 							<Route path="/login" element={<Login />} />
-							<Route path="/register" element={<Register />} />
-							<Route path="/dashboard/*" element={<Dashboard />} />
 						</Routes>
 					</BrowserRouter>
 				</InteractionProvider>

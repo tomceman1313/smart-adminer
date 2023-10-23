@@ -22,7 +22,7 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 			setValue("id", priceItem.id);
 			setValue("name", priceItem.name);
 			setValue("price", priceItem.price);
-			setValue("special_price", priceItem.special_price);
+			setValue("special_price", priceItem.special_price !== 0 ? priceItem.special_price : "");
 			setValue("start", makeDateFormat(priceItem.special_price_start, "str"));
 			setValue("end", makeDateFormat(priceItem.special_price_end, "str"));
 		}
@@ -32,7 +32,17 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 	async function onSubmit(data) {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
-		if (data.start > data.end) {
+		if (data.special_price !== "" && (data.start === "0" || data.end === "0")) {
+			setMessage({ action: "alert", text: "Při určené akční ceně musí být definováno i doba jejího trvání" });
+			return;
+		}
+
+		if (data.special_price === "") {
+			data.start = "";
+			data.end = "";
+		}
+
+		if (Number(data.start) > Number(data.end)) {
 			setMessage({ action: "alert", text: "Datum začátku a konce akční ceny je zadáno nesprávně" });
 			return;
 		}
@@ -75,19 +85,10 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 					additionalClasses="half"
 				/>
 
-				<InputBox
-					type="text"
-					name="special_price"
-					icon={faTags}
-					placeholder="Akční cena"
-					register={register}
-					white={true}
-					isRequired={true}
-					additionalClasses="half"
-				/>
+				<InputBox type="text" name="special_price" icon={faTags} placeholder="Akční cena" register={register} white={true} additionalClasses="half" />
 
-				<DatePicker name="start" register={register} white={true} isRequired={true} placeholder="Počáteční datum" additionalClasses="half blue" />
-				<DatePicker name="end" register={register} white={true} isRequired={true} placeholder="Konečné datum" additionalClasses="half blue" />
+				<DatePicker name="start" register={register} white={true} placeholder="Počáteční datum" additionalClasses="half blue" />
+				<DatePicker name="end" register={register} white={true} placeholder="Konečné datum" additionalClasses="half blue" />
 
 				<input type="hidden" {...register("id")} />
 				<button>Uložit</button>

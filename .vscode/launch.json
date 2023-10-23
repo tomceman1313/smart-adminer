@@ -4,7 +4,7 @@
             "type": "chrome",
             "name": "article",
             "request": "launch",
-            "url": "http://localhost:3000/admin/dashboard/article/30"
+            "url": "http://localhost:3000/admin/article/30"
         }
     ]
 }

@@ -8,7 +8,7 @@ import InputBox from "../../Components/basic/InputBox";
 import Select from "../../Components/basic/select/Select";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { create, getRoles } from "../../modules/ApiFunctions";
+import { create, getRoles, checkNameAvailability } from "../../modules/ApiFunctions";
 
 export default function Register() {
 	const auth = useAuth();
@@ -25,14 +25,21 @@ export default function Register() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const onSubmit = (data) => {
+	async function onSubmit(data) {
 		if (data.password_check !== data.password) {
 			setMessage({ action: "alert", text: "Hesla nejsou stejná." });
 			return;
 		}
+
+		const isAvailable = await checkNameAvailability("admin", data.username);
+		if (!isAvailable) {
+			setMessage({ action: "alert", text: "Uživatel s tímto uživatelským jménem již existuje" });
+			return;
+		}
+
 		create("admin", data, setMessage, "Účet vytvořen", auth);
 		reset();
-	};
+	}
 
 	return (
 		<div className={css.register}>

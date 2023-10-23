@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useInteraction from "../../Hooks/useInteraction";
 import { multipleDelete } from "../../modules/ApiDocuments";
 import { remove } from "../../modules/ApiFunctions";
@@ -7,15 +7,10 @@ import { AnimatePresence } from "framer-motion";
 import Document from "./Document";
 import css from "./css/Documents.module.css";
 
-export default function DocumentList({ documents, loadData, auth, selectedCategory, setSelectedCategory, editDocument }) {
+export default function DocumentList({ documents, reloadData, auth, selectedCategory, setSelectedCategory, editDocument }) {
 	const { setMessage, setAlert } = useInteraction();
 	const [multiSelection, setMultiSelection] = useState(false);
 	const selectedDocuments = useRef(new Map());
-
-	useEffect(() => {
-		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	const deleteDocument = (e) => {
 		setAlert({ id: e.target.parentNode.id, question: "Smazat dokument?", positiveHandler: deleteDocumentHandler });
@@ -23,7 +18,7 @@ export default function DocumentList({ documents, loadData, auth, selectedCatego
 
 	async function deleteDocumentHandler(id) {
 		await remove("documents", id, setMessage, "Dokument byl smazán", auth);
-		loadData();
+		reloadData();
 	}
 
 	const deleteDocuments = () => {
@@ -37,7 +32,7 @@ export default function DocumentList({ documents, loadData, auth, selectedCatego
 
 	async function deleteDocumentsHandler(ids) {
 		await multipleDelete(ids, auth, setMessage);
-		loadData();
+		reloadData();
 	}
 
 	const multiselectControl = () => {
@@ -49,7 +44,7 @@ export default function DocumentList({ documents, loadData, auth, selectedCatego
 
 	const resetFilter = () => {
 		setSelectedCategory(null);
-		loadData();
+		reloadData();
 	};
 
 	return (

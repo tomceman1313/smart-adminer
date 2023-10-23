@@ -1,5 +1,5 @@
 <?php
-class PricelistConroller
+class PricelistController
 {
     public function __construct(PricelistGateway $gateway, AdminGateway $adminGateway)
     {

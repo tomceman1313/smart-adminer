@@ -10,6 +10,7 @@ import { makeDateFormat } from "../../modules/BasicFunctions";
 import { motion } from "framer-motion";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./css/EditDocument.module.css";
+import Select from "../../Components/basic/select/Select";
 
 export default function EditDocument({ editedDocument, auth, refreshData, categories, setVisible }) {
 	const { setMessage } = useInteraction();
@@ -21,6 +22,7 @@ export default function EditDocument({ editedDocument, auth, refreshData, catego
 		setValue("description", editedDocument?.description);
 		setValue("category_id", editedDocument?.category_id);
 		setValue("date", makeDateFormat(editedDocument?.date, "str"));
+		console.log(editedDocument);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -44,22 +46,9 @@ export default function EditDocument({ editedDocument, auth, refreshData, catego
 				}}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<InputBox placeholder="Název" register={register} type="text" name="title" icon={faHeading} isRequired={false} />
+				<InputBox placeholder="Název" register={register} type="text" name="title" icon={faHeading} isRequired={true} />
 				<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={false} />
-				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("category_id")} required>
-						<option value="default" disabled>
-							-- Přiřadit kategorii --
-						</option>
-						{categories &&
-							categories.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
-								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-				</div>
+				<Select name="category_id" options={categories} register={register} placeholderValue="-- Přiřadit kategorii --" icon={faHashtag} />
 
 				<div className={cssBasic.input_box} title="Datum vložení">
 					<input type="date" {...register("date")} />

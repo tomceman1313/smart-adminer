@@ -67,6 +67,9 @@ class DocumentsGateway
         if ($fileExtension == "plain") {
             $fileExtension = "txt";
         }
+        if ($fileExtension == "msword") {
+            $fileExtension = "doc";
+        }
         // base64-encoded file data
         list(, $encodedImageData) = explode(',', $fileData);
         // decode base64-encoded image data

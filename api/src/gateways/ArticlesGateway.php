@@ -39,7 +39,8 @@ class ArticlesGateway
 
     public function getByCategory(string $category_id): array
     {
-        $sql = "SELECT * FROM articles WHERE category = :id";
+        //$sql = "SELECT * FROM articles WHERE category = :id";
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id WHERE articles.category = :id ORDER BY articles.id DESC";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -56,7 +57,7 @@ class ArticlesGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM articles";
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.id DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -326,7 +327,7 @@ class ArticlesGateway
                 $info = getimagesize($source);
                 $width = $info[0];
                 $height = $info[1];
-                $exif = exif_read_data($source);
+                @$exif = exif_read_data($source);
 
                 if ($info['mime'] == 'image/jpeg')
                     $image = imagecreatefromjpeg($source);
@@ -358,7 +359,15 @@ class ArticlesGateway
                             break;
                     }
                 }
-                imagejpeg($imageResized, $source);
+                if ($info['mime'] == 'image/jpeg')
+                    imagejpeg($imageResized, $source);
+                elseif ($info['mime'] == 'image/gif')
+                    imagegif($imageResized, $source);
+                elseif ($info['mime'] == 'image/png') {
+                    imagesavealpha($imageResized, true);
+                    imagepng($imageResized, $source);
+                } else
+                    imagejpeg($imageResized, $source);
                 break;
             }
         } while (true);
