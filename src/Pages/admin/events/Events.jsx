@@ -72,7 +72,9 @@ const Events = () => {
 					<label>{year}</label>
 					<button onClick={() => setYear((prev) => --prev)}>-</button>
 				</div>
-				<button className="green_button">Reset</button>
+				<button className="green_button" onClick={() => setYear(new Date().getFullYear())}>
+					Reset
+				</button>
 			</section>
 
 			<section className={`${css.events_list} no-section`}>

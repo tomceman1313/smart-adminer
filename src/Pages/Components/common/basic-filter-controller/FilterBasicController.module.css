@@ -1,0 +1,8 @@
+.filter_controller {
+	width: calc(100% - 40px);
+	padding: 10px 20px;
+	display: flex;
+	justify-content: space-between;
+	background-color: var(--main);
+	border-radius: 8px;
+}

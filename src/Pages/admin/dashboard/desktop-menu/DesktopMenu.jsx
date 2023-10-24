@@ -58,8 +58,10 @@ export default function DesktopMenu({ logOut }) {
 
 	return (
 		<div className={css.menu}>
-			<img src={`${publicPath}/images/logo512.png`} alt="logo" />
-			<label className={css.title}>Adminer</label>
+			<div className={css.logo_cont}>
+				<img src={`${publicPath}/images/logo512.png`} alt="logo" />
+				<label className={css.title}>Adminer</label>
+			</div>
 			<ul>
 				<li>
 					<div id="profiles" onClick={setActive}>

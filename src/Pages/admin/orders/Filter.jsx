@@ -37,14 +37,7 @@ export default function Filter({ setOrders, setVisible, shippingTypes }) {
 	}
 
 	return (
-		<motion.div
-			className={css.filter}
-			initial={{ x: "110%" }}
-			animate={{ x: 0 }}
-			exit={{ x: "110%" }}
-			transition={{ type: "spring", duration: 1.5 }}
-			style={{ y: "-50%" }}
-		>
+		<motion.div className={css.filter} initial={{ x: "110%" }} animate={{ x: 0 }} exit={{ x: "110%" }} transition={{ type: "spring", duration: 1.5 }}>
 			<FontAwesomeIcon
 				id={css.close}
 				icon={faXmark}
@@ -53,34 +46,37 @@ export default function Filter({ setOrders, setVisible, shippingTypes }) {
 				}}
 			/>
 			<h2>Objednávkový filtr</h2>
+			<div className={css.scrollable}>
+				<h3>Hledat číslo objednávky:</h3>
+				<div className={`${css.search_bar} ${css.filter_param}`}>
+					<OrderIdSearchBar setOrders={setOrders} />
+				</div>
 
-			<h3>Hledat číslo objednávky:</h3>
-			<div className={`${css.search_bar} ${css.filter_param}`}>
-				<OrderIdSearchBar setOrders={setOrders} />
+				<h3>Zobrazit pouze určité období:</h3>
+				<div className={`${css.date_selector}`}>
+					<DateSelector />
+				</div>
+
+				<h3>Status:</h3>
+				<div className={`${css.status_selector} ${css.filter_param}`}>
+					<StatusSelector />
+				</div>
+
+				<h3>Druh dopravy:</h3>
+				<div className={`${css.shipping_selector} ${css.filter_param}`}>
+					<ShippingSelector loadedShippingTypes={shippingTypes} />
+				</div>
+
+				<h3>Způsob platby:</h3>
+				<div className={`${css.payment_selector} ${css.filter_param}`}>
+					<PaymentSelector />
+				</div>
 			</div>
 
-			<h3>Status:</h3>
-			<div className={`${css.status_selector} ${css.filter_param}`}>
-				<StatusSelector />
+			<div className={css.buttons_section}>
+				<button onClick={loadFilteredData}>Filtrovat</button>
+				<button onClick={resetFilter}>Reset</button>
 			</div>
-
-			<h3>Zobrazit pouze určité období:</h3>
-			<div className={`${css.date_selector}`}>
-				<DateSelector />
-			</div>
-
-			<h3>Druh dopravy:</h3>
-			<div className={`${css.shipping_selector} ${css.filter_param}`}>
-				<ShippingSelector loadedShippingTypes={shippingTypes} />
-			</div>
-
-			<h3>Způsob platby:</h3>
-			<div className={`${css.payment_selector} ${css.filter_param}`}>
-				<PaymentSelector />
-			</div>
-
-			<button onClick={loadFilteredData}>Filtrovat</button>
-			<button onClick={resetFilter}>Reset</button>
 		</motion.div>
 	);
 }

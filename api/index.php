@@ -55,6 +55,7 @@ header("Access-Control-Allow-Credentials: true");
 
 header("Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization");
 
+//preflight check for auth requests
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == "OPTIONS") {
     header("Access-Control-Allow-Origin: http://localhost:3000");

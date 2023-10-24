@@ -1,19 +1,18 @@
-import { useState } from "react";
 import useAuth from "./Hooks/useAuth";
+import useInteraction from "./Hooks/useInteraction";
 import css from "./styles/Login.module.css";
 
-import Alert from "./Components/admin/Alert";
-
 import { useForm } from "react-hook-form";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import Message from "./Components/admin/Message";
+import InputBox from "./Components/basic/InputBox";
 import { BASE_URL } from "./modules/ApiFunctions";
 
 export default function Login() {
 	const { register, handleSubmit } = useForm();
-	const [alert, setAlert] = useState(null);
+	const { setMessage } = useInteraction();
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -21,51 +20,36 @@ export default function Login() {
 
 	const auth = useAuth();
 
-	const onSubmit = (data) => {
-		fetch(BASE_URL + "/api/?class=admin&action=auth", {
+	async function onSubmit(data) {
+		const response = await fetch(BASE_URL + "/api/?class=admin&action=auth", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",
 			body: JSON.stringify(data),
-		})
-			.then((response) => {
-				response.text().then((_data) => {
-					let data = JSON.parse(_data);
-					if (data.message === "access") {
-						auth.setUserInfo({ role: data.role, username: data.username, token: data.token, id: data.id });
-						navigate(from, { state: { from: location }, replace: true });
-					} else {
-						setAlert(true);
-					}
-				});
+		});
 
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-				return;
-			})
-			.catch((error) => {
-				console.error("There has been a problem with your fetch operation:", error);
-			});
-	};
+		const _data = await response.json();
+
+		if (_data.message === "access") {
+			auth.setUserInfo({ role: _data.role, username: _data.username, token: _data.token, id: _data.id });
+			navigate(from, { state: { from: location }, replace: true });
+			return;
+		}
+
+		setMessage({ action: "alert", text: "Přihlašovací údaje nejsou správné" });
+	}
 
 	return (
 		<div className={css.login}>
 			<section>
 				<h2>PŘIHLÁŠENÍ</h2>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className={css.input_box}>
-						<input type="text" placeholder="Uživatelské jméno" {...register("username")} />
-						<FontAwesomeIcon className={css.icon} icon={faUser} />
-					</div>
-					<div className={css.input_box}>
-						<input type="password" placeholder="Heslo" {...register("password")} />
-						<FontAwesomeIcon className={css.icon} icon={faLock} />
-					</div>
+					<InputBox type="text" name="username" register={register} placeholder="Uživatelské jméno" icon={faUser} isRequired={true} />
+					<InputBox type="password" name="password" register={register} placeholder="Heslo" icon={faLock} isRequired={true} />
 					<input type="submit" />
 				</form>
 			</section>
-			{alert && <Alert action="failure" text="Přihlašovací údaje nejsou správné" timeout={6000} setAlert={setAlert} />}
+			<Message />
 		</div>
 	);
 }

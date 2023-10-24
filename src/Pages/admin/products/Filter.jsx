@@ -25,7 +25,7 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 	}
 
 	async function resetFilter() {
-		selectedManufacturers.current = {};
+		selectedManufacturers.current = [];
 		selectedCategories.current = [];
 		selectedPriceRange.current = [];
 		selectedInStock.current = [];
@@ -36,14 +36,7 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 	}
 
 	return (
-		<motion.div
-			className={css.filter}
-			initial={{ x: "110%" }}
-			animate={{ x: 0 }}
-			exit={{ x: "110%" }}
-			transition={{ type: "spring", duration: 1.5 }}
-			style={{ y: "-50%" }}
-		>
+		<motion.div className={css.filter} initial={{ x: "110%" }} animate={{ x: 0 }} exit={{ x: "110%" }} transition={{ type: "spring", duration: 1.5 }}>
 			<FontAwesomeIcon
 				id={css.close}
 				icon={faXmark}
@@ -53,23 +46,27 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 			/>
 			<h2>Produktový filtr</h2>
 
-			<h3>Hledat číslo objednávky:</h3>
-			<div className={`${css.search_bar} ${css.filter_param}`}>
-				<ProductNameSearchBar setProducts={setProducts} />
+			<div className={css.scrollable}>
+				<h3>Hledat číslo objednávky:</h3>
+				<div className={`${css.search_bar} ${css.filter_param}`}>
+					<ProductNameSearchBar setProducts={setProducts} />
+				</div>
+
+				<h3>Výrobce:</h3>
+				<div className={`${css.status_selector} ${css.filter_param}`}>
+					<ManufacturersSelector loadedManufacturers={manufacturers} />
+				</div>
+
+				<h3>Kategorie:</h3>
+				<div className={`${css.status_selector} ${css.filter_param}`}>
+					<CategoriesSelector loadedCategories={categories} />
+				</div>
 			</div>
 
-			<h3>Výrobce:</h3>
-			<div className={`${css.status_selector} ${css.filter_param}`}>
-				<ManufacturersSelector loadedManufacturers={manufacturers} />
+			<div className={css.buttons_section}>
+				<button onClick={loadFilteredData}>Filtrovat</button>
+				<button onClick={resetFilter}>Reset</button>
 			</div>
-
-			<h3>Kategorie:</h3>
-			<div className={`${css.status_selector} ${css.filter_param}`}>
-				<CategoriesSelector loadedCategories={categories} />
-			</div>
-
-			<button onClick={loadFilteredData}>Filtrovat</button>
-			<button onClick={resetFilter}>Reset</button>
 		</motion.div>
 	);
 }

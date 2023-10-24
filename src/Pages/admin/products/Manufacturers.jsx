@@ -7,11 +7,11 @@ import { getManufacturers, createManufacturer, updateManufacturer, deleteManufac
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
 import InputBox from "../../Components/basic/InputBox";
-import Item from "../gallery/Item";
+import Item from "../../Components/common/controlled-item/Item";
 
 import css from "../../Components/common/categories-component/Category.module.css";
 
-export default function Manufacturers({ manufacturers, setManufacturers, filterByManufacturer }) {
+export default function Manufacturers({ manufacturers, setManufacturers }) {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
@@ -44,8 +44,11 @@ export default function Manufacturers({ manufacturers, setManufacturers, filterB
 	return (
 		<section className={css.category}>
 			<h2>Výrobci</h2>
-			<ul className={css.category_list}>
-				{manufacturers && manufacturers.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={filterByManufacturer} />)}
+			<ul>
+				{manufacturers &&
+					manufacturers.map((el) => (
+						<Item key={el.id} el={el} remove={remove} edit={update} deleteQuestion={`Opravdu si přejete smazat výrobce ${el.name}?`} />
+					))}
 			</ul>
 			<h3>Přidat výrobce:</h3>
 			<form onSubmit={handleSubmit(create)}>

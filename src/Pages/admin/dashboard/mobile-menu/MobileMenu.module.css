@@ -54,6 +54,7 @@
 	height: calc(100vh - 80px);
 	margin: 0;
 	list-style: none;
+	overflow-y: auto;
 }
 
 .menu li {
@@ -137,4 +138,14 @@
 
 .active_link {
 	color: #42a5f5 !important;
+}
+
+@media (max-width: 700px) {
+	.title {
+		font-size: 1.2rem;
+	}
+
+	.menu_button {
+		margin-right: 20px;
+	}
 }

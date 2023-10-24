@@ -111,7 +111,7 @@ class ProductsGateway
 
     function getByCategory($id): array
     {
-        $sql = "SELECT product_id as id FROM product_categories WHERE category_id = :id";
+        $sql = "SELECT products.* FROM product_categories INNER JOIN products ON products.id = product_categories.product_id WHERE category_id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([

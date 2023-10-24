@@ -1,0 +1,57 @@
+.item {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	margin: 10px 0;
+	overflow: hidden;
+}
+
+.item:last-child {
+	margin-bottom: 0;
+}
+
+.item input {
+	width: 100%;
+	padding-left: 30px;
+	background-color: white;
+	border: solid 1px #d6dde1;
+	border-right: none;
+	border-radius: 8px 0 0 8px;
+}
+
+.item svg {
+	font-size: 20px;
+	padding: 10px;
+	color: white;
+	cursor: pointer;
+	transition: all 0.5s;
+	width: 40px;
+}
+
+.item svg:last-child {
+	border-radius: 0 8px 8px 0;
+}
+
+.filter_button {
+	background-color: var(--green);
+}
+
+.edit_button {
+	background-color: var(--main);
+}
+
+.delete_button {
+	background-color: var(--red);
+}
+
+.filter_button:hover {
+	background-color: var(--green-dark);
+}
+
+.edit_button:hover {
+	background-color: var(--main-dark);
+}
+
+.delete_button:hover {
+	background-color: var(--red-dark);
+}

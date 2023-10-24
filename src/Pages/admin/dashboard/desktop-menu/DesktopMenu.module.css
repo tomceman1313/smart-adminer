@@ -14,8 +14,14 @@
 	flex-wrap: wrap;
 }
 
+.logo_cont {
+	height: 35px;
+	display: flex;
+	align-items: center;
+}
+
 .menu img {
-	width: 35px;
+	height: 100%;
 	margin-left: 40px;
 }
 
@@ -27,8 +33,10 @@
 
 .menu ul {
 	width: calc(100% - 10px);
+	height: calc(100vh - 95px);
 	margin-right: 10px;
 	list-style: none;
+	overflow-y: auto;
 }
 
 .menu li {

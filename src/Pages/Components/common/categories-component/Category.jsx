@@ -7,11 +7,11 @@ import { createCategory, deleteCategory, getCategories, updateCategory } from ".
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
 import InputBox from "../../basic/InputBox";
-import Item from "../../../admin/gallery/Item";
+import Item from "../controlled-item/Item";
 
 import css from "./Category.module.css";
 
-const Category = ({ categories, setCategories, apiClass, filterByCategory, reloadData }) => {
+export default function Category({ categories, setCategories, apiClass, filterByCategory, reloadData }) {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
@@ -55,7 +55,17 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory, reloa
 		<section className={css.category}>
 			<h2>Kategorie</h2>
 			<ul className={css.category_list}>
-				{categories && categories.map((el) => <Item key={el.id} el={el} remove={remove} edit={update} show={filterByCategory} />)}
+				{categories &&
+					categories.map((el) => (
+						<Item
+							key={el.id}
+							el={el}
+							remove={remove}
+							edit={update}
+							show={filterByCategory}
+							deleteQuestion={`Opravdu si přejet odstranit kategorii ${el.name}?`}
+						/>
+					))}
 			</ul>
 			<div className={css.blur}></div>
 			<h3>Přidat kategorii:</h3>
@@ -65,6 +75,4 @@ const Category = ({ categories, setCategories, apiClass, filterByCategory, reloa
 			</form>
 		</section>
 	);
-};
-
-export default Category;
+}

@@ -1,18 +1,20 @@
 /*---------------------------------------------- FILTER*/
 .filter {
 	position: fixed;
-	top: 50%;
+	top: 90px;
 	right: 10px;
 	display: flex;
 	flex-wrap: wrap;
 	width: calc(80% - 50px);
 	max-width: 700px;
+	height: calc(100vh - 190px);
 	padding: 40px 60px;
+	align-content: flex-start;
 	border-radius: 8px;
 	overflow: hidden;
 	background-color: var(--green);
 	box-shadow: 2px 2px 5px 2px rgb(0, 0, 0, 0.2);
-	z-index: 3;
+	z-index: 4;
 }
 
 .filter h3 {
@@ -22,8 +24,20 @@
 	color: white;
 }
 
+.scrollable {
+	height: calc(100% - 150px);
+	overflow-y: auto;
+}
+
+.buttons_section {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 15px;
+}
+
 .filter_param {
-	width: calc(100% - 10px);
+	width: calc(100% - 20px);
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -62,7 +76,6 @@
 @media (max-width: 1600px) {
 	.filter {
 		max-height: calc(100vh - 250px);
-		overflow-y: auto;
 	}
 }
 
@@ -95,15 +108,4 @@
 
 .search_bar input::placeholder {
 	color: white;
-}
-
-/*----------------------------------- Order ID search bar*/
-
-.date_selector {
-	width: calc(100% - 10px);
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: center;
-	padding: 10px;
 }

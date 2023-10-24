@@ -97,7 +97,7 @@ select {
 	cursor: pointer;
 	transition: 0.5s all;
 	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
-	z-index: 5;
+	z-index: 3;
 }
 
 .plus_button:hover {
