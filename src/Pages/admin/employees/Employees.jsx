@@ -73,9 +73,8 @@ export default function Employees() {
 						<section>Nejsou vloženy žádné profily zaměstnanců</section>
 					)}
 				</ul>
+				<Employee employee={employee} setEmployee={setEmployee} getData={loadData} departments={departments} auth={auth} />
 			</section>
-
-			<Employee employee={employee} setEmployee={setEmployee} getData={loadData} departments={departments} auth={auth} />
 
 			<PlusButton onClick={() => setEmployee({})} />
 		</>

@@ -85,6 +85,12 @@ select {
 	text-decoration: underline white;
 }
 
+.small_button {
+	padding: 6px 10px;
+	font-size: 12px;
+	margin-left: 10px;
+}
+
 .plus_button {
 	position: fixed;
 	right: 50px;

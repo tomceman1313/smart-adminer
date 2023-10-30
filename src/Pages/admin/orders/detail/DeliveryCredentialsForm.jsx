@@ -8,8 +8,15 @@ export default function DeliveryCredentialsForm({ register, customer }) {
 		<>
 			{customer && (
 				<div>
-					<h3>Doručovací údaje:</h3>
-					{isVisible ? (
+					<h3>
+						Doručovací údaje:
+						{!isVisible && (
+							<button type="button" onClick={() => setIsVisible(true)} className="small_button">
+								Přidat
+							</button>
+						)}
+					</h3>
+					{isVisible && (
 						<>
 							<InputBox
 								placeholder="Křestní jméno"
@@ -29,16 +36,12 @@ export default function DeliveryCredentialsForm({ register, customer }) {
 							<InputBox placeholder="Město" defaultValue={customer.delivery_city} register={register} name="delivery_city" icon={faLocationPin} />
 							<InputBox
 								placeholder="PSČ"
-								defaultValue={customer.delivery_postal_code}
+								defaultValue={customer.delivery_postal_code ? customer.delivery_postal_code : ""}
 								register={register}
 								name="delivery_postal_code"
 								icon={faBullseye}
 							/>
 						</>
-					) : (
-						<button type="button" onClick={() => setIsVisible(true)}>
-							Přidat
-						</button>
 					)}
 				</div>
 			)}

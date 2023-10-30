@@ -19,7 +19,7 @@ import css from "./Products.module.css";
 export default function Products() {
 	const auth = useAuth();
 	const navigate = useNavigate();
-	const { setMessage } = useInteraction();
+	const { setMessage, setAlert } = useInteraction();
 
 	const [products, setProducts] = useState();
 	const [categories, setCategories] = useState(null);
@@ -38,8 +38,13 @@ export default function Products() {
 		setProducts(data);
 	}
 
+	function deleteProductHandler(id, name) {
+		setAlert({ id: id, question: `Opravdu si přejete smazat produkt ${name}?`, positiveHandler: deleteHandler });
+	}
+
 	async function deleteHandler(id) {
 		await deleteProduct(id, auth, setMessage);
+		setMessage({ action: "success", text: "Produkt byl smazán" });
 		loadData();
 	}
 
@@ -58,7 +63,7 @@ export default function Products() {
 								{isPermitted(item.active)}
 								<div>
 									<button onClick={() => navigate(`/product/${item.id}`)}>Detail</button>
-									<button className="red_button" onClick={() => deleteHandler(item.id)}>
+									<button className="red_button" onClick={() => deleteProductHandler(item.id, item.name)}>
 										Smazat
 									</button>
 								</div>

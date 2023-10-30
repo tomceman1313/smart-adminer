@@ -62,9 +62,9 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 	return (
 		<motion.section
 			className={css.add_images_cont}
-			initial={{ y: "-250%", x: "-50%" }}
+			initial={{ y: "-300%", x: "-50%" }}
 			animate={{ y: "-50%" }}
-			exit={{ y: "-250%" }}
+			exit={{ y: "-300%" }}
 			transition={{ type: "spring", duration: 1 }}
 		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />

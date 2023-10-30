@@ -17,7 +17,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 
 	//change activeVariant to first in list after some variant is changed
 	useEffect(() => {
-		changeVariant(variants[0]?.name);
+		if (activeParamsIndex !== 0) changeVariant(variants[0]?.name);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [variants]);
 
@@ -68,6 +68,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 		if (_activeParams >= 0) {
 			setActiveParamsIndex(_activeParams);
 		}
+		console.log(parameters[_activeParams]);
 	}
 
 	function createParamsPattern() {
@@ -112,12 +113,12 @@ export default function Parameters({ parameters, setParameters, variants }) {
 					<label htmlFor="add-to-all">Přidat parametr všem variantám</label>
 				</div>
 
-				<div className={css.pattern_controls}>
+				{/* <div className={css.pattern_controls}>
 					<button type="button">Přidat parametry ze vzoru</button>
 					<button type="button" onClick={createParamsPattern}>
 						Vytvořit vzor
 					</button>
-				</div>
+				</div> */}
 			</section>
 		</>
 	);

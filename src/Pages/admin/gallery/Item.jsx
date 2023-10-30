@@ -23,7 +23,7 @@ const Item = ({ el, remove, edit, show, deleteQuestion }) => {
 	const removeCategory = () => {
 		setAlert({
 			id: el.id,
-			question: deleteQuestion ? deleteQuestion : "Opravdu si přejete odstranit kategorii?",
+			question: deleteQuestion ? deleteQuestion : `Opravdu si přejete odstranit kategorii ${el.name}?`,
 			positiveHandler: remove,
 		});
 	};

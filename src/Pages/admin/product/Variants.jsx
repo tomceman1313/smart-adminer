@@ -29,6 +29,18 @@ export default function Variants({ variants, setVariants, parameters, setParamet
 			return;
 		}
 
+		if (refInStock.current.value === "") {
+			setMessage({ action: "alert", text: "Varianta musí obsahovat počet kusů na skladě." });
+			refInStock.current.focus();
+			return;
+		}
+
+		if (refPrice.current.value === "") {
+			setMessage({ action: "alert", text: "Varianta musí mít definovanou cenu." });
+			refPrice.current.focus();
+			return;
+		}
+
 		let parametersUpdated = [...parameters, { variant: refName.current.value, params: [] }];
 		setParameters(parametersUpdated);
 

@@ -112,7 +112,7 @@ export default function Vacancy() {
 
 				<section className={css.detail}>
 					<h2>Detailní popis</h2>
-					<TextEditor value={detailText} setValue={setDetailText} />
+					<TextEditor value={detailText} setValue={setDetailText} isLiteVersion={true} />
 					<div className={css.control_box}>
 						<button>Uložit</button>
 						{/* <button type="button" className="blue_button">

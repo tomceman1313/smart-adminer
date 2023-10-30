@@ -42,8 +42,8 @@ export default function UserList({ data, handleEdit, handleDelete, css }) {
 		setShow(userData);
 	};
 
-	const deleteUser = (id) => {
-		setAlert({ id: id, question: "Smazat uživatele?", positiveHandler: handleDelete });
+	const deleteUser = (id, username) => {
+		setAlert({ id: id, question: `Smazat uživatele ${username}?`, positiveHandler: handleDelete });
 	};
 
 	return (
@@ -71,7 +71,7 @@ export default function UserList({ data, handleEdit, handleDelete, css }) {
 								<FontAwesomeIcon icon={faAt} /> {user.email}
 							</label>
 							<button onClick={() => userData(user.id)}>Upravit</button>
-							<button onClick={() => deleteUser(user.id)}>Smazat</button>
+							<button onClick={() => deleteUser(user.id, user.username)}>Smazat</button>
 						</article>
 					</li>
 				))}

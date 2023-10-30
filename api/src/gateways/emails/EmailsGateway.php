@@ -12,7 +12,7 @@ class EmailsGateway
     {
         $this->conn = $database->getConnection();
         $this->name = "Info";
-        $this->username = 'test@smart-studio.fun';
+        $this->username = 'info@smart-studio.cz';
         $this->password = 'Nissan.350z';
     }
 

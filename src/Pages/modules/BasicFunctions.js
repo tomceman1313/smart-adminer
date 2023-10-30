@@ -11,9 +11,7 @@ export const publicPath = "/admin";
  * @returns number
  */
 export function createUniqId() {
-	const now = new Date();
-	const id = now.getHours() + now.getMinutes() + now.getSeconds() + now.getMilliseconds() * Math.round(Math.random() * 100);
-	return id;
+	return Math.random().toString(36).substring(2, 10);
 }
 
 /**

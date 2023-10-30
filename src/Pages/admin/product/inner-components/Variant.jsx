@@ -2,6 +2,7 @@
 import { faArrowDown, faArrowUp, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { useDebounce } from "../../../Hooks/useDebounce";
 
 import css from "../styles/Product.module.css";
 
@@ -10,23 +11,25 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 	const [price, setPrice] = useState(el.price);
 	const [inStock, setInStock] = useState(el.in_stock);
 
-	function changeVariantName(newName) {
+	const debounceName = useDebounce(variantName);
+
+	useEffect(() => {
 		const indexUpdatedVariant = variants.indexOf(el);
 		const updatedVariant = JSON.parse(JSON.stringify(variants));
-		updatedVariant[indexUpdatedVariant].name = newName;
+		updatedVariant[indexUpdatedVariant].name = debounceName;
 
 		setParameters((prev) => {
 			return prev.map((item) => {
 				if (item.variant === variantName) {
-					item.variant = newName;
+					item.variant = debounceName;
 				}
 				return item;
 			});
 		});
 
 		setVariants(updatedVariant);
-		setVariantName(newName);
-	}
+		setVariantName(debounceName);
+	}, [debounceName]);
 
 	useEffect(() => {
 		const indexUpdatedVariant = variants.indexOf(el);
@@ -108,7 +111,7 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 
 	return (
 		<li>
-			<input defaultValue={variantName} placeholder="Název" required onChange={(e) => changeVariantName(e.target.value.trim())} />
+			<input defaultValue={variantName} placeholder="Název" required onChange={(e) => setVariantName(e.target.value.trim())} />
 			<input defaultValue={inStock} placeholder="Skladem" required onChange={(e) => setInStock(e.target.value)} />
 			<input defaultValue={price} placeholder="Cena" required onChange={(e) => setPrice(e.target.value)} />
 

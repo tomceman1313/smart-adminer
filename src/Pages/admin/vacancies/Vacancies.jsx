@@ -50,7 +50,7 @@ export default function Vacancies() {
 								<img src={`${publicPath}/images/vacancies/${el.image}`} alt="" />
 								<div>
 									<b>{el.title}</b>
-									<label>{makeDateFormat(el.date, "str")}</label>
+									<label>{makeDateFormat(el.date, "text")}</label>
 								</div>
 								<FontAwesomeIcon icon={faPen} onClick={() => openVacancy(el.id)} />
 								<FontAwesomeIcon icon={faTrashCan} onClick={() => deleteVacancy(el.id)} />

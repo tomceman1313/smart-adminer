@@ -31,6 +31,8 @@ export default function Register() {
 			return;
 		}
 
+		data.username = data.username.replaceAll(" ", "_");
+
 		const isAvailable = await checkNameAvailability("admin", data.username);
 		if (!isAvailable) {
 			setMessage({ action: "alert", text: "Uživatel s tímto uživatelským jménem již existuje" });
