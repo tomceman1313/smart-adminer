@@ -164,7 +164,7 @@ class OrdersGateway
 
     public function findById($id): array
     {
-        $sql = "SELECT o.*, os.name as status_name, st.name as shipping_type FROM orders 
+        $sql = "SELECT o.*, os.name as status_name, os.public_name, st.name as shipping_type FROM orders 
         AS o INNER JOIN order_status as os ON o.status_code = os.id INNER JOIN shipping_type as st ON o.shipping_type_id = st.id WHERE o.id LIKE :id";
         $stmt = $this->conn->prepare($sql);
 

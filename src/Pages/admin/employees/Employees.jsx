@@ -21,8 +21,6 @@ export default function Employees() {
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Seznam zaměstnanců";
-		document.getElementById("banner-desc").innerHTML = "Tvorba a správa zaměstnaneckých profilů";
 		loadData();
 	}, []);
 
@@ -43,8 +41,8 @@ export default function Employees() {
 		loadData();
 	}
 
-	function deleteEmployee(id) {
-		setAlert({ id: id, question: "Opravdu si přejete smazat profil zaměstnance?", positiveHandler: deleteHandler });
+	function deleteEmployee(id, name) {
+		setAlert({ id: id, question: `Opravdu si přejete smazat profil zaměstnance ${name}?`, positiveHandler: deleteHandler });
 	}
 
 	function resetFilter() {

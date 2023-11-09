@@ -56,6 +56,15 @@ export async function filterProducts(filterValues) {
 	return data;
 }
 
+export async function getByName(name) {
+	const response = await fetch(`${BASE_URL}/api/?class=products&action=getByName&name=${name}`, {
+		method: "GET",
+	});
+
+	const data = await response.json();
+	return data;
+}
+
 export async function deleteProduct(id, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 

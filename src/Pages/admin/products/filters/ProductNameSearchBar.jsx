@@ -1,11 +1,18 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAll } from "../../../modules/ApiFunctions";
-import { findById } from "../../../modules/ApiOrders";
+import { getByName } from "../../../modules/ApiProducts";
+import { useDebounce } from "../../../Hooks/useDebounce";
 
 export default function ProductNameSearchBar({ setProducts }) {
 	const [productName, setProductName] = useState("");
+	const debounceName = useDebounce(productName);
+
+	useEffect(() => {
+		searchProductName(debounceName);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debounceName]);
 
 	async function searchProductName(newName) {
 		setProductName(newName);
@@ -16,14 +23,14 @@ export default function ProductNameSearchBar({ setProducts }) {
 			return;
 		}
 
-		const products = await findById(newName);
+		const products = await getByName(newName);
 		setProducts(products);
 	}
 
 	return (
 		<>
 			<FontAwesomeIcon icon={faMagnifyingGlass} />
-			<input value={productName} placeholder="Název produktu" onChange={(e) => searchProductName(e.target.value)} />
+			<input value={productName} placeholder="Název produktu" onChange={(e) => setProductName(e.target.value)} />
 		</>
 	);
 }

@@ -1,0 +1,50 @@
+.page {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.info {
+	width: 30%;
+	margin-left: 20px;
+}
+
+.info b {
+	display: block;
+}
+
+.page_configs {
+	width: 50%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.page_configs div {
+	text-align: center;
+}
+
+.page_configs label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.page_configs svg {
+	margin-bottom: 5px;
+}
+
+.btn_open {
+	background-color: var(--green);
+	padding: 20px;
+	color: white;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+.btn_open:hover {
+	background-color: var(--green-dark);
+}

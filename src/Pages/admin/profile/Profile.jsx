@@ -16,8 +16,6 @@ const Profile = () => {
 	const { register, handleSubmit, setValue, setFocus } = useForm();
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Správa profilu";
-		document.getElementById("banner-desc").innerHTML = "Přehled a správa uživatelského profilu";
 		getUserInfo();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

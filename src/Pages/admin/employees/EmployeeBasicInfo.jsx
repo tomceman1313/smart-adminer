@@ -42,7 +42,7 @@ export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee })
 							<FontAwesomeIcon icon={faAt} /> {user.email}
 						</label>
 						<button onClick={showAllInfo}>Upravit</button>
-						<button className="red_button" onClick={() => deleteEmployee(user.id)}>
+						<button className="red_button" onClick={() => deleteEmployee(user.id, `${user.fname} ${user.lname}`)}>
 							Smazat
 						</button>
 					</motion.article>

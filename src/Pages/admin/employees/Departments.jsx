@@ -58,7 +58,7 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 							remove={remove}
 							edit={update}
 							show={() => filterEmployeesByDepartment(el.id, el.name)}
-							deleteQuestion="Opravdu si přejete odstranit oddělení?"
+							deleteQuestion={`Opravdu si přejete odstranit oddělení ${el.name}?`}
 						/>
 					))}
 			</ul>

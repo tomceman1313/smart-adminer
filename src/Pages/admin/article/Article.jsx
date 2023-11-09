@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextEditor from "../../Components/admin/TextEditor";
 import InputBox from "../../Components/basic/InputBox";
-import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
+import { checkInnerImage, findDeletedImages, formatBody, removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 import { faEye, faHashtag, faHeading, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { create, edit, get, remove } from "../../modules/ApiFunctions";
@@ -18,16 +18,17 @@ import { getCategories } from "../../modules/ApiCategories";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 import ImagesUnderArticle from "./ImagesUnderArticle";
+import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
 
-//TODO dodělat náhled článku
 export default function Article() {
 	const auth = useAuth();
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
-	const { register, handleSubmit, setValue, reset } = useForm();
+	const { register, handleSubmit, setValue, getValues, reset } = useForm();
 
 	const [article, setArticle] = useState(null);
+	const [articlePreview, setArticlePreview] = useState(null);
 	const [categories, setCategories] = useState(null);
 	const [body, setBody] = useState("");
 	const [underArticleImages, setUnderArticleImages] = useState(null);
@@ -39,8 +40,6 @@ export default function Article() {
 	const originalImages = useRef([]);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Články";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
 		if (id) {
 			getData();
 		} else {
@@ -116,45 +115,79 @@ export default function Article() {
 		setAlert({ id: id, question: "Smazat článek?", positiveHandler: removeHandler });
 	}
 
+	async function openArticlePreview() {
+		let data = getValues();
+		data.date = makeDateFormat(data.date);
+		if (data.image?.[0]) {
+			const base64 = await convertBase64(data.image[0]);
+			data.image = base64;
+		} else {
+			data.image = article ? article.image : null;
+		}
+
+		let imagesArray = [];
+		for (const file of data.images) {
+			const base64 = await convertBase64(file);
+			imagesArray.push(base64);
+		}
+		data.images = article ? article.images.concat(imagesArray) : imagesArray;
+		data.body = removeEmptyParagraphs(body);
+		setArticlePreview(data);
+	}
+
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
-			<section>
-				<h2>Základní informace</h2>
-				<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
-				<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
-				<Switch name="active" label="Článek je viditelný:" register={register} />
-			</section>
+		<>
+			{categories ? (
+				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
+					<section>
+						<h2>Základní informace</h2>
+						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
+						<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
+						<Switch name="active" label="Článek je viditelný:" register={register} />
+					</section>
 
-			<section>
-				<h2>Doplňující informace</h2>
-				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" isRequired={true} />
-				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie článku --" />
-				<ImageInput image={article?.image} name="image" path="articles" register={register} />
-			</section>
+					<section>
+						<h2>Doplňující informace</h2>
+						<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" isRequired={true} />
+						<Select
+							name="category"
+							options={categories}
+							register={register}
+							icon={faHashtag}
+							placeholderValue="-- Kategorie článku --"
+							defaultValue={article?.category}
+						/>
+						<ImageInput image={article?.image} name="image" path="articles" register={register} />
+					</section>
 
-			<section>
-				<h2>Text článku</h2>
-				<TextEditor value={body} setValue={setBody} />
-				<ImagesUnderArticle
-					register={register}
-					underArticleImages={underArticleImages}
-					setUnderArticleImages={setUnderArticleImages}
-					location="articles"
-				/>
+					<section>
+						<h2>Text článku</h2>
+						<TextEditor value={body} setValue={setBody} />
+						<ImagesUnderArticle
+							register={register}
+							underArticleImages={underArticleImages}
+							setUnderArticleImages={setUnderArticleImages}
+							location="articles"
+						/>
 
-				<div className={css.control_box}>
-					<button>Uložit</button>
-					{/* <button type="button" className={css.btn_preview}>
-						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
-						Náhled článku
-					</button> */}
-					{article && (
-						<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
-							Smazat
-						</button>
-					)}
-				</div>
-			</section>
-		</form>
+						<div className={css.control_box}>
+							<button>Uložit</button>
+							<button type="button" className={css.btn_preview} onClick={openArticlePreview}>
+								<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
+								Náhled článku
+							</button>
+							{article && (
+								<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
+									Smazat
+								</button>
+							)}
+						</div>
+					</section>
+				</form>
+			) : (
+				<h3>Načítání článku</h3>
+			)}
+			<ArticlePreview article={articlePreview} close={() => setArticlePreview(null)} typeOfPreview="articles" />
+		</>
 	);
 }

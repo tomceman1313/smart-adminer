@@ -13,19 +13,24 @@ import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
 import { create, edit, get, remove } from "../../modules/ApiFunctions";
 import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
-import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
-import css from "../article/Article.module.css";
+import { checkInnerImage, findDeletedImages, formatBody, removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 import ImagesUnderArticle from "../article/ImagesUnderArticle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
+
+import css from "../article/Article.module.css";
 import cssBasic from "../styles/Basic.module.css";
 
-const Event = () => {
+export default function Event() {
 	const auth = useAuth();
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
-	const { register, handleSubmit, setValue, reset } = useForm();
+	const { register, handleSubmit, setValue, getValues, reset } = useForm();
 
 	const [event, setEvent] = useState(null);
+	const [eventPreview, setEventPreview] = useState(null);
 	const [categories, setCategories] = useState(null);
 	const [body, setBody] = useState("");
 	const [underEventImages, setUnderEventImages] = useState(null);
@@ -37,8 +42,6 @@ const Event = () => {
 	const originalImages = useRef([]);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Událost";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte proběhlé nebo teprv plánované události";
 		if (id) {
 			loadData();
 		} else {
@@ -115,42 +118,79 @@ const Event = () => {
 		setAlert({ id: id, question: "Smazat událost?", positiveHandler: removeHandler });
 	};
 
+	async function openArticlePreview() {
+		let data = getValues();
+		data.date = makeDateFormat(data.date);
+		if (data.image?.[0]) {
+			const base64 = await convertBase64(data.image[0]);
+			data.image = base64;
+		} else {
+			data.image = event ? event.image : null;
+		}
+
+		let imagesArray = [];
+		for (const file of data.images) {
+			const base64 = await convertBase64(file);
+			imagesArray.push(base64);
+		}
+		data.images = event ? event.images.concat(imagesArray) : imagesArray;
+		data.body = removeEmptyParagraphs(body);
+		setEventPreview(data);
+	}
+
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
-			<section>
-				<h2>Základní informace</h2>
-				<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
-				<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
-				<Switch name="active" label="Událost je viditelná:" register={register} />
-			</section>
+		<>
+			{categories ? (
+				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
+					<section>
+						<h2>Základní informace</h2>
+						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
+						<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
+						<Switch name="active" label="Událost je viditelná:" register={register} />
+					</section>
 
-			<section>
-				<h2>Doplňující informace</h2>
-				<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
-				<Select name="category" options={categories} register={register} icon={faHashtag} placeholderValue="-- Kategorie události --" />
-				<ImageInput image={event?.image} name="image" path="events" register={register} />
-			</section>
+					<section>
+						<h2>Doplňující informace</h2>
+						<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
+						<Select
+							name="category"
+							options={categories}
+							register={register}
+							icon={faHashtag}
+							placeholderValue="-- Kategorie události --"
+							defaultValue={event?.category}
+						/>
+						<ImageInput image={event?.image} name="image" path="events" register={register} />
+					</section>
 
-			<section>
-				<h2>Text události</h2>
-				<TextEditor value={body} setValue={setBody} />
-				<ImagesUnderArticle register={register} underArticleImages={underEventImages} setUnderArticleImages={setUnderEventImages} location="events" />
+					<section>
+						<h2>Text události</h2>
+						<TextEditor value={body} setValue={setBody} />
+						<ImagesUnderArticle
+							register={register}
+							underArticleImages={underEventImages}
+							setUnderArticleImages={setUnderEventImages}
+							location="events"
+						/>
 
-				<div className={css.control_box}>
-					<button>Uložit</button>
-					{/* <button type="button" className={css.btn_preview}>
-						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
-						Náhled události
-					</button> */}
-					{event && (
-						<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
-							Smazat
-						</button>
-					)}
-				</div>
-			</section>
-		</form>
+						<div className={css.control_box}>
+							<button>Uložit</button>
+							<button type="button" className={css.btn_preview} onClick={openArticlePreview}>
+								<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
+								Náhled události
+							</button>
+							{event && (
+								<button type="button" className={cssBasic.btn_delete} onClick={removeArticle}>
+									Smazat
+								</button>
+							)}
+						</div>
+					</section>
+				</form>
+			) : (
+				<h3>Načítání události</h3>
+			)}
+			<ArticlePreview article={eventPreview} close={() => setEventPreview(null)} typeOfPreview="events" />
+		</>
 	);
-};
-
-export default Event;
+}

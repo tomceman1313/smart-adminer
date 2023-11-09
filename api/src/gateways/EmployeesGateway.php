@@ -55,8 +55,8 @@ class EmployeesGateway
 
         $this->compress($image_name . "." . $imageExtension);
 
-        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, email, image, notes) 
-        VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :email, :image, :notes)";
+        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, phone_secondary, email, image, notes, active) 
+        VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :phone_secondary, :email, :image, :notes, :active)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -66,9 +66,11 @@ class EmployeesGateway
             'degree_after' => $data["degree_after"],
             'position' => $data["position"],
             'phone' => $data["phone"],
+            'phone_secondary' => $data["phone_secondary"],
             'email' => $data["email"],
             'image' => $image_name . "." . $imageExtension,
             'notes' => $data["notes"],
+            'active' => $data["active"],
         ]);
 
         $departments = $data["departments"];
@@ -105,7 +107,7 @@ class EmployeesGateway
             }
 
             $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-                degree_after = :degree_after, position = :position, phone = :phone, email = :email, notes = :notes, image = :image WHERE id = :id";
+                degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, image = :image, active = :active WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -116,14 +118,16 @@ class EmployeesGateway
                 'degree_after' => $data["degree_after"],
                 'position' => $data["position"],
                 'phone' => $data["phone"],
+                'phone_secondary' => $data["phone_secondary"],
                 'email' => $data["email"],
                 'image' => $image_name . "." . $imageExtension,
                 'notes' => $data["notes"],
+                'active' => $data["active"],
                 'id' => $data["id"],
             ]);
         } else {
             $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-            degree_after = :degree_after, position = :position, phone = :phone, email = :email, notes = :notes WHERE id = :id";
+            degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, active = :active WHERE id = :id";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -134,8 +138,10 @@ class EmployeesGateway
                 'degree_after' => $data["degree_after"],
                 'position' => $data["position"],
                 'phone' => $data["phone"],
+                'phone_secondary' => $data["phone_secondary"],
                 'email' => $data["email"],
                 'notes' => $data["notes"],
+                'active' => $data["active"],
                 'id' => $data["id"],
             ]);
         }

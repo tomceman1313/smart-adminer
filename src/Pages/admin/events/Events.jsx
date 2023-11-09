@@ -18,9 +18,6 @@ const Events = () => {
 	const [selectedCategory, setSelectedCategory] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Události";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte proběhlé nebo teprv plánované události";
-
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

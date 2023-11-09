@@ -18,11 +18,6 @@ const Gallery = () => {
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const allLoadedImages = useRef([]);
 
-	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Galerie";
-		document.getElementById("banner-desc").innerHTML = "Správa fotek v galerii a tvorba kategorií pro jejich rozřazení";
-	}, []);
-
 	// Remove page number when selected category is changed
 	useEffect(() => {
 		navigate("/gallery/");

@@ -17,8 +17,6 @@ const Pricelist = () => {
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Ceník";
-		document.getElementById("banner-desc").innerHTML = "Úprava cen, vytváření nových položek, správa akčních cen";
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

@@ -41,8 +41,6 @@ export default function ProductNew() {
 	const { register, handleSubmit, setValue, reset } = useForm();
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Produkt";
-		document.getElementById("banner-desc").innerHTML = "Správa produktu a jeho tvorba";
 		getCategories(setCategories, "products");
 		getManufacturers(setManufacturers);
 
@@ -169,59 +167,65 @@ export default function ProductNew() {
 	}
 
 	return (
-		<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
-			<section className={css.basic_info}>
-				<h2>Základní informace:</h2>
-				<InputBox placeholder="Název" register={register} type="text" name="name" icon={faShoppingCart} isRequired={true} />
-				<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={true} />
-				<Select name="manufacturer_id" options={manufacturers} icon={faCopyright} register={register} placeholderValue="-- Přiřadit výrobce --" />
+		<>
+			{manufacturers ? (
+				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
+					<section className={css.basic_info}>
+						<h2>Základní informace:</h2>
+						<InputBox placeholder="Název" register={register} type="text" name="name" icon={faShoppingCart} isRequired={true} />
+						<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={true} />
+						<Select name="manufacturer_id" options={manufacturers} icon={faCopyright} register={register} placeholderValue="-- Přiřadit výrobce --" />
 
-				<div className={cssBasic.input_box}>
-					<select defaultValue={"default"} {...register("categories")} onChange={chooseCategory}>
-						<option value="default" disabled>
-							-- Přiřadit kategorii --
-						</option>
-						{categories &&
-							categories.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
+						<div className={cssBasic.input_box}>
+							<select defaultValue={"default"} {...register("categories")} onChange={chooseCategory}>
+								<option value="default" disabled>
+									-- Přiřadit kategorii --
 								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-				</div>
+								{categories &&
+									categories.map((el) => (
+										<option key={el.id} value={el.id}>
+											{el.name}
+										</option>
+									))}
+							</select>
+							<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
+						</div>
 
-				<ul className={css.picked_categories}>
-					{pickedCategories &&
-						pickedCategories.map((el) => (
-							<li key={el.id} id={el.id} onClick={removeFromPicked}>
-								{el.name}
-							</li>
-						))}
-				</ul>
-				<Switch name="active" register={register} label="Produkt je viditelný:" />
-			</section>
+						<ul className={css.picked_categories}>
+							{pickedCategories &&
+								pickedCategories.map((el) => (
+									<li key={el.id} id={el.id} onClick={removeFromPicked}>
+										{el.name}
+									</li>
+								))}
+						</ul>
+						<Switch name="active" register={register} label="Produkt je viditelný:" />
+					</section>
 
-			<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
-			{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
+					<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
+					{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
 
-			<DetailText detailText={detailText} setDetailText={setDetailText} />
+					<DetailText detailText={detailText} setDetailText={setDetailText} />
 
-			<section className={css.images}>
-				<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
-				<div className={css.control_box}>
-					<button>Uložit</button>
-					{/* <button type="button" className="blue_button">
-						<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
-						Náhled produktu
-					</button> */}
-					{id && (
-						<button type="button" className="red_button" onClick={deleteProduct}>
-							Smazat
-						</button>
-					)}
-				</div>
-			</section>
-		</form>
+					<section className={css.images}>
+						<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
+						<div className={css.control_box}>
+							<button>Uložit</button>
+							{/* <button type="button" className="blue_button">
+					<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
+					Náhled produktu
+				</button> */}
+							{id && (
+								<button type="button" className="red_button" onClick={deleteProduct}>
+									Smazat
+								</button>
+							)}
+						</div>
+					</section>
+				</form>
+			) : (
+				<h3>Načítání produktu</h3>
+			)}
+		</>
 	);
 }

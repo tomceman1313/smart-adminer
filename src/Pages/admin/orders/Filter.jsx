@@ -12,7 +12,7 @@ import css from "./css/Filter.module.css";
 import useOrdersFilterValues from "../../Hooks/useOrdersFilterValues";
 
 export default function Filter({ setOrders, setVisible, shippingTypes }) {
-	const { selectedDates, selectedPaymentMethods, selectedShippingTypes, selectedStatusCodes } = useOrdersFilterValues();
+	const { selectedDates, selectedPaymentMethods, selectedShippingTypes, selectedStatusCodes, searchedId } = useOrdersFilterValues();
 
 	async function loadFilteredData() {
 		const filterValues = {
@@ -30,6 +30,7 @@ export default function Filter({ setOrders, setVisible, shippingTypes }) {
 		selectedPaymentMethods.current = [];
 		selectedShippingTypes.current = [];
 		selectedStatusCodes.current = [];
+		searchedId.current = null;
 
 		const filterData = await filterOrders([]);
 		setOrders(filterData);

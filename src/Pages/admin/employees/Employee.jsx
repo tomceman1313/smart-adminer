@@ -5,6 +5,7 @@ import {
 	faIdBadge,
 	faImagePortrait,
 	faMobileScreen,
+	faMobileScreenButton,
 	faUserGraduate,
 	faUserTag,
 	faXmark,
@@ -17,6 +18,7 @@ import InputBox from "../../Components/basic/InputBox";
 import useInteraction from "../../Hooks/useInteraction";
 import { create, edit } from "../../modules/ApiFunctions";
 import { convertBase64 } from "../../modules/BasicFunctions";
+import Switch from "../../Components/basic/switch/Switch";
 
 import ImageInput from "../../Components/basic/image-input/ImageInput";
 import cssBasic from "../styles/Basic.module.css";
@@ -70,15 +72,16 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	}
 
 	function setData() {
-		console.log(employee);
 		setValue("degree_before", employee.degree_before);
 		setValue("fname", employee.fname);
 		setValue("lname", employee.lname);
 		setValue("degree_after", employee.degree_after);
 		setValue("phone", employee.phone);
+		setValue("phone_secondary", employee.phone_secondary);
 		setValue("email", employee.email);
 		setValue("position", employee.position);
 		setValue("notes", employee.notes);
+		setValue("active", employee.active);
 		setValue("id", employee.id);
 
 		setPickedDepartments(employee.departments);
@@ -123,6 +126,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 						<InputBox placeholder="Titul za jménem" register={register} type="text" name="degree_after" icon={faUserGraduate} />
 
 						<InputBox placeholder="Telefon" register={register} type="tel" name="phone" icon={faMobileScreen} />
+						<InputBox placeholder="Druhý telefon" register={register} type="tel" name="phone_secondary" icon={faMobileScreenButton} />
 						<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} />
 
 						<div className={cssBasic.input_box}>
@@ -155,9 +159,11 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 
 						<ImageInput name="image" image={employee.image} path="employees" register={register} />
 
+						<Switch name="active" label="Zaměstnanec je viditelný:" register={register} />
+
 						<input type="hidden" {...register("id")} />
 
-						<button>Uložit</button>
+						<button style={{ marginTop: "20px" }}>Uložit</button>
 					</form>
 				</motion.section>
 			)}

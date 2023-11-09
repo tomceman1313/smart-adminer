@@ -17,15 +17,12 @@ export default function Orders() {
 	const [shippingTypes, setShippingTypes] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Objednávky";
-		document.getElementById("banner-desc").innerHTML = "Přehled obdržených objednávek, možnost jejich vyřízení";
 		loadData();
 	}, []);
 
 	async function loadData() {
 		const _orders = await filterOrders([]);
 		setOrders(_orders);
-		console.log(_orders);
 		const _shipping_types = await getShippingTypes();
 		setShippingTypes(_shipping_types);
 	}

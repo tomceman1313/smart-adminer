@@ -16,8 +16,6 @@ export default function Vacancies() {
 	const [vacancies, setVacancies] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Inzerát pracovní pozice";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte inzeráty pracovních pozic";
 		getData();
 	}, []);
 

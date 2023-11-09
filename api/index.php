@@ -43,6 +43,9 @@ require __DIR__ . "/src/gateways/orders/OrdersGateway.php";
 require __DIR__ . "/src/controllers/EmailsController.php";
 require __DIR__ . "/src/gateways/emails/EmailsGateway.php";
 
+require __DIR__ . "/src/controllers/PagesController.php";
+require __DIR__ . "/src/gateways/pages/PagesGateway.php";
+
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
 
@@ -156,6 +159,11 @@ switch ($class) {
     case 'emails':
         $gateway = new EmailsGateway($database);
         $controller = new EmailsController($admin, $gateway);
+        $controller->processRequest($action, $id);
+        break;
+    case 'pages':
+        $gateway = new PagesGateway($database);
+        $controller = new PagesController($gateway, $admin);
         $controller->processRequest($action, $id);
         break;
     default:

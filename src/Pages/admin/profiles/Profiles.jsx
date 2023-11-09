@@ -15,8 +15,6 @@ export default function Profiles() {
 	const [users, setUsers] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Správa profilů";
-		document.getElementById("banner-desc").innerHTML = "Přehled a správa profilů";
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

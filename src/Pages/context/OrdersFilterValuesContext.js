@@ -7,9 +7,10 @@ export const OrdersFilterValuesProvider = ({ children }) => {
 	const selectedPaymentMethods = useRef([]);
 	const selectedShippingTypes = useRef([]);
 	const selectedStatusCodes = useRef([]);
+	const searchedId = useRef(null);
 
 	return (
-		<OrdersFilterValuesContext.Provider value={{ selectedDates, selectedPaymentMethods, selectedShippingTypes, selectedStatusCodes }}>
+		<OrdersFilterValuesContext.Provider value={{ selectedDates, selectedPaymentMethods, selectedShippingTypes, selectedStatusCodes, searchedId }}>
 			{children}
 		</OrdersFilterValuesContext.Provider>
 	);

@@ -27,8 +27,6 @@ export default function Products() {
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Produkty";
-		document.getElementById("banner-desc").innerHTML = "Přehled vytvořených produktů, správa kategorií a slev";
 		loadData();
 	}, []);
 

@@ -1,0 +1,77 @@
+.menu_section {
+	margin: 15px 0;
+	overflow: hidden;
+}
+
+.menu_section div {
+	margin: 0 20px;
+	padding: 15px 25px;
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--main);
+	border-radius: 18px;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+.menu_section div label {
+	cursor: pointer;
+	color: #b7c0cd;
+}
+
+.menu_section article {
+	max-height: 0;
+	margin-left: 40px;
+	overflow: hidden;
+	transition: max-height 0.7s ease-in-out;
+}
+
+.menu_section a {
+	display: block;
+	margin: 15px 0 15px 35px;
+	font-size: 18px;
+	color: #b7c0cd;
+	font-weight: 500;
+	transition: all 0.5s;
+}
+
+.menu_section a:hover {
+	color: #42a5f5;
+}
+
+.menu_section div:hover label {
+	color: white !important;
+}
+
+.icon {
+	margin-right: 10px;
+	color: #b7c0cd;
+}
+
+.smallarrow {
+	font-size: 15px;
+	margin-left: 10px;
+	color: white;
+}
+
+.active {
+	border-left: solid var(--main) 4px;
+	transition: all 0.5s;
+}
+
+.active > div {
+	background-color: var(--main);
+	color: white !important;
+}
+
+.active > article {
+	max-height: 300px;
+}
+
+.active label {
+	color: white !important;
+}
+
+.active_link {
+	color: #42a5f5 !important;
+}

@@ -18,8 +18,6 @@ const Notifications = () => {
 
 	useEffect(() => {
 		loadData();
-		document.getElementById("banner-title").innerHTML = "Upozornění";
-		document.getElementById("banner-desc").innerHTML = "Informujte své návštěvníky o mimořádných událostech";
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

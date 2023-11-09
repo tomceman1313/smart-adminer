@@ -1,0 +1,23 @@
+.under_images {
+	position: relative;
+}
+
+.under_images img {
+	width: 100%;
+	aspect-ratio: 6 / 4;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.under_images span {
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
+	padding: 7px 10px 5px 10px;
+	border-radius: 8px;
+	color: white;
+	background-color: var(--green);
+	font-family: Grota_Bold;
+	cursor: pointer;
+	box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.36);
+}

@@ -19,9 +19,6 @@ export default function Register() {
 
 	useEffect(() => {
 		getRoles(setPrivileges, auth);
-
-		document.getElementById("banner-title").innerHTML = "Registrace a role";
-		document.getElementById("banner-desc").innerHTML = "Tvorba nových profilů, přehled a správa práv rolí";
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

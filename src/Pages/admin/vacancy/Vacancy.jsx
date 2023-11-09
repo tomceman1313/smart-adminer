@@ -10,18 +10,20 @@ import useInteraction from "../../Hooks/useInteraction";
 import { create, edit, get, remove } from "../../modules/ApiFunctions";
 import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import { removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
-
+import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
 import ImageInput from "../../Components/basic/image-input/ImageInput";
 import Switch from "../../Components/basic/switch/Switch";
+
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Vacancy.module.css";
 
 export default function Vacancy() {
 	const auth = useAuth();
 	const { setMessage, setAlert } = useInteraction();
+	const { register, setValue, getValues, handleSubmit, reset } = useForm();
 
-	const { register, setValue, handleSubmit, reset } = useForm();
 	const [vacancy, setVacancy] = useState(null);
+	const [vacancyPreview, setVacancyPreview] = useState(null);
 	const [detailText, setDetailText] = useState(null);
 
 	const { id } = useParams();
@@ -29,8 +31,6 @@ export default function Vacancy() {
 	const navigation = useNavigate();
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Inzerát pracovní pozice";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte inzeráty pracovních pozic";
 		if (id) {
 			setData();
 		} else {
@@ -90,6 +90,20 @@ export default function Vacancy() {
 		setAlert({ id: id, question: "Opravdu si přejete smazat inzerát?", positiveHandler: deleteHandler });
 	}
 
+	async function openVacancyPreview() {
+		let data = getValues();
+		data.date = makeDateFormat(data.date);
+		if (data.image?.[0]) {
+			const base64 = await convertBase64(data.image[0]);
+			data.image = base64;
+		} else {
+			data.image = vacancy ? vacancy.image : null;
+		}
+
+		data.body = removeEmptyParagraphs(detailText);
+		setVacancyPreview(data);
+	}
+
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -115,10 +129,10 @@ export default function Vacancy() {
 					<TextEditor value={detailText} setValue={setDetailText} isLiteVersion={true} />
 					<div className={css.control_box}>
 						<button>Uložit</button>
-						{/* <button type="button" className="blue_button">
+						<button type="button" className="blue_button" onClick={openVacancyPreview}>
 							<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 							Náhled inzerátu
-						</button> */}
+						</button>
 						{id && (
 							<button type="button" className="red_button" onClick={deleteVacancy}>
 								Smazat
@@ -127,6 +141,8 @@ export default function Vacancy() {
 					</div>
 				</section>
 			</form>
+
+			<ArticlePreview article={vacancyPreview} close={() => setVacancyPreview(null)} typeOfPreview="vacancies" />
 		</>
 	);
 }

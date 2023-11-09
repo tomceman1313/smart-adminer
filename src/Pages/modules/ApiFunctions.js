@@ -254,3 +254,16 @@ export async function changePassword(postData, auth) {
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	return data.success;
 }
+
+export async function logOut(auth) {
+	const response = await fetch(`${BASE_URL}/api/?class=admin&action=logout`, {
+		method: "GET",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+		credentials: "include",
+	});
+
+	if (response.status === 200) {
+		console.log(auth);
+		auth.setUserInfo(null);
+	}
+}

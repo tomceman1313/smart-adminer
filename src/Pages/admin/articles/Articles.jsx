@@ -17,9 +17,6 @@ const Articles = () => {
 	const [selectedCategory, setSelectedCategory] = useState(null);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Články";
-		document.getElementById("banner-desc").innerHTML = "Tvořte a spravujte vlastní články";
-
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

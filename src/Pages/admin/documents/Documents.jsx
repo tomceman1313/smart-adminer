@@ -17,9 +17,6 @@ const Documents = () => {
 	const [editedDocument, setEditedDocument] = useState(false);
 
 	useEffect(() => {
-		document.getElementById("banner-title").innerHTML = "Dokumentový server";
-		document.getElementById("banner-desc").innerHTML = "Správa dokumentů a tvorba kategorií pro jejich rozřazení";
-
 		loadData();
 	}, []);
 
