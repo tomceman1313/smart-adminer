@@ -16,11 +16,11 @@ class PagesController
     private function controller(string $action): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $id = 0;
+        $name = "";
         $authAction = false;
 
-        if (isset($_GET["id"])) {
-            $id = $_GET["id"];
+        if (isset($_GET["name"])) {
+            $name = $_GET["name"];
         }
         if (isset($_SERVER["HTTP_AUTHORIZATION"])) {
             list($type, $token) = explode(" ", $_SERVER["HTTP_AUTHORIZATION"], 2);
@@ -41,7 +41,7 @@ class PagesController
         }
 
         if ($action == 'get') {
-            $result = $this->gateway->get($id);
+            $result = $this->gateway->get($name);
             http_response_code(200);
             echo json_encode($result);
             return;

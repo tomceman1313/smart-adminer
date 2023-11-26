@@ -1,7 +1,7 @@
 <?php
-require './phpmailer/src/Exception.php';
-require './phpmailer/src/PHPMailer.php';
-require './phpmailer/src/SMTP.php';
+require __DIR__ . '/../../../phpmailer/src/Exception.php';
+require __DIR__ . '/../../../phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../../../phpmailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -33,7 +33,7 @@ class EmailsGateway
         $mail->addAddress($data["to"], $data["name"]);
         $mail->Subject = $data["subject"];
         //$mail->msgHTML(file_get_contents('message.html'), __DIR__);
-        $mail->Body = $data["message"] . "\nJméno: " . $data["name"] . "\nTelefon: " . $data["tel"] . "\nEmail: " . $data["email"];
+        $mail->Body = $data["message"];
         //$mail->addAttachment('attachment.txt');
         if (!$mail->send()) {
             //echo 'Mailer Error: ' . $mail->ErrorInfo;
@@ -41,5 +41,36 @@ class EmailsGateway
         } else {
             return true;
         }
+    }
+
+    public function subscribe(string $email)
+    {
+        $list_id = 17;
+        $API_KEY = "60ee87accc21d60ee87accc21e";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api2.ecomailapp.cz/lists/$list_id/subscribe");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "{
+            \"subscriber_data\": {
+              \"email\": \"$email\"
+            }
+          }");
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "key: $API_KEY"
+        ));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        if ($response) {
+            return true;
+        }
+        return false;
     }
 }

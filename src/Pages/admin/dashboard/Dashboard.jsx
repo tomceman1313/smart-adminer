@@ -18,7 +18,7 @@ import Register from "../register/Register";
 import SideMenu from "./SideMenu";
 import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
-import { refreshAccessToken } from "../../modules/ApiFunctions";
+import { refreshAccessToken } from "../../modules/ApiAuth";
 import Employees from "../employees/Employees";
 import Orders from "../orders/Orders";
 import Pages from "../pages/Pages";
@@ -57,7 +57,7 @@ export default function Dashboard() {
 						<Route path="users" element={<Profiles />} />
 						<Route path="register" element={<Register />} />
 						<Route path="pages" element={<Pages />} />
-						<Route path="page/:id" element={<Page />} />
+						<Route path="page/:name" element={<Page />} />
 						<Route path="gallery" element={<Gallery />} />
 						<Route path="gallery/:page" element={<Gallery />} />
 						<Route path="documents" element={<Documents />} />

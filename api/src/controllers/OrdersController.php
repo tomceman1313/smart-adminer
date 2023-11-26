@@ -79,6 +79,10 @@ class OrdersController
                     "id" => $id
                 ]);
                 return;
+            case 'test':
+                $id = $this->gateway->test();
+                http_response_code(200);
+                return;
         }
 
         if (!$authAction) {

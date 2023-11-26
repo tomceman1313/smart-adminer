@@ -56,6 +56,16 @@ class ArticlesController
                 echo json_encode($data);
                 return;
 
+            case 'getByCategoryName':
+                if (isset($_GET["name"])) {
+                    $data = $this->gateway->getByCategoryName($_GET["name"]);
+                    http_response_code(200);
+                    echo json_encode($data);
+                } else {
+                    http_response_code(400);
+                }
+                return;
+
             case 'getCategories':
                 $result = $this->gateway->getCategories();
                 http_response_code(201);

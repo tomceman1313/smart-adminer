@@ -46,6 +46,18 @@ class EmailsController
                     echo json_encode("Email was not sent.");
                 }
                 return;
+
+            case 'subscribe':
+                $result = $this->gateway->subscribe($data["email"]);
+
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode("Subscribed");
+                } else {
+                    //http_response_code(400);
+                    echo json_encode("Not subscribed");
+                }
+                return;
         }
     }
 }

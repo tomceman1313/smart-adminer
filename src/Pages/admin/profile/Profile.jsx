@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import css from "./Profile.module.css";
 import useAuth from "../../Hooks/useAuth";
-import { edit, getUserData } from "../../modules/ApiFunctions";
+import { edit } from "../../modules/ApiFunctions";
+import { getUserData } from "../../modules/ApiAuth";
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";

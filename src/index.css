@@ -25,10 +25,12 @@ html {
 :root {
 	--main-color: #008080;
 }
-input {
+input,
+textarea {
 	font-family: "Quicksand", sans-serif;
 	outline: none;
 	border: none;
+	resize: none;
 }
 
 input[type="submit"] {

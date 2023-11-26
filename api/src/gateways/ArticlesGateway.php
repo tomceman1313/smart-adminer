@@ -55,6 +55,24 @@ class ArticlesGateway
         return $data;
     }
 
+    function getByCategoryName(string $category_name): array
+    {
+        $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id WHERE articles_categories.name = :category_name";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     function getAll(): array
     {
         $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.id DESC";

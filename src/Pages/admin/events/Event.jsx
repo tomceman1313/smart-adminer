@@ -165,7 +165,7 @@ export default function Event() {
 
 					<section>
 						<h2>Text události</h2>
-						<TextEditor value={body} setValue={setBody} />
+						{body && <TextEditor value={body} setValue={setBody} />}
 						<ImagesUnderArticle
 							register={register}
 							underArticleImages={underEventImages}

@@ -5,6 +5,8 @@ class PagesGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        include(dirname(__FILE__) . '/../../publicFolderPath.php');
+        $this->path = $path;
     }
 
     function getAll(): array
@@ -31,7 +33,7 @@ class PagesGateway
 
     public function get(string $name): array
     {
-        $sql = "SELECT * FROM pages INNER JOIN pages_config ON pages.id = pages_config.page_id WHERE name = :name LIMIT 1";
+        $sql = "SELECT * FROM pages WHERE pages.name = :name LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -39,6 +41,15 @@ class PagesGateway
         ]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $sql_config = "SELECT * FROM pages_config WHERE page_id = :page_id LIMIT 1";
+        $stmt_config = $this->conn->prepare($sql_config);
+        $stmt_config->execute([
+            'page_id' => $data["id"]
+        ]);
+
+        $page_config = $stmt_config->fetch(PDO::FETCH_ASSOC);
+        $data["config"] = $page_config;
         return $data;
     }
 
@@ -70,21 +81,25 @@ class PagesGateway
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'title' => $data["title"],
-            'description' => $data["description"],
+            'title' => isset($data["title"]) ? $data["title"] : "",
+            'description' => isset($data["description"]) ? $data["description"] : "",
             'body' => $data["body"],
-            'image' => isset($data["prev_image"]) ? $data["prev_image"] : $new_image_name,
+            'image' => isset($data["prev_image"]) ? $new_image_name : $data["image"],
             'id' => $data["id"]
         ]);
 
-        $innerImages = $data["innerImages"];
-        foreach ($innerImages as $image) {
-            $this->createImage($image["name"], $image["file"], $data["id"], "inner");
+        if (isset($data["inner_images"])) {
+            $innerImages = $data["inner_images"];
+            foreach ($innerImages as $image) {
+                $this->createImage($image["name"], $image["file"], $data["id"], "inner");
+            }
         }
 
-        $deletedImages = $data["deletedImages"];
-        foreach ($deletedImages as $image) {
-            $this->deleteImage($image);
+        if (isset($data["deleted_images"])) {
+            $deletedImages = $data["deleted_images"];
+            foreach ($deletedImages as $image) {
+                $this->deleteImage($image);
+            }
         }
     }
 

@@ -1,50 +1,54 @@
 <?php
 //declare(strict_types=1);
 
-spl_autoload_register(function ($class) {
-    require __DIR__ . "/src/$class.php";
-});
+// spl_autoload_register(function ($class) {
+//     require __DIR__ . "/src/$class.php";
+// });
 
-require __DIR__ . "/src/controllers/AdminController.php";
-require __DIR__ . "/src/gateways/AdminGateway.php";
+require_once __DIR__ . "/src/Database.php";
+require_once __DIR__ . "/src/ErrorHandler.php";
+require_once __DIR__ . "/src/publicFolderPath.php";
 
-require __DIR__ . "/src/controllers/PricelistController.php";
-require __DIR__ . "/src/gateways/PricelistGateway.php";
+require_once __DIR__ . "/src/controllers/AdminController.php";
+require_once __DIR__ . "/src/gateways/AdminGateway.php";
 
-require __DIR__ . "/src/controllers/NotificationsController.php";
-require __DIR__ . "/src/gateways/NotificationsGateway.php";
+require_once __DIR__ . "/src/controllers/PricelistController.php";
+require_once __DIR__ . "/src/gateways/PricelistGateway.php";
 
-require __DIR__ . "/src/controllers/ArticlesController.php";
-require __DIR__ . "/src/gateways/ArticlesGateway.php";
+require_once __DIR__ . "/src/controllers/NotificationsController.php";
+require_once __DIR__ . "/src/gateways/NotificationsGateway.php";
 
-require __DIR__ . "/src/controllers/GalleryController.php";
-require __DIR__ . "/src/gateways/GalleryGateway.php";
+require_once __DIR__ . "/src/controllers/ArticlesController.php";
+require_once __DIR__ . "/src/gateways/ArticlesGateway.php";
 
-require __DIR__ . "/src/controllers/DocumentsController.php";
-require __DIR__ . "/src/gateways/DocumentsGateway.php";
+require_once __DIR__ . "/src/controllers/GalleryController.php";
+require_once __DIR__ . "/src/gateways/GalleryGateway.php";
 
-require __DIR__ . "/src/controllers/EventsController.php";
-require __DIR__ . "/src/gateways/EventsGateway.php";
+require_once __DIR__ . "/src/controllers/DocumentsController.php";
+require_once __DIR__ . "/src/gateways/DocumentsGateway.php";
 
-require __DIR__ . "/src/controllers/ProductsController.php";
-require __DIR__ . "/src/gateways/ProductsGateway.php";
-require __DIR__ . "/src/gateways/products/ManufacturerGateway.php";
-require __DIR__ . "/src/gateways/products/CategoryGateway.php";
+require_once __DIR__ . "/src/controllers/EventsController.php";
+require_once __DIR__ . "/src/gateways/EventsGateway.php";
 
-require __DIR__ . "/src/controllers/VacancyController.php";
-require __DIR__ . "/src/gateways/VacancyGateway.php";
+require_once __DIR__ . "/src/controllers/ProductsController.php";
+require_once __DIR__ . "/src/gateways/ProductsGateway.php";
+require_once __DIR__ . "/src/gateways/products/ManufacturerGateway.php";
+require_once __DIR__ . "/src/gateways/products/CategoryGateway.php";
 
-require __DIR__ . "/src/controllers/EmployeesController.php";
-require __DIR__ . "/src/gateways/EmployeesGateway.php";
+require_once __DIR__ . "/src/controllers/VacancyController.php";
+require_once __DIR__ . "/src/gateways/VacancyGateway.php";
 
-require __DIR__ . "/src/controllers/OrdersController.php";
-require __DIR__ . "/src/gateways/orders/OrdersGateway.php";
+require_once __DIR__ . "/src/controllers/EmployeesController.php";
+require_once __DIR__ . "/src/gateways/EmployeesGateway.php";
 
-require __DIR__ . "/src/controllers/EmailsController.php";
-require __DIR__ . "/src/gateways/emails/EmailsGateway.php";
+require_once __DIR__ . "/src/controllers/OrdersController.php";
+require_once __DIR__ . "/src/gateways/orders/OrdersGateway.php";
 
-require __DIR__ . "/src/controllers/PagesController.php";
-require __DIR__ . "/src/gateways/pages/PagesGateway.php";
+require_once __DIR__ . "/src/controllers/EmailsController.php";
+require_once __DIR__ . "/src/gateways/emails/EmailsGateway.php";
+
+require_once __DIR__ . "/src/controllers/PagesController.php";
+require_once __DIR__ . "/src/gateways/pages/PagesGateway.php";
 
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");

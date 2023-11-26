@@ -36,7 +36,6 @@ export default function Article() {
 	const navigation = useNavigate();
 	let location = useLocation();
 
-	let arrayInsideImages = [];
 	const originalImages = useRef([]);
 
 	useEffect(() => {
@@ -66,6 +65,7 @@ export default function Article() {
 	}
 
 	async function onSubmit(data) {
+		let arrayInsideImages = [];
 		data.date = makeDateFormat(data.date);
 		data.body = await formatBody(body, arrayInsideImages, "articles");
 
@@ -162,7 +162,7 @@ export default function Article() {
 
 					<section>
 						<h2>Text článku</h2>
-						<TextEditor value={body} setValue={setBody} />
+						{body && <TextEditor value={body} setValue={setBody} />}
 						<ImagesUnderArticle
 							register={register}
 							underArticleImages={underArticleImages}

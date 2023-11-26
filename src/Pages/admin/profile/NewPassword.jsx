@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
-import { changePassword } from "../../modules/ApiFunctions";
+import { changePassword } from "../../modules/ApiAuth";
 
 import css from "./NewPassword.module.css";
 

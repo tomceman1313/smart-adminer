@@ -8,7 +8,8 @@ import InputBox from "../../Components/basic/InputBox";
 import Select from "../../Components/basic/select/Select";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { create, getRoles, checkNameAvailability } from "../../modules/ApiFunctions";
+import { create, checkNameAvailability } from "../../modules/ApiFunctions";
+import { getRoles } from "../../modules/ApiAuth";
 
 export default function Register() {
 	const auth = useAuth();

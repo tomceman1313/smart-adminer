@@ -134,13 +134,21 @@ export default function Banner() {
 	useEffect(() => {
 		let path = location.pathname;
 
+		//page has param name --> skip checks
+		if (path.includes("page") && !path.includes("pages")) {
+			path = "/page";
+		}
+
+		//remove numbers (ids) in url
 		while (Number(path.charAt(path.length - 1)) || Number(path.charAt(path.length - 1)) === 0) {
 			path = path.slice(0, -1);
 		}
 
+		//remove last character if it is slash
 		if (path.charAt(path.length - 1) === "/") {
 			path = path.slice(0, -1);
 		}
+
 		const activePage = PAGES_BANNER_INFO.find((page) => page.path === path);
 		if (activePage) {
 			setBannerInfo(activePage);

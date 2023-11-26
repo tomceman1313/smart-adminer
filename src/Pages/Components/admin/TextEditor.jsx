@@ -1,10 +1,17 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useDebounce } from "../../Hooks/useDebounce";
 
 const TextEditor = ({ value, setValue, isLiteVersion }) => {
-	let m, f;
+	const [text, setText] = useState(value);
+	const debounceBody = useDebounce(text, 1000);
+	useEffect(() => {
+		setValue(debounceBody);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debounceBody]);
 
+	let m, f;
 	if (isLiteVersion) {
 		m = {
 			toolbar: [
@@ -38,7 +45,7 @@ const TextEditor = ({ value, setValue, isLiteVersion }) => {
 
 	return (
 		<div>
-			<ReactQuill theme="snow" modules={m} formats={f} value={value} onChange={setValue}></ReactQuill>
+			<ReactQuill theme="snow" modules={m} formats={f} value={text} onChange={setText}></ReactQuill>
 		</div>
 	);
 };

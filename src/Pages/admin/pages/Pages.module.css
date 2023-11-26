@@ -12,10 +12,16 @@
 .info {
 	width: 30%;
 	margin-left: 20px;
+	overflow: hidden;
 }
 
-.info b {
+.info b,
+.info label {
 	display: block;
+	width: 100%;
+	text-overflow: ellipsis; /* enables ellipsis */
+	white-space: nowrap; /* keeps the text in a single line */
+	overflow: hidden;
 }
 
 .page_configs {
@@ -47,4 +53,20 @@
 
 .btn_open:hover {
 	background-color: var(--green-dark);
+}
+
+@media (max-width: 1100px) {
+	.page_configs {
+		width: 350px;
+	}
+}
+
+@media (max-width: 900px) {
+	.info {
+		width: 80%;
+	}
+
+	.page_configs {
+		display: none;
+	}
 }

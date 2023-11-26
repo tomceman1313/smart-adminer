@@ -1,0 +1,32 @@
+.input_box {
+	width: calc(100%);
+	display: flex;
+	justify-content: space-between;
+	border: 1px solid #d6dde1;
+	border-radius: 8px;
+	margin-bottom: 20px;
+	min-height: 80px;
+	height: auto;
+	overflow: hidden;
+}
+
+.half {
+	width: calc(50% - 20px);
+}
+
+.input_box textarea {
+	width: calc(100% - 60px);
+	background-color: transparent;
+	padding-top: 14px;
+	color: #333;
+	font-size: 16px;
+	transition: all 0.5s;
+}
+
+.icon {
+	font-size: 16px;
+	transition: all 0.5s;
+	color: var(--main-dark);
+	background-color: transparent;
+	padding: 17px;
+}

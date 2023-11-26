@@ -1,12 +1,10 @@
 <?php
-
 class OrdersGateway
 {
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
-        include(dirname(__FILE__) . '/../../publicFolderPath.php');
-        $this->path = $path;
+        $this->email = new EmailsGateway($database);
     }
 
     public function get(string $id): array
@@ -240,6 +238,9 @@ class OrdersGateway
                 'quantity' => $product["quantity"],
             ]);
         }
+
+        $this->sendNewOrderEmail($data["email"], $data["fname"] . " " . $data["fname"], $order_id);
+
         return $order_id;
     }
 
@@ -345,5 +346,24 @@ class OrdersGateway
         $stmt->execute([
             "id" => $id
         ]);
+    }
+
+    private function sendNewOrderEmail($email, $name, $orderNumber)
+    {
+        $emailCustomer = [];
+        $emailCustomer["subject"] = "Potvrzení objednávky";
+        $emailCustomer["to"] = $email;
+        $emailCustomer["name"] = $name;
+        $emailCustomer["message"] = "Test message";
+
+        $this->email->sendEmail($emailCustomer);
+
+        $emailAdmin = [];
+        $emailAdmin["subject"] = "Nová objednávka č. $orderNumber";
+        $emailAdmin["to"] = "tomas@smart-studio.cz";
+        $emailAdmin["name"] = "Info";
+        $emailAdmin["message"] = "Byla přijata nová objednávka.";
+
+        $this->email->sendEmail($emailAdmin);
     }
 }

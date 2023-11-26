@@ -25,7 +25,7 @@ export default function Pages() {
 				<h2>Stránky</h2>
 				<ul className={css.vacancies}>
 					{pages ? (
-						pages.map((page) => <Page key={`page-${page.id}`} page={page} redirectToPage={() => navigate(`/page/${page.id}`)} />)
+						pages.map((page) => <Page key={`page-${page.id}`} page={page} redirectToPage={() => navigate(`/page/${page.name}`)} />)
 					) : (
 						<p>Dosud nebyly přidány žádné obsahy stránek.</p>
 					)}
