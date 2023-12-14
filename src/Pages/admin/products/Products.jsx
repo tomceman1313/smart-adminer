@@ -7,7 +7,7 @@ import useInteraction from "../../Hooks/useInteraction";
 import { getAll } from "../../modules/ApiFunctions";
 import { deleteProduct } from "../../modules/ApiProducts";
 import { isPermitted, publicPath } from "../../modules/BasicFunctions";
-
+import { Helmet } from "react-helmet";
 import { AnimatePresence } from "framer-motion";
 import PlusButton from "../../Components/basic/PlusButton";
 import FilterBasicController from "../../Components/common/basic-filter-controller/FilterBasicController";
@@ -48,6 +48,9 @@ export default function Products() {
 
 	return (
 		<div className={css.products}>
+			<Helmet>
+				<title>Produkty | SmartAdminer</title>
+			</Helmet>
 			<ProductsFilterValuesProvider>
 				<Category categories={categories} setCategories={setCategories} apiClass="products" reloadData={loadData} />
 				<Manufacturers manufacturers={manufacturers} setManufacturers={setManufacturers} />

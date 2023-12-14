@@ -1,7 +1,6 @@
 import "@splidejs/react-splide/css";
 import { useEffect, useState } from "react";
-import css from "./Register.module.css";
-
+import { Helmet } from "react-helmet";
 import { faArrowUpWideShort, faAt, faIdBadge, faImagePortrait, faLock, faMobileScreen, faUnlock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
@@ -10,6 +9,7 @@ import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { create, checkNameAvailability } from "../../modules/ApiFunctions";
 import { getRoles } from "../../modules/ApiAuth";
+import css from "./Register.module.css";
 
 export default function Register() {
 	const auth = useAuth();
@@ -43,6 +43,10 @@ export default function Register() {
 
 	return (
 		<div className={css.register}>
+			<Helmet>
+				<title>Registrace | SmartAdminer</title>
+			</Helmet>
+
 			<section>
 				<h2>Nový uživatel</h2>
 				<form onSubmit={handleSubmit(onSubmit)}>

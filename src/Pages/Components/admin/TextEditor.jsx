@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDebounce } from "../../Hooks/useDebounce";
 
-const TextEditor = ({ value, setValue, isLiteVersion }) => {
+const TextEditor = ({ value, setValue, isLiteVersion, headers }) => {
 	const [text, setText] = useState(value);
 	const debounceBody = useDebounce(text, 1000);
 	useEffect(() => {
@@ -15,7 +15,7 @@ const TextEditor = ({ value, setValue, isLiteVersion }) => {
 	if (isLiteVersion) {
 		m = {
 			toolbar: [
-				[{ header: [1, 2, 3, false] }],
+				[{ header: headers ? [...headers, false] : [1, 2, 3, false] }],
 				["bold", "italic", "underline"],
 				[{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
 				["link", "clean"],
@@ -29,7 +29,7 @@ const TextEditor = ({ value, setValue, isLiteVersion }) => {
 	} else {
 		m = {
 			toolbar: [
-				[{ header: [1, 2, 3, false] }],
+				[{ header: headers ? [...headers, false] : [1, 2, 3, false] }],
 				["bold", "italic", "underline"],
 				[{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
 				["link", "image"],

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { filterOrders, getShippingTypes } from "../../modules/ApiOrders";
 import Order from "./Order";
 import OrderDetail from "./OrderDetail";
-
+import { Helmet } from "react-helmet";
 import Filter from "./Filter";
 import css from "./Orders.module.css";
 import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
@@ -29,6 +29,9 @@ export default function Orders() {
 
 	return (
 		<div className={css.orders}>
+			<Helmet>
+				<title>Objednávky | SmartAdminer</title>
+			</Helmet>
 			<section>
 				<ul className={css.orders_list}>
 					<li className={css.table_head} onClick={() => setIsFilterVisible(true)}>

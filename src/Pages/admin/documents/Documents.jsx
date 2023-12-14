@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
-
+import { Helmet } from "react-helmet";
 import Category from "../../Components/common/categories-component/Category";
 import NewDocument from "./NewDocument";
 import DocumentList from "./DocumentList";
@@ -39,6 +39,9 @@ const Documents = () => {
 
 	return (
 		<div className={css.documents}>
+			<Helmet>
+				<title>Dokumenty | SmartAdminer</title>
+			</Helmet>
 			<Category
 				categories={categories}
 				setCategories={setCategories}

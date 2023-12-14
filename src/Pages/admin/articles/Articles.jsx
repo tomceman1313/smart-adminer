@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
-
+import { Helmet } from "react-helmet";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";
@@ -40,29 +40,40 @@ const Articles = () => {
 	}
 
 	return (
-		<div className={css.articles}>
-			<Category categories={categories} setCategories={setCategories} apiClass="articles" filterByCategory={filterByCategory} reloadData={loadData} />
-			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
-			<section className={`${css.articles_list} no-section`}>
-				{articles &&
-					articles.map((article) => (
-						<article key={article.id} id={article.id} onClick={openArticleDetails}>
-							<img src={`${publicPath}/images/articles/${article.image}`} alt="" />
-							<div>
-								<h3>{article.title}</h3>
-								<p>{article.description}</p>
-							</div>
+		<>
+			<Helmet>
+				<title>Články | SmartAdminer</title>
+			</Helmet>
+			<div className={css.articles}>
+				<Category
+					categories={categories}
+					setCategories={setCategories}
+					apiClass="articles"
+					filterByCategory={filterByCategory}
+					reloadData={loadData}
+				/>
+				<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
+				<section className={`${css.articles_list} no-section`}>
+					{articles &&
+						articles.map((article) => (
+							<article key={article.id} id={article.id} onClick={openArticleDetails}>
+								<img src={`${publicPath}/images/articles/${article.image}`} alt="" />
+								<div>
+									<h3>{article.title}</h3>
+									<p>{article.description}</p>
+								</div>
 
-							<div>
-								<label>{makeDateFormat(article.date, "text")}</label>
-							</div>
+								<div>
+									<label>{makeDateFormat(article.date, "text")}</label>
+								</div>
 
-							<div>{isPermitted(article.active)}</div>
-						</article>
-					))}
-			</section>
-			<PlusButton onClick={() => navigate("/new-article/")} />
-		</div>
+								<div>{isPermitted(article.active)}</div>
+							</article>
+						))}
+				</section>
+				<PlusButton onClick={() => navigate("/new-article/")} />
+			</div>
+		</>
 	);
 };
 

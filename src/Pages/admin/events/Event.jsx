@@ -18,7 +18,7 @@ import ImagesUnderArticle from "../article/ImagesUnderArticle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
-
+import { Helmet } from "react-helmet";
 import css from "../article/Article.module.css";
 import cssBasic from "../styles/Basic.module.css";
 
@@ -140,6 +140,9 @@ export default function Event() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{event?.title ? event.title : "Nová událost"} | SmartAdminer</title>
+			</Helmet>
 			{categories ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>

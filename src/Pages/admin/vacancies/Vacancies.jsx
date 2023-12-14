@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlusButton from "../../Components/basic/PlusButton";
+import { Helmet } from "react-helmet";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getAll, remove } from "../../modules/ApiFunctions";
@@ -39,6 +40,9 @@ export default function Vacancies() {
 
 	return (
 		<>
+			<Helmet>
+				<title>Inzerované pozice | SmartAdminer</title>
+			</Helmet>
 			<section>
 				<h2>Pracovní místa</h2>
 				<ul className={css.vacancies}>

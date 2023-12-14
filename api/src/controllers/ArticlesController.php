@@ -44,6 +44,12 @@ class ArticlesController
                 echo json_encode($data);
                 return;
 
+            case 'getNews':
+                $data = $this->gateway->getNews();
+                http_response_code(200);
+                echo json_encode($data);
+                return;
+
             case 'get':
                 $data = $this->gateway->get($id);
                 http_response_code(200);

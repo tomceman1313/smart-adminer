@@ -4,6 +4,7 @@ import { getAllWithAuth, edit, remove, checkNameAvailability } from "../../modul
 import UserList from "./UserList";
 import useInteraction from "../../Hooks/useInteraction";
 import PlusButton from "../../Components/basic/PlusButton";
+import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import css from "./Profiles.module.css";
 
@@ -47,6 +48,9 @@ export default function Profiles() {
 
 	return (
 		<section className="no-section" style={{ position: "relative" }}>
+			<Helmet>
+				<title>Správa profilu | SmartAdminer</title>
+			</Helmet>
 			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={deleteHandler} css={css} />}</div>
 			<PlusButton onClick={() => navigate(`/register/`)} />
 		</section>

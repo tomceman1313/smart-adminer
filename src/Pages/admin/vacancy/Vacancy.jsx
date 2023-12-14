@@ -13,6 +13,7 @@ import { removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
 import ImageInput from "../../Components/basic/image-input/ImageInput";
 import Switch from "../../Components/basic/switch/Switch";
+import { Helmet } from "react-helmet";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Vacancy.module.css";
@@ -106,6 +107,9 @@ export default function Vacancy() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{vacancy?.title ? vacancy.title : "Nový inzerát"} | SmartAdminer</title>
+			</Helmet>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<section className={css.basic_info}>
 					<h2>Základní informace:</h2>

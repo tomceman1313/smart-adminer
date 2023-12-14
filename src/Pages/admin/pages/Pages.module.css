@@ -1,9 +1,45 @@
-.page {
+.page_header {
 	width: 100%;
+	height: 40px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin: 10px 0;
+	border-radius: 8px;
+	border: solid 1px var(--gray);
+	color: black;
+}
+
+.btn_show {
+	width: 15px;
+	height: 15px;
+	padding: 5px;
+	margin-right: 15px;
+	transform: rotate(90deg);
+	border-radius: 50%;
+	background-color: var(--main);
+	color: white;
+	transition: all 0.8s;
+	cursor: pointer;
+}
+
+.btn_show:hover,
+.active {
+	transform: rotate(180deg);
+}
+
+.active:hover {
+	background-color: var(--red);
+	transform: rotate(0);
+}
+
+.page {
+	width: calc(100% - 10px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0;
+	margin-left: 10px;
 	border: solid 1px var(--gray);
 	border-radius: 8px;
 	overflow: hidden;

@@ -40,6 +40,13 @@ class PagesController
             return;
         }
 
+        if ($action == 'getAllPageParts') {
+            $result = $this->gateway->getAllPageParts($name);
+            http_response_code(200);
+            echo json_encode($result);
+            return;
+        }
+
         if ($action == 'get') {
             $result = $this->gateway->get($name);
             http_response_code(200);

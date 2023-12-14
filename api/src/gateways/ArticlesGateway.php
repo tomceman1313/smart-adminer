@@ -73,6 +73,32 @@ class ArticlesGateway
         return $data;
     }
 
+    function getNews(): array
+    {
+        $sql = "SELECT id, title, description, date, active, image FROM articles ";
+        $stmt = $this->conn->query($sql);
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["type"] = "article";
+            $data[] = $row;
+        }
+
+        $sql = "SELECT id, title, description, date, active, image FROM events ORDER BY date DESC";
+        $stmt = $this->conn->query($sql);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["type"] = "event";
+            $data[] = $row;
+        }
+
+        usort($data, function ($a, $b) {
+            return $a['date'] < $b['date'];
+        });
+
+
+
+        return array_slice($data, 0, 10);
+    }
+
     function getAll(): array
     {
         $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.id DESC";

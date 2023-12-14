@@ -7,6 +7,7 @@ import NewPicture from "./NewPicture";
 import Images from "./Images";
 import { useParams, useNavigate } from "react-router-dom";
 import { sliceDataBasedOnPageNumber } from "../../modules/BasicFunctions";
+import { Helmet } from "react-helmet";
 
 const Gallery = () => {
 	const auth = useAuth();
@@ -46,6 +47,9 @@ const Gallery = () => {
 
 	return (
 		<div className={css.gallery}>
+			<Helmet>
+				<title>Galerie | SmartAdminer</title>
+			</Helmet>
 			<Category
 				filterByCategory={filterImagesByCategory}
 				categories={categories}

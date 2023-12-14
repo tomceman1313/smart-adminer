@@ -10,6 +10,7 @@ import { convertBase64 } from "../../modules/BasicFunctions";
 import { formatBody, findDeletedImages, checkInnerImage } from "../../modules/TextEditorFunctions";
 import useInteraction from "../../Hooks/useInteraction";
 import useAuth from "../../Hooks/useAuth";
+import { Helmet } from "react-helmet";
 
 import css from "./Page.module.css";
 import TextArea from "../../Components/basic/textarea/TextArea";
@@ -62,10 +63,14 @@ export default function Page() {
 
 	return (
 		<>
+			<Helmet>
+				<title>Obsah stránky | SmartAdminer</title>
+			</Helmet>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				{page ? (
-					<section>
-						<h2>Obsah stránky:</h2>
+					<section className={css.page}>
+						<h2>Obsah stránky</h2>
+						<p>{page.info}</p>
 						{!!page.config.title && (
 							<InputBox
 								placeholder="Název"
@@ -89,9 +94,9 @@ export default function Page() {
 						)}
 						{!!page.config.image && <ImageInput image={page.image} name="image" path="pages" register={register} additionalClasses="half" />}
 						{!!page.config.rich_editor ? (
-							<TextEditor value={body} setValue={setBody} isLiteVersion={false} />
+							<TextEditor value={body} setValue={setBody} isLiteVersion={false} headers={[1, 2, 3, 4, 5]} />
 						) : (
-							<TextArea name="body" icon={faTableColumns} register={register} placeholder="Text stránky" />
+							<TextArea name="body" icon={faTableColumns} register={register} placeholder="Text stránky" defaultValue={page.body} />
 						)}
 						<div className={css.control_box}>
 							<button>Uložit</button>

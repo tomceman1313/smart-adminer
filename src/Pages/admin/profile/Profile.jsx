@@ -5,6 +5,7 @@ import { edit } from "../../modules/ApiFunctions";
 import { getUserData } from "../../modules/ApiAuth";
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet";
 import InputBox from "../../Components/basic/InputBox";
 import NewPassword from "./NewPassword";
 import useInteraction from "../../Hooks/useInteraction";
@@ -48,6 +49,9 @@ const Profile = () => {
 
 	return (
 		<div className={css.profile}>
+			<Helmet>
+				<title>Správa profilu | SmartAdminer</title>
+			</Helmet>
 			<section className={css.user_info}>
 				<form onSubmit={handleSubmit(onSubmitUserInfo)}>
 					<h2>Uživatelské údaje</h2>

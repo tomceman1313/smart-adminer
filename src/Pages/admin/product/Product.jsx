@@ -11,7 +11,7 @@ import { create, edit, remove, checkNameAvailability } from "../../modules/ApiFu
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
 import { getProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
-
+import { Helmet } from "react-helmet";
 import cssBasic from "../styles/Basic.module.css";
 import DetailText from "./DetailText";
 import Images from "./Images";
@@ -168,6 +168,9 @@ export default function ProductNew() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{id ? "Produkt" : "Nový produkt"} | SmartAdminer</title>
+			</Helmet>
 			{manufacturers ? (
 				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
 					<section className={css.basic_info}>

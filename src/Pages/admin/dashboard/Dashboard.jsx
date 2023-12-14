@@ -25,6 +25,7 @@ import Pages from "../pages/Pages";
 import Vacancies from "../vacancies/Vacancies";
 import Vacancy from "../vacancy/Vacancy";
 import Banner from "./Banner";
+import { Helmet } from "react-helmet";
 
 import css from "./Dashboard.module.css";
 import Page from "../page/Page";
@@ -49,6 +50,9 @@ export default function Dashboard() {
 
 	return (
 		<div className={css.dashboard}>
+			<Helmet>
+				<title>SmartAdminer</title>
+			</Helmet>
 			<SideMenu auth={auth} />
 			<Banner />
 			<div className={css.content}>

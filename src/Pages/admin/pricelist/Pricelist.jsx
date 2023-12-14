@@ -5,7 +5,7 @@ import { getAll } from "../../modules/ApiFunctions";
 import CalendarActionPrices from "./CalendarActionPrices";
 import EditPriceItem from "./EditPriceItem";
 import NewPriceListItem from "./NewPriceListItem";
-
+import { Helmet } from "react-helmet";
 import css from "./Pricelist.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
 
@@ -39,6 +39,9 @@ const Pricelist = () => {
 
 	return (
 		<div className={css.pricelist}>
+			<Helmet>
+				<title>Ceník | SmartAdminer</title>
+			</Helmet>
 			<section>
 				<h2>Seznam položek ceníku</h2>
 				<table className={css.prices_table}>

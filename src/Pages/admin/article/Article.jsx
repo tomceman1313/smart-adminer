@@ -19,6 +19,7 @@ import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 import ImagesUnderArticle from "./ImagesUnderArticle";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
+import { Helmet } from "react-helmet";
 
 export default function Article() {
 	const auth = useAuth();
@@ -137,6 +138,9 @@ export default function Article() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{article?.title ? article.title : "Nový článek"} | SmartAdminer</title>
+			</Helmet>
 			{categories ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>

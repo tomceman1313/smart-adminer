@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import css from "./Notifications.module.css";
-
+import { Helmet } from "react-helmet";
 import PlusButton from "../../Components/basic/PlusButton";
 import { getAll } from "../../modules/ApiFunctions";
 import { isActive } from "../../modules/BasicFunctions";
@@ -37,6 +37,9 @@ const Notifications = () => {
 
 	return (
 		<div className={css.notifications}>
+			<Helmet>
+				<title>Upozornění | SmartAdminer</title>
+			</Helmet>
 			<section>
 				<h2>Seznam upozornění</h2>
 				<table>

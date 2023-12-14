@@ -33,7 +33,7 @@ class PagesGateway
 
     public function get(string $name): array
     {
-        $sql = "SELECT * FROM pages WHERE pages.name = :name LIMIT 1";
+        $sql = "SELECT * FROM pages WHERE name = :name LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -50,6 +50,23 @@ class PagesGateway
 
         $page_config = $stmt_config->fetch(PDO::FETCH_ASSOC);
         $data["config"] = $page_config;
+        return $data;
+    }
+
+    public function getAllPageParts(string $page): array
+    {
+        $sql = "SELECT * FROM pages WHERE page_name = :page_name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'page_name' => $page
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[$row["name"]] = $row;
+        }
+
         return $data;
     }
 

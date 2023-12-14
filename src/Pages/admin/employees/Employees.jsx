@@ -7,6 +7,7 @@ import { getAll, remove } from "../../modules/ApiFunctions";
 import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
+import { Helmet } from "react-helmet";
 import css from "./Employees.module.css";
 
 export default function Employees() {
@@ -52,6 +53,9 @@ export default function Employees() {
 
 	return (
 		<>
+			<Helmet>
+				<title>Zaměstnanci | SmartAdminer</title>
+			</Helmet>
 			<Departments
 				departments={departments}
 				setDepartments={setDepartments}

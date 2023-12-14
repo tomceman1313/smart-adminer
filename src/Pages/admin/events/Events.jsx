@@ -5,7 +5,7 @@ import Category from "../../Components/common/categories-component/Category";
 import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
-
+import { Helmet } from "react-helmet";
 import css from "./css/Events.module.css";
 
 const Events = () => {
@@ -60,6 +60,9 @@ const Events = () => {
 
 	return (
 		<div className={css.articles}>
+			<Helmet>
+				<title>Události | SmartAdminer</title>
+			</Helmet>
 			<Category categories={categories} setCategories={setCategories} apiClass="events" filterByCategory={filterByCategory} reloadData={loadData} />
 			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
 			<section className={css.filter}>

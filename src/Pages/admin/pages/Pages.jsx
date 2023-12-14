@@ -1,34 +1,47 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAll } from "../../modules/ApiFunctions";
-import { useNavigate } from "react-router-dom";
 
+import PageHeader from "./PageHeader";
 import css from "./Pages.module.css";
-import Page from "./Page";
+import { Helmet } from "react-helmet";
 
 export default function Pages() {
 	const [pages, setPages] = useState(null);
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		loadPages();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	async function loadPages() {
 		const _pages = await getAll("pages");
-		console.log(_pages);
-		setPages(_pages);
+		setPages(sortByPageName(_pages));
+	}
+
+	function sortByPageName(initialData) {
+		const allPageNames = initialData.reduce((allPageNames, page) => {
+			if (allPageNames.includes(page.page_name)) {
+				return allPageNames;
+			}
+			return [...allPageNames, page.page_name];
+		}, []);
+
+		const sortedData = allPageNames.map((pageName) => {
+			return { pageName: pageName, pageParts: initialData.filter((page) => page.page_name === pageName) };
+		});
+		return sortedData;
 	}
 
 	return (
 		<div>
+			<Helmet>
+				<title>Stránky | SmartAdminer</title>
+			</Helmet>
+
 			<section>
 				<h2>Stránky</h2>
 				<ul className={css.vacancies}>
-					{pages ? (
-						pages.map((page) => <Page key={`page-${page.id}`} page={page} redirectToPage={() => navigate(`/page/${page.name}`)} />)
-					) : (
-						<p>Dosud nebyly přidány žádné obsahy stránek.</p>
-					)}
+					{pages ? pages.map((page) => <PageHeader key={page.pageName} page={page} />) : <p>Dosud nebyly přidány žádné obsahy stránek.</p>}
 				</ul>
 			</section>
 		</div>
