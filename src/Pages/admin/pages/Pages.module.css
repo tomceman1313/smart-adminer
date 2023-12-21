@@ -23,14 +23,13 @@
 	cursor: pointer;
 }
 
-.btn_show:hover,
-.active {
+.btn_show:hover {
 	transform: rotate(180deg);
 }
 
-.active:hover {
+.active {
 	background-color: var(--red);
-	transform: rotate(0);
+	transform: rotate(0) !important;
 }
 
 .page {

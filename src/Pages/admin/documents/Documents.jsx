@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Category from "../../Components/common/categories-component/Category";
 import NewDocument from "./NewDocument";
 import DocumentList from "./DocumentList";

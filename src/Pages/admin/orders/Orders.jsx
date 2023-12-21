@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { filterOrders, getShippingTypes } from "../../modules/ApiOrders";
 import Order from "./Order";
 import OrderDetail from "./OrderDetail";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Filter from "./Filter";
 import css from "./Orders.module.css";
 import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";

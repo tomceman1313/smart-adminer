@@ -3,7 +3,7 @@ import { getAll } from "../../modules/ApiFunctions";
 
 import PageHeader from "./PageHeader";
 import css from "./Pages.module.css";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export default function Pages() {
 	const [pages, setPages] = useState(null);

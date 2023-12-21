@@ -1,6 +1,6 @@
 import "@splidejs/react-splide/css";
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { faArrowUpWideShort, faAt, faIdBadge, faImagePortrait, faLock, faMobileScreen, faUnlock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";

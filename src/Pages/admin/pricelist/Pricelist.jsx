@@ -5,7 +5,7 @@ import { getAll } from "../../modules/ApiFunctions";
 import CalendarActionPrices from "./CalendarActionPrices";
 import EditPriceItem from "./EditPriceItem";
 import NewPriceListItem from "./NewPriceListItem";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import css from "./Pricelist.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
 

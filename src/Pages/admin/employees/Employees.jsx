@@ -7,7 +7,7 @@ import { getAll, remove } from "../../modules/ApiFunctions";
 import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import css from "./Employees.module.css";
 
 export default function Employees() {

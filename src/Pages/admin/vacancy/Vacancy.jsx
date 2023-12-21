@@ -13,7 +13,7 @@ import { removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
 import ImageInput from "../../Components/basic/image-input/ImageInput";
 import Switch from "../../Components/basic/switch/Switch";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Vacancy.module.css";
@@ -130,7 +130,7 @@ export default function Vacancy() {
 
 				<section className={css.detail}>
 					<h2>Detailní popis</h2>
-					<TextEditor value={detailText} setValue={setDetailText} isLiteVersion={true} />
+					{detailText !== null && <TextEditor value={detailText} setValue={setDetailText} isLiteVersion={true} />}
 					<div className={css.control_box}>
 						<button>Uložit</button>
 						<button type="button" className="blue_button" onClick={openVacancyPreview}>

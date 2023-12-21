@@ -7,7 +7,7 @@ import useInteraction from "../../Hooks/useInteraction";
 import { getAll } from "../../modules/ApiFunctions";
 import { deleteProduct } from "../../modules/ApiProducts";
 import { isPermitted, publicPath } from "../../modules/BasicFunctions";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { AnimatePresence } from "framer-motion";
 import PlusButton from "../../Components/basic/PlusButton";
 import FilterBasicController from "../../Components/common/basic-filter-controller/FilterBasicController";

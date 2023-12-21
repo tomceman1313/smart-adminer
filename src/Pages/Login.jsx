@@ -9,6 +9,7 @@ import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import Message from "./Components/admin/Message";
 import InputBox from "./Components/basic/InputBox";
 import { BASE_URL } from "./modules/ApiFunctions";
+import { Helmet } from "react-helmet-async";
 
 export default function Login() {
 	const { register, handleSubmit } = useForm();
@@ -41,6 +42,9 @@ export default function Login() {
 
 	return (
 		<div className={css.login}>
+			<Helmet>
+				<title>Přihlášení | SmartAdminer</title>
+			</Helmet>
 			<section>
 				<h2>PŘIHLÁŠENÍ</h2>
 				<form onSubmit={handleSubmit(onSubmit)}>

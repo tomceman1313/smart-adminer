@@ -5,7 +5,7 @@ import { edit } from "../../modules/ApiFunctions";
 import { getUserData } from "../../modules/ApiAuth";
 import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import InputBox from "../../Components/basic/InputBox";
 import NewPassword from "./NewPassword";
 import useInteraction from "../../Hooks/useInteraction";

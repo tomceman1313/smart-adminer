@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 
 import css from "./Articles.module.css";

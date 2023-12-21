@@ -20,7 +20,10 @@ export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee })
 
 	return (
 		<li>
-			<img src={`${publicPath}/images/employees/${user.image}`} alt="Profilový obrázek zaměstnance" />
+			<img
+				src={user.image ? `${publicPath}/images/employees/${user.image}` : `${publicPath}/images/employees/no_photo.jpg`}
+				alt="Profilový obrázek zaměstnance"
+			/>
 			<div>
 				<label>{`${user.degree_before} ${user.fname} ${user.lname} ${user.degree_after}`}</label>
 				<p>{user.position}</p>

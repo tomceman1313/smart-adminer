@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { openImage, publicPath } from "../../../modules/BasicFunctions";
 
-export default function ImageInput({ name, register, path, image, additionalClasses }) {
+export default function ImageInput({ name, register, path, image, additionalClasses, required = true }) {
 	const [imageIsSet, setImageIsSet] = useState(image ? true : false);
 	let divClassName = `${css.input_box}`;
 	if (additionalClasses) {
@@ -29,7 +29,7 @@ export default function ImageInput({ name, register, path, image, additionalClas
 					</button>
 				</div>
 			) : (
-				<input type="file" {...register(name)} accept="image/*" required />
+				<input type="file" {...register(name)} accept="image/*" required={required} />
 			)}
 
 			<FontAwesomeIcon className={css.icon} icon={faImage} />

@@ -40,20 +40,23 @@ class EmployeesGateway
 
     public function create(array $data)
     {
-        $base64DataString = $data["image"];
-        list($dataType, $imageData) = explode(';', $base64DataString);
+        $image_name = "";
+        if (isset($data["image"])) {
+            $base64DataString = $data["image"];
+            list($dataType, $imageData) = explode(';', $base64DataString);
 
-        // image file extension
-        $imageExtension = explode('/', $dataType)[1];
-        // base64-encoded image data
-        list(, $encodedImageData) = explode(',', $imageData);
-        // decode base64-encoded image data
-        $decodedImageData = base64_decode($encodedImageData);
-        // save image data as file
-        $image_name = uniqid();
-        file_put_contents("{$this->path}/images/employees/{$image_name}.{$imageExtension}", $decodedImageData);
+            // image file extension
+            $imageExtension = explode('/', $dataType)[1];
+            // base64-encoded image data
+            list(, $encodedImageData) = explode(',', $imageData);
+            // decode base64-encoded image data
+            $decodedImageData = base64_decode($encodedImageData);
+            // save image data as file
+            $image_name = uniqid();
+            file_put_contents("{$this->path}/images/employees/{$image_name}.{$imageExtension}", $decodedImageData);
 
-        $this->compress($image_name . "." . $imageExtension);
+            $this->compress($image_name . "." . $imageExtension);
+        }
 
         $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, phone_secondary, email, image, notes, active) 
         VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :phone_secondary, :email, :image, :notes, :active)";
@@ -68,7 +71,7 @@ class EmployeesGateway
             'phone' => $data["phone"],
             'phone_secondary' => $data["phone_secondary"],
             'email' => $data["email"],
-            'image' => $image_name . "." . $imageExtension,
+            'image' => $image_name != "" ? $image_name . "." . $imageExtension : "",
             'notes' => $data["notes"],
             'active' => $data["active"],
         ]);

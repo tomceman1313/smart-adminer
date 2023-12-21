@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import css from "./Notifications.module.css";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import PlusButton from "../../Components/basic/PlusButton";
 import { getAll } from "../../modules/ApiFunctions";
 import { isActive } from "../../modules/BasicFunctions";

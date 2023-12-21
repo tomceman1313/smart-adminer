@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlusButton from "../../Components/basic/PlusButton";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getAll, remove } from "../../modules/ApiFunctions";

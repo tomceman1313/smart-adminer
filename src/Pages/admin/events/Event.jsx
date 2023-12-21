@@ -18,7 +18,7 @@ import ImagesUnderArticle from "../article/ImagesUnderArticle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import css from "../article/Article.module.css";
 import cssBasic from "../styles/Basic.module.css";
 
@@ -32,7 +32,7 @@ export default function Event() {
 	const [event, setEvent] = useState(null);
 	const [eventPreview, setEventPreview] = useState(null);
 	const [categories, setCategories] = useState(null);
-	const [body, setBody] = useState("");
+	const [body, setBody] = useState(null);
 	const [underEventImages, setUnderEventImages] = useState(null);
 
 	const navigation = useNavigate();
@@ -168,7 +168,7 @@ export default function Event() {
 
 					<section>
 						<h2>Text události</h2>
-						{body && <TextEditor value={body} setValue={setBody} />}
+						{body !== null && <TextEditor value={body} setValue={setBody} />}
 						<ImagesUnderArticle
 							register={register}
 							underArticleImages={underEventImages}

@@ -10,7 +10,7 @@ import { convertBase64 } from "../../modules/BasicFunctions";
 import { formatBody, findDeletedImages, checkInnerImage } from "../../modules/TextEditorFunctions";
 import useInteraction from "../../Hooks/useInteraction";
 import useAuth from "../../Hooks/useAuth";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 import css from "./Page.module.css";
 import TextArea from "../../Components/basic/textarea/TextArea";
@@ -23,7 +23,6 @@ export default function Page() {
 
 	const [page, setPage] = useState();
 	const [body, setBody] = useState("");
-
 	const originalImages = useRef([]);
 
 	useEffect(() => {
@@ -58,7 +57,6 @@ export default function Page() {
 
 		data.id = page.id;
 		await edit("pages", data, setMessage, "Stránka byla upravena", auth);
-		//console.log(data);
 	}
 
 	return (

@@ -19,7 +19,7 @@ import cssBasic from "../styles/Basic.module.css";
 import css from "./Article.module.css";
 import ImagesUnderArticle from "./ImagesUnderArticle";
 import ArticlePreview from "../../Components/common/article-preview/ArticlePreview";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export default function Article() {
 	const auth = useAuth();
@@ -31,7 +31,7 @@ export default function Article() {
 	const [article, setArticle] = useState(null);
 	const [articlePreview, setArticlePreview] = useState(null);
 	const [categories, setCategories] = useState(null);
-	const [body, setBody] = useState("");
+	const [body, setBody] = useState(null);
 	const [underArticleImages, setUnderArticleImages] = useState(null);
 
 	const navigation = useNavigate();
@@ -166,7 +166,7 @@ export default function Article() {
 
 					<section>
 						<h2>Text článku</h2>
-						{body && <TextEditor value={body} setValue={setBody} />}
+						{body !== null && <TextEditor value={body} setValue={setBody} />}
 						<ImagesUnderArticle
 							register={register}
 							underArticleImages={underArticleImages}

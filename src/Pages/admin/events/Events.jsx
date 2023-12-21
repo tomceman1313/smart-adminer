@@ -5,7 +5,7 @@ import Category from "../../Components/common/categories-component/Category";
 import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import css from "./css/Events.module.css";
 
 const Events = () => {

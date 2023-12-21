@@ -11,7 +11,7 @@ import { create, edit, remove, checkNameAvailability } from "../../modules/ApiFu
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
 import { getProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import cssBasic from "../styles/Basic.module.css";
 import DetailText from "./DetailText";
 import Images from "./Images";
@@ -22,7 +22,7 @@ import { formatBody, checkInnerImage, findDeletedImages } from "../../modules/Te
 import Switch from "../../Components/basic/switch/Switch";
 import Select from "../../Components/basic/select/Select";
 
-export default function ProductNew() {
+export default function Product() {
 	const auth = useAuth();
 	const { id } = useParams();
 	let location = useLocation();

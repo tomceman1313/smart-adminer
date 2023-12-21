@@ -4,7 +4,7 @@ import { getAllWithAuth, edit, remove, checkNameAvailability } from "../../modul
 import UserList from "./UserList";
 import useInteraction from "../../Hooks/useInteraction";
 import PlusButton from "../../Components/basic/PlusButton";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import css from "./Profiles.module.css";
 
