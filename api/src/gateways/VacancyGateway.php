@@ -6,37 +6,8 @@ class VacancyGateway
     {
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->utils = new Utils($database);
         $this->path = $path;
-    }
-
-    public function create(array $data)
-    {
-        $base64DataString = $data["image"];
-        list($dataType, $imageData) = explode(';', $base64DataString);
-
-        // image file extension
-        $imageExtension = explode('/', $dataType)[1];
-        // base64-encoded image data
-        list(, $encodedImageData) = explode(',', $imageData);
-        // decode base64-encoded image data
-        $decodedImageData = base64_decode($encodedImageData);
-        // save image data as file
-        $image_name = uniqid();
-        file_put_contents("{$this->path}/images/vacancies/{$image_name}.{$imageExtension}", $decodedImageData);
-
-        $this->compress($image_name . "." . $imageExtension);
-
-        $sql = "INSERT INTO vacancies (title, description, detail, date, active, image) VALUES (:title, :description, :detail, :date, :active, :image)";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'title' => $data["title"],
-            'description' => $data["description"],
-            'detail' => $data["detail"],
-            'date' => $data["date"],
-            'active' => $data["active"],
-            'image' => $image_name . "." . $imageExtension
-        ]);
     }
 
     public function get($id)
@@ -52,46 +23,11 @@ class VacancyGateway
         return $data;
     }
 
-    public function update(array $data, $id)
+    public function create(array $data)
     {
-        if (isset($data["image"])) {
-            $base64DataString = $data["image"];
-            list($dataType, $imageData) = explode(';', $base64DataString);
-            // image file extension
-            $imageExtension = explode('/', $dataType)[1];
-            // base64-encoded image data
-            list(, $encodedImageData) = explode(',', $imageData);
-            // decode base64-encoded image data
-            $decodedImageData = base64_decode($encodedImageData);
-            // save image data as file
-            $image_name = uniqid();
-            file_put_contents("{$this->path}/images/vacancies/{$image_name}.{$imageExtension}", $decodedImageData);
-            $this->compress($image_name . "." . $imageExtension);
+        $image_name = $this->utils->createImage($data["image"], 1200, "/images/vacancies");
 
-            if (file_exists("{$this->path}/images/vacancies/{$data["previous_image"]}")) {
-                unlink("{$this->path}/images/vacancies/{$data["previous_image"]}");
-            }
-
-            $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
-                date = :date, active = :active, image = :image WHERE id = :id";
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([
-                'title' => $data["title"],
-                'description' => $data["description"],
-                'detail' => $data["detail"],
-                'date' => $data["date"],
-                'active' => $data["active"],
-                'image' => $image_name . "." . $imageExtension,
-                'id' => $data["id"]
-            ]);
-            return;
-        }
-
-        $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
-         date = :date, active = :active WHERE id = :id";
-
+        $sql = "INSERT INTO vacancies (title, description, detail, date, active, image) VALUES (:title, :description, :detail, :date, :active, :image)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -100,8 +36,37 @@ class VacancyGateway
             'detail' => $data["detail"],
             'date' => $data["date"],
             'active' => $data["active"],
-            'id' => $data["id"]
+            'image' => $image_name
         ]);
+    }
+
+    public function update(array $data)
+    {
+        $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
+        date = :date, active = :active";
+
+        $sql_values = [
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'detail' => $data["detail"],
+            'date' => $data["date"],
+            'active' => $data["active"],
+            'id' => $data["id"]
+        ];
+
+        if (isset($data["image"])) {
+            $image_name = $this->utils->createImage($data["image"], 1200, "/images/vacancies");
+
+            if (file_exists("{$this->path}/images/vacancies/{$data["previous_image"]}")) {
+                unlink("{$this->path}/images/vacancies/{$data["previous_image"]}");
+            }
+            $sql = $sql . ", image = :image";
+            $sql_values["image"] = $image_name;
+        }
+
+        $sql = $sql . " WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($sql_values);
     }
 
     public function delete($id)
@@ -141,61 +106,5 @@ class VacancyGateway
         }
 
         return $data;
-    }
-
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/vacancies/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                @$exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 1500) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1500, 1500 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                if ($info['mime'] == 'image/jpeg')
-                    imagejpeg($imageResized, $source);
-                elseif ($info['mime'] == 'image/gif')
-                    imagegif($imageResized, $source);
-                elseif ($info['mime'] == 'image/png') {
-                    imagesavealpha($imageResized, true);
-                    imagepng($imageResized, $source);
-                } else
-                    imagejpeg($imageResized, $source);
-                break;
-            }
-        } while (true);
     }
 }

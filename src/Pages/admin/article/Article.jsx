@@ -146,7 +146,7 @@ export default function Article() {
 					<section>
 						<h2>Základní informace</h2>
 						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
-						<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} isRequired={true} />
+						<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} />
 						<Switch name="active" label="Článek je viditelný:" register={register} />
 					</section>
 

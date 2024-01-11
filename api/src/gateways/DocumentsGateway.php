@@ -6,6 +6,7 @@ class DocumentsGateway
     {
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->utils = new Utils($database);
         $this->path = $path;
     }
 
@@ -22,7 +23,7 @@ class DocumentsGateway
         return $data;
     }
 
-    function getAll(): array
+    public function getAll(): array
     {
         $sql = "SELECT * FROM documents ORDER BY id DESC";
         $stmt = $this->conn->query($sql);
@@ -35,7 +36,7 @@ class DocumentsGateway
         return $data;
     }
 
-    function getByCategory(string $category_id): array
+    public function getByCategory(string $category_id): array
     {
         $sql = "SELECT * FROM documents WHERE category_id = :id ORDER BY id DESC";
 
@@ -81,37 +82,15 @@ class DocumentsGateway
         $sql = "INSERT INTO documents (title, description, image, name, category_id, date) VALUES (:title, :description, :image, :name, :category_id, :date)";
         $stmt = $this->conn->prepare($sql);
 
+        $image_name = "";
         if (array_key_exists("image", $data)) {
-            //create image
-            $base64DataString = $data["image"];
-            list($dataType, $imageData) = explode(';', $base64DataString);
-            // image file extension
-            $imageExtension = explode('/', $dataType)[1];
-            // base64-encoded image data
-            list(, $encodedImageData) = explode(',', $imageData);
-            // decode base64-encoded image data
-            $decodedImageData = base64_decode($encodedImageData);
-            // save image data as file
-            $image_name = uniqid();
-            file_put_contents("{$this->path}/images/documents/{$image_name}.{$imageExtension}", $decodedImageData);
-
-            $this->compress($image_name . "." . $imageExtension);
-
-            $stmt->execute([
-                'title' => $data["title"],
-                'description' => $data["description"],
-                'image' => $image_name . "." . $imageExtension,
-                'name' => $file_name . ".{$fileExtension}",
-                'category_id' => $data["category_id"],
-                'date' => $data["date"]
-            ]);
-            return $this->conn->lastInsertId();
+            $image_name = $this->utils->createImage($data["image"], 600, "/images/documents");
         }
 
         $stmt->execute([
             'title' => $data["title"],
             'description' => $data["description"],
-            'image' => "",
+            'image' => $image_name,
             'name' => $file_name . ".{$fileExtension}",
             'category_id' => $data["category_id"],
             'date' => $data["date"]
@@ -142,21 +121,17 @@ class DocumentsGateway
         foreach ($files as $file) {
             $base64DataString = $file["file"];
             list($dataType, $fileData) = explode(';', $base64DataString);
-            // image file extension
             $fileExtension = explode('/', $dataType)[1];
 
             if ($fileExtension == "plain") {
                 $fileExtension = "txt";
             }
 
-            // base64-encoded image data
-            list(, $encodedfileData) = explode(',', $fileData);
-            // decode base64-encoded image data
-            $decodedfileData = base64_decode($encodedfileData);
-            // save image data as file
+            list(, $encodedFileData) = explode(',', $fileData);
+            $decodedFileData = base64_decode($encodedFileData);
             $file_name = str_replace(" ", "_", $file["filename"]);
 
-            file_put_contents("{$this->path}/files/documents/{$file_name}.{$fileExtension}", $decodedfileData);
+            file_put_contents("{$this->path}/files/documents/{$file_name}.{$fileExtension}", $decodedFileData);
 
 
             $sql = "INSERT INTO documents (title, name, category_id, date) VALUES (:title, :name, :category_id, :date)";
@@ -203,7 +178,7 @@ class DocumentsGateway
         }
     }
 
-    function getCategories(): array
+    public function getCategories(): array
     {
         $sql = "SELECT * FROM documents_categories ORDER BY name";
         $stmt = $this->conn->query($sql);
@@ -275,53 +250,5 @@ class DocumentsGateway
 
 
         return true;
-    }
-
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/documents/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                $exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 750) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 750, 750 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                imagejpeg($imageResized, $source);
-                break;
-            }
-        } while (true);
     }
 }

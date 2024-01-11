@@ -13,8 +13,6 @@ class NotificationsGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }

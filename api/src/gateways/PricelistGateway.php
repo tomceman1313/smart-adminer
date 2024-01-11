@@ -13,8 +13,6 @@ class PricelistGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -77,14 +75,9 @@ class PricelistGateway
     public function delete(string $id): int
     {
         $sql = "DELETE FROM pricelist WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
-
-
         return $stmt->rowCount();
     }
 }

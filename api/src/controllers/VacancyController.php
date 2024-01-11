@@ -71,7 +71,7 @@ class VacancyController
                 ]);
                 break;
             case 'update':
-                $result = $this->gateway->update($data["data"], $id);
+                $result = $this->gateway->update($data["data"]);
                 http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",

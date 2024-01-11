@@ -14,7 +14,7 @@ export default function ImagesUnderContent({ images, path }) {
 
 	return (
 		<>
-			{images?.length && images.length > 0 && (
+			{images?.length > 0 && (
 				<div className={css.under_images} onClick={openImages}>
 					<img src={images.includes("base64") ? images[0] : `${publicPath}/images/articles/${images[0].name}`} alt="" />
 					<span>{`Další ${images.length} fotek`}</span>

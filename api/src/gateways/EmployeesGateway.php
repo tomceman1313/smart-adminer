@@ -7,6 +7,7 @@ class EmployeesGateway
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
         $this->path = $path;
+        $this->utils = new Utils($database);
     }
 
     function getAll(): array
@@ -42,20 +43,7 @@ class EmployeesGateway
     {
         $image_name = "";
         if (isset($data["image"])) {
-            $base64DataString = $data["image"];
-            list($dataType, $imageData) = explode(';', $base64DataString);
-
-            // image file extension
-            $imageExtension = explode('/', $dataType)[1];
-            // base64-encoded image data
-            list(, $encodedImageData) = explode(',', $imageData);
-            // decode base64-encoded image data
-            $decodedImageData = base64_decode($encodedImageData);
-            // save image data as file
-            $image_name = uniqid();
-            file_put_contents("{$this->path}/images/employees/{$image_name}.{$imageExtension}", $decodedImageData);
-
-            $this->compress($image_name . "." . $imageExtension);
+            $image_name = $this->utils->createImage($data["image"], 600, "/images/employees");
         }
 
         $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, phone_secondary, email, image, notes, active) 
@@ -71,104 +59,59 @@ class EmployeesGateway
             'phone' => $data["phone"],
             'phone_secondary' => $data["phone_secondary"],
             'email' => $data["email"],
-            'image' => $image_name != "" ? $image_name . "." . $imageExtension : "",
+            'image' => $image_name,
             'notes' => $data["notes"],
             'active' => $data["active"],
         ]);
 
-        $departments = $data["departments"];
         $last_id = $this->conn->lastInsertId();
-
-        $sql_department = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
-        foreach ($departments as $item) {
-            $stmt = $this->conn->prepare($sql_department);
-            $stmt->execute([
-                'employee_id' => $last_id,
-                'department_id' => $item["department_id"]
-            ]);
-        }
+        $this->addEmployeeDepartments($last_id, $data["departments"]);
     }
 
     public function update(array $data): bool
     {
+        $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
+                degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, active = :active";
+
+        $sql_values = [
+            'fname' => $data["fname"],
+            'lname' => $data["lname"],
+            'degree_before' => $data["degree_before"],
+            'degree_after' => $data["degree_after"],
+            'position' => $data["position"],
+            'phone' => $data["phone"],
+            'phone_secondary' => $data["phone_secondary"],
+            'email' => $data["email"],
+            'notes' => $data["notes"],
+            'active' => $data["active"],
+            'id' => $data["id"],
+        ];
+
+        if (isset($data["deleted_image"]) && file_exists("{$this->path}/images/employees/{$data["deleted_image"]}")) {
+            unlink("{$this->path}/images/employees/{$data["deleted_image"]}");
+            $sql = $sql . ", image = :image";
+            $sql_values['image'] = "";
+        }
+
         if (isset($data["image"])) {
-            $base64DataString = $data["image"];
-            list($dataType, $imageData) = explode(';', $base64DataString);
-            // image file extension
-            $imageExtension = explode('/', $dataType)[1];
-            // base64-encoded image data
-            list(, $encodedImageData) = explode(',', $imageData);
-            // decode base64-encoded image data
-            $decodedImageData = base64_decode($encodedImageData);
-            // save image data as file
-            $image_name = uniqid();
-            file_put_contents("{$this->path}/images/employees/{$image_name}.{$imageExtension}", $decodedImageData);
-            $this->compress($image_name . "." . $imageExtension);
+            $image_name = $this->utils->createImage($data["image"], 600, "/images/employees/");
 
             if (file_exists("{$this->path}/images/employees/{$data["previous_image"]}")) {
                 unlink("{$this->path}/images/employees/{$data["previous_image"]}");
             }
-
-            $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-                degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, image = :image, active = :active WHERE id = :id";
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([
-                'fname' => $data["fname"],
-                'lname' => $data["lname"],
-                'degree_before' => $data["degree_before"],
-                'degree_after' => $data["degree_after"],
-                'position' => $data["position"],
-                'phone' => $data["phone"],
-                'phone_secondary' => $data["phone_secondary"],
-                'email' => $data["email"],
-                'image' => $image_name . "." . $imageExtension,
-                'notes' => $data["notes"],
-                'active' => $data["active"],
-                'id' => $data["id"],
-            ]);
-        } else {
-            $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
-            degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, active = :active WHERE id = :id";
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([
-                'fname' => $data["fname"],
-                'lname' => $data["lname"],
-                'degree_before' => $data["degree_before"],
-                'degree_after' => $data["degree_after"],
-                'position' => $data["position"],
-                'phone' => $data["phone"],
-                'phone_secondary' => $data["phone_secondary"],
-                'email' => $data["email"],
-                'notes' => $data["notes"],
-                'active' => $data["active"],
-                'id' => $data["id"],
-            ]);
+            $sql = $sql . ", image = :image";
+            $sql_values['image'] = $image_name;
         }
 
-        $departments = $data["departments"];
-        $sql_new_dep = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
-        foreach ($departments as $item) {
-            $stmt = $this->conn->prepare($sql_new_dep);
-            $stmt->execute([
-                'employee_id' => $data["id"],
-                'department_id' => $item["department_id"]
-            ]);
-        }
+        $sql = $sql . " WHERE id = :id";
 
-        $departments_deleted = $data["departments_deleted"];
-        foreach ($departments_deleted as $item) {
-            $sql = "DELETE FROM employee_department WHERE employee_id = :employee_id AND department_id = :department_id";
-            $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-            $stmt->execute([
-                'employee_id' => $data["id"],
-                'department_id' => $item,
-            ]);
-        }
+        $stmt->execute($sql_values);
+
+        $this->addEmployeeDepartments($data["id"], $data["departments"]);
+
+        $this->deleteEmployeeDepartments($data["id"], $data["departments_deleted"]);
 
         return true;
     }
@@ -200,62 +143,6 @@ class EmployeesGateway
         ]);
 
         return true;
-    }
-
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/employees/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                @$exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 1920) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                if ($info['mime'] == 'image/jpeg')
-                    imagejpeg($imageResized, $source);
-                elseif ($info['mime'] == 'image/gif')
-                    imagegif($imageResized, $source);
-                elseif ($info['mime'] == 'image/png') {
-                    imagesavealpha($imageResized, true);
-                    imagepng($imageResized, $source);
-                } else
-                    imagejpeg($imageResized, $source);
-                break;
-            }
-        } while (true);
     }
 
     public function getDepartments(): array
@@ -315,7 +202,7 @@ class EmployeesGateway
         return true;
     }
 
-    public function getEmployeeDepartments($id, $departments): array
+    private function getEmployeeDepartments($id, $departments): array
     {
         $sql_categories = "SELECT department_id FROM employee_department WHERE employee_id = :id";
         $stmt = $this->conn->prepare($sql_categories);
@@ -336,34 +223,28 @@ class EmployeesGateway
         return $data;
     }
 
-
-    public function create_all(array $data)
+    private function addEmployeeDepartments($id, $departments): void
     {
-        $sql = "INSERT INTO employees (fname, lname, degree_before, degree_after, position, phone, email, image, notes) 
-        VALUES (:fname, :lname, :degree_before, :degree_after, :position, :phone, :email, :image, :notes)";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'fname' => $data["fname"],
-            'lname' => $data["lname"],
-            'degree_before' => $data["degree_before"],
-            'degree_after' => $data["degree_after"],
-            'position' => $data["position"],
-            'phone' => $data["phone"],
-            'email' => $data["email"],
-            'image' => "",
-            'notes' => $data["notes"],
-        ]);
-
-        $departments = $data["departments"];
-        $last_id = $this->conn->lastInsertId();
-
-        $sql_department = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
+        $departments = $departments;
+        $sql_new_dep = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
         foreach ($departments as $item) {
-            $stmt = $this->conn->prepare($sql_department);
+            $stmt = $this->conn->prepare($sql_new_dep);
             $stmt->execute([
-                'employee_id' => $last_id,
-                'department_id' => $item["id"]
+                'employee_id' => $id,
+                'department_id' => $item["department_id"]
+            ]);
+        }
+    }
+
+    private function deleteEmployeeDepartments($id, $departments_deleted): void
+    {
+        foreach ($departments_deleted as $item) {
+            $sql = "DELETE FROM employee_department WHERE employee_id = :employee_id AND department_id = :department_id";
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->execute([
+                'employee_id' => $id,
+                'department_id' => $item,
             ]);
         }
     }

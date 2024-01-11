@@ -32,7 +32,6 @@ export default function Products() {
 
 	async function loadData() {
 		const data = await getAll("products");
-		console.log(data);
 		setProducts(data);
 	}
 

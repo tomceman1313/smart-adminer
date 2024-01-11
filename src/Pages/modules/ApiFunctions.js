@@ -1,7 +1,7 @@
 //before production change BASE_URL, publicFolderPath.php and publicPath (BasicFunctions.js)
 // change package.json a App.js router
 
-//export const BASE_URL = "https://smart-studio.cz/demo/sulicka/admin";
+//export const BASE_URL = "https://domov-sulicka.cz/admin";
 export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass) {

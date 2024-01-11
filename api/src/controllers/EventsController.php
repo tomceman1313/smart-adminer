@@ -95,11 +95,10 @@ class EventsController
                 break;
 
             case 'delete':
-                $id = $this->gateway->delete($id);
+                $this->gateway->delete($id);
                 http_response_code(200);
                 echo json_encode([
                     "message" => "Deleted",
-                    "data" => $id,
                     "token" => $authAction
                 ]);
                 break;
@@ -112,31 +111,28 @@ class EventsController
                 break;
 
             case 'delete-image':
-                $result = $this->gateway->deleteImage($data["name"]);
+                $this->gateway->deleteImage($data["name"]);
                 echo json_encode([
                     "token" => $authAction
                 ]);
                 break;
 
             case 'createCategory':
-                $id = $this->gateway->createCategory($data["data"]);
+                $this->gateway->createCategory($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "data" => $id,
                     "token" => $authAction
                 ]);
                 break;
 
             case 'updateCategory':
-                $result = $this->gateway->updateCategory($data["data"]);
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode([
-                        "message" => "Updated",
-                        "token" => $authAction
-                    ]);
-                }
+                $this->gateway->updateCategory($data["data"]);
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Updated",
+                    "token" => $authAction
+                ]);
                 break;
 
             case 'deleteCategory':

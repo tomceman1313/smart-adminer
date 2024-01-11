@@ -14,7 +14,6 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 	const [showEditCont, setShowEditCont] = useState(null);
 	const [multiSelection, setMultiSelection] = useState(false);
 	const selectedImages = useRef(new Map());
-
 	useEffect(() => {
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,7 +77,7 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 
 			<section className={`${css.images} no-section`}>
 				<AnimatePresence>
-					{images &&
+					{images?.length > 0 ? (
 						images.map((el) => (
 							<Image
 								key={el.id}
@@ -88,10 +87,13 @@ const Images = ({ images, allLoadedImages, loadData, auth, selectedCategory, set
 								multiSelection={multiSelection}
 								selectedImages={selectedImages}
 							/>
-						))}
+						))
+					) : (
+						<h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>V této kategorii nejsou přidány žádné obrázky.</h2>
+					)}
 				</AnimatePresence>
 			</section>
-			{images && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/gallery"} />}
+			{images?.length > 0 && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/gallery"} />}
 			<AnimatePresence>{showEditCont && <EditPicture image={showEditCont} edit={editImage} close={() => setShowEditCont(null)} />}</AnimatePresence>
 		</>
 	);

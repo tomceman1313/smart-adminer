@@ -101,7 +101,7 @@ class ArticlesGateway
 
     function getAll(): array
     {
-        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.id DESC";
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.date DESC";
         $stmt = $this->conn->query($sql);
 
         $data = [];

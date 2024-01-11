@@ -28,8 +28,6 @@ class ManufacturerGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -41,7 +39,6 @@ class ManufacturerGateway
     {
         $sql = "INSERT INTO product_manufacturers (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'name' => $data["name"]
         ]);
@@ -52,9 +49,7 @@ class ManufacturerGateway
     public function update(array $data): bool
     {
         $sql = "UPDATE product_manufacturers SET name = :name WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'name' => $data["name"],
             'id' => $data["id"]
@@ -66,12 +61,10 @@ class ManufacturerGateway
     public function delete(string $id): int
     {
         $sql = "DELETE FROM product_manufacturers WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
-        $stmt->execute();
+        $stmt->execute([
+            'id' => $id
+        ]);
 
         $sql_select = "SELECT * FROM products WHERE manufacturer_id = :id";
         $stmt_select = $this->conn->prepare($sql_select);

@@ -4,8 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //dev
 export const publicPath = "/admin";
 //production
-//export const publicPath = "https://smart-studio.cz/demo/sulicka/admin";
-
+//export const publicPath = "https://domov-sulicka.cz/admin";
 /**
  ** Creates random ID for temporary use
  * @returns number

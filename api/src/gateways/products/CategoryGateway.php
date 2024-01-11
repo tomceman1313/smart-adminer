@@ -14,7 +14,6 @@ class CategoryGateway
 
         $sql = "SELECT * FROM products_category WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'id' => $id
         ]);
@@ -29,8 +28,6 @@ class CategoryGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -69,10 +66,9 @@ class CategoryGateway
         $sql = "DELETE FROM products_category WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
-        $stmt->execute();
+        $stmt->execute([
+            'id' => $id
+        ]);
 
         $sql_select = "SELECT * FROM product_categories WHERE category_id = :id";
         $stmt_select = $this->conn->prepare($sql_select);
@@ -83,12 +79,11 @@ class CategoryGateway
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $sql = "DELETE FROM product_categories WHERE id = :id";
-
             $stmt = $this->conn->prepare($sql);
 
-            $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
-
-            $stmt->execute();
+            $stmt->execute([
+                'id' => $row["id"]
+            ]);
         }
 
 

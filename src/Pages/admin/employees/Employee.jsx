@@ -47,6 +47,9 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 				data.previous_image = employee.image;
 			}
 		} else {
+			if (employee.image && data.image) {
+				data.deleted_image = employee.image;
+			}
 			delete data.image;
 		}
 		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.find((dep) => dep.name === el.name));
@@ -157,7 +160,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 
 						<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} />
 
-						<ImageInput name="image" image={employee.image} path="employees" register={register} />
+						<ImageInput name="image" image={employee.image} path="employees" register={register} required={false} />
 
 						<Switch name="active" label="Zaměstnanec je viditelný:" register={register} />
 

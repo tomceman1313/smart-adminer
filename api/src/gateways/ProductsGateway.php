@@ -6,6 +6,7 @@ class ProductsGateway
     {
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->utils = new Utils($database);
         $this->path = $path;
     }
 
@@ -485,84 +486,15 @@ class ProductsGateway
         return;
     }
 
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/products/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                @$exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 1200) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1200, 1200 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                if ($info['mime'] == 'image/jpeg')
-                    imagejpeg($imageResized, $source);
-                elseif ($info['mime'] == 'image/gif')
-                    imagegif($imageResized, $source);
-                elseif ($info['mime'] == 'image/png') {
-                    imagesavealpha($imageResized, true);
-                    imagepng($imageResized, $source);
-                } else
-                    imagejpeg($imageResized, $source);
-
-                break;
-            }
-        } while (true);
-    }
-
     private function createImage($image_name, $base64, $product_id, $order)
     {
-        $image_name = $image_name;
-        $base64DataString = $base64;
-        list($dataType, $imageData) = explode(';', $base64DataString);
-        // image file extension
-        $imageExtension = explode('/', $dataType)[1];
-        // base64-encoded image data
-        list(, $encodedImageData) = explode(',', $imageData);
-        // decode base64-encoded image data
-        $decodedImageData = base64_decode($encodedImageData);
-
-        file_put_contents("{$this->path}/images/products/{$image_name}.{$imageExtension}", $decodedImageData);
-
-        $this->compress($image_name . "." . $imageExtension);
+        $image_name_result = $this->utils->createImage($base64, 1200, "/images/products", $image_name);
 
         $sql = "INSERT INTO product_images (name, i_order, product_id) VALUES (:name, :i_order, :product_id)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'name' => "{$image_name}.{$imageExtension}",
+            'name' => $image_name_result,
             'i_order' => $order,
             'product_id' => $product_id
         ]);

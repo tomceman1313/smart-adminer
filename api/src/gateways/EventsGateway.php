@@ -6,6 +6,7 @@ class EventsGateway
     {
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
+        $this->utils = new Utils($database);
         $this->path = $path;
     }
 
@@ -28,8 +29,6 @@ class EventsGateway
         ]);
 
         $images = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $images[] = $row;
         }
@@ -60,8 +59,6 @@ class EventsGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -69,25 +66,9 @@ class EventsGateway
         return $data;
     }
 
-    public function create(array $data, int $userId): bool
+    public function create(array $data, int $userId)
     {
-        $base64DataString = $data["image"];
-        list($dataType, $imageData) = explode(';', $base64DataString);
-
-        // image file extension
-        $imageExtension = explode('/', $dataType)[1];
-
-        // base64-encoded image data
-        list(, $encodedImageData) = explode(',', $imageData);
-
-        // decode base64-encoded image data
-        $decodedImageData = base64_decode($encodedImageData);
-
-        // save image data as file
-        $image_name = uniqid();
-        file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
-
-        $this->compress($image_name . "." . $imageExtension);
+        $image_name = $this->utils->createImage($data["image"], 1200, "/images/events");
 
         $sql = "INSERT INTO events (title, description, image, body, date, category, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category, :owner_id, :active)";
         $stmt = $this->conn->prepare($sql);
@@ -95,7 +76,7 @@ class EventsGateway
         $stmt->execute([
             'title' => $data["title"],
             'description' => $data["description"],
-            'image' => $image_name . ".{$imageExtension}",
+            'image' => $image_name,
             'body' => $data["body"],
             'date' => $data["date"],
             'category' => $data["category"],
@@ -106,97 +87,65 @@ class EventsGateway
         $last_id = $this->conn->lastInsertId();
 
         $innerImages = $data["innerImages"];
-
         foreach ($innerImages as $image) {
             $this->createImage($image["name"], $image["file"], $last_id, "inner");
         }
 
         $images = $data["images"];
-
         foreach ($images as $image) {
             $this->createImage(uniqid(), $image, $last_id, "under");
         }
-
-        return true;
     }
 
-    public function update(array $data): bool
+    public function update(array $data)
     {
-        if ($data["image"] != "no-change") {
-            $base64DataString = $data["image"];
-            list($dataType, $imageData) = explode(';', $base64DataString);
-            // image file extension
-            $imageExtension = explode('/', $dataType)[1];
-            // base64-encoded image data
-            list(, $encodedImageData) = explode(',', $imageData);
-            // decode base64-encoded image data
-            $decodedImageData = base64_decode($encodedImageData);
-            // save image data as file
-            $image_name = uniqid();
-            file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
+        $sql = "UPDATE events SET title = :title, description = :description, body = :body, 
+        date = :date, category = :category, owner_id = :owner_id, active = :active";
 
+
+        $sql_values = [
+            'title' => $data["title"],
+            'description' => $data["description"],
+            'body' => $data["body"],
+            'date' => $data["date"],
+            'category' => $data["category"],
+            'owner_id' => $data["owner_id"],
+            'active' => $data["active"],
+            'id' => $data["id"]
+        ];
+
+        if ($data["image"] != "no-change") {
             if (file_exists("{$this->path}/images/events/{$data["prevImage"]}")) {
                 unlink("{$this->path}/images/events/{$data["prevImage"]}");
             }
+            $image_name = $this->utils->createImage($data["image"], 1200, "/images/events");
 
-            $this->compress($image_name . "." . $imageExtension);
-
-            $sql = "UPDATE events SET title = :title, description = :description, image = :image,
-            body = :body, date = :date, category = :category, owner_id = :owner_id, active = :active WHERE id = :id";
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([
-                'title' => $data["title"],
-                'description' => $data["description"],
-                'image' => $image_name . ".{$imageExtension}",
-                'body' => $data["body"],
-                'date' => $data["date"],
-                'category' => $data["category"],
-                'owner_id' => $data["owner_id"],
-                'active' => $data["active"],
-                'id' => $data["id"]
-            ]);
-        } else {
-            $sql = "UPDATE events SET title = :title, description = :description, 
-            body = :body, date = :date, category = :category, owner_id = :owner_id, active = :active WHERE id = :id";
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->execute([
-                'title' => $data["title"],
-                'description' => $data["description"],
-                'body' => $data["body"],
-                'date' => $data["date"],
-                'category' => $data["category"],
-                'owner_id' => $data["owner_id"],
-                'active' => $data["active"],
-                'id' => $data["id"]
-            ]);
+            $sql = $sql . ", image = :image";
+            $sql_values["image"] = $image_name;
         }
 
-        $innerImages = $data["innerImages"];
+        $sql = $sql . " WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($sql_values);
 
+
+        $innerImages = $data["innerImages"];
         foreach ($innerImages as $image) {
             $this->createImage($image["name"], $image["file"], $data["id"], "inner");
         }
 
         $deletedImages = $data["deletedImages"];
-
         foreach ($deletedImages as $image) {
             $this->deleteImage($image);
         }
 
         $images = $data["images"];
-
         foreach ($images as $image) {
             $this->createImage(uniqid(), $image, $data["id"], "under");
         }
-
-        return true;
     }
 
-    public function delete(string $id): int
+    public function delete(string $id)
     {
         $article = $this->get($id);
 
@@ -234,16 +183,12 @@ class EventsGateway
                 unlink("{$this->path}/images/events/{$row['name']}");
             }
         }
-
-
-        return true;
     }
 
 
 
     public function getCategory(string $id): array
     {
-
         $sql = "SELECT * FROM events_categories WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
@@ -268,7 +213,7 @@ class EventsGateway
         return $data;
     }
 
-    public function createCategory(array $data): bool
+    public function createCategory(array $data)
     {
         $sql = "INSERT INTO events_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
@@ -276,11 +221,9 @@ class EventsGateway
         $stmt->execute([
             'name' => $data["name"]
         ]);
-
-        return true;
     }
 
-    public function updateCategory(array $data): bool
+    public function updateCategory(array $data)
     {
         $sql = "UPDATE events_categories SET name = :name WHERE id = :id";
 
@@ -290,18 +233,13 @@ class EventsGateway
             'name' => $data["name"],
             'id' => $data["id"]
         ]);
-
-        return true;
     }
 
-    public function deleteCategory(string $id): int
+    public function deleteCategory(string $id)
     {
         $sql = "DELETE FROM events_categories WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
 
         $sql_select = "SELECT * FROM events WHERE category = :id";
@@ -314,86 +252,17 @@ class EventsGateway
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $this->delete($row["id"]);
         }
-
-        return true;
-    }
-
-    private function compress($imageName)
-    {
-        $source = "{$this->path}/images/events/{$imageName}";
-        // $quality = 75;
-        set_time_limit(10);
-        do {
-            if (file_exists($source)) {
-                $info = getimagesize($source);
-                $width = $info[0];
-                $height = $info[1];
-                @$exif = exif_read_data($source);
-
-                if ($info['mime'] == 'image/jpeg')
-                    $image = imagecreatefromjpeg($source);
-
-                elseif ($info['mime'] == 'image/gif')
-                    $image = imagecreatefromgif($source);
-
-                elseif ($info['mime'] == 'image/png')
-                    $image = imagecreatefrompng($source);
-
-
-                if ($width > 1920) {
-                    $aspectRatio = $width / $height;
-                    $imageResized = imagescale($image, 1920, 1920 / $aspectRatio);
-                } else {
-                    $imageResized = $image;
-                }
-
-                if (!empty($exif['Orientation'])) {
-                    switch ($exif['Orientation']) {
-                        case 8:
-                            $imageResized = imagerotate($imageResized, 90, 0);
-                            break;
-                        case 3:
-                            $imageResized = imagerotate($imageResized, 180, 0);
-                            break;
-                        case 6:
-                            $imageResized = imagerotate($imageResized, -90, 0);
-                            break;
-                    }
-                }
-                if ($info['mime'] == 'image/jpeg')
-                    imagejpeg($imageResized, $source);
-                elseif ($info['mime'] == 'image/gif')
-                    imagegif($imageResized, $source);
-                elseif ($info['mime'] == 'image/png') {
-                    imagesavealpha($imageResized, true);
-                    imagepng($imageResized, $source);
-                } else
-                    imagejpeg($imageResized, $source);
-                break;
-            }
-        } while (true);
     }
 
     private function createImage($image_name, $base64, $article_id, $type)
     {
-        $base64DataString = $base64;
-        list($dataType, $imageData) = explode(';', $base64DataString);
-        // image file extension
-        $imageExtension = explode('/', $dataType)[1];
-        // base64-encoded image data
-        list(, $encodedImageData) = explode(',', $imageData);
-        // decode base64-encoded image data
-        $decodedImageData = base64_decode($encodedImageData);
-
-        file_put_contents("{$this->path}/images/events/{$image_name}.{$imageExtension}", $decodedImageData);
-
-        $this->compress($image_name . "." . $imageExtension);
+        $image_name_result = $this->utils->createImage($base64, 1000, "/images/events", $image_name);
 
         $sql = "INSERT INTO event_images (name, type, event_id) VALUES (:name, :type, :event_id)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'name' => "{$image_name}.{$imageExtension}",
+            'name' => $image_name_result,
             'type' => $type,
             'event_id' => $article_id
         ]);

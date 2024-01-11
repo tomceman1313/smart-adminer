@@ -7,6 +7,7 @@
 
 require_once __DIR__ . "/src/Database.php";
 require_once __DIR__ . "/src/ErrorHandler.php";
+require_once __DIR__ . "/src/Utils.php";
 require_once __DIR__ . "/src/publicFolderPath.php";
 
 require_once __DIR__ . "/src/controllers/AdminController.php";
