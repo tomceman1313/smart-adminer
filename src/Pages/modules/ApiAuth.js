@@ -2,7 +2,7 @@ import { BASE_URL } from "./ApiFunctions";
 
 export async function getRoles(setState, auth) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=getroles`, {
+	const response = await fetch(`${BASE_URL}/api/?class=users&action=getroles`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
@@ -15,7 +15,7 @@ export async function getRoles(setState, auth) {
 }
 
 export function editRole(data, setAlert, positiveText, auth) {
-	fetch(`${BASE_URL}/api/?class=admin&action=update_role`, {
+	fetch(`${BASE_URL}/api/?class=users&action=update_role`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: data }),
@@ -47,7 +47,7 @@ export function refreshAccessToken(navigate, from, auth) {
 	if (from) {
 		fromPath = from;
 	}
-	fetch(`${BASE_URL}/api/?class=admin&action=refresh`, {
+	fetch(`${BASE_URL}/api/?class=auth&action=refresh`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
@@ -66,7 +66,7 @@ export function refreshAccessToken(navigate, from, auth) {
 
 export async function getUserData(auth) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=get&id=${auth.userInfo.id}`, {
+	const response = await fetch(`${BASE_URL}/api/?class=users&action=get&id=${auth.userInfo.id}`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
@@ -83,7 +83,7 @@ export async function getUserData(auth) {
 }
 
 export async function changePassword(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=change_password`, {
+	const response = await fetch(`${BASE_URL}/api/?class=users&action=change_password`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
@@ -101,7 +101,7 @@ export async function changePassword(postData, auth) {
 }
 
 export async function logOut(auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=admin&action=logout`, {
+	const response = await fetch(`${BASE_URL}/api/?class=auth&action=logout`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",

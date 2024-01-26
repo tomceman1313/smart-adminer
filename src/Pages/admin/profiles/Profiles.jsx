@@ -21,7 +21,7 @@ export default function Profiles() {
 	}, []);
 
 	async function loadData() {
-		const data = await getAllWithAuth("admin", auth);
+		const data = await getAllWithAuth("users", auth);
 		setUsers(data);
 	}
 

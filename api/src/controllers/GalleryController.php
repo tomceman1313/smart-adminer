@@ -1,46 +1,26 @@
 <?php
 class GalleryController
 {
-    public function __construct(GalleryGateway $gateway, AdminGateway $adminGateway)
+    public function __construct(GalleryGateway $gateway)
     {
         $this->gateway = $gateway;
-        $this->admin = $adminGateway;
     }
 
 
-    public function processRequest(string $action, ?string $id): void
+    public function processRequest(string $action, ?string $id, ?string $page, $authAction): void
     {
-        $this->controller($action);
+        $this->controller($action, $id, $page, $authAction);
     }
 
-    private function controller(string $action): void
+    private function controller(string $action, ?string $id, ?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $page = 0;
-        $id = 0;
         $name = "";
-        $authAction = false;
 
-        if (isset($_GET["page"])) {
-            $page = $_GET["page"];
-        }
-        if (isset($_GET["id"])) {
-            $id = $_GET["id"];
-        }
         if (isset($_GET["name"])) {
             $name = $_GET["name"];
         }
 
-        if (isset($_SERVER["HTTP_AUTHORIZATION"])) {
-            list($type, $token) = explode(" ", $_SERVER["HTTP_AUTHORIZATION"], 2);
-            if (strcasecmp($type, "Bearer") == 0) {
-                $authAction = $this->admin->authAction($token, array(3));
-            } else {
-                //echo "no bearer";
-            }
-        } else {
-            //echo "no token";
-        }
 
         switch ($action) {
             case 'getall':

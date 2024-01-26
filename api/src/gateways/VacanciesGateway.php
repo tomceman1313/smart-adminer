@@ -1,6 +1,6 @@
 <?php
 
-class VacancyGateway
+class VacanciesGateway
 {
     public function __construct(Database $database)
     {

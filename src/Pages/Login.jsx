@@ -22,7 +22,7 @@ export default function Login() {
 	const auth = useAuth();
 
 	async function onSubmit(data) {
-		const response = await fetch(BASE_URL + "/api/?class=admin&action=auth", {
+		const response = await fetch(BASE_URL + "/api/?class=auth&action=auth", {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 			credentials: "include",
