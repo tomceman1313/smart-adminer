@@ -11,13 +11,17 @@ use \Firebase\JWT\Key;
 
 class AuthGateway
 {
-    private $key = 'privatekey';
+    private $key = 'smart-adminer-private-key';
 
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
     }
 
+    /**
+     * * Sign in user and set server cookie refresh token if given credentials were valid
+     * @return array(Token, username, privilege, id) | false
+     */
     public function auth(array $data)
     {
         $stmt = $this->conn->prepare('SELECT * FROM users WHERE username = :username LIMIT 1');
@@ -46,11 +50,12 @@ class AuthGateway
             return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"], "id" => $user["id"]);
         }
 
-        return "wrong";
+        return false;
     }
 
-    /**
-     * @return 
+    /** 
+     * * Issues new access token if refresh token is valid
+     * @return array(Token, username, role, id) | false
      */
     public function refresh()
     {
@@ -79,9 +84,8 @@ class AuthGateway
     }
 
     /**
-     * * Check if user has rights for requested action
-     * ? returns false (when access token is expirated and refresh token cant issue new access token) 
-     * ? OR if user has rights then returns access token (given or newly issued)
+     * * Checks if user has rights for requested action
+     * @return string token | false
      */
     public function authAction(string $token, array $allowedRoles)
     {
@@ -102,15 +106,5 @@ class AuthGateway
             }
         }
         return false;
-    }
-
-    public function decodeToken(string $token)
-    {
-        try {
-            $decoded_token = JWT::decode($token, new Key($this->key, 'HS512'));
-            return $decoded_token->user_id;
-        } catch (Exception $e) {
-            return null;
-        }
     }
 }

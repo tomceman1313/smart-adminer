@@ -42,26 +42,25 @@ export function editRole(data, setAlert, positiveText, auth) {
 		});
 }
 
-export function refreshAccessToken(navigate, from, auth) {
+export async function refreshAccessToken(navigate, from, auth) {
 	let fromPath = "/";
 	if (from) {
 		fromPath = from;
 	}
-	fetch(`${BASE_URL}/api/?class=auth&action=refresh`, {
+	const response = await fetch(`${BASE_URL}/api/?class=auth&action=refresh`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
-	}).then((response) => {
-		if (response.status === 401) {
-			auth.setUserInfo(null);
-			navigate("/login", { state: { from: fromPath } });
-			return;
-		}
-		response.text().then((_data) => {
-			let data = JSON.parse(_data);
-			auth.setUserInfo(data.user);
-		});
 	});
+
+	if (response.status === 401) {
+		auth.setUserInfo(null);
+		navigate("/login", { state: { from: fromPath } });
+		return;
+	}
+
+	const data = await response.json();
+	auth.setUserInfo(data.data);
 }
 
 export async function getUserData(auth) {

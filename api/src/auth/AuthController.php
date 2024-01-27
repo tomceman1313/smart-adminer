@@ -20,18 +20,18 @@ class AuthController
         switch ($action) {
             case 'auth':
                 $response = $this->gateway->auth($data);
-                http_response_code(200);
-                if ($response != "wrong") {
+                if ($response) {
+                    http_response_code(200);
                     echo json_encode([
-                        "message" => "access",
                         "token" => $response["token"],
                         "username" => $response["username"],
                         "role" => $response["role"],
                         "id" => $response["id"]
                     ]);
                 } else {
+                    http_response_code(401);
                     echo json_encode([
-                        "message" => "wrong"
+                        "message" => "Authentication failed"
                     ]);
                 }
                 return;
@@ -42,7 +42,7 @@ class AuthController
                     http_response_code(200);
                     echo json_encode([
                         "message" => "refreshed",
-                        "user" => $response
+                        "data" => $response
                     ]);
                 } else {
                     http_response_code(401);

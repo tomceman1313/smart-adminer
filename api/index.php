@@ -1,52 +1,28 @@
 <?php
-require_once __DIR__ . "/src/Database.php";
-require_once __DIR__ . "/src/ErrorHandler.php";
-require_once __DIR__ . "/src/Utils.php";
-require_once __DIR__ . "/src/publicFolderPath.php";
 
-require_once __DIR__ . "/src/controllers/auth/AuthController.php";
-require_once __DIR__ . "/src/gateways/auth/AuthGateway.php";
+$DIRECTORIES = array(
+    "Auth", "Users", "Pricelist", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages"
+);
 
-require_once __DIR__ . "/src/controllers/UsersController.php";
-require_once __DIR__ . "/src/gateways/UsersGateway.php";
+$FILES = array(
+    "Database", "ErrorHandler", "Utils", "publicFolderPath", "products/ManufacturerGateway", "products/CategoryGateway.php"
+);
 
-require_once __DIR__ . "/src/controllers/PricelistController.php";
-require_once __DIR__ . "/src/gateways/PricelistGateway.php";
+foreach ($DIRECTORIES as $directory) {
+    if (file_exists(__DIR__ . "/src/" . strtolower($directory) . "/$directory" . "Controller.php")) {
+        require_once __DIR__ . "/src/" . strtolower($directory) . "/$directory" . "Controller.php";
+    }
 
-require_once __DIR__ . "/src/controllers/NotificationsController.php";
-require_once __DIR__ . "/src/gateways/NotificationsGateway.php";
+    if (file_exists(__DIR__ . "/src/" . strtolower($directory) . "/$directory" . "Gateway.php")) {
+        require_once __DIR__ . "/src/" . strtolower($directory) . "/$directory" . "Gateway.php";
+    }
+}
 
-require_once __DIR__ . "/src/controllers/ArticlesController.php";
-require_once __DIR__ . "/src/gateways/ArticlesGateway.php";
-
-require_once __DIR__ . "/src/controllers/GalleryController.php";
-require_once __DIR__ . "/src/gateways/GalleryGateway.php";
-
-require_once __DIR__ . "/src/controllers/DocumentsController.php";
-require_once __DIR__ . "/src/gateways/DocumentsGateway.php";
-
-require_once __DIR__ . "/src/controllers/EventsController.php";
-require_once __DIR__ . "/src/gateways/EventsGateway.php";
-
-require_once __DIR__ . "/src/controllers/ProductsController.php";
-require_once __DIR__ . "/src/gateways/ProductsGateway.php";
-require_once __DIR__ . "/src/gateways/products/ManufacturerGateway.php";
-require_once __DIR__ . "/src/gateways/products/CategoryGateway.php";
-
-require_once __DIR__ . "/src/controllers/VacanciesController.php";
-require_once __DIR__ . "/src/gateways/VacanciesGateway.php";
-
-require_once __DIR__ . "/src/controllers/EmployeesController.php";
-require_once __DIR__ . "/src/gateways/EmployeesGateway.php";
-
-require_once __DIR__ . "/src/controllers/OrdersController.php";
-require_once __DIR__ . "/src/gateways/orders/OrdersGateway.php";
-
-require_once __DIR__ . "/src/controllers/EmailsController.php";
-require_once __DIR__ . "/src/gateways/emails/EmailsGateway.php";
-
-require_once __DIR__ . "/src/controllers/PagesController.php";
-require_once __DIR__ . "/src/gateways/pages/PagesGateway.php";
+foreach ($FILES as $file) {
+    if (file_exists(__DIR__ . "/src/" . $file . ".php")) {
+        require_once __DIR__ . "/src/" . $file . ".php";
+    }
+}
 
 //Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
@@ -55,9 +31,7 @@ header("Access-Control-Allow-Origin: http://localhost:3000");
 //header("Access-Control-Allow-Origin: http://localhost");
 header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS");
-
 header("Access-Control-Allow-Credentials: true");
-
 header("Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization");
 
 //preflight check for auth requests
@@ -69,7 +43,6 @@ if ($method == "OPTIONS") {
     die();
 }
 
-//$parts = explode("/", $_SERVER["REQUEST_URI"]);
 $database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
 
 //production

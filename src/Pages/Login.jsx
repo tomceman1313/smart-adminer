@@ -31,7 +31,7 @@ export default function Login() {
 
 		const _data = await response.json();
 
-		if (_data.message === "access") {
+		if (response.status === 200) {
 			auth.setUserInfo({ role: _data.role, username: _data.username, token: _data.token, id: _data.id });
 			navigate(from, { state: { from: location }, replace: true });
 			return;
