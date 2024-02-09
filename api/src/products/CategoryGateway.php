@@ -5,7 +5,7 @@ class CategoryGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
-        include(dirname(__FILE__) . '/../../publicFolderPath.php');
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
         $this->path = $path;
     }
 

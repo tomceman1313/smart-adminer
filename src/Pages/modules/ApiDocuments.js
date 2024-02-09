@@ -7,7 +7,7 @@ import { BASE_URL } from "./ApiFunctions";
 export async function multipleCreate(data, auth) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 
-	const response = await fetch(`${BASE_URL}/api/?class=documents&action=multipleCreate`, {
+	const response = await fetch(`${BASE_URL}/api/documents/multiple`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		body: JSON.stringify({ data: data }),
@@ -28,10 +28,11 @@ export async function multipleCreate(data, auth) {
 export async function multipleDelete(ids, auth, setMessage) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 
-	const response = await fetch(`${BASE_URL}/api/?class=documents&action=multipleDelete`, {
-		method: "POST",
+	const encodedIds = encodeURIComponent(JSON.stringify(ids));
+
+	const response = await fetch(`${BASE_URL}/api/documents/multiple/${encodedIds}`, {
+		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ data: ids }),
 		credentials: "include",
 	});
 

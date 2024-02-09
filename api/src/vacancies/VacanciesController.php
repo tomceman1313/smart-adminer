@@ -1,31 +1,33 @@
 <?php
 class VacanciesController
 {
-    public function __construct(VacanciesGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new VacanciesGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, ?string $id, $authAction): void
+    public function processRequest(?string $page, $authAction): void
     {
-        $this->controller($action, $id, $authAction);
+        $this->controller($page, $authAction);
     }
 
-    private function controller(string $action, ?string $id, $authAction): void
+    private function controller(?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'getall':
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/vacancies"):
                 $result = $this->gateway->getAll();
-                http_response_code(200);
                 echo json_encode($result);
                 return;
 
-            case 'get':
-                $result = $this->gateway->get($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/^\/api\/vacancies\/[0-9]*$/', $uri)):
+                $result = $this->gateway->get($url_parts[3]);
                 echo json_encode($result);
                 return;
         }
@@ -38,35 +40,41 @@ class VacanciesController
             return;
         }
 
-        switch ($action) {
-            case 'create':
-                $id = $this->gateway->create($data["data"]);
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/vacancies"):
+                $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
-            case 'update':
+            case ($method == "PUT" && preg_match('/^\/api\/vacancies\/[0-9]*$/', $uri)):
                 $result = $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete':
-                $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/vacancies\/[0-9]*$/', $uri)):
+                $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
             default:
-                break;
+                echo "Wrong URI";
         }
     }
 }

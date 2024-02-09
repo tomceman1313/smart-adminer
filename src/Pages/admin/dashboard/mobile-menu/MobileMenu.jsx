@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 import css from "./MobileMenu.module.css";
 
-const MobileMenu = ({ logOut }) => {
+const MobileMenu = ({ permissions, logOut }) => {
 	const location = useLocation();
 	const [isOpen, toggleOpen] = useCycle(false, true);
 
@@ -26,7 +26,7 @@ const MobileMenu = ({ logOut }) => {
 			<AnimatePresence>
 				{isOpen && (
 					<motion.ul initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ type: "spring", bounce: 0 }}>
-						<Menu logOut={logOut} />
+						<Menu permissions={permissions} logOut={logOut} />
 					</motion.ul>
 				)}
 			</AnimatePresence>

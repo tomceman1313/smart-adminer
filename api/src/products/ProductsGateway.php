@@ -340,9 +340,6 @@ class ProductsGateway
                 'category_id' => $category["id"]
             ]);
         }
-
-
-        return;
     }
 
     public function update(array $data)
@@ -375,7 +372,7 @@ class ProductsGateway
 
         $deletedImages = $data["deletedImages"];
         foreach ($deletedImages as $image) {
-            $this->deleteImage($image);
+            $this->deleteImageByName($image);
         }
 
         //update existing images
@@ -500,7 +497,7 @@ class ProductsGateway
         ]);
     }
 
-    public function deleteImage($image_name)
+    private function deleteImageByName($image_name)
     {
         $sql = "DELETE FROM product_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);
@@ -514,9 +511,29 @@ class ProductsGateway
         }
     }
 
-    public function deleteImageWithUpdate($image_name, $product_id)
+    public function deleteImageWithUpdate($image_id, $product_id)
     {
-        $this->deleteImage($image_name);
+        $sql = "SELECT name FROM product_images WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'id' => $image_id
+        ]);
+
+        $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        $sql = "DELETE FROM product_images WHERE name = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $image["name"]
+        ]);
+
+        if (file_exists("{$this->path}/images/products/{$image["name"]}")) {
+            unlink("{$this->path}/images/products/{$image["name"]}");
+        }
+
+
         $this->updateImagesIndexes($product_id);
     }
 

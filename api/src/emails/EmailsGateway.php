@@ -12,8 +12,10 @@ class EmailsGateway
     {
         $this->conn = $database->getConnection();
         $this->name = "Info";
-        $this->username = 'info@smart-studio.cz';
-        $this->password = 'Nissan.350z';
+        $this->username = 'info@domov-sulicka.cz';
+        $this->password = 'Duben2020';
+        // $this->username = 'info@smart-studio.cz';
+        // $this->password = 'Nissan.350z';
     }
 
     public function sendEmail(array $data): bool
@@ -23,17 +25,19 @@ class EmailsGateway
         $mail->setLanguage = 'cs';
         $mail->isSMTP();
         $mail->SMTPDebug = 0;
-        $mail->Host = 'smtp.hostinger.com';
-        $mail->Port = 587;
+        $mail->Host = 'smtp.office365.com';
         $mail->SMTPAuth = true;
         $mail->Username = $this->username;
         $mail->Password = $this->password;
+        $mail->SMTPSecure = "STARTTLS";
+        $mail->Port = 587;
         $mail->setFrom($this->username,  $this->name);
         $mail->addReplyTo($this->username,  $this->name);
         $mail->addAddress($data["to"], $data["name"]);
         $mail->Subject = $data["subject"];
-        //$mail->msgHTML(file_get_contents('message.html'), __DIR__);
+        //$mail->msgHTML(file_get_contents('email.html'), __DIR__);
         $mail->Body = $data["message"];
+
         //$mail->addAttachment('attachment.txt');
         if (!$mail->send()) {
             //echo 'Mailer Error: ' . $mail->ErrorInfo;
@@ -41,6 +45,30 @@ class EmailsGateway
         } else {
             return true;
         }
+
+        // $mail = new PHPMailer;
+        // $mail->CharSet = 'UTF-8';
+        // $mail->setLanguage = 'cs';
+        // $mail->isSMTP();
+        // $mail->SMTPDebug = 0;
+        // $mail->Host = 'smtp.hostinger.com';
+        // $mail->Port = 587;
+        // $mail->SMTPAuth = true;
+        // $mail->Username = $this->username;
+        // $mail->Password = $this->password;
+        // $mail->setFrom($this->username,  $this->name);
+        // $mail->addReplyTo($this->username,  $this->name);
+        // $mail->addAddress($data["to"], $data["name"]);
+        // $mail->Subject = $data["subject"];
+        // //$mail->msgHTML(file_get_contents('message.html'), __DIR__);
+        // $mail->Body = $data["message"];
+        // //$mail->addAttachment('attachment.txt');
+        // if (!$mail->send()) {
+        //     //echo 'Mailer Error: ' . $mail->ErrorInfo;
+        //     return false;
+        // } else {
+        //     return true;
+        // }
     }
 
     public function subscribe(string $email)

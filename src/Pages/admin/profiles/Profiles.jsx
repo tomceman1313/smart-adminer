@@ -1,19 +1,17 @@
 import { React, useEffect, useState } from "react";
-import useAuth from "../../Hooks/useAuth";
-import { getAllWithAuth, edit, remove, checkNameAvailability } from "../../modules/ApiFunctions";
-import UserList from "./UserList";
-import useInteraction from "../../Hooks/useInteraction";
-import PlusButton from "../../Components/basic/PlusButton";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
+import useInteraction from "../../Hooks/useInteraction";
+import { checkNameAvailability, create, edit, getAllWithAuth, remove, getAll } from "../../modules/ApiFunctions";
 import css from "./Profiles.module.css";
+import UserList from "./UserList";
 
 export default function Profiles() {
 	const auth = useAuth();
-	const navigate = useNavigate();
 	const { setMessage } = useInteraction();
 
 	const [users, setUsers] = useState(null);
+	const [roles, setRoles] = useState(null);
 
 	useEffect(() => {
 		loadData();
@@ -22,26 +20,36 @@ export default function Profiles() {
 
 	async function loadData() {
 		const data = await getAllWithAuth("users", auth);
+		const _privileges = await getAll("users/roles");
+		setRoles(_privileges);
 		setUsers(data);
 	}
 
 	async function deleteHandler(id) {
-		await remove("admin", id, setMessage, "Profil odstraněn", auth);
-		let list = document.querySelector(`.${css.users} ul`);
-		list.style.opacity = 1;
+		await remove("users", id, setMessage, "Profil odstraněn", auth);
 		loadData();
 	}
 
-	async function handleEdit(data, previousUserName) {
-		const isAvailable = await checkNameAvailability("admin", data.username);
+	async function submitHandler(data, previousUserName) {
+		const isAvailable = await checkNameAvailability("users", data.username);
 		if (previousUserName !== data.username && !isAvailable) {
 			setMessage({ action: "alert", text: "Zvolené uživatelské jméno je již obsazené" });
 			return false;
 		}
 
-		await edit("admin", data, setMessage, "Profil byl upraven", auth);
-		let list = document.querySelector(`.${css.users} ul`);
-		list.style.opacity = 1;
+		data.username = data.username.replaceAll(" ", "_");
+
+		if (previousUserName) {
+			await edit("users", data, setMessage, "Profil byl upraven", auth);
+		} else {
+			if (data.password_check !== data.password) {
+				setMessage({ action: "alert", text: "Hesla nejsou stejná." });
+				return false;
+			}
+			console.log(data);
+			create("users", data, setMessage, "Účet vytvořen", auth);
+		}
+
 		loadData();
 		return true;
 	}
@@ -51,8 +59,7 @@ export default function Profiles() {
 			<Helmet>
 				<title>Správa profilu | SmartAdminer</title>
 			</Helmet>
-			<div className={css.users}>{users && <UserList data={users} handleEdit={handleEdit} handleDelete={deleteHandler} css={css} />}</div>
-			<PlusButton onClick={() => navigate(`/register/`)} />
+			<div className={css.users}>{users && <UserList users={users} roles={roles} submitHandler={submitHandler} deleteHandler={deleteHandler} />}</div>
 		</section>
 	);
 }

@@ -11,7 +11,7 @@ import css from "./ArticlePreview.module.css";
 /**
  * Responsible for rendering preview of article or similar type of content
  **/
-
+//TODO: Images under article are not loading when article is not created yet
 export default function ArticlePreview({ article, close, typeOfPreview }) {
 	return (
 		<AnimatePresence>

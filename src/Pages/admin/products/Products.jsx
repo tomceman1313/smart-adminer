@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Category from "../../Components/common/categories-component/Category";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
-import { getAll } from "../../modules/ApiFunctions";
-import { deleteProduct } from "../../modules/ApiProducts";
+import { getAll, remove } from "../../modules/ApiFunctions";
 import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 import { Helmet } from "react-helmet-async";
 import { AnimatePresence } from "framer-motion";
@@ -40,8 +39,7 @@ export default function Products() {
 	}
 
 	async function deleteHandler(id) {
-		await deleteProduct(id, auth, setMessage);
-		setMessage({ action: "success", text: "Produkt byl smazán" });
+		await remove("products", id, setMessage, "Produkt byl smazán", auth);
 		loadData();
 	}
 

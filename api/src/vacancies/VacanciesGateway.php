@@ -10,6 +10,19 @@ class VacanciesGateway
         $this->path = $path;
     }
 
+    function getAll(): array
+    {
+        $sql = "SELECT * FROM vacancies";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function get($id)
     {
         $sql = "SELECT * FROM vacancies WHERE id = :id LIMIT 1";
@@ -84,27 +97,11 @@ class VacanciesGateway
         }
 
         $sql = "DELETE FROM vacancies WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
 
 
         return true;
-    }
-
-    function getAll(): array
-    {
-        $sql = "SELECT * FROM vacancies";
-        $stmt = $this->conn->query($sql);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
     }
 }

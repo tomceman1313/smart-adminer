@@ -1,43 +1,45 @@
 <?php
 class EventsController
 {
-    public function __construct(EventsGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new EventsGateway($database);
+        $this->auth = new AuthGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, ?string $id, $authAction): void
+    public function processRequest(?string $page, $authAction): void
     {
-        $this->controller($action, $id, $authAction);
+        $this->controller($page, $authAction);
     }
 
-    private function controller(string $action, ?string $id, $authAction): void
+    private function controller(?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'getall':
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/events"):
                 $data = $this->gateway->getAll();
-                http_response_code(200);
                 echo json_encode($data);
                 return;
 
-            case 'get':
-                $data = $this->gateway->get($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/^\/api\/events\/[0-9]*$/', $uri)):
+                $data = $this->gateway->get($url_parts[3]);
                 echo json_encode($data);
                 return;
 
-            case 'getByCategory':
-                $data = $this->gateway->getByCategory($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/\/api\/events\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
+                $category_id = $_GET["category"];
+                $data = $this->gateway->getByCategory($category_id);
                 echo json_encode($data);
                 return;
 
-            case 'getCategories':
+            case ($method == "GET" && $uri == "/api/events/categories"):
                 $result = $this->gateway->getCategories();
-                http_response_code(201);
                 echo json_encode($result);
                 return;
         }
@@ -50,78 +52,77 @@ class EventsController
             return;
         }
 
-        switch ($action) {
-            case 'create':
-                $userId = $this->admin->decodeToken($authAction);
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/events"):
+                $userId = $this->auth->decodeToken($authAction);
                 if ($userId != null) {
-                    $id = $this->gateway->create($data["data"], $userId);
+                    $this->gateway->create($data["data"], $userId);
                     http_response_code(201);
                     echo json_encode([
                         "message" => "Created",
-                        "data" => $id,
-                        "token" => $authAction
+                        "token" => $authAction["token"]
                     ]);
                 }
                 break;
 
-            case 'update':
+            case ($method == "PUT" && preg_match('/^\/api\/events\/[0-9]*$/', $uri)):
                 $result = $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete':
-                $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/events\/[0-9]*$/', $uri)):
+                $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'category':
-                $result = $this->gateway->getCategory($id);
+            case ($method == "DELETE" && preg_match('/^\/api\/events\/[0-9]+\/images\/[0-9]+$/', $uri)):
+                $this->gateway->deleteImage($url_parts[5]);
                 echo json_encode([
-                    "data" =>  $result
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete-image':
-                $this->gateway->deleteImage($data["name"]);
-                echo json_encode([
-                    "token" => $authAction
-                ]);
-                break;
-
-            case 'createCategory':
+            case ($method == "POST" && $uri == "/api/events/categories"):
                 $this->gateway->createCategory($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'updateCategory':
+            case ($method == "PUT" && preg_match('/^\/api\/events\/categories\/[0-9]*$/', $uri)):
                 $this->gateway->updateCategory($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'deleteCategory':
-                $this->gateway->deleteCategory($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/events\/categories\/[0-9]*$/', $uri)):
+                $this->gateway->deleteCategory($url_parts[3]);
                 echo json_encode([
                     "message" => "Deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
+            default:
+                echo "Wrong URI";
         }
     }
 }

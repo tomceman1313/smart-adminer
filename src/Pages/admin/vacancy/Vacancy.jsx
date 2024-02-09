@@ -74,7 +74,6 @@ export default function Vacancy() {
 
 		if (id) {
 			data.id = id;
-			console.log(data);
 			await edit("vacancies", data, setMessage, "Inzerát byl upraven", auth);
 			setData();
 		} else {

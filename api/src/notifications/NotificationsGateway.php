@@ -19,21 +19,8 @@ class NotificationsGateway
 
         return $data;
     }
-    //unused
-    public function get(string $id): array
-    {
-        $sql = "SELECT * FROM notifications WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
 
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
-    }
-
-    public function create(array $data): bool
+    public function create(array $data)
     {
         if ($data["start"] > $data["end"]) {
             return false;
@@ -49,11 +36,9 @@ class NotificationsGateway
             'start' => $data["start"],
             'end' => $data["end"]
         ]);
-
-        return true;
     }
 
-    public function update(array $data): bool
+    public function update(array $data)
     {
         $sql = "UPDATE notifications SET title = :title, text = :text, path = :path,
          start = :start, end = :end WHERE id = :id";
@@ -72,21 +57,13 @@ class NotificationsGateway
             'end' => $data["end"],
             'id' => $data["id"]
         ]);
-
-        return true;
     }
 
-    public function delete(string $id): int
+    public function delete(string $id)
     {
         $sql = "DELETE FROM notifications WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
-
-
-        return true;
     }
 }

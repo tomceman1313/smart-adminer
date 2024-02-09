@@ -1,46 +1,40 @@
 <?php
 class PagesController
 {
-    public function __construct(PagesGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new PagesGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, $authAction): void
+    public function processRequest($authAction): void
     {
-        $this->controller($action, $authAction);
+        $this->controller($authAction);
     }
 
-    private function controller(string $action, $authAction): void
+    private function controller($authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $name = "";
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        if (isset($_GET["name"])) {
-            $name = $_GET["name"];
-        }
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/pages"):
+                $result = $this->gateway->getAll();
+                echo json_encode($result);
+                return;
 
+            case ($method == "GET" && preg_match('/\/api\/pages\/[\w_%]*\/parts/', $uri)):
+                $result = $this->gateway->getAllPageParts(urldecode($url_parts[3]));
+                echo json_encode($result);
+                return;
 
-        if ($action == 'getall') {
-            $result = $this->gateway->getAll();
-            http_response_code(200);
-            echo json_encode($result);
-            return;
-        }
-
-        if ($action == 'getAllPageParts') {
-            $result = $this->gateway->getAllPageParts($name);
-            http_response_code(200);
-            echo json_encode($result);
-            return;
-        }
-
-        if ($action == 'get') {
-            $result = $this->gateway->get($name);
-            http_response_code(200);
-            echo json_encode($result);
-            return;
+            case ($method == "GET" && preg_match('/\/api\/pages\/\?name=\w*/', $uri) && isset($_GET["name"])):
+                $result = $this->gateway->get($_GET["name"]);
+                echo json_encode($result);
+                return;
         }
 
         if (!$authAction) {
@@ -51,15 +45,25 @@ class PagesController
             return;
         }
 
-        switch ($action) {
-            case 'update':
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "PUT" && preg_match('/^\/api\/pages\/[0-9]*$/', $uri)):
                 $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
+            default:
+                echo "Wrong URI";
         }
     }
 }

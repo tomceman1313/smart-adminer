@@ -10,7 +10,7 @@ export async function findById(id) {
 }
 
 export async function filterOrders(filterValues) {
-	const response = await fetch(`${BASE_URL}/api/?class=orders&action=filterOrders`, {
+	const response = await fetch(`${BASE_URL}/api/orders/filter`, {
 		method: "POST",
 		body: JSON.stringify(filterValues),
 	});
@@ -20,7 +20,7 @@ export async function filterOrders(filterValues) {
 }
 
 export async function getStatusCodes() {
-	const response = await fetch(`${BASE_URL}/api/?class=orders&action=getStatusCodes`, {
+	const response = await fetch(`${BASE_URL}/api/orders/codes`, {
 		method: "GET",
 	});
 
@@ -29,7 +29,7 @@ export async function getStatusCodes() {
 }
 
 export async function getShippingTypes() {
-	const response = await fetch(`${BASE_URL}/api/?class=orders&action=getShippingTypes`, {
+	const response = await fetch(`${BASE_URL}/api/orders/shipping`, {
 		method: "GET",
 	});
 

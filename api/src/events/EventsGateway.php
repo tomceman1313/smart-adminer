@@ -136,7 +136,7 @@ class EventsGateway
 
         $deletedImages = $data["deletedImages"];
         foreach ($deletedImages as $image) {
-            $this->deleteImage($image);
+            $this->deleteInnerImage($image);
         }
 
         $images = $data["images"];
@@ -183,21 +183,6 @@ class EventsGateway
                 unlink("{$this->path}/images/events/{$row['name']}");
             }
         }
-    }
-
-
-
-    public function getCategory(string $id): array
-    {
-        $sql = "SELECT * FROM events_categories WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
     }
 
     public function getCategories(): array
@@ -268,17 +253,41 @@ class EventsGateway
         ]);
     }
 
-    public function deleteImage($image_name)
+
+    public function deleteImage($image_id)
     {
+        $sql = "SELECT name FROM event_images WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'id' => $image_id
+        ]);
+
+        $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
         $sql = "DELETE FROM event_images WHERE name = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $image["name"]
+        ]);
+
+        if (file_exists("{$this->path}/images/events/{$image["name"]}")) {
+            unlink("{$this->path}/images/events/{$image["name"]}");
+        }
+    }
+
+    private function deleteInnerImage($image_name)
+    {
+        $sql = "DELETE FROM article_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $image_name
         ]);
 
-        if (file_exists("{$this->path}/images/events/{$image_name}")) {
-            unlink("{$this->path}/images/events/{$image_name}");
+        if (file_exists("{$this->path}/images/articles/{$image_name}")) {
+            unlink("{$this->path}/images/articles/{$image_name}");
         }
     }
 }

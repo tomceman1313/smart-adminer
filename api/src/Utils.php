@@ -8,6 +8,15 @@ class Utils
         $this->path = $path;
     }
 
+    public function checkUserAuthorization(string $method, array $permissions): bool
+    {
+        $method_permission = strtolower($method) . "_permission";
+        if ($permissions[$method_permission]) {
+            return true;
+        }
+        return false;
+    }
+
     public function createImage(string $base64, int $max_width, string $path, string $name = null): string
     {
         try {

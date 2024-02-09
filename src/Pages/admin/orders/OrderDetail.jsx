@@ -47,7 +47,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		const _order = await get("orders", id);
 		_order.deleted_products = [];
 		setOrder(_order);
-		console.log("order", _order);
 		setProducts(_order.ordered_products);
 
 		setValue("order_date", makeDateFormat(_order.order_date, "str"));
@@ -65,7 +64,7 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 	}
 
 	async function onSubmit(data) {
-		data.order_id = order.id;
+		data.id = order.id;
 		data.ordered_products = order.ordered_products;
 		data.deleted_products = order.deleted_products;
 
@@ -80,7 +79,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, reloadData 
 		}
 
 		data.customer_id = order.customer.id;
-		console.log(data);
 		await edit("orders", data, setMessage, "Objednávka byla upravena", auth);
 		reloadData();
 		setVisible(false);

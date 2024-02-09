@@ -102,7 +102,6 @@ export default function Event() {
 			await edit("events", data, setMessage, "Událost byla upravena", auth);
 			loadData();
 		} else {
-			console.log(data);
 			await create("events", data, setMessage, "Událost byla upravena", auth);
 			navigation("/events");
 		}

@@ -27,9 +27,7 @@ class GalleryGateway
     function getByCategory(string $category_id): array
     {
         $sql = "SELECT * FROM image_category WHERE category_id=:id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'id' => $category_id
         ]);
@@ -86,7 +84,7 @@ class GalleryGateway
         return $data;
     }
 
-    public function create(array $data): bool
+    public function create(array $data)
     {
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/gallery");
 
@@ -111,8 +109,6 @@ class GalleryGateway
                 'category_id' => $item["id"]
             ]);
         }
-
-        return true;
     }
 
     public function multipleCreate(array $data)
@@ -141,10 +137,9 @@ class GalleryGateway
                 ]);
             }
         }
-        return true;
     }
 
-    public function update(array $data): bool
+    public function update(array $data)
     {
         $sql = "UPDATE gallery SET title = :title, description = :description WHERE id = :id";
 
@@ -165,11 +160,8 @@ class GalleryGateway
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $sql = "DELETE FROM image_category WHERE id = :id";
-
             $stmt = $this->conn->prepare($sql);
-
             $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
-
             $stmt->execute();
         }
 
@@ -184,8 +176,6 @@ class GalleryGateway
                 'category_id' => $item["id"]
             ]);
         }
-
-        return true;
     }
 
     public function delete(string $id)
@@ -198,11 +188,8 @@ class GalleryGateway
         }
 
         $sql = "DELETE FROM gallery WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
 
         $sql_select = "SELECT * FROM image_category WHERE image_id = :id";
@@ -214,11 +201,8 @@ class GalleryGateway
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $sql = "DELETE FROM image_category WHERE id = :id";
-
             $stmt = $this->conn->prepare($sql);
-
             $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
-
             $stmt->execute();
         }
     }
@@ -233,9 +217,7 @@ class GalleryGateway
     function getImageCategories(string $image_id): array
     {
         $sql = "SELECT * FROM image_category WHERE image_id=:id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'id' => $image_id
         ]);
@@ -266,8 +248,6 @@ class GalleryGateway
         $stmt = $this->conn->query($sql);
 
         $data = [];
-        // boolean values have to converted manualy, represented by 0/1 by default
-        // $row["bool column"] = (bool) $row["bool column];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -279,7 +259,6 @@ class GalleryGateway
     {
         $sql = "INSERT INTO gallery_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'name' => $data["name"]
         ]);
@@ -290,9 +269,7 @@ class GalleryGateway
     public function updateCategory(array $data): bool
     {
         $sql = "UPDATE gallery_categories SET name = :name WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'name' => $data["name"],
             'id' => $data["id"]
@@ -304,11 +281,8 @@ class GalleryGateway
     public function deleteCategory(string $id): int
     {
         $sql = "DELETE FROM gallery_categories WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-
         $stmt->execute();
 
         $sql_select = "SELECT * FROM image_category WHERE category_id = :id";
@@ -320,11 +294,8 @@ class GalleryGateway
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $sql = "DELETE FROM image_category WHERE id = :id";
-
             $stmt = $this->conn->prepare($sql);
-
             $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
-
             $stmt->execute();
         }
 

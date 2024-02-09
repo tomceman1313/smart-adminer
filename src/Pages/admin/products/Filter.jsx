@@ -19,7 +19,6 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 			price_range: selectedPriceRange.current,
 			in_stock: selectedInStock.current,
 		};
-		console.log(filterValues);
 		const filterData = await filterProducts(filterValues);
 		setProducts(filterData);
 	}

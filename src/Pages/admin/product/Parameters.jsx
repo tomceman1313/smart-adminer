@@ -68,7 +68,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 		if (_activeParams >= 0) {
 			setActiveParamsIndex(_activeParams);
 		}
-		console.log(parameters[_activeParams]);
+		//console.log(parameters[_activeParams]);
 	}
 
 	function createParamsPattern() {

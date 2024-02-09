@@ -1,82 +1,73 @@
 import { useState } from "react";
 import UserForm from "./UserForm";
+import PlusButton from "../../Components/basic/PlusButton";
 
 import { faAt, faCaretDown, faIdBadge, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useInteraction from "../../Hooks/useInteraction";
+import css from "./Profiles.module.css";
 
-function privilegeToName(privilege) {
-	switch (privilege) {
-		case 1:
-			return "Uživatel";
-		case 2:
-			return "Zaměstnanec";
-		case 3:
-			return "Admin";
-		default:
-			return "Uživatel";
-	}
-}
-
-export default function UserList({ data, handleEdit, handleDelete, css }) {
+export default function UserList({ users, roles, submitHandler, deleteHandler }) {
 	const { setAlert } = useInteraction();
-	const [show, setShow] = useState(false);
+	const [userData, setUserData] = useState(null);
+	const [activeUserInfo, setActiveUserInfo] = useState(null);
 
-	const showMoreInfo = (e) => {
-		const el = e.target.parentNode;
-		const article = el.parentNode.childNodes[1];
-
-		const arrow = e.target.firstChild;
-
-		if (article.classList.contains(css.active)) {
-			article.classList.remove(css.active);
-			arrow.classList.remove(css.rotate);
-		} else {
-			article.classList.add(css.active);
-			arrow.classList.add(css.rotate);
-		}
+	const showUserDetail = async (id) => {
+		let userData = await users.find((user) => user.id === id);
+		setUserData(userData);
 	};
 
-	const userData = async (id) => {
-		let userData = await data.find((user) => user.id === id);
-		setShow(userData);
-	};
+	function privilegeToName(roleId) {
+		const selectedRole = roles.find((role) => role.id === roleId);
+		return selectedRole?.name ? selectedRole.name : "Neznámá role";
+	}
 
 	const deleteUser = (id, username) => {
-		setAlert({ id: id, question: `Smazat uživatele ${username}?`, positiveHandler: handleDelete });
+		setAlert({ id: id, question: `Smazat uživatele ${username}?`, positiveHandler: deleteHandler });
 	};
 
 	return (
-		<div style={{ position: "relative" }}>
+		<>
 			<ul>
-				{data.map((user) => (
+				{users.map((user) => (
 					<li key={user.id}>
 						<div>
 							<label>
 								<FontAwesomeIcon icon={faUser} />
 								{user.username}
 							</label>
-							<label>{privilegeToName(user.privilege)}</label>
-							<FontAwesomeIcon icon={faCaretDown} className={css.show} onClick={showMoreInfo} />
+							<label>{privilegeToName(user.role_id)}</label>
+							<FontAwesomeIcon
+								icon={faCaretDown}
+								className={activeUserInfo === user.id ? `${css.show} ${css.rotate}` : css.show}
+								onClick={() => setActiveUserInfo(user.id === activeUserInfo ? null : user.id)}
+							/>
 						</div>
-						<article>
-							<label>
-								<FontAwesomeIcon icon={faIdBadge} />
-								{user.fname + " " + user.lname}
-							</label>
-							<label>
-								<FontAwesomeIcon icon={faMobileScreen} /> {user.tel}
-							</label>
-							<label>
-								<FontAwesomeIcon icon={faAt} /> {user.email}
-							</label>
-							<button onClick={() => userData(user.id)}>Upravit</button>
+						<article className={activeUserInfo === user.id ? css.active : ""}>
+							{(user.lname || user.fname) && (
+								<label>
+									<FontAwesomeIcon icon={faIdBadge} />
+									{user.fname + " " + user.lname}
+								</label>
+							)}
+							{user.tel && (
+								<label>
+									<FontAwesomeIcon icon={faMobileScreen} /> {user.tel}
+								</label>
+							)}
+							{user.email && (
+								<label>
+									<FontAwesomeIcon icon={faAt} /> {user.email}
+								</label>
+							)}
+							<button onClick={() => showUserDetail(user.id)}>Upravit</button>
 							<button onClick={() => deleteUser(user.id, user.username)}>Smazat</button>
 						</article>
 					</li>
 				))}
 			</ul>
-			<UserForm userData={show} setState={setShow} handleEdit={handleEdit} />
-		</div>
+			<PlusButton onClick={() => setUserData({})} />
+			<UserForm userData={userData} roles={roles} close={() => setUserData(false)} submitHandler={submitHandler} />
+		</>
 	);
 }

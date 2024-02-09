@@ -63,7 +63,7 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 	}
 
 	function deleteItem() {
-		setAlert({ id: priceItem.id, question: "Smazat položku?", positiveHandler: deleteHandler });
+		setAlert({ id: priceItem.id, question: `Smazat položku ${priceItem.name}`, positiveHandler: deleteHandler });
 	}
 
 	return (

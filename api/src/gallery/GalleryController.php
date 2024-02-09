@@ -1,55 +1,51 @@
 <?php
 class GalleryController
 {
-    public function __construct(GalleryGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new GalleryGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, ?string $id, ?string $page, $authAction): void
+    public function processRequest(?string $page, $authAction): void
     {
-        $this->controller($action, $id, $page, $authAction);
+        $this->controller($page, $authAction);
     }
 
-    private function controller(string $action, ?string $id, ?string $page, $authAction): void
+    private function controller(?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $name = "";
-
-        if (isset($_GET["name"])) {
-            $name = $_GET["name"];
-        }
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
 
-        switch ($action) {
-            case 'getall':
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/gallery"):
                 $result = $this->gateway->getAll($page);
-                http_response_code(200);
                 echo json_encode($result);
                 return;
 
-            case 'getByCategory':
-                $result = $this->gateway->getByCategory($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/\/api\/gallery\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
+                $category_id = $_GET["category"];
+                $result = $this->gateway->getByCategory($category_id);
                 echo json_encode($result);
                 return;
 
-            case 'getByCategoryName':
-                $result = $this->gateway->getByCategoryName($name);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/\/api\/gallery\/\?categoryName=[0-9]*/', $uri) && isset($_GET["categoryName"])):
+                $category_name = $_GET["categoryName"];
+                $result = $this->gateway->getByCategoryName($category_name);
                 echo json_encode($result);
                 return;
 
-            case 'getImageCategories':
-                $result = $this->gateway->getImageCategories($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/\/api\/gallery\/[0-9]*\/categories/', $uri)):
+                $result = $this->gateway->getImageCategories($url_parts[3]);
                 echo json_encode($result);
                 return;
 
-            case 'getCategories':
+            case ($method == "GET" && $uri == "/api/gallery/categories"):
                 $result = $this->gateway->getCategories();
-                http_response_code(201);
                 echo json_encode($result);
                 return;
         }
@@ -62,80 +58,88 @@ class GalleryController
             return;
         }
 
-        switch ($action) {
-            case 'create':
-                $id = $this->gateway->create($data["data"]);
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/gallery"):
+                $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'multipleCreate':
-                $this->gateway->multipleCreate($data["data"]);
+            case ($method == "POST" && $uri == "/api/gallery/multiple"):
+                $this->gateway->multipleCreate($data["ids"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Items created",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'update':
+            case ($method == "PUT" && preg_match('/^\/api\/gallery\/[0-9]*$/', $uri)):
                 $result = $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete':
-                $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/gallery\/[0-9]*$/', $uri)):
+                $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Item deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
-
-            case 'multipleDelete':
-                $this->gateway->multipleDelete($data["data"]);
-                http_response_code(200);
-                echo json_encode([
-                    "message" => "Items deleted",
-                    "token" => $authAction
-                ]);
+            case ($method == "DELETE" && preg_match('/^\/api\/gallery\/multiple\/[\w%]*$/', $uri)):
+                $decoded_ids_array = json_decode(urldecode($url_parts[4]), true);
+                if ($decoded_ids_array !== null) {
+                    $this->gateway->multipleDelete($decoded_ids_array);
+                    echo json_encode([
+                        "message" => "Items deleted",
+                        "token" => $authAction["token"]
+                    ]);
+                } else {
+                    echo "Error decoding the array parameter.";
+                }
                 break;
 
-            case 'createCategory':
-                $id = $this->gateway->createCategory($data["data"]);
+            case ($method == "POST" && $uri == "/api/gallery/categories"):
+                $this->gateway->createCategory($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'updateCategory':
+            case ($method == "PUT" && preg_match('/^\/api\/gallery\/categories\/[0-9]*$/', $uri)):
                 $this->gateway->updateCategory($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'deleteCategory':
-                $this->gateway->deleteCategory($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/gallery\/categories\/[0-9]*$/', $uri)):
+                $this->gateway->deleteCategory($url_parts[4]);
                 echo json_encode([
                     "message" => "Deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
+            default:
+                echo "Wrong URI";
         }
     }
 }

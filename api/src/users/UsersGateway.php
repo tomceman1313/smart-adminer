@@ -6,29 +6,22 @@ class UsersGateway
         $this->conn = $database->getConnection();
     }
 
-    public function create(array $data): string
+    public function getAll(): array
     {
-        $sql = "INSERT INTO users (username, password, privilege, tel, email, fname, lname) VALUES (:username, :password, :privilege, :tel, :email, :fname, :lname)";
-        $stmt = $this->conn->prepare($sql);
+        $sql = "SELECT * from users";
+        $stmt = $this->conn->query($sql);
 
-        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
 
-        $stmt->execute([
-            "username" => $data["username"],
-            "password" => $hashedPassword,
-            "privilege" => $data["privilege"],
-            "tel" => $data["tel"],
-            "email" => $data["email"],
-            "fname" => $data["fname"],
-            "lname" => $data["lname"],
-        ]);
-
-        return $this->conn->lastInsertId();
+        return $data;
     }
 
     public function get(string $id): array
     {
-        $sql = "SELECT id, username, privilege, tel, email, fname, lname FROM users WHERE id = :id";
+        $sql = "SELECT id, username, role_id, tel, email, fname, lname FROM users WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
@@ -38,16 +31,37 @@ class UsersGateway
         return $data;
     }
 
+
+    public function create(array $data): string
+    {
+        $sql = "INSERT INTO users (username, password, role_id, tel, email, fname, lname) VALUES (:username, :password, :role_id, :tel, :email, :fname, :lname)";
+        $stmt = $this->conn->prepare($sql);
+
+        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+
+        $stmt->execute([
+            "username" => $data["username"],
+            "password" => $hashedPassword,
+            "role_id" => $data["role_id"],
+            "tel" => $data["tel"],
+            "email" => $data["email"],
+            "fname" => $data["fname"],
+            "lname" => $data["lname"],
+        ]);
+
+        return $this->conn->lastInsertId();
+    }
+
     public function update(array $data)
     {
-        $sql = "UPDATE users SET username = :username, privilege = :privilege, tel = :tel,
+        $sql = "UPDATE users SET username = :username, role_id = :role_id, tel = :tel,
          email = :email, fname = :fname, lname = :lname WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             "username" => $data["username"],
-            "privilege" => $data["privilege"],
+            "role_id" => $data["role_id"],
             "tel" => $data["tel"],
             "email" => $data["email"],
             "fname" => $data["fname"],
@@ -66,22 +80,11 @@ class UsersGateway
         ]);
     }
 
-    public function getAll(): array
-    {
-        $sql = "SELECT * from users";
-        $stmt = $this->conn->query($sql);
 
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
-    }
 
     public function getRoles(): array
     {
-        $sql = "SELECT * from roles ORDER BY role";
+        $sql = "SELECT * from roles ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -92,37 +95,54 @@ class UsersGateway
         return $data;
     }
 
-    public function updateRole(array $data)
+    public function getPermissions(): array
     {
-        $availablePermissions = ["create_articles", "edit_articles", "post_articles", "edit_prices", "create_pricelist_item", "create_news", "edit_news", "post_news"];
+        $sql = "SELECT * from role_permission ORDER BY role_id";
+        $stmt = $this->conn->query($sql);
 
-        if (in_array($data['action'], $availablePermissions)) {
-            $sql = "UPDATE roles SET " . $data['action'] . " = :permission WHERE role = :role";
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([
-                'permission' => $data['permission'],
-                'role' => $data['role']
-            ]);
-            return "updated";
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
         }
-
-        return "dismiss";
+        return $data;
     }
 
-    public function checkUser(array $data): string
+    public function getRolePermissions(string $id): array
     {
-        $stmt = $this->conn->prepare('SELECT * FROM users WHERE username = :username LIMIT 1');
-        $stmt->execute([
-            'username' => $data["username"]
-        ]);
-        $user = @$stmt->fetchAll()[0];
+        $sql = "SELECT * FROM role_permission WHERE role_id = :role_id ORDER BY class";
+        $stmt = $this->conn->prepare($sql);
 
-        if ($user != null && password_verify($data["password"], $user['password'])) {
-            return true;
+        $stmt->execute([
+            'role_id' => $id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
         }
 
-        return false;
+        return $data;
+    }
+
+    public function updatePermission(string $id, string $method)
+    {
+        $permission_method = $method . "_permission";
+        $sql = "SELECT $permission_method FROM role_permission WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+        $permission = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        $sql = "UPDATE role_permission SET $permission_method = :method WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            "method" => $permission[$permission_method] == 1 ? 0 : 1,
+            "id" => $id,
+        ]);
     }
 
     public function changePassword(array $data)

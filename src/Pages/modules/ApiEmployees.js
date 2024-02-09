@@ -1,53 +1,7 @@
 import { BASE_URL } from "./ApiFunctions";
 
-export async function create(data, auth, setMessage) {
-	const bearer = `Bearer ` + auth.userInfo.token;
-
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=create`, {
-		method: "POST",
-		headers: {
-			Authorization: bearer,
-			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-		},
-		body: JSON.stringify(data),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const responseData = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: "Profil zaměstnance byl vytvořen" });
-}
-
-export async function update(data, auth, setMessage) {
-	const bearer = `Bearer ${auth.userInfo.token}`;
-
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=update&id=${data.id}`, {
-		method: "PUT",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ data: data }),
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return null;
-	}
-
-	const responseData = await response.json();
-
-	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: "Profil zaměstnance byl upraven" });
-	return true;
-}
-
 export async function getDepartments() {
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=get-departments`, {
+	const response = await fetch(`${BASE_URL}/api/employees/departments`, {
 		method: "GET",
 	});
 
@@ -62,7 +16,7 @@ export async function getDepartments() {
 export async function createDepartment(data, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=create-department`, {
+	const response = await fetch(`${BASE_URL}/api/employees/departments`, {
 		method: "POST",
 		headers: {
 			Authorization: bearer,
@@ -86,7 +40,7 @@ export async function createDepartment(data, auth, setMessage) {
 export async function updateDepartment(data, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=update-department&id=${data.id}`, {
+	const response = await fetch(`${BASE_URL}/api/employees/departments/${data.id}`, {
 		method: "PUT",
 		headers: {
 			Authorization: bearer,
@@ -110,7 +64,7 @@ export async function updateDepartment(data, auth, setMessage) {
 export async function removeDepartment(id, auth, setMessage) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 
-	const response = await fetch(`${BASE_URL}/api/?class=employees&action=delete-department&id=${id}`, {
+	const response = await fetch(`${BASE_URL}/api/employees/departments/${id}`, {
 		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",

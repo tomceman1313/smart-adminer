@@ -1,37 +1,39 @@
 <?php
 class DocumentsController
 {
-    public function __construct(DocumentsGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new DocumentsGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, ?string $id, $authAction): void
+    public function processRequest(?string $page, $authAction): void
     {
-        $this->controller($action, $id, $authAction);
+        $this->controller($page, $authAction);
     }
 
-    private function controller(string $action, ?string $id, $authAction): void
+    private function controller(?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'getall':
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/documents"):
                 $result = $this->gateway->getAll();
-                http_response_code(200);
                 echo json_encode($result);
                 return;
 
-            case 'getByCategory':
-                $result = $this->gateway->getByCategory($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/\/api\/documents\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
+                $category_id = $_GET["category"];
+                $result = $this->gateway->getByCategory($category_id);
                 echo json_encode($result);
-
                 return;
-            case 'getCategories':
+
+            case ($method == "GET" && $uri == "/api/documents/categories"):
                 $result = $this->gateway->getCategories();
-                http_response_code(200);
                 echo json_encode($result);
                 return;
         }
@@ -44,86 +46,91 @@ class DocumentsController
             return;
         }
 
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
 
-        //* SWITCH for category methods
-        switch ($action) {
-            case 'create':
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/documents"):
                 $id = $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
                     "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
 
                 break;
 
-            case 'multipleCreate':
+            case ($method == "POST" && $uri == "/api/documents/multiple"):
                 $this->gateway->multipleCreate($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Created",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'update':
+            case ($method == "PUT" && preg_match('/^\/api\/documents\/[0-9]*$/', $uri)):
                 $result = $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete':
-                $id = $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/documents\/[0-9]*$/', $uri)):
+                $id = $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Item deleted",
                     "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'multipleDelete':
-                $this->gateway->multipleDelete($data["data"]);
-                http_response_code(200);
-                echo json_encode([
-                    "message" => "Items deleted",
-                    "token" => $authAction
-                ]);
-                break;
-
-            case 'createCategory':
-                $id = $this->gateway->createCategory($data["data"]);
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Item created",
-                    "data" => $id,
-                    "token" => $authAction
-                ]);
-                break;
-
-            case 'updateCategory':
-                $result = $this->gateway->updateCategory($data["data"]);
-                if ($result) {
-                    http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/documents\/multiple\/[\w%]*$/', $uri)):
+                $decoded_ids_array = json_decode(urldecode($url_parts[4]), true);
+                if ($decoded_ids_array !== null) {
+                    $this->gateway->multipleDelete($decoded_ids_array);
                     echo json_encode([
-                        "message" => "Item edited",
-                        "token" => $authAction
+                        "message" => "Items deleted",
+                        "token" => $authAction["token"]
                     ]);
+                } else {
+                    echo "Error decoding the array parameter.";
                 }
                 break;
 
-            case 'deleteCategory':
-                $this->gateway->deleteCategory($id);
-                http_response_code(200);
+            case ($method == "POST" && $uri == "/api/documents/categories"):
+                $this->gateway->createCategory($data["data"]);
+                http_response_code(201);
                 echo json_encode([
-                    "message" => "Item deleted",
-                    "token" => $authAction
+                    "message" => "Created",
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
+            case ($method == "PUT" && preg_match('/^\/api\/documents\/categories\/[0-9]*$/', $uri)):
+                $this->gateway->updateCategory($data["data"]);
+                echo json_encode([
+                    "message" => "Updated",
+                    "token" => $authAction["token"]
+                ]);
+                break;
+
+            case ($method == "DELETE" && preg_match('/^\/api\/documents\/categories\/[0-9]*$/', $uri)):
+                $this->gateway->deleteCategory($url_parts[4]);
+                echo json_encode([
+                    "message" => "Deleted",
+                    "token" => $authAction["token"]
+                ]);
+                break;
+            default:
+                echo "Wrong URI";
         }
     }
 }

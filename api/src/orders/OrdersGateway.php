@@ -275,7 +275,7 @@ class OrdersGateway
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
-            'id' => $data["order_id"],
+            'id' => $data["id"],
             'status_code' => $data["status_code"],
             'payment_method' => $data["payment_method"],
             'shipping_type_id' => $data["shipping_type_id"],
@@ -360,7 +360,7 @@ class OrdersGateway
 
         $emailAdmin = [];
         $emailAdmin["subject"] = "Nová objednávka č. $orderNumber";
-        $emailAdmin["to"] = "tomas@smart-studio.cz";
+        $emailAdmin["to"] = "info@domov-sulicka.cz";
         $emailAdmin["name"] = "Info";
         $emailAdmin["message"] = "Byla přijata nová objednávka.";
 

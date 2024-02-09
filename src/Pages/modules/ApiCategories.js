@@ -1,8 +1,8 @@
 import { BASE_URL } from "./ApiFunctions";
 
 export async function getCategories(setState, apiClass) {
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=getCategories`, {
-		method: "POST",
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories`, {
+		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
 	});
@@ -19,7 +19,7 @@ export async function getCategories(setState, apiClass) {
 export async function createCategory(data, auth, setMessage, apiClass) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=createCategory`, {
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		body: JSON.stringify({ data: data }),
@@ -40,8 +40,8 @@ export async function createCategory(data, auth, setMessage, apiClass) {
 export async function updateCategory(data, auth, setMessage, apiClass) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=updateCategory`, {
-		method: "POST",
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${data.id}`, {
+		method: "PUT",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		body: JSON.stringify({ data: data }),
 		credentials: "include",
@@ -61,8 +61,8 @@ export async function updateCategory(data, auth, setMessage, apiClass) {
 export async function deleteCategory(id, auth, setMessage, apiClass) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=${apiClass}&action=deleteCategory&id=${id}`, {
-		method: "POST",
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${id}`, {
+		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
 	});

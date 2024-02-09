@@ -2,7 +2,7 @@ import { BASE_URL } from "./ApiFunctions";
 
 export async function getRoles(setState, auth) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
-	const response = await fetch(`${BASE_URL}/api/?class=users&action=getroles`, {
+	const response = await fetch(`${BASE_URL}/api/users/roles`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
@@ -14,32 +14,27 @@ export async function getRoles(setState, auth) {
 	return data.data;
 }
 
-export function editRole(data, setAlert, positiveText, auth) {
-	fetch(`${BASE_URL}/api/?class=users&action=update_role`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: data }),
+export async function togglePermission(id, method, setMessage, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/users/permissions/${id}/?method=${method}`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 		credentials: "include",
-	})
-		.then((response) => {
-			if (response.status === 403) {
-				auth.setUserInfo(null);
-				return false;
-			}
-			if (response.status === 200) {
-				setAlert({ action: "success", text: positiveText });
-			} else {
-				setAlert({ action: "failure", text: "Operace se nezdařila" });
-			}
+	});
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return;
-		})
-		.catch((error) => {
-			console.error("There has been a problem with your fetch operation:", error);
-		});
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const data = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	if (response.status === 200) {
+		setMessage({ action: "success", text: "Obrázek byl smazán" });
+	} else {
+		setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
+	}
 }
 
 export async function refreshAccessToken(navigate, from, auth) {
@@ -47,7 +42,7 @@ export async function refreshAccessToken(navigate, from, auth) {
 	if (from) {
 		fromPath = from;
 	}
-	const response = await fetch(`${BASE_URL}/api/?class=auth&action=refresh`, {
+	const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
@@ -100,14 +95,13 @@ export async function changePassword(postData, auth) {
 }
 
 export async function logOut(auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=auth&action=logout`, {
+	const response = await fetch(`${BASE_URL}/api/auth/logout`, {
 		method: "GET",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		credentials: "include",
 	});
 
 	if (response.status === 200) {
-		console.log(auth);
 		auth.setUserInfo(null);
 	}
 }

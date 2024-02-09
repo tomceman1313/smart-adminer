@@ -8,18 +8,21 @@ class AuthController
     }
 
 
-    public function processRequest(string $action): void
+    public function processRequest(): void
     {
-        $this->controller($action);
+        $this->controller();
     }
 
-    private function controller(string $action): void
+    private function controller(): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'auth':
-                $response = $this->gateway->auth($data);
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/auth/login"):
+                $response = $this->gateway->login($data);
                 if ($response) {
                     http_response_code(200);
                     echo json_encode([
@@ -36,7 +39,7 @@ class AuthController
                 }
                 return;
 
-            case 'refresh':
+            case ($method == "GET" && $uri == "/api/auth/refresh"):
                 $response = $this->gateway->refresh();
                 if ($response != false) {
                     http_response_code(200);
@@ -52,7 +55,7 @@ class AuthController
                 }
                 return;
 
-            case 'logout':
+            case ($method == "GET" && $uri == "/api/auth/logout"):
                 setcookie("refresh_token", "", -1, '/', "", false, true);
                 http_response_code(200);
                 return;

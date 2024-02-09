@@ -9,10 +9,7 @@ import NewNotification from "./NewNotification";
 import { AnimatePresence } from "framer-motion";
 
 const Notifications = () => {
-	// array všech notifikací
 	const [notifications, setNotifications] = useState(null);
-
-	// true / false pro zobrazení formulářů
 	const [editNotification, setEditNotification] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 

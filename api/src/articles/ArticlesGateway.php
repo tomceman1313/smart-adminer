@@ -107,7 +107,7 @@ class ArticlesGateway
         return $data;
     }
 
-    public function create(array $data, int $userId): bool
+    public function create(array $data, int $userId)
     {
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/articles");
 
@@ -138,8 +138,6 @@ class ArticlesGateway
         foreach ($images as $image) {
             $this->createImage(uniqid(), $image, $last_id, "under");
         }
-
-        return true;
     }
 
     public function update(array $data)
@@ -179,7 +177,7 @@ class ArticlesGateway
 
         $deletedImages = $data["deletedImages"];
         foreach ($deletedImages as $image) {
-            $this->deleteImage($image);
+            $this->deleteInnerImage($image);
         }
 
         $images = $data["images"];
@@ -188,7 +186,7 @@ class ArticlesGateway
         }
     }
 
-    public function delete(string $id): int
+    public function delete(string $id)
     {
         $article = $this->get($id);
         $imageName = $article["image"];
@@ -223,23 +221,6 @@ class ArticlesGateway
                 unlink("{$this->path}/images/articles/{$row['name']}");
             }
         }
-
-
-        return true;
-    }
-
-    public function getCategory(string $id): array
-    {
-
-        $sql = "SELECT * FROM articles_categories WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $id
-        ]);
-
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data;
     }
 
     public function getCategories(): array
@@ -304,7 +285,7 @@ class ArticlesGateway
 
     private function createImage($image_name, $base64, $article_id, $type)
     {
-        $image_name = $this->utils->createImage($base64, 1200, "/images/articles");
+        $image_name = $this->utils->createImage($base64, 1200, "/images/articles", $image_name);
 
         $sql = "INSERT INTO article_images (name, type, article_id) VALUES (:name, :type, :article_id)";
         $stmt = $this->conn->prepare($sql);
@@ -316,7 +297,30 @@ class ArticlesGateway
         ]);
     }
 
-    public function deleteImage($image_name)
+    public function deleteImage($image_id)
+    {
+        $sql = "SELECT name FROM article_images WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'id' => $image_id
+        ]);
+
+        $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        $sql = "DELETE FROM article_images WHERE name = :name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'name' => $image["name"]
+        ]);
+
+        if (file_exists("{$this->path}/images/articles/{$image["name"]}")) {
+            unlink("{$this->path}/images/articles/{$image["name"]}");
+        }
+    }
+
+    private function deleteInnerImage($image_name)
     {
         $sql = "DELETE FROM article_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);

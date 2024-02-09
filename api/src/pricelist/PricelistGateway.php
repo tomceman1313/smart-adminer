@@ -1,6 +1,6 @@
 <?php
 
-class PricelistGateway
+class PriceListGateway
 {
     public function __construct(Database $database)
     {

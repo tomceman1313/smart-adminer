@@ -104,11 +104,11 @@ export function isActive(start, end, css) {
  * @returns Ikona
  */
 
-export function isPermitted(permission) {
+export function isPermitted(permission, onClick) {
 	if (permission === 1) {
-		return <FontAwesomeIcon icon={faCircleCheck} style={{ color: "var(--green)" }} title="Povoleno" />;
+		return <FontAwesomeIcon icon={faCircleCheck} onClick={onClick ? onClick : () => {}} style={{ color: "var(--green)" }} title="Povoleno" />;
 	} else {
-		return <FontAwesomeIcon icon={faCircleXmark} style={{ color: "var(--red)" }} title="Zakázáno" />;
+		return <FontAwesomeIcon icon={faCircleXmark} onClick={onClick ? onClick : () => {}} style={{ color: "var(--red)" }} title="Zakázáno" />;
 	}
 }
 

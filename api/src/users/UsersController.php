@@ -2,26 +2,35 @@
 
 class UsersController
 {
-    public function __construct(UsersGateway $gateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $gateway;
+        $this->gateway = new UsersGateway($database);
+        $this->utils = new Utils($database);
     }
 
 
-    public function processRequest(string $action, ?string $id, $authAction): void
+    public function processRequest($authAction): void
     {
-        $this->controller($action, $id, $authAction);
+        $this->controller($authAction);
     }
 
-    private function controller(string $action, ?string $id, $authAction): void
+    private function controller($authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'checkNameAvailability':
-                $result = $this->gateway->checkNameAvailability($data["name"]);
-                http_response_code(200);
+        switch ($method | $uri) {
+            case ($method == "GET" && preg_match('/\/api\/users\/name\/\?name=\w*/', $uri) && isset($_GET["name"])):
+                $name = $_GET["name"];
+                $result = $this->gateway->checkNameAvailability($name);
                 echo json_encode($result);
+                return;
+
+            case ($method == "GET" && $uri == "/api/users/roles"):
+                $data = $this->gateway->getRoles();
+                echo json_encode($data);
                 return;
         }
 
@@ -33,85 +42,103 @@ class UsersController
             return;
         }
 
-        switch ($action) {
-            case 'getall':
+        //API endpoints for all authenticated users
+        switch ($method | $uri) {
+            case ($method == "GET" && preg_match('/^\/api\/users\/permissions\/[0-9]*$/', $uri)):
+                $result = $this->gateway->getRolePermissions($url_parts[4]);
+                echo json_encode([
+                    "data" => $result,
+                    "token" => $authAction["token"]
+                ]);
+                return;
+        }
+
+        $isPermitted = $this->utils->checkUserAuthorization($method, $authAction["permissions"]);
+        // API endpoints only for owner or permitted role
+        if ((count($url_parts) > 3 ? $authAction["id"] == $url_parts[3] : false) || $isPermitted) {
+            switch ($method | $uri) {
+                case ($method == "GET" && preg_match('/^\/api\/users\/[0-9]*$/', $uri)):
+                    $result = $this->gateway->get($url_parts[3]);
+                    echo json_encode([
+                        "data" => $result,
+                        "token" => $authAction["token"]
+                    ]);
+                    return;
+
+                case ($method == "PUT" && preg_match('/^\/api\/users\/[0-9]*$/', $uri)):
+                    $this->gateway->update($data["data"]);
+                    echo json_encode([
+                        "message" => "User edited",
+                        "token" => $authAction["token"]
+                    ]);
+                    return;
+
+                case ($method == "PUT" && preg_match('/^\/api\/users\/[0-9]*\/password$/', $uri)):
+                    $this->gateway->changePassword($data["data"]);
+                    echo json_encode([
+                        "message" => "Password change",
+                        "token" => $authAction["token"]
+                    ]);
+                    return;
+            }
+        }
+
+
+
+        if (!$isPermitted) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/users"):
                 $result = $this->gateway->getAll();
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Data provided",
                     "data" => $result,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'get':
-                $result = $this->gateway->get($id);
-                http_response_code(200);
-                echo json_encode([
-                    "data" => $result,
-                    "token" => $authAction
-                ]);
-                break;
-
-            case 'create':
-                $id = $this->gateway->create($data["data"]);
+            case ($method == "POST" && $uri == "/api/users"):
+                $this->gateway->create($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "User created",
-                    "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'update':
-                $this->gateway->update($data["data"]);
-
-                http_response_code(200);
-                echo json_encode([
-                    "message" => "User edited",
-                    "token" => $authAction
-                ]);
-                break;
-
-            case 'delete':
-                $id = $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/users\/[0-9]*$/', $uri)):
+                $id = $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "User deleted",
                     "data" => $id,
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'getroles':
-                $response = $this->gateway->getRoles();
-                http_response_code(200);
+            case ($method == "GET" && $uri == "/api/users/permissions"):
+                $result = $this->gateway->getPermissions();
                 echo json_encode([
-                    "message" => "Data provided",
-                    "data" => $response,
-                    "token" => $authAction
+                    "data" => $result,
+                    "token" => $authAction["token"]
                 ]);
-                break;
+                return;
 
-            case 'update_role':
-                $response = $this->gateway->updateRole($data["data"]);
-                http_response_code(200);
+            case ($method == "PUT" && preg_match('/\/api\/users\/permissions\/[0-9]*\/\?method=\w*/', $uri) && isset($_GET["method"])):
+                $this->gateway->updatePermission($url_parts[4], $_GET["method"]);
                 echo json_encode([
-                    "message" => "Role updated",
-                    "data" => $response,
-                    "token" => $authAction
+                    "message" => "Permission updated",
+                    "token" => $authAction["token"]
                 ]);
-                break;
+                return;
 
-            case 'change_password':
-                $response = $this->gateway->changePassword($data["data"]);
-                http_response_code(200);
-                echo json_encode([
-                    "message" => "Password change",
-                    "success" => $response,
-                    "token" => $authAction
-                ]);
-                break;
+            default:
+                echo "Wrong URI";
         }
     }
 }

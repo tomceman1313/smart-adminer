@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
-import { deleteImage } from "../../modules/ApiProducts";
+import { deleteImage } from "../../modules/ApiFunctions";
 import { useParams } from "react-router-dom";
 import ProductImage from "./inner-components/ProductImage";
 
@@ -50,7 +50,7 @@ export default function Images({ images, auth, setMessage, setImages, register }
 	}
 
 	const remove = (el) => {
-		deleteImage(el.name, id, auth, setMessage);
+		deleteImage("products", id, el.id, auth, setMessage);
 
 		const index = images.indexOf(el);
 		if (images.length === 1) {

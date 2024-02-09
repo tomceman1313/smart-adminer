@@ -19,9 +19,9 @@ const PAGES_BANNER_INFO = [
 		description: "Přehled a správa profilů",
 	},
 	{
-		path: "/register",
-		title: "Registrace a role",
-		description: "Tvorba nových profilů, přehled a správa práv rolí",
+		path: "/roles",
+		title: "Role a práva",
+		description: "Přehled a správa práv rolí",
 	},
 	{
 		path: "/employees",

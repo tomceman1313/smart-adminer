@@ -30,7 +30,6 @@ class EmployeesGateway
     {
         $sql = "SELECT * FROM employees WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute([
             'id' => $id
         ]);
@@ -68,7 +67,7 @@ class EmployeesGateway
         $this->addEmployeeDepartments($last_id, $data["departments"]);
     }
 
-    public function update(array $data): bool
+    public function update(array $data)
     {
         $sql = "UPDATE employees SET fname = :fname, lname = :lname, degree_before = :degree_before,
                 degree_after = :degree_after, position = :position, phone = :phone, phone_secondary = :phone_secondary, email = :email, notes = :notes, active = :active";
@@ -104,16 +103,11 @@ class EmployeesGateway
         }
 
         $sql = $sql . " WHERE id = :id";
-
         $stmt = $this->conn->prepare($sql);
-
         $stmt->execute($sql_values);
 
         $this->addEmployeeDepartments($data["id"], $data["departments"]);
-
         $this->deleteEmployeeDepartments($data["id"], $data["departments_deleted"]);
-
-        return true;
     }
 
     public function delete($id)
@@ -179,8 +173,6 @@ class EmployeesGateway
             'name' => $data["name"],
             'id' => $id
         ]);
-
-        return true;
     }
 
     public function deleteDepartment($id)
@@ -198,8 +190,6 @@ class EmployeesGateway
         $stmt->execute([
             'department_id' => $id,
         ]);
-
-        return true;
     }
 
     private function getEmployeeDepartments($id, $departments): array

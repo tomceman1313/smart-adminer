@@ -2,68 +2,61 @@
 
 class OrdersController
 {
-    public function __construct(OrdersGateway $ordersGateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $ordersGateway;
+        $this->gateway = new OrdersGateway($database);
+        $this->utils = new Utils($database);
     }
 
-    public function processRequest(string $action, ?string $id, $authAction): void
+    public function processRequest(?string $page, $authAction): void
     {
-        $this->controller($action, $id, $authAction);
+        $this->controller($page, $authAction);
     }
 
-    private function controller(string $action, ?string $id, $authAction): void
+    private function controller(?string $page, $authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'getall':
+        switch ($method | $uri) {
+            case ($method == "GET" && $uri == "/api/orders"):
                 $data = $this->gateway->getAll();
-                http_response_code(200);
                 echo json_encode($data);
                 return;
 
-            case 'get':
-                $data = $this->gateway->get($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/^\/api\/orders\/[0-9]+$/', $uri)):
+                $data = $this->gateway->get($url_parts[3]);
                 echo json_encode($data);
                 return;
 
-            case 'getStatusCodes':
+            case ($method == "GET" && $uri == "/api/orders/codes"):
                 $data = $this->gateway->getStatusCodes();
-                http_response_code(200);
                 echo json_encode($data);
                 return;
 
-            case 'getShippingTypes':
+            case ($method == "GET" && $uri == "/api/orders/shipping"):
                 $data = $this->gateway->getShippingTypes();
-                http_response_code(200);
                 echo json_encode($data);
                 return;
 
-            case 'filterOrders':
+            case ($method == "POST" && $uri == "/api/orders/filter"):
                 $response = $this->gateway->filterOrders($data);
-                http_response_code(200);
                 echo json_encode($response);
                 return;
 
-            case 'findById':
-                $data = $this->gateway->findById($id);
-                http_response_code(200);
+            case ($method == "GET" && preg_match('/^\/api\/orders\/filter\/[0-9]+$/', $uri)):
+                $data = $this->gateway->findById($url_parts[4]);
                 echo json_encode($data);
                 return;
 
-            case 'create':
+            case ($method == "POST" && $uri == "/api/orders"):
                 $id = $this->gateway->create($data);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Created",
                     "id" => $id
                 ]);
-                return;
-            case 'test':
-                $id = $this->gateway->test();
-                http_response_code(200);
                 return;
         }
 
@@ -75,33 +68,41 @@ class OrdersController
             return;
         }
 
-        switch ($action) {
-            case 'update':
+        if (!$this->utils->checkUserAuthorization($method, $authAction["permissions"])) {
+            http_response_code(403);
+            echo json_encode([
+                "message" => "User is not permitted to this action"
+            ]);
+            return;
+        }
+
+        switch ($method | $uri) {
+            case ($method == "PUT" && preg_match('/^\/api\/orders\/[0-9]+$/', $uri)):
                 $this->gateway->update($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'updateStatus':
+            case ($method == "PUT" && preg_match('/^\/api\/orders\/status\/[0-9]+$/', $uri)):
                 $this->gateway->updateStatus($data["data"]);
-                http_response_code(200);
                 echo json_encode([
                     "message" => "Updated",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
 
-            case 'delete':
-                $this->gateway->delete($id);
-                http_response_code(200);
+            case ($method == "DELETE" && preg_match('/^\/api\/orders\/[0-9]+$/', $uri)):
+                $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Deleted",
-                    "token" => $authAction
+                    "token" => $authAction["token"]
                 ]);
                 break;
+
+            default:
+                echo "Wrong URI";
         }
     }
 }

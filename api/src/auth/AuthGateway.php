@@ -22,7 +22,7 @@ class AuthGateway
      * * Sign in user and set server cookie refresh token if given credentials were valid
      * @return array(Token, username, privilege, id) | false
      */
-    public function auth(array $data)
+    public function login(array $data)
     {
         $stmt = $this->conn->prepare('SELECT * FROM users WHERE username = :username LIMIT 1');
         $stmt->execute([
@@ -40,14 +40,14 @@ class AuthGateway
                 'exp' => $exp,
                 'user_id' => $user["id"],
                 'user' => $user["username"],
-                'privilege' => $user["privilege"]
+                'role_id' => $user["role_id"]
             );
             $jwt = JWT::encode($payload, $this->key, 'HS512');
             // $decoded = JWT::decode($jwt, new Key($this->key, 'HS512'));
 
-            $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 60, 'user_id' => $user["id"], 'user' => $user["username"], 'privilege' => $user["privilege"]), $this->key, 'HS512');
+            $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 60, 'user_id' => $user["id"], 'user' => $user["username"], 'role_id' => $user["role_id"]), $this->key, 'HS512');
             setcookie("refresh_token", $jwt_refresh, time() + 3600, '/', "", false, true);
-            return array("token" => $jwt, "username" => $user["username"], "role" => $user["privilege"], "id" => $user["id"]);
+            return array("token" => $jwt, "username" => $user["username"], "role" => $user["role_id"], "id" => $user["id"]);
         }
 
         return false;
@@ -63,7 +63,7 @@ class AuthGateway
             return false;
         }
         $refresh_token = $_COOKIE["refresh_token"];
-        $currentTime = time();
+        $current_time = time();
         try {
             $decoded = JWT::decode($refresh_token, new Key($this->key, 'HS512'));
         } catch (Exception $e) {
@@ -73,38 +73,66 @@ class AuthGateway
         $payload = array(
             'iss' => 'http://localhost:4300/api',
             'aud' => 'http://localhost:3000/',
-            'iat' => $currentTime,
-            'exp' => $currentTime + 60 * 15,
+            'iat' => $current_time,
+            'exp' => $current_time + 60 * 15,
             'user_id' => $decoded->user_id,
             'user' => $decoded->user,
-            'privilege' => $decoded->privilege
+            'role_id' => $decoded->role_id
         );
 
-        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "username" => $decoded->user, "role" => $decoded->privilege, "id" => $decoded->user_id);
+        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "username" => $decoded->user, "role" => $decoded->role_id, "id" => $decoded->user_id);
     }
 
     /**
      * * Checks if user has rights for requested action
      * @return string token | false
      */
-    public function authAction(string $token, array $allowedRoles)
+    public function authAction(string $token, $class)
     {
-        $accessToken = $token;
         try {
-            $decoded = JWT::decode($accessToken, new Key($this->key, 'HS512'));
-            if (in_array($decoded->privilege, $allowedRoles)) {
-                return $accessToken;
-            }
+            $decoded = JWT::decode($token, new Key($this->key, 'HS512'));
+            $permissions = $this->getRolePermission($decoded->role_id, $class);
+            return [
+                'id' => $decoded->user_id,
+                'token' => $token,
+                'permissions' => $permissions
+            ];
         } catch (Exception $e) {
             $response = $this->refresh();
             if (!$response) {
                 return false;
             }
-            $accessToken = $response["token"];
-            if (in_array($response["role"], $allowedRoles)) {
-                return $accessToken;
-            }
+            $permissions = $this->getRolePermission($response["role"], $class);
+            return [
+                'token' => $response["token"],
+                'permissions' => $permissions
+            ];
         }
         return false;
+    }
+
+    /**
+     * * Gets permissions of given role within called class
+     */
+    private function getRolePermission($role_id, $class): array
+    {
+        $sql = "SELECT * FROM role_permission WHERE role_id = :role_id AND class = :class LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'role_id' => $role_id,
+            'class' => $class
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function decodeToken(string $token)
+    {
+        try {
+            $decoded_token = JWT::decode($token, new Key($this->key, 'HS512'));
+            return $decoded_token->user_id;
+        } catch (Exception $e) {
+            return null;
+        }
     }
 }

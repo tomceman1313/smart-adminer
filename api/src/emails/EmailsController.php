@@ -2,22 +2,25 @@
 
 class EmailsController
 {
-    public function __construct(EmailsGateway $ordersGateway)
+    public function __construct(Database $database)
     {
-        $this->gateway = $ordersGateway;
+        $this->gateway = new EmailsGateway($database);
     }
 
-    public function processRequest(string $action): void
+    public function processRequest(): void
     {
-        $this->controller($action);
+        $this->controller();
     }
 
-    private function controller(string $action): void
+    private function controller(): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $url_parts = explode("/", $uri);
 
-        switch ($action) {
-            case 'send':
+        switch ($method | $uri) {
+            case ($method == "POST" && $uri == "/api/emails"):
                 $result = $this->gateway->sendEmail($data);
 
                 if ($result) {
@@ -29,7 +32,7 @@ class EmailsController
                 }
                 return;
 
-            case 'subscribe':
+            case ($method == "POST" && $uri == "/api/emails/subscription"):
                 $result = $this->gateway->subscribe($data["email"]);
 
                 if ($result) {

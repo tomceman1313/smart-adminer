@@ -5,7 +5,7 @@ class ManufacturerGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
-        include(dirname(__FILE__) . '/../../publicFolderPath.php');
+        include(dirname(__FILE__) . '/../publicFolderPath.php');
         $this->path = $path;
     }
 
@@ -35,18 +35,16 @@ class ManufacturerGateway
         return $data;
     }
 
-    public function create(array $data): bool
+    public function create(array $data)
     {
         $sql = "INSERT INTO product_manufacturers (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'name' => $data["name"]
         ]);
-
-        return true;
     }
 
-    public function update(array $data): bool
+    public function update(array $data)
     {
         $sql = "UPDATE product_manufacturers SET name = :name WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -54,11 +52,9 @@ class ManufacturerGateway
             'name' => $data["name"],
             'id' => $data["id"]
         ]);
-
-        return true;
     }
 
-    public function delete(string $id): int
+    public function delete(string $id)
     {
         $sql = "DELETE FROM product_manufacturers WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -76,8 +72,5 @@ class ManufacturerGateway
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
             $this->delete($row["id"]);
         }
-
-
-        return true;
     }
 }

@@ -7,9 +7,8 @@ import InputBox from "../../Components/basic/InputBox";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
-import { create, edit, remove, checkNameAvailability } from "../../modules/ApiFunctions";
+import { create, edit, remove, checkNameAvailability, get } from "../../modules/ApiFunctions";
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
-import { getProduct } from "../../modules/ApiProducts";
 import { convertBase64 } from "../../modules/BasicFunctions";
 import { Helmet } from "react-helmet-async";
 import cssBasic from "../styles/Basic.module.css";
@@ -58,7 +57,7 @@ export default function Product() {
 	}, [location]);
 
 	async function setData() {
-		const productData = await getProduct(id);
+		const productData = await get("products", id);
 		originalProduct.current = productData;
 		setValue("manufacturer_id", productData.manufacturer_id);
 		setValue("name", productData.name);
@@ -117,7 +116,6 @@ export default function Product() {
 			data.id = id;
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
-			console.log(data);
 			await edit("products", data, setMessage, "Produkt upraven", auth);
 			reset();
 			setData();
@@ -208,7 +206,7 @@ export default function Product() {
 					<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
 					{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
 
-					<DetailText detailText={detailText} setDetailText={setDetailText} />
+					{detailText && <DetailText detailText={detailText} setDetailText={setDetailText} />}
 
 					<section className={css.images}>
 						<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />

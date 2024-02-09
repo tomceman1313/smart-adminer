@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet-async";
 import css from "./Pricelist.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
 
-const Pricelist = () => {
+export default function Pricelist() {
 	const [prices, setPrices] = useState(null);
 	const [events, setEvents] = useState([]);
 
@@ -75,6 +75,4 @@ const Pricelist = () => {
 			<PlusButton onClick={() => setShowAddItemCont(true)} />
 		</div>
 	);
-};
-
-export default Pricelist;
+}

@@ -1,7 +1,7 @@
 import { BASE_URL } from "./ApiFunctions";
 
 export async function getImageCategories(id, setPickedCategories) {
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=getImageCategories&id=${id}`, {
+	const response = await fetch(`${BASE_URL}/api/gallery/${id}/categories`, {
 		method: "GET",
 	});
 
@@ -14,10 +14,10 @@ export async function getImageCategories(id, setPickedCategories) {
 export async function multipleCreate(data, auth) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=multipleCreate`, {
+	const response = await fetch(`${BASE_URL}/api/gallery/multiple`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ data: data }),
+		body: JSON.stringify({ ids: data }),
 		credentials: "include",
 	});
 
@@ -34,10 +34,11 @@ export async function multipleCreate(data, auth) {
 export async function multipleDelete(ids, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/?class=gallery&action=multipleDelete`, {
-		method: "POST",
+	const encodedIds = encodeURIComponent(JSON.stringify(ids));
+
+	const response = await fetch(`${BASE_URL}/api/gallery/multiple/${encodedIds}`, {
+		method: "DELETE",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ data: ids }),
 		credentials: "include",
 	});
 

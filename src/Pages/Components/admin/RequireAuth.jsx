@@ -1,14 +1,13 @@
 import { Outlet } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
 
-const RequireAuth = ({ allowedRoles }) => {
-	const auth = useAuth();
-	// const location = useLocation();
+const RequireAuth = ({ permissions, permissionClass }) => {
+	const permission = permissions.find((per) => per.class === permissionClass);
 
-	//return auth.userInfo?.role?.find((role) => allowedRoles?.inclueds(role)) ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
-	//return allowedRoles.find((role) => role === auth?.userInfo?.role) ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
+	if (permission.get_permission || permission.post_permission || permission.put_permission || permission.delete_permission) {
+		return <Outlet />;
+	}
 
-	return allowedRoles.find((role) => role === auth?.userInfo?.role) ? <Outlet /> : <p>Pro přístup nemáte práva</p>;
+	return <p>Pro přístup nemáte práva</p>;
 };
 
 export default RequireAuth;

@@ -1,11 +1,11 @@
 <?php
 
 $DIRECTORIES = array(
-    "Auth", "Users", "Pricelist", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages"
+    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages"
 );
 
 $FILES = array(
-    "Database", "ErrorHandler", "Utils", "publicFolderPath", "products/ManufacturerGateway", "products/CategoryGateway.php"
+    "Database", "ErrorHandler", "Utils", "publicFolderPath", "products/ManufacturerGateway", "products/CategoryGateway"
 );
 
 foreach ($DIRECTORIES as $directory) {
@@ -28,7 +28,7 @@ foreach ($FILES as $file) {
 header("Access-Control-Allow-Origin: http://localhost:3000");
 
 //Production 
-//header("Access-Control-Allow-Origin: http://localhost");
+//header("Access-Control-Allow-Origin: https://domov-sulicka.cz");
 header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
@@ -47,21 +47,14 @@ $database = new Database("localhost", "admin_console", "penziontop4fancz", "hesl
 
 //production
 //$database = new Database("localhost", "u351850998_cms", "u351850998_tomas", "Tomikz13");
-$class = null;
-$action = null;
+//$database = new Database("localhost", "u139635604_cms", "u139635604_admin", "Domov_sulicka2024");
+$URI = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+$URL_PARTS = explode("/", $URI);
+$REQUEST_METHOD = $_SERVER['REQUEST_METHOD'];
+
 $id = null;
 $page = null;
-
-$gateway = null;
 $controller = null;
-
-if (isset($_GET["class"])) {
-    $class = $_GET["class"];
-}
-
-if (isset($_GET["action"])) {
-    $action = $_GET["action"];
-}
 
 if (isset($_GET["id"])) {
     $id = $_GET["id"];
@@ -76,86 +69,68 @@ $auth = new AuthGateway($database);
 if (isset($_SERVER["HTTP_AUTHORIZATION"])) {
     list($type, $token) = explode(" ", $_SERVER["HTTP_AUTHORIZATION"], 2);
     if (strcasecmp($type, "Bearer") == 0) {
-        $authAction = $auth->authAction($token, array(3));
+        $authAction = $auth->authAction($token, $URL_PARTS[2]);
     }
 }
 
-
-
-switch ($class) {
+switch ($URL_PARTS[2]) {
     case 'auth':
         $controller = new AuthController($auth);
-        $controller->processRequest($action);
+        $controller->processRequest();
         break;
     case 'products':
-        $gateway = new ProductsGateway($database);
-        $manufacturer = new ManufacturerGateway($database);
-        $category = new CategoryGateway($database);
-        $controller = new ProductsController($gateway, $manufacturer, $category);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new ProductsController($database);
+        $controller->processRequest($authAction);
         break;
     case 'users':
-        $gateway = new UsersGateway($database);
-        $controller = new UsersController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new UsersController($database);
+        $controller->processRequest($authAction);
         break;
     case 'pricelist':
-        $gateway = new PricelistGateway($database);
-        $controller = new PricelistController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new PriceListController($database);
+        $controller->processRequest($authAction);
         break;
     case 'notifications':
-        $gateway = new NotificationsGateway($database);
-        $controller = new NotificationsController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new NotificationsController($database);
+        $controller->processRequest($authAction);
         break;
-
     case 'articles':
-        $gateway = new ArticlesGateway($database);
-        $controller = new ArticlesController($gateway);
-        $controller->processRequest($action, $id, $page, $authAction);
+        $controller = new ArticlesController($database);
+        $controller->processRequest($page, $authAction);
         break;
     case 'gallery':
-        $gateway = new GalleryGateway($database);
-        $controller = new GalleryController($gateway);
-        $controller->processRequest($action, $id, $authAction, $page);
+        $controller = new GalleryController($database);
+        $controller->processRequest($page, $authAction);
         break;
 
     case 'documents':
-        $gateway = new DocumentsGateway($database);
-        $controller = new DocumentsController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new DocumentsController($database);
+        $controller->processRequest($page, $authAction);
         break;
     case 'events':
-        $gateway = new EventsGateway($database);
-        $controller = new EventsController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new EventsController($database);
+        $controller->processRequest($page, $authAction);
         break;
 
     case 'vacancies':
-        $gateway = new VacanciesGateway($database);
-        $controller = new VacanciesController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new VacanciesController($database);
+        $controller->processRequest($page, $authAction);
         break;
     case 'employees':
-        $gateway = new EmployeesGateway($database);
-        $controller = new EmployeesController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new EmployeesController($database);
+        $controller->processRequest($page, $authAction);
         break;
     case 'orders':
-        $gateway = new OrdersGateway($database);
-        $controller = new OrdersController($gateway);
-        $controller->processRequest($action, $id, $authAction);
+        $controller = new OrdersController($database);
+        $controller->processRequest($page, $authAction);
         break;
     case 'emails':
-        $gateway = new EmailsGateway($database);
-        $controller = new EmailsController($gateway);
-        $controller->processRequest($action);
+        $controller = new EmailsController($database);
+        $controller->processRequest();
         break;
     case 'pages':
-        $gateway = new PagesGateway($database);
-        $controller = new PagesController($gateway);
-        $controller->processRequest($action, $authAction);
+        $controller = new PagesController($database);
+        $controller->processRequest($URL_PARTS, $authAction);
         break;
     default:
         http_response_code(404);
