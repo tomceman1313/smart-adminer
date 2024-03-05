@@ -36,31 +36,10 @@ class ArticlesGateway
         return $data;
     }
 
-    public function getByCategory(string $category_id): array
+    function getAll(): array
     {
-        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id WHERE articles.category = :id ORDER BY articles.id DESC";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'id' => $category_id
-        ]);
-
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-
-        return $data;
-    }
-
-    function getByCategoryName(string $category_name): array
-    {
-        $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id WHERE articles_categories.name = :category_name";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
-            'category_name' => $category_name
-        ]);
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id ORDER BY articles.date DESC";
+        $stmt = $this->conn->query($sql);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -94,10 +73,55 @@ class ArticlesGateway
         return array_slice($data, 0, 10);
     }
 
-    function getAll(): array
+    public function getByCategory(string $category_id): array
     {
-        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category = articles_categories.id ORDER BY articles.date DESC";
-        $stmt = $this->conn->query($sql);
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles.category_id = :id ORDER BY articles.id DESC";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'id' => $category_id
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    function getByCategoryName(string $category_name): array
+    {
+        $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles_categories.name = :category_name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    public function getByTitle(string $title, int $category_id = NULL): array
+    {
+        $sql_values = [
+            'title' => "%" . $title . "%"
+        ];
+
+        if ($category_id) {
+            $sql = "SELECT * FROM articles WHERE category_id = :category_id AND title LIKE :title";
+            $sql_values["category_id"] = $category_id;
+        } else {
+            $sql = "SELECT * FROM articles WHERE title LIKE :title";
+        }
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute($sql_values);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -111,7 +135,7 @@ class ArticlesGateway
     {
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/articles");
 
-        $sql = "INSERT INTO articles (title, description, image, body, date, category, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category, :owner_id, :active)";
+        $sql = "INSERT INTO articles (title, description, image, body, date, category_id, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category_id, :owner_id, :active)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -120,7 +144,7 @@ class ArticlesGateway
             'image' => $image_name,
             'body' => $data["body"],
             'date' => $data["date"],
-            'category' => $data["category"],
+            'category_id' => $data["category_id"],
             'owner_id' => $userId,
             'active' => $data["active"]
         ]);
@@ -142,13 +166,13 @@ class ArticlesGateway
 
     public function update(array $data)
     {
-        $sql = "UPDATE articles SET title = :title, description = :description, body = :body, date = :date, category = :category, owner_id = :owner_id, active = :active";
+        $sql = "UPDATE articles SET title = :title, description = :description, body = :body, date = :date, category_id = :category_id, owner_id = :owner_id, active = :active";
         $sql_values = [
             'title' => $data["title"],
             'description' => $data["description"],
             'body' => $data["body"],
             'date' => $data["date"],
-            'category' => $data["category"],
+            'category_id' => $data["category_id"],
             'owner_id' => $data["owner_id"],
             'active' => $data["active"],
             'id' => $data["id"]

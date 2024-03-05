@@ -1,7 +1,7 @@
 <?php
 
 $DIRECTORIES = array(
-    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages"
+    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images"
 );
 
 $FILES = array(
@@ -130,7 +130,11 @@ switch ($URL_PARTS[2]) {
         break;
     case 'pages':
         $controller = new PagesController($database);
-        $controller->processRequest($URL_PARTS, $authAction);
+        $controller->processRequest($authAction);
+        break;
+    case 'images':
+        $controller = new ImagesController($database);
+        $controller->processRequest($authAction);
         break;
     default:
         http_response_code(404);

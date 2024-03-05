@@ -1,0 +1,78 @@
+.filter {
+	width: calc(100% - 50px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 25px;
+	background-color: var(--main);
+}
+
+.filter h3 {
+	width: 25%;
+	color: white;
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.filter span {
+	display: block;
+	color: var(--main-dark);
+	font-size: 1rem;
+}
+
+.controls {
+	width: 25%;
+	display: flex;
+	justify-content: right;
+	align-items: center;
+}
+
+.filter button {
+	width: 35px;
+	height: 35px;
+	padding: 0;
+}
+
+@media (max-width: 900px) {
+	.filter h3 {
+		font-size: 1rem;
+	}
+
+	.filter span {
+		font-size: 0.8rem;
+	}
+
+	.filter button {
+		padding: 3px 10px;
+		font-size: 0.7rem;
+	}
+
+	.controls {
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 600px) {
+	.filter {
+		width: calc(100% - 30px);
+		flex-wrap: wrap;
+		justify-content: center;
+		row-gap: 15px;
+		padding: 15px;
+	}
+
+	.filter h3 {
+		text-align: center;
+		width: 100%;
+	}
+
+	.filter button {
+		padding: 3px 10px;
+		font-size: 0.7rem;
+	}
+
+	.controls {
+		justify-content: center;
+		width: 100%;
+	}
+}

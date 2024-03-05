@@ -15,6 +15,7 @@ import { logOut } from "../../modules/ApiAuth";
 
 import { getAllWithAuth } from "../../modules/ApiFunctions";
 import css from "./Dashboard.module.css";
+import ImageEditor from "../../Components/common/image-editor/ImageEditor";
 
 export default function Dashboard() {
 	const auth = useAuth();
@@ -46,7 +47,6 @@ export default function Dashboard() {
 			}
 			accessRights[permission.class] = accessGranted;
 		});
-
 		return accessRights;
 	}
 
@@ -61,7 +61,7 @@ export default function Dashboard() {
 					{width > 1600 ? (
 						<DesktopMenu permissions={permissionsToPagesAccessRights()} logOut={() => logOut(auth)} />
 					) : (
-						<MobileMenu logOut={() => logOut(auth)} />
+						<MobileMenu permissions={permissionsToPagesAccessRights()} logOut={() => logOut(auth)} />
 					)}
 
 					<Banner />
@@ -76,6 +76,7 @@ export default function Dashboard() {
 
 						<Alert />
 						<Message />
+						<ImageEditor />
 					</div>
 				</>
 			)}

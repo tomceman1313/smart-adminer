@@ -26,9 +26,22 @@ class DocumentsController
                 echo json_encode($result);
                 return;
 
-            case ($method == "GET" && preg_match('/\/api\/documents\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
+            case ($method == "GET" && preg_match('/\/api\/documents\/\?category=[0-9]*+/', $uri) && isset($_GET["category"])):
                 $category_id = $_GET["category"];
                 $result = $this->gateway->getByCategory($category_id);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/documents\/\?name=[\w%]+$/', $uri) && isset($_GET["name"])):
+                $document_name = $_GET["name"];
+                $result = $this->gateway->getByName($document_name);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/documents\/\?name=[\w%]+&categoryId=[\w%]+$/', $uri) && isset($_GET["name"]) && isset($_GET["categoryId"])):
+                $document_name = $_GET["name"];
+                $category_id = $_GET["categoryId"];
+                $result = $this->gateway->getByName($document_name, $category_id);
                 echo json_encode($result);
                 return;
 
@@ -83,11 +96,18 @@ class DocumentsController
                 ]);
                 break;
 
+            case ($method == "PUT" && $uri == "/api/documents/order"):
+                $result = $this->gateway->updateOrder($data["data"]);
+                echo json_encode([
+                    "message" => "Updated",
+                    "token" => $authAction["token"]
+                ]);
+                break;
+
             case ($method == "DELETE" && preg_match('/^\/api\/documents\/[0-9]*$/', $uri)):
-                $id = $this->gateway->delete($url_parts[3]);
+                $this->gateway->delete($url_parts[3]);
                 echo json_encode([
                     "message" => "Item deleted",
-                    "data" => $id,
                     "token" => $authAction["token"]
                 ]);
                 break;

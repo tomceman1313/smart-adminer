@@ -23,8 +23,16 @@ export async function get(apiClass, id) {
 	return data;
 }
 
-export async function getByName(apiClass, name) {
-	const response = await fetch(`${BASE_URL}/api/${apiClass}/?name=${name}`, {
+/**
+ *
+ * @param {string} apiClass
+ * @param {string} name
+ * @param {string} category - optional for getting only records of given category
+ * @returns object[]
+ */
+export async function getByName(apiClass, name, categoryId) {
+	const categoryParam = `&categoryId=${categoryId}`;
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/?name=${name}${categoryId ? categoryParam : ""}`, {
 		method: "GET",
 	});
 
@@ -112,6 +120,28 @@ export async function remove(apiClass, id, setMessage, positiveText, auth) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
 	setMessage({ action: "success", text: positiveText });
+}
+
+export async function updateOrder(apiClass, data, setMessage, positiveText, auth) {
+	const bearer = `Bearer ${auth.userInfo.token}`;
+
+	const response = await fetch(`${BASE_URL}/api/${apiClass}/order`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: data }),
+		credentials: "include",
+	});
+
+	if (response.status === 403) {
+		auth.setUserInfo(null);
+		return null;
+	}
+
+	const rdata = await response.json();
+
+	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
+	setMessage({ action: "success", text: positiveText });
+	return;
 }
 
 export async function deleteImage(apiClass, id, imageId, auth, setMessage) {

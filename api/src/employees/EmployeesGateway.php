@@ -38,6 +38,54 @@ class EmployeesGateway
         return $data;
     }
 
+    public function getByDepartment(string $department_id): array
+    {
+        $sql = "SELECT employees.* FROM employees INNER JOIN employee_department AS dep ON employees.id = dep.employee_id WHERE dep.department_id = :department_id";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'department_id' => $department_id
+        ]);
+
+        $departments = $this->getDepartments();
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    public function getByName(string $name, int $department_id = NULL): array
+    {
+        $sql_values = [
+            'fname' => "%" . $name . "%",
+            'lname' => "%" . $name . "%"
+        ];
+
+        if ($department_id) {
+            $sql = "SELECT employees.* FROM employees INNER JOIN employee_department AS dep ON employees.id = dep.employee_id WHERE dep.department_id = :department_id  AND (lname LIKE :lname OR fname LIKE :fname)";
+            $sql_values["department_id"] = $department_id;
+        } else {
+            $sql = "SELECT * FROM employees WHERE lname LIKE :lname OR fname LIKE :fname";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($sql_values);
+
+        $departments = $this->getDepartments();
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function create(array $data)
     {
         $image_name = "";

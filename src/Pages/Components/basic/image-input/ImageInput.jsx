@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import css from "./ImageInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faEye, faRotate, faCrop } from "@fortawesome/free-solid-svg-icons";
 import { openImage, publicPath } from "../../../modules/BasicFunctions";
+import useImageEditor from "../../../Hooks/useImageEditor";
+import css from "./ImageInput.module.css";
 
-export default function ImageInput({ name, register, path, image, additionalClasses, required = true }) {
+export default function ImageInput({ name, register, path, image, additionalClasses, required = true, title }) {
+	const { setImage } = useImageEditor();
 	const [imageIsSet, setImageIsSet] = useState(image ? true : false);
+
 	let divClassName = `${css.input_box}`;
 	if (additionalClasses) {
 		if (additionalClasses.includes("half")) {
@@ -18,20 +21,22 @@ export default function ImageInput({ name, register, path, image, additionalClas
 	}, [image]);
 
 	return (
-		<div className={divClassName}>
+		<div className={divClassName} title={title}>
 			{imageIsSet ? (
 				<div className={css.image_box}>
-					<button type="button" onClick={() => openImage(`${publicPath}/images/${path}/${image}`)}>
-						Zobrazit obrázek
-					</button>
-					<button type="button" onClick={() => setImageIsSet(false)}>
-						Změnit obrázek
-					</button>
+					<span onClick={() => openImage(`${publicPath}/images/${path}/${image}`)} title="Zobrazit obrázek">
+						<FontAwesomeIcon icon={faEye} />
+					</span>
+					<span onClick={() => setImage(image, `/images/${path}/${image}`)} title="Otevřít editor obrázku">
+						<FontAwesomeIcon icon={faCrop} />
+					</span>
+					<span onClick={() => setImageIsSet(false)} title="Změnit obrázek">
+						<FontAwesomeIcon icon={faRotate} />
+					</span>
 				</div>
 			) : (
 				<input type="file" {...register(name)} accept="image/*" required={required} />
 			)}
-
 			<FontAwesomeIcon className={css.icon} icon={faImage} />
 		</div>
 	);

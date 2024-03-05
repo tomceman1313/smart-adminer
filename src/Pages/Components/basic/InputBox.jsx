@@ -1,7 +1,7 @@
 import cssBasic from "../../admin/styles/Basic.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, accept, additionalClasses, defaultValue, readOnly }) => {
+const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, accept, additionalClasses, defaultValue, readOnly, title }) => {
 	let divClassName = `${cssBasic.input_box}`;
 	if (white) {
 		divClassName = `${cssBasic.input_box} ${cssBasic.white_color}`;
@@ -14,7 +14,7 @@ const InputBox = ({ placeholder, register, type, name, icon, white, isRequired, 
 	}
 
 	return (
-		<div className={divClassName}>
+		<div className={divClassName} title={title ? title : null}>
 			<input
 				type={type ? type : "text"}
 				defaultValue={defaultValue}

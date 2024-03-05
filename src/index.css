@@ -66,6 +66,85 @@ select {
 	border: none;
 }
 
+input[type="submit"],
+button {
+	background-color: var(--green);
+	font-size: 14px;
+	font-weight: 400;
+	text-transform: uppercase;
+	padding: 10px 15px;
+	border-radius: 8px;
+	margin: 5px;
+	margin-left: 0;
+	/* margin-top: 20px; */
+	color: white;
+	transition: all 0.5s;
+	border: solid 1px white;
+	text-decoration: underline var(--green);
+}
+
+input[type="submit"]:hover,
+button:hover {
+	background-color: var(--green-dark);
+	color: white;
+	text-decoration: underline white;
+}
+
+form button {
+	margin-top: 0;
+}
+
+h2 {
+	width: 100%;
+	font-size: 35px;
+	margin: 0;
+	margin-bottom: 40px;
+	color: var(--main-dark);
+}
+
+section {
+	position: relative;
+	width: calc(100% - 110px);
+	border-radius: 8px;
+	padding: 55px;
+	background: white;
+	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
+	color: #333;
+	margin-bottom: 15px;
+	overflow: hidden;
+}
+
+/* width */
+html::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+html::-webkit-scrollbar-track {
+	background: var(--gray);
+}
+
+/* Handle */
+html::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+html::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+.half-section {
+	width: calc(50% - 120px);
+}
+
+.no-section {
+	width: 100%;
+	background-color: transparent;
+	box-shadow: none;
+	padding: 0;
+}
+
 .red_button {
 	background-color: var(--red);
 	text-decoration: underline var(--red);
@@ -112,7 +191,31 @@ select {
 	border-radius: 12px;
 }
 
+@media (max-width: 1200px) {
+	.half-section {
+		width: calc(100% - 110px);
+	}
+}
+
+@media (max-width: 900px) {
+	h2 {
+		font-size: 28px;
+	}
+
+	section {
+		padding: 30px;
+	}
+
+	.half-section {
+		width: calc(100% - 60px);
+	}
+}
+
 @media (max-width: 600px) {
+	section {
+		padding: 20px;
+	}
+
 	.plus_button {
 		padding: 6px 12px;
 		bottom: 30px;
@@ -121,12 +224,7 @@ select {
 	}
 }
 
-.no-section {
-	background-color: transparent;
-	box-shadow: none;
-	padding: 0;
-}
-
+/*----------------------------------- SPLIDE*/
 .splide__arrow--prev {
 	left: -35px !important;
 	margin: 0;

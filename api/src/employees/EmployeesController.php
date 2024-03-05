@@ -30,6 +30,25 @@ class EmployeesController
                 echo json_encode($result);
                 return;
 
+            case ($method == "GET" && preg_match('/\/api\/employees\/\?category=[0-9]*+/', $uri) && isset($_GET["category"])):
+                $department_id = $_GET["category"];
+                $result = $this->gateway->getByDepartment($department_id);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/employees\/\?name=[\w%]+$/', $uri) && isset($_GET["name"])):
+                $document_name = $_GET["name"];
+                $result = $this->gateway->getByName($document_name);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/employees\/\?name=[\w%]+&categoryId=[\w%]+$/', $uri) && isset($_GET["name"]) && isset($_GET["categoryId"])):
+                $document_name = $_GET["name"];
+                $category_id = $_GET["categoryId"];
+                $result = $this->gateway->getByName($document_name, $category_id);
+                echo json_encode($result);
+                return;
+
             case ($method == "GET" && $uri == "/api/employees/departments"):
                 $result = $this->gateway->getDepartments();
                 echo json_encode($result);

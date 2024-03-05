@@ -3,15 +3,13 @@ import { useForm } from "react-hook-form";
 import useInteraction from "../../../Hooks/useInteraction";
 import useAuth from "../../../Hooks/useAuth";
 import { createCategory, deleteCategory, getCategories, updateCategory } from "../../../modules/ApiCategories";
-
 import { faFont } from "@fortawesome/free-solid-svg-icons";
-
 import InputBox from "../../basic/InputBox";
 import Item from "../controlled-item/Item";
 
 import css from "./Category.module.css";
 
-export default function Category({ categories, setCategories, apiClass, filterByCategory, reloadData }) {
+export default function Category({ categories, setCategories, apiClass, filterByCategory, reloadData, fullSize }) {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
@@ -52,7 +50,7 @@ export default function Category({ categories, setCategories, apiClass, filterBy
 	};
 
 	return (
-		<section className={css.category}>
+		<section className={`${css.category} ${fullSize ? "" : "half-section"}`}>
 			<h2>Kategorie</h2>
 			<ul className={css.category_list}>
 				{categories &&

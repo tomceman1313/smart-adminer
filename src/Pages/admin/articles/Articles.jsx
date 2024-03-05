@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
 import { Helmet } from "react-helmet-async";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
-
-import css from "./Articles.module.css";
 import PlusButton from "../../Components/basic/PlusButton";
 import Category from "../../Components/common/categories-component/Category";
-import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
+import ItemsController from "../../Components/common/items-controller/ItemsController";
+import css from "./Articles.module.css";
 
 const Articles = () => {
 	const navigate = useNavigate();
@@ -35,7 +34,7 @@ const Articles = () => {
 	async function filterByCategory(id) {
 		const data = await getByCategory("articles", id);
 		const category = categories.find((el) => el.id === id);
-		setSelectedCategory(category.name);
+		setSelectedCategory(category);
 		setArticles(data);
 	}
 
@@ -51,8 +50,21 @@ const Articles = () => {
 					apiClass="articles"
 					filterByCategory={filterByCategory}
 					reloadData={loadData}
+					fullSize
 				/>
-				<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
+
+				<ItemsController
+					apiClass="articles"
+					setState={setArticles}
+					selectedCategory={selectedCategory}
+					resetFilter={loadData}
+					settingsConfig={{
+						searchInput: "Nadpis článku",
+						multiSelection: false,
+						allItemsText: "Veškeré články",
+					}}
+				/>
+
 				<section className={`${css.articles_list} no-section`}>
 					{articles &&
 						articles.map((article) => (

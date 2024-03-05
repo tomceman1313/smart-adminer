@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { faCircle, faFileImage, faFileLines, faFilePdf, faFileVideo, faFileWord, faFileZipper } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faDownload, faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileWord, faCircle, faFilePdf, faFileZipper, faFileVideo, faFileImage, faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { faCircleCheck, faDownload, faTrashCan, faPen } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
 
-import css from "./css/Documents.module.css";
-const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, editDocument }) => {
+import css from "./css/Document.module.css";
+
+export default function Document({ children, info, deleteDocument, multiSelection, selectedDocuments, editDocument }) {
 	const [picked, setPicked] = useState(false);
 	const [showControls, setShowControls] = useState(false);
 	const [icon, setIcon] = useState(faFileLines);
-	const fileFormat = info.name.split(".");
+	const fileFormat = info.name.split(".").pop();
+
 	useEffect(() => {
 		if (!multiSelection) {
 			setPicked(false);
 		}
-		setIcon(setFileIcon(fileFormat[1]));
+		setIcon(setFileIcon(fileFormat));
 	}, [multiSelection, fileFormat]);
 
 	const onClickHandler = (e) => {
@@ -68,19 +70,10 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, edi
 	}
 
 	return (
-		<motion.div
-			key={info.id}
-			onClick={onClickHandler}
-			initial={{ scale: 0.6 }}
-			animate={{ scale: 1 }}
-			exit={{ scale: 0.6 }}
-			transition={{
-				duration: 0.3,
-				ease: "easeInOut",
-			}}
-		>
+		<motion.div key={info.id} className={css.document} onClick={onClickHandler} initial={{ scale: 0.6 }} animate={{ scale: 1 }} exit={{ scale: 0.6 }}>
 			<FontAwesomeIcon className={css.file_icon} icon={multiSelection ? (picked ? faCircleCheck : faCircle) : icon} />
 			<label>{info.title}</label>
+			{children}
 			<AnimatePresence>
 				{showControls && (
 					<motion.div
@@ -99,6 +92,4 @@ const Document = ({ info, deleteDocument, multiSelection, selectedDocuments, edi
 			</AnimatePresence>
 		</motion.div>
 	);
-};
-
-export default Document;
+}

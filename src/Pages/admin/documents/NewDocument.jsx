@@ -1,14 +1,12 @@
 import { faFile, faHashtag, faHeading, faImage, faInfo, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../Components/basic/InputBox";
 import useInteraction from "../../Hooks/useInteraction";
 import { create } from "../../modules/ApiFunctions";
 import { convertBase64, makeDate, makeDateFormat } from "../../modules/BasicFunctions";
-
+import DatePicker from "../../Components/basic/DatePicker";
 import { AnimatePresence } from "framer-motion";
-import cssBasic from "../styles/Basic.module.css";
 import AddMultipleFiles from "./AddMultipleFiles";
 import Select from "../../Components/basic/select/Select";
 
@@ -19,11 +17,15 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 	const { register, handleSubmit, reset } = useForm();
 
 	const createNew = async (data) => {
-		const fileName = data.file[0].name.split(".");
+		let fileName = data.file[0].name.split(".");
+		const fileExtension = fileName.pop();
+		fileName = fileName.join(".");
+
 		if (data.file[0]) {
 			const base64 = await convertBase64(data.file[0]);
 			data.file = base64;
-			data.file_name = fileName[0];
+			data.file_name = fileName;
+			data.file_extension = fileExtension;
 		}
 
 		if (data.image[0]) {
@@ -49,19 +51,15 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 
 	return (
 		<>
-			<section>
+			<section className="half-section">
 				<h2>Nový soubor</h2>
 				<form onSubmit={handleSubmit(createNew)}>
 					<InputBox placeholder="Název" register={register} type="text" name="title" icon={faHeading} isRequired={true} />
 					<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faInfo} isRequired={false} />
 					<Select name="category_id" options={categories} register={register} placeholderValue="-- Přiřadit kategorii --" icon={faHashtag} />
-
 					<InputBox placeholder="Soubor" register={register} type="file" name="image" icon={faImage} isRequired={false} accept="image/*" />
 					<InputBox placeholder="Soubor" register={register} type="file" name="file" icon={faFile} isRequired={true} accept="*" />
-					<div className={cssBasic.input_box} title="Datum zveřejnění">
-						<input type="date" {...register("date")} />
-						<FontAwesomeIcon className={cssBasic.icon} icon={faCalendarDays} />
-					</div>
+					<DatePicker register={register} name="date" title="Datum přidání" icon={faCalendarDays} />
 
 					<button>Vložit</button>
 					<button type="button" className="blue_button" onClick={showAddMultiplePictures}>

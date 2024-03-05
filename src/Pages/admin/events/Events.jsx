@@ -63,7 +63,14 @@ const Events = () => {
 			<Helmet>
 				<title>Události | SmartAdminer</title>
 			</Helmet>
-			<Category categories={categories} setCategories={setCategories} apiClass="events" filterByCategory={filterByCategory} reloadData={loadData} />
+			<Category
+				categories={categories}
+				setCategories={setCategories}
+				apiClass="events"
+				filterByCategory={filterByCategory}
+				reloadData={loadData}
+				fullSize
+			/>
 			<FilterNotifier selectedCategory={selectedCategory} resetHandler={loadData} />
 			<section className={css.filter}>
 				<h2>Filtrovat:</h2>

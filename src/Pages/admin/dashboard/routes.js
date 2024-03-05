@@ -1,5 +1,5 @@
-import Documents from "../documents/Documents";
-import Gallery from "../gallery/Gallery";
+import DocumentsPage from "../documents/DocumentsPage";
+import GalleryPage from "../gallery/GalleryPage";
 import Notifications from "../notifications/Notifications";
 import Page from "../page/Page";
 import Pages from "../pages/Pages";
@@ -51,21 +51,21 @@ export const ROUTES = [
 		name: "gallery",
 		class: "gallery",
 		path: "gallery",
-		element: <Gallery />,
+		element: <GalleryPage />,
 		allowedRoles: [],
 	},
 	{
 		name: "gallery-page",
 		class: "gallery",
 		path: "gallery/:page",
-		element: <Gallery />,
+		element: <GalleryPage />,
 		allowedRoles: [],
 	},
 	{
 		name: "documents",
 		class: "documents",
 		path: "documents",
-		element: <Documents />,
+		element: <DocumentsPage />,
 		allowedRoles: [],
 	},
 	{

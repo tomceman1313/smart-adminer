@@ -49,6 +49,19 @@ class ArticlesController
                 echo json_encode($data);
                 return;
 
+            case ($method == "GET" && preg_match('/\/api\/articles\/\?name=[\w%]+$/', $uri) && isset($_GET["name"])):
+                $article_title = $_GET["name"];
+                $result = $this->gateway->getByTitle($article_title);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/articles\/\?name=[\w%]+&categoryId=[\w%]+$/', $uri) && isset($_GET["name"]) && isset($_GET["categoryId"])):
+                $article_title = $_GET["name"];
+                $category_id = $_GET["categoryId"];
+                $result = $this->gateway->getByTitle($article_title, $category_id);
+                echo json_encode($result);
+                return;
+
             case ($method == "GET" && $uri == "/api/articles/categories"):
                 $result = $this->gateway->getCategories();
                 echo json_encode($result);
@@ -73,7 +86,8 @@ class ArticlesController
 
         switch ($method | $uri) {
             case ($method == "POST" && $uri == "/api/articles"):
-                $userId = $this->auth->decodeToken($authAction);
+                $userId = $this->auth->decodeToken($authAction["token"]);
+                var_dump($userId);
                 if ($userId != null) {
                     $id = $this->gateway->create($data["data"], $userId);
                     http_response_code(201);

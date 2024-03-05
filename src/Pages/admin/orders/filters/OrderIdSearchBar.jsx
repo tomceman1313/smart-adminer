@@ -27,7 +27,7 @@ export default function OrderIdSearchBar({ setOrders }) {
 		}
 		searchedId.current = newId;
 		const order = await findById(newId);
-		console.log(order);
+		//console.log(order);
 		setOrders(order);
 	}
 

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import PlusButton from "../../Components/basic/PlusButton";
-import FilterNotifier from "../../Components/common/filter-notifier/FilterNotifier";
+import ItemsController from "../../Components/common/items-controller/ItemsController";
 import useAuth from "../../Hooks/useAuth";
 import useInteraction from "../../Hooks/useInteraction";
 import { getAll, remove } from "../../modules/ApiFunctions";
 import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
-import { Helmet } from "react-helmet-async";
 import css from "./Employees.module.css";
 
 export default function Employees() {
@@ -34,7 +34,7 @@ export default function Employees() {
 	async function filterEmployeesByDepartment(id, name) {
 		const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
 		setEmployees(filteredEmployees);
-		setSelectedDepartment(name);
+		setSelectedDepartment({ id: id, name: name });
 	}
 
 	async function deleteHandler(id) {
@@ -63,7 +63,17 @@ export default function Employees() {
 				filterEmployeesByDepartment={filterEmployeesByDepartment}
 			/>
 
-			<FilterNotifier selectedCategory={selectedDepartment} resetHandler={resetFilter} />
+			<ItemsController
+				apiClass="employees"
+				setState={setEmployees}
+				selectedCategory={selectedDepartment}
+				resetFilter={resetFilter}
+				settingsConfig={{
+					searchInput: "Jméno zaměstnance",
+					multiSelection: false,
+					allItemsText: "Všichni zaměstnanci",
+				}}
+			/>
 
 			<section className="no-section">
 				<ul className={css.employees}>

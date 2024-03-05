@@ -1,0 +1,103 @@
+.document_wrapper {
+	width: calc(100% - 12px);
+	height: 50px;
+	margin: 6px;
+}
+
+.document {
+	position: relative;
+	display: flex;
+	align-items: center;
+	border-radius: 8px;
+	overflow: hidden;
+	cursor: pointer;
+	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
+	border: 1px solid #d6dde1;
+	background-color: white;
+}
+
+.document label {
+	display: block;
+	width: calc(100% - 120px);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.controls {
+	width: 150px;
+	position: absolute;
+	border-radius: 0;
+	right: 0;
+	margin: 0;
+}
+
+.document path {
+	pointer-events: none;
+}
+
+.file_icon {
+	color: var(--main-dark);
+	width: 40px;
+	height: 30px;
+	padding: 12px 10px;
+	margin-right: 20px;
+	transition: all 0.5s;
+}
+
+.document:hover > .file_icon {
+	background-color: var(--main-dark);
+	color: white;
+}
+
+.delete_icon,
+.download_icon,
+.edit_icon {
+	color: white;
+	width: 20px;
+	height: 20px;
+	padding: 20px 15px;
+	transition: all 0.5s;
+}
+
+.delete_icon {
+	background-color: var(--red);
+}
+.delete_icon:hover {
+	background-color: var(--red-dark);
+}
+
+.download_icon {
+	background-color: var(--main);
+}
+
+.download_icon:hover {
+	background-color: var(--main-dark);
+}
+
+.edit_icon {
+	background-color: var(--green);
+}
+
+.edit_icon:hover {
+	background-color: var(--green-dark);
+}
+
+.multiselection {
+	font-size: 60px !important;
+	position: absolute;
+	top: 50% !important;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+	background-color: transparent !important;
+}
+
+@media (max-width: 600px) {
+	.document {
+		width: calc(100% - 12px);
+	}
+	.file_icon {
+		margin-right: 10px;
+	}
+}

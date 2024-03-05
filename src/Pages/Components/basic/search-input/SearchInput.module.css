@@ -1,0 +1,30 @@
+.search_input {
+	position: relative;
+	width: clamp(180px, 20%, 300px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: solid 1px white;
+	border-radius: 8px;
+	padding: 5px 10px;
+}
+
+.search_input input {
+	width: calc(100% - 30px);
+	margin: 0 15px;
+	background-color: transparent;
+	text-align: center;
+	color: white;
+}
+
+.search_input input::placeholder {
+	color: white;
+}
+
+.search_input svg {
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	transform: translateY(-50%);
+	color: white;
+}

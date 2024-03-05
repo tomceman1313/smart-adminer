@@ -26,7 +26,7 @@ export default function Article() {
 	const { setMessage, setAlert } = useInteraction();
 
 	const { id } = useParams();
-	const { register, handleSubmit, setValue, getValues, reset } = useForm();
+	const { register, handleSubmit, getValues, reset } = useForm();
 
 	const [article, setArticle] = useState(null);
 	const [articlePreview, setArticlePreview] = useState(null);
@@ -55,11 +55,6 @@ export default function Article() {
 	async function getData() {
 		const data = await get("articles", id);
 		setArticle(data);
-		setValue("title", data.title);
-		setValue("description", data.description);
-		setValue("date", makeDateFormat(data.date, "str"));
-		setValue("active", data.active);
-		setValue("category", data.category);
 		setBody(data.body);
 		originalImages.current = checkInnerImage(data.body);
 		setUnderArticleImages(data.images.length === 0 ? null : data.images);
@@ -141,25 +136,39 @@ export default function Article() {
 			<Helmet>
 				<title>{article?.title ? article.title : "Nový článek"} | SmartAdminer</title>
 			</Helmet>
-			{categories ? (
+			{categories && article ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>
 						<h2>Základní informace</h2>
-						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} isRequired={true} />
-						<InputBox type="text" name="description" placeholder="Popisek" register={register} icon={faMagnifyingGlass} />
-						<Switch name="active" label="Článek je viditelný:" register={register} />
+						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} defaultValue={article.title} isRequired />
+						<InputBox
+							type="text"
+							name="description"
+							placeholder="Popisek"
+							register={register}
+							icon={faMagnifyingGlass}
+							defaultValue={article.description}
+						/>
+						<Switch name="active" label="Článek je viditelný:" register={register} defaultValue={article.active} />
 					</section>
 
 					<section>
 						<h2>Doplňující informace</h2>
-						<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" isRequired={true} />
+						<DatePicker
+							name="date"
+							placeholder="Datum zveřejnění"
+							register={register}
+							additionalClasses="gray"
+							defaultValue={makeDateFormat(article.date, "str")}
+							isRequired
+						/>
 						<Select
-							name="category"
+							name="category_id"
 							options={categories}
 							register={register}
 							icon={faHashtag}
 							placeholderValue="-- Kategorie článku --"
-							defaultValue={article?.category}
+							defaultValue={article.category_id}
 						/>
 						<ImageInput image={article?.image} name="image" path="articles" register={register} />
 					</section>

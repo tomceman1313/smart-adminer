@@ -65,7 +65,7 @@ export default function NewPicture({ auth, setImages, categories }) {
 
 	return (
 		<>
-			<section>
+			<section className="half-section">
 				<h2>Nový obrázek</h2>
 				<form onSubmit={handleSubmit(createNew)}>
 					<InputBox placeholder="Název obrázku" register={register} type="text" name="title" icon={faHeading} />
