@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //dev
 export const publicPath = "/admin";
 //production
+//export const publicPath = "https://seniori.domov-sulicka.cz/admin";
 //export const publicPath = "https://domov-sulicka.cz/admin";
 /**
  ** Creates random ID for temporary use
@@ -34,15 +35,15 @@ export function makeDate(year, month, day) {
  * @returns {string}
  */
 export function makeDateFormat(date, direction) {
-	let dateStr = date.toString();
-	let dateFormatted;
-	if (date === 0) {
+	if (date === 0 || !date) {
 		return "";
 	}
 
 	if (date === "") {
 		return "0";
 	}
+	let dateStr = date.toString();
+	let dateFormatted;
 
 	if (direction === "str") {
 		dateFormatted = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);

@@ -44,18 +44,18 @@ export default function Pricelist() {
 			</Helmet>
 			<section>
 				<h2>Seznam položek ceníku</h2>
-				<table className={css.prices_table}>
-					<thead>
-						<tr>
-							<th>Položka</th>
-							<th>Cena</th>
-							<th>Akční cena</th>
-							<th>Aktivní akce</th>
-						</tr>
-					</thead>
-					<tbody>
-						{prices &&
-							prices.map((item) => (
+				{prices?.length > 0 ? (
+					<table className={css.prices_table}>
+						<thead>
+							<tr>
+								<th>Položka</th>
+								<th>Cena</th>
+								<th>Akční cena</th>
+								<th>Aktivní akce</th>
+							</tr>
+						</thead>
+						<tbody>
+							{prices.map((item) => (
 								<tr key={item.id} onClick={() => setPriceItem(item)}>
 									<td>{item.name}</td>
 									<td>{item.price} Kč</td>
@@ -63,8 +63,11 @@ export default function Pricelist() {
 									<td>{isActive(item.special_price_start, item.special_price_end, css)}</td>
 								</tr>
 							))}
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				) : (
+					<p>Zatím nebyly přidány žádné položky</p>
+				)}
 
 				<AnimatePresence>
 					{showAddItemCont && <NewPriceListItem loadData={loadData} close={() => setShowAddItemCont(false)} />}

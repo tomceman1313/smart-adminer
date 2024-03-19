@@ -39,18 +39,18 @@ const Notifications = () => {
 			</Helmet>
 			<section>
 				<h2>Seznam upozornění</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>Nadpis</th>
-							<th>Text</th>
-							<th>Adresa</th>
-							<th>Stav</th>
-						</tr>
-					</thead>
-					<tbody>
-						{notifications &&
-							notifications.map((item) => (
+				{notifications?.length > 0 ? (
+					<table>
+						<thead>
+							<tr>
+								<th>Nadpis</th>
+								<th>Text</th>
+								<th>Adresa</th>
+								<th>Stav</th>
+							</tr>
+						</thead>
+						<tbody>
+							{notifications.map((item) => (
 								<tr key={item.id} onClick={() => showNotification(item.id)}>
 									<td>{item.title}</td>
 									<td>{item.text}</td>
@@ -58,8 +58,11 @@ const Notifications = () => {
 									<td>{isActive(item.start, item.end, css)}</td>
 								</tr>
 							))}
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				) : (
+					<p>Zatím nebyla přidána žádná upozornění</p>
+				)}
 
 				<EditNotification notification={editNotification} loadData={loadData} setEditNotification={setEditNotification} />
 				<AnimatePresence>{showAddItemCont && <NewNotification loadData={loadData} setShowCreateNotification={setShowAddItemCont} />}</AnimatePresence>

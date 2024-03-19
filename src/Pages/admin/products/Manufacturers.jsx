@@ -45,10 +45,13 @@ export default function Manufacturers({ manufacturers, setManufacturers }) {
 		<section className={css.category}>
 			<h2>Výrobci</h2>
 			<ul>
-				{manufacturers &&
+				{manufacturers?.length ? (
 					manufacturers.map((el) => (
 						<Item key={el.id} el={el} remove={remove} edit={update} deleteQuestion={`Opravdu si přejete smazat výrobce ${el.name}?`} />
-					))}
+					))
+				) : (
+					<p>Zatím nebyli přidání žádní výrobci</p>
+				)}
 			</ul>
 			<h3>Přidat výrobce:</h3>
 			<form onSubmit={handleSubmit(create)}>

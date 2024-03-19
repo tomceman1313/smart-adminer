@@ -295,7 +295,7 @@ class ArticlesGateway
             "id" => $id
         ]);
 
-        $sql_select = "SELECT * FROM articles WHERE category = :id";
+        $sql_select = "SELECT * FROM articles WHERE category_id = :id";
         $stmt_select = $this->conn->prepare($sql_select);
 
         $stmt_select->execute([

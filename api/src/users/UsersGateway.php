@@ -54,20 +54,27 @@ class UsersGateway
 
     public function update(array $data)
     {
-        $sql = "UPDATE users SET username = :username, role_id = :role_id, tel = :tel,
-         email = :email, fname = :fname, lname = :lname WHERE id = :id";
+        $sql = "UPDATE users SET username = :username, tel = :tel, email = :email, fname = :fname, lname = :lname";
 
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
+        $sql_values = [
             "username" => $data["username"],
-            "role_id" => $data["role_id"],
             "tel" => $data["tel"],
             "email" => $data["email"],
             "fname" => $data["fname"],
             "lname" => $data["lname"],
             "id" => $data["id"],
-        ]);
+        ];
+
+        if (isset($data["role_id"])) {
+            $sql_values["role_id"] = $data["role_id"];
+            $sql .= ", role_id = :role_id";
+        }
+
+        $sql .= " WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute($sql_values);
     }
 
     public function delete(string $id)

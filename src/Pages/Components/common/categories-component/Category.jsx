@@ -53,7 +53,7 @@ export default function Category({ categories, setCategories, apiClass, filterBy
 		<section className={`${css.category} ${fullSize ? "" : "half-section"}`}>
 			<h2>Kategorie</h2>
 			<ul className={css.category_list}>
-				{categories &&
+				{categories?.length ? (
 					categories.map((el) => (
 						<Item
 							key={el.id}
@@ -63,9 +63,17 @@ export default function Category({ categories, setCategories, apiClass, filterBy
 							show={filterByCategory}
 							deleteQuestion={`Opravdu si přejet odstranit kategorii ${el.name}?`}
 						/>
-					))}
+					))
+				) : (
+					<p>Zatím nebyly přidány žádné kategorie</p>
+				)}
 			</ul>
-			<div className={css.blur}></div>
+			<div className={css.blur}>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
 			<h3>Přidat kategorii:</h3>
 			<form onSubmit={handleSubmit(create)}>
 				<InputBox placeholder={"Název kategorie"} name={"name"} register={register} type={"text"} icon={faFont} white={false} isRequired={true} />

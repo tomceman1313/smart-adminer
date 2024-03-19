@@ -43,7 +43,7 @@ if ($method == "OPTIONS") {
     die();
 }
 
-$database = new Database("localhost", "admin_console", "penziontop4fancz", "heslo");
+$database = new Database("localhost", "cms_seniori", "penziontop4fancz", "heslo");
 
 //production
 //$database = new Database("localhost", "u351850998_cms", "u351850998_tomas", "Tomikz13");

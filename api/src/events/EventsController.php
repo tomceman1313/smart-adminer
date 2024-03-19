@@ -62,7 +62,7 @@ class EventsController
 
         switch ($method | $uri) {
             case ($method == "POST" && $uri == "/api/events"):
-                $userId = $this->auth->decodeToken($authAction);
+                $userId = $this->auth->decodeToken($authAction["token"]);
                 if ($userId != null) {
                     $this->gateway->create($data["data"], $userId);
                     http_response_code(201);

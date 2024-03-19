@@ -58,26 +58,8 @@ export async function refreshAccessToken(navigate, from, auth) {
 	auth.setUserInfo(data.data);
 }
 
-export async function getUserData(auth) {
-	const bearer = `Bearer ${auth.userInfo.token}`;
-	const response = await fetch(`${BASE_URL}/api/?class=users&action=get&id=${auth.userInfo.id}`, {
-		method: "GET",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		credentials: "include",
-	});
-
-	if (response.status === 403) {
-		auth.setUserInfo(null);
-		return false;
-	}
-
-	const data = await response.json();
-	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	return data.data;
-}
-
 export async function changePassword(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api/?class=users&action=change_password`, {
+	const response = await fetch(`${BASE_URL}/api/users/password`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
 		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),

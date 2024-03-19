@@ -136,20 +136,20 @@ export default function Article() {
 			<Helmet>
 				<title>{article?.title ? article.title : "Nový článek"} | SmartAdminer</title>
 			</Helmet>
-			{categories && article ? (
+			{categories ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>
 						<h2>Základní informace</h2>
-						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} defaultValue={article.title} isRequired />
+						<InputBox type="text" name="title" placeholder="Titulek" register={register} icon={faHeading} defaultValue={article?.title} isRequired />
 						<InputBox
 							type="text"
 							name="description"
 							placeholder="Popisek"
 							register={register}
 							icon={faMagnifyingGlass}
-							defaultValue={article.description}
+							defaultValue={article?.description}
 						/>
-						<Switch name="active" label="Článek je viditelný:" register={register} defaultValue={article.active} />
+						<Switch name="active" label="Článek je viditelný:" register={register} defaultValue={article?.active} />
 					</section>
 
 					<section>
@@ -159,7 +159,7 @@ export default function Article() {
 							placeholder="Datum zveřejnění"
 							register={register}
 							additionalClasses="gray"
-							defaultValue={makeDateFormat(article.date, "str")}
+							defaultValue={makeDateFormat(article?.date, "str")}
 							isRequired
 						/>
 						<Select
@@ -168,7 +168,7 @@ export default function Article() {
 							register={register}
 							icon={faHashtag}
 							placeholderValue="-- Kategorie článku --"
-							defaultValue={article.category_id}
+							defaultValue={article?.category_id}
 						/>
 						<ImageInput image={article?.image} name="image" path="articles" register={register} />
 					</section>

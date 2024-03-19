@@ -33,7 +33,8 @@ export default function GalleryPage() {
 	// Remove page number when selected category is changed
 	useEffect(() => {
 		navigate("/gallery/");
-	}, [selectedCategory, navigate]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedCategory]);
 
 	// Load only part of data based on page number
 	useEffect(() => {
@@ -69,6 +70,7 @@ export default function GalleryPage() {
 		await multipleDelete(ids, auth, setMessage);
 		loadData();
 		setIsMultiSelectionActive(false);
+		selectedImages.current = new Map();
 	}
 
 	function resetFilter() {

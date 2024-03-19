@@ -25,7 +25,7 @@ export default function FileInput({ name, register, fileName, additionalClasses,
 					<span onClick={() => openImage(`${publicPath}/files/documents/${fileName}`)} title="Otevřít soubor">
 						<FontAwesomeIcon icon={faEye} />
 					</span>
-					<span onClick={() => setIsFileSet(false)} title="Změnit obrázek">
+					<span onClick={() => setIsFileSet(false)} title="Změnit soubor">
 						<FontAwesomeIcon icon={faRotate} />
 					</span>
 				</div>

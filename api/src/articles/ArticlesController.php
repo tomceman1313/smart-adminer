@@ -142,7 +142,7 @@ class ArticlesController
                 break;
 
             case ($method == "DELETE" && preg_match('/^\/api\/articles\/categories\/[0-9]+$/', $uri)):
-                $this->gateway->deleteCategory($url_parts[3]);
+                $this->gateway->deleteCategory($url_parts[4]);
                 echo json_encode([
                     "message" => "Deleted",
                     "token" => $authAction["token"]

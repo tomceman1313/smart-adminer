@@ -2,6 +2,7 @@
 // change package.json a App.js router
 
 //export const BASE_URL = "https://domov-sulicka.cz/admin";
+//export const BASE_URL = "https://seniori.domov-sulicka.cz/admin";
 export const BASE_URL = "http://localhost:4300";
 
 export async function getAll(apiClass) {

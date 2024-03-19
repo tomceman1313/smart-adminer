@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import css from "./Profile.module.css";
 import useAuth from "../../Hooks/useAuth";
-import { edit } from "../../modules/ApiFunctions";
-import { getUserData } from "../../modules/ApiAuth";
-import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
+import useInteraction from "../../Hooks/useInteraction";
 import { useForm } from "react-hook-form";
+import { edit, getWithAuth } from "../../modules/ApiFunctions";
+import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet-async";
 import InputBox from "../../Components/basic/InputBox";
 import NewPassword from "./NewPassword";
-import useInteraction from "../../Hooks/useInteraction";
+import css from "./Profile.module.css";
 
 const Profile = () => {
 	const auth = useAuth();
@@ -18,13 +17,12 @@ const Profile = () => {
 	const { register, handleSubmit, setValue, setFocus } = useForm();
 
 	useEffect(() => {
-		getUserInfo();
+		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	async function getUserInfo() {
-		const userData = await getUserData(auth);
-
+	async function loadData() {
+		const userData = await getWithAuth("users", auth.userInfo.id, auth);
 		setValue("username", userData.username);
 		setValue("fname", userData.fname);
 		setValue("lname", userData.lname);
@@ -44,7 +42,7 @@ const Profile = () => {
 		document.getElementById("submit").innerHTML = "Upravit";
 		setEditInfo(!editInfo);
 
-		edit("admin", data, setMessage, "Profil upraven", auth);
+		edit("users", data, setMessage, "Profil upraven", auth);
 	};
 
 	return (

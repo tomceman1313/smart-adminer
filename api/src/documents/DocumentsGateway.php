@@ -101,7 +101,7 @@ class DocumentsGateway
         $stmt->execute([
             'title' => $data["title"],
             'description' => $data["description"],
-            'image' => $image_name ? $image_name : "",
+            'image' => isset($image_name) ? $image_name : "",
             'name' => $fileNameWithExtension,
             'category_id' => $data["category_id"],
             'date' => $data["date"]
