@@ -61,7 +61,7 @@ export default function Event() {
 		setValue("description", data.description);
 		setValue("date", makeDateFormat(data.date, "str"));
 		setValue("active", data.active);
-		setValue("category", data.category);
+		setValue("category_id", data.category_id);
 		setBody(data.body);
 		originalImages.current = checkInnerImage(data.body);
 		setUnderEventImages(data.images.length === 0 ? null : data.images);
@@ -142,7 +142,7 @@ export default function Event() {
 			<Helmet>
 				<title>{event?.title ? event.title : "Nová událost"} | SmartAdminer</title>
 			</Helmet>
-			{categories ? (
+			{categories && (id ? event : true) ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>
 						<h2>Základní informace</h2>
@@ -155,7 +155,7 @@ export default function Event() {
 						<h2>Doplňující informace</h2>
 						<DatePicker name="date" placeholder="Datum zveřejnění" register={register} additionalClasses="gray" />
 						<Select
-							name="category"
+							name="category_id"
 							options={categories}
 							register={register}
 							icon={faHashtag}

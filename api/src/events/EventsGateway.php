@@ -38,7 +38,7 @@ class EventsGateway
 
     public function getByCategory(string $category_id): array
     {
-        $sql = "SELECT * FROM events WHERE category = :id";
+        $sql = "SELECT * FROM events WHERE category_id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -70,7 +70,7 @@ class EventsGateway
     {
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/events");
 
-        $sql = "INSERT INTO events (title, description, image, body, date, category, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category, :owner_id, :active)";
+        $sql = "INSERT INTO events (title, description, image, body, date, category_id, owner_id, active) VALUES (:title, :description, :image, :body, :date, :category_id, :owner_id, :active)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -79,7 +79,7 @@ class EventsGateway
             'image' => $image_name,
             'body' => $data["body"],
             'date' => $data["date"],
-            'category' => $data["category"],
+            'category_id' => $data["category_id"],
             'owner_id' => $userId,
             'active' => $data["active"]
         ]);
@@ -100,7 +100,7 @@ class EventsGateway
     public function update(array $data)
     {
         $sql = "UPDATE events SET title = :title, description = :description, body = :body, 
-        date = :date, category = :category, owner_id = :owner_id, active = :active";
+        date = :date, category_id = :category_id, owner_id = :owner_id, active = :active";
 
 
         $sql_values = [
@@ -108,7 +108,7 @@ class EventsGateway
             'description' => $data["description"],
             'body' => $data["body"],
             'date' => $data["date"],
-            'category' => $data["category"],
+            'category_id' => $data["category_id"],
             'owner_id' => $data["owner_id"],
             'active' => $data["active"],
             'id' => $data["id"]
@@ -227,7 +227,7 @@ class EventsGateway
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        $sql_select = "SELECT * FROM events WHERE category = :id";
+        $sql_select = "SELECT * FROM events WHERE category_id = :id";
         $stmt_select = $this->conn->prepare($sql_select);
 
         $stmt_select->execute([

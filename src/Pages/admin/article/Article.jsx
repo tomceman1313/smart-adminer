@@ -136,7 +136,7 @@ export default function Article() {
 			<Helmet>
 				<title>{article?.title ? article.title : "Nový článek"} | SmartAdminer</title>
 			</Helmet>
-			{categories ? (
+			{categories && (id ? article : true) ? (
 				<form onSubmit={handleSubmit(onSubmit)} className={css.article}>
 					<section>
 						<h2>Základní informace</h2>

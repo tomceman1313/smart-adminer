@@ -55,7 +55,7 @@ export default function DocumentsPage() {
 	}
 
 	async function orderDocumentsHandler(documentsIds) {
-		const categoryId = categories.find((category) => category.name === selectedCategory)?.id;
+		const categoryId = categories.find((category) => category.name === selectedCategory.name)?.id;
 		const data = { category_id: categoryId, documents_ids: documentsIds };
 		await updateOrder("documents", data, setMessage, "Pořadí dokumentů bylo upraveno", auth);
 	}
