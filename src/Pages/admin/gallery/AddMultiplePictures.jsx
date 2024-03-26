@@ -10,8 +10,10 @@ import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./css/Gallery.module.css";
+import { useTranslation } from "react-i18next";
 
 const AddMultiplePictures = ({ auth, close, refreshImages }) => {
+	const { t } = useTranslation("gallery");
 	const { setMessage } = useInteraction();
 	const [categories, setCategories] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
@@ -34,7 +36,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 		data.category_id = pickedCategories;
 
 		await multipleCreate(data, auth);
-		setMessage({ action: "success", text: "Obrázky byly přidány" });
+		setMessage({ action: "success", text: t("positiveTextImagesCreated") });
 		reset();
 		setPickedCategories([]);
 		refreshImages();
@@ -68,12 +70,12 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 			transition={{ type: "spring", duration: 1 }}
 		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
-			<h2>Přidání obrázků</h2>
+			<h2>{t("headerCreateMultipleImages")}</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
 					<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
 						<option value="default" disabled>
-							-- Přiřadit kategorii --
+							{t("placeholderCategorySelect")}
 						</option>
 						{categories &&
 							categories.map((el) => (
@@ -99,7 +101,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 						))}
 				</ul>
 
-				<button className="blue_button">Uložit</button>
+				<button className="blue_button">{t("buttonCreate")}</button>
 			</form>
 		</motion.section>
 	);

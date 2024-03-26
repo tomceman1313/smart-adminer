@@ -1,0 +1,31 @@
+{
+    "htmlTitle": "Users Management | SmartAdminer",
+    "htmlRolesTitle": "Roles & Permissions | SmartAdminer",
+    "createPositiveText": "New user has been created",
+    "editPositiveText": "User has been updated",
+    "deletePositiveText": "User has been deleted",
+    "messageUsernameIsTaken": "The chosen username is already taken",
+    "messagePasswordsNotEqual": "Passwords do not match",
+    "alertDeleteUser": "Delete user {{username}}?", 
+    
+    "formHeader": "New User", 
+    "username": "Username",
+    "fname": "First name",
+    "lname": "Last name",
+    "phone": "Phone",
+    "email": "Email",
+    "password": "Password",
+    "passwordAgain": "Repeat password",
+    "createButton": "Create",
+    "submitButton": "Save",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+
+    "unknownRole": "Unknown Role",
+    "permissionTogglePositiveText": "Permission has been changed",
+    "tableHeadSection": "Section",
+    "tableHeadRead": "Read",
+    "tableHeadCreate": "Create",
+    "tableHeadUpdate": "Update",
+    "tableHeadDelete": "Delete"
+}

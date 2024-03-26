@@ -1,0 +1,31 @@
+{
+    "htmlTitle": "Správa uživatelů | SmartAdminer",
+    "htmlRolesTitle": "Práva a role | SmartAdminer",
+    "createPositiveText": "Nový uživatel byl vytvořen",
+    "editPositiveText": "Uživatel byl upraven",
+    "deletePositiveText": "Uživatel byl odstraněn",
+    "messageUsernameIsTaken": "Zvolené uživatelské jméno je již obsazeno",
+    "messagePasswordsNotEqual": "Hesla se neshodují",
+    "alertDeleteUser": "Smazat uživatele {{username}}?",
+    
+    "formHeader": "Nový uživatel",
+    "username": "Uživatelské jméno",
+    "fname": "Křestní jméno",
+    "lname": "Příjmení",
+    "phone": "Telefon",
+    "email": "Email",
+    "password": "Heslo",
+    "passwordAgain": "Heslo znovu",
+    "createButton": "Vytvořit",
+    "submitButton": "Uložit",
+    "editButton": "Upravit",
+    "deleteButton": "Smazat",
+
+    "unknownRole": "Neznámá role",
+    "permissionTogglePositiveText": "Změna práv provedena",
+    "tableHeadSection": "Oblast",
+    "tableHeadRead": "Čtení",
+    "tableHeadCreate": "Vytváření",
+    "tableHeadUpdate": "Upravování",
+    "tableHeadDelete": "Odstraňování"
+}

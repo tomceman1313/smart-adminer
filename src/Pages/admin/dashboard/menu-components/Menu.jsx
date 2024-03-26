@@ -8,9 +8,11 @@ import MenuLink from "./MenuLink";
 import MenuSection from "./MenuSection";
 
 import css from "./MenuComponents.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Menu({ permissions, logOut }) {
 	const location = useLocation();
+	const { t } = useTranslation("menu");
 
 	const [activeSection, setActiveSection] = useState("");
 	const [activeLink, setActiveLink] = useState("");
@@ -31,72 +33,98 @@ export default function Menu({ permissions, logOut }) {
 	return (
 		<>
 			{permissions.users && (
-				<MenuSection title="Uživatelské profily" name="profiles" icon={faIdCard} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Seznam uživatelů" name="users" path="/users" activeLink={activeLink} />
-					<MenuLink title="Role a práva" name="roles" path="/roles" activeLink={activeLink} />
+				<MenuSection title={t("userAccounts.name")} name="profiles" icon={faIdCard} activeSection={activeSection} openMenuSection={openMenuSection}>
+					<MenuLink title={t("userAccounts.usersList")} name="users" path="/users" activeLink={activeLink} />
+					<MenuLink title={t("userAccounts.rolesAndPrivileges")} name="roles" path="/roles" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{(permissions.employees || permissions.vacancies) && (
 				<MenuSection
-					title="Zaměstnanci"
+					title={t("employees.name")}
 					name="employees-section"
 					icon={faPeopleGroup}
 					activeSection={activeSection}
 					openMenuSection={openMenuSection}
 				>
-					{permissions.employees && <MenuLink title="Seznam zaměstnanců" name="employees" path="/employees" activeLink={activeLink} />}
-					{permissions.vacancies && <MenuLink title="Inzerované pozice" name="vacancies" path="/vacancies" activeLink={activeLink} />}
+					{permissions.employees && <MenuLink title={t("employees.employeesList")} name="employees" path="/employees" activeLink={activeLink} />}
+					{permissions.vacancies && <MenuLink title={t("employees.vacancies")} name="vacancies" path="/vacancies" activeLink={activeLink} />}
 				</MenuSection>
 			)}
 
 			{(permissions.pages || permissions.gallery || permissions.documents || permissions.pricelist || permissions.notifications) && (
-				<MenuSection title="Obsah webu" name="content" icon={faDisplay} activeSection={activeSection} openMenuSection={openMenuSection}>
-					{permissions.pages && <MenuLink title="Stránky" name="pages" path="/pages" activeLink={activeLink} />}
-					{permissions.gallery && <MenuLink title="Galerie" name="gallery" path="/gallery" activeLink={activeLink} />}
-					{permissions.documents && <MenuLink title="Dokumenty" name="documents" path="/documents" activeLink={activeLink} />}
-					{permissions.pricelist && <MenuLink title="Ceník" name="pricelist" path="/pricelist" activeLink={activeLink} />}
-					{permissions.notifications && <MenuLink title="Upozornění" name="notifications" path="/notifications" activeLink={activeLink} />}
+				<MenuSection title={t("websiteContent.name")} name="content" icon={faDisplay} activeSection={activeSection} openMenuSection={openMenuSection}>
+					{permissions.pages && <MenuLink title={t("websiteContent.sites")} name="pages" path="/pages" activeLink={activeLink} />}
+					{permissions.gallery && <MenuLink title={t("websiteContent.gallery")} name="gallery" path="/gallery" activeLink={activeLink} />}
+					{permissions.documents && <MenuLink title={t("websiteContent.documents")} name="documents" path="/documents" activeLink={activeLink} />}
+					{permissions.pricelist && <MenuLink title={t("websiteContent.priceList")} name="pricelist" path="/pricelist" activeLink={activeLink} />}
+					{permissions.notifications && (
+						<MenuLink title={t("websiteContent.notifications")} name="notifications" path="/notifications" activeLink={activeLink} />
+					)}
 				</MenuSection>
 			)}
 
 			{permissions.articles && (
-				<MenuSection title="Články" name="articles-section" icon={faNewspaper} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Přehled článků" name="articles" path="/articles" activeLink={activeLink} />
-					<MenuLink title="Nový článek" name="new-article" path="/new-article" activeLink={activeLink} />
+				<MenuSection
+					title={t("articles.name")}
+					name="articles-section"
+					icon={faNewspaper}
+					activeSection={activeSection}
+					openMenuSection={openMenuSection}
+				>
+					<MenuLink title={t("articles.allArticles")} name="articles" path="/articles" activeLink={activeLink} />
+					<MenuLink title={t("articles.newArticle")} name="new-article" path="/new-article" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{permissions.events && (
-				<MenuSection title="Události" name="events-section" icon={faCalendarDays} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Přehled událostí" name="events" path="/events" activeLink={activeLink} />
-					<MenuLink title="Nová událost" name="new-event" path="/new-event" activeLink={activeLink} />
+				<MenuSection
+					title={t("events.name")}
+					name="events-section"
+					icon={faCalendarDays}
+					activeSection={activeSection}
+					openMenuSection={openMenuSection}
+				>
+					<MenuLink title={t("events.allEvents")} name="events" path="/events" activeLink={activeLink} />
+					<MenuLink title={t("events.newEvent")} name="new-event" path="/new-event" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{permissions.products && (
-				<MenuSection title="Produkty" name="products-section" icon={faShoppingCart} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Přehled produktů" name="products" path="/products" activeLink={activeLink} />
-					<MenuLink title="Nový produkt" name="new-product" path="/new-product" activeLink={activeLink} />
+				<MenuSection
+					title={t("products.name")}
+					name="products-section"
+					icon={faShoppingCart}
+					activeSection={activeSection}
+					openMenuSection={openMenuSection}
+				>
+					<MenuLink title={t("products.allProducts")} name="products" path="/products" activeLink={activeLink} />
+					<MenuLink title={t("products.newProduct")} name="new-product" path="/new-product" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{permissions.orders && (
-				<MenuSection title="Objednávky" name="orders-section" icon={faBasketShopping} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Přehled objednávek" name="orders" path="/orders" activeLink={activeLink} />
+				<MenuSection
+					title={t("orders.name")}
+					name="orders-section"
+					icon={faBasketShopping}
+					activeSection={activeSection}
+					openMenuSection={openMenuSection}
+				>
+					<MenuLink title={t("orders.allOrders")} name="orders" path="/orders" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{permissions && (
-				<MenuSection title="Nastavení" name="settings" icon={faGear} activeSection={activeSection} openMenuSection={openMenuSection}>
-					<MenuLink title="Uživatelský profil" name="profile" path="/profile" activeLink={activeLink} />
+				<MenuSection title={t("settings.name")} name="settings" icon={faGear} activeSection={activeSection} openMenuSection={openMenuSection}>
+					<MenuLink title={t("settings.userAccount")} name="profile" path="/profile" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			<li className={css.menu_section}>
 				<div id="logout" onClick={logOut}>
 					<FontAwesomeIcon className={css.icon} icon={faPowerOff} />
-					<label>Odhlásit</label>
+					<label>{t("logout.name")}</label>
 				</div>
 			</li>
 		</>

@@ -1,0 +1,16 @@
+{
+	"htmlTitle": "Stránky | SmartAdminer",
+	"headerPages": "Stránky",
+	"noPagesFound": "Dosud nebyly přidány žádné obsahy stránek.",
+
+	"configSettingsTitle": "Nadpis",
+	"configSettingsDescription": "Popisek",
+	"configSettingsRichEditor": "Rozšířený editor",
+	"configSettingsImage": "Obrázek",
+
+	"htmlTitlePage": "Obsah stránky | SmartAdminer",
+	"placeholderTitle": "Název",
+	"placeholderDescription": "Popisek",
+	"placeholderTextArea": "Text stránky",
+	"buttonSave": "Uložit"
+}

@@ -1,0 +1,46 @@
+{
+	"userAccounts": {
+		"name": "Users",
+		"usersList": "Users list",
+		"rolesAndPrivileges": "Roles & Privileges"
+	},
+	"employees": {
+		"name": "Employees",
+		"employeesList": "Employees list",
+		"vacancies": "Vacancies"
+	},
+	"websiteContent": {
+		"name": "Website content",
+		"sites": "Pages",
+		"gallery": "Gallery",
+		"documents": "Documents",
+		"priceList": "Price list",
+		"notifications": "Notifications"
+	},
+	"articles": {
+		"name": "Articles",
+		"allArticles": "Articles overview",
+		"newArticle": "New article"
+	},
+	"events": {
+		"name": "Events",
+		"allEvents": "Events overview",
+		"newEvent": "New event"
+	},
+	"products": {
+		"name": "Products",
+		"allProducts": "Products overview",
+		"newProduct": "New product"
+	},
+	"orders": {
+		"name": "Orders",
+		"allOrders": "Orders overview"
+	},
+	"settings": {
+		"name": "Settings",
+		"userAccount": "User account"
+	},
+	"logout": {
+		"name": "Logout"
+	}
+}

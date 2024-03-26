@@ -6,13 +6,15 @@ import { AnimatePresence } from "framer-motion";
 import EditPicture from "./EditPicture";
 import Image from "./Image";
 import css from "./css/Images.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function ImageList({ images, allLoadedImages, deleteImageHandler, selectedImages, isMultiSelectionActive, editImageHandler }) {
+	const { t } = useTranslation("gallery");
 	const { setAlert } = useInteraction();
 	const [showEditCont, setShowEditCont] = useState(null);
 
 	const deleteImage = (e) => {
-		setAlert({ id: e.target.parentNode.id, question: "Smazat obrázek?", positiveHandler: deleteImageHandler });
+		setAlert({ id: e.target.parentNode.id, question: t("alertDeleteImage"), positiveHandler: deleteImageHandler });
 	};
 
 	return (
@@ -31,7 +33,7 @@ export default function ImageList({ images, allLoadedImages, deleteImageHandler,
 							/>
 						))
 					) : (
-						<h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>V této kategorii nejsou přidány žádné obrázky.</h2>
+						<h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>{t("headerNoImagesFound")}</h2>
 					)}
 				</AnimatePresence>
 			</section>

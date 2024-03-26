@@ -13,7 +13,7 @@ export async function getDepartments() {
 	return data;
 }
 
-export async function createDepartment(data, auth, setMessage) {
+export async function createDepartment(data, auth, setMessage, positiveText) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments`, {
@@ -34,10 +34,10 @@ export async function createDepartment(data, auth, setMessage) {
 	const responseData = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: "Oddělení bylo vytvořeno" });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export async function updateDepartment(data, auth, setMessage) {
+export async function updateDepartment(data, auth, setMessage, positiveText) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments/${data.id}`, {
@@ -58,10 +58,10 @@ export async function updateDepartment(data, auth, setMessage) {
 	const responseData = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: "Oddělení bylo upraveno" });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export async function removeDepartment(id, auth, setMessage) {
+export async function removeDepartment(id, auth, setMessage, positiveText) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments/${id}`, {
@@ -78,5 +78,5 @@ export async function removeDepartment(id, auth, setMessage) {
 	const data = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: "Oddělení bylo smazáno" });
+	setMessage({ action: "success", text: positiveText });
 }

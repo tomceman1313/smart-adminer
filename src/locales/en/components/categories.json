@@ -1,0 +1,12 @@
+{
+	"header": "Categories",
+	"headerAddCategory": "Create new category:",
+	"alertDeleteCategory": "Delete category {{name}}?",
+	"noDataFound": "No categories have been found",
+	"buttonCreateCategory": "Create",
+	"messageNameIsTaken": "The chosen name is already taken",
+	"positiveTextCreatedCategory": "Category has been created",
+	"positiveTextUpdatedCategory": "Category has been updated",
+	"positiveTextDeletedCategory": "Category has been deleted",
+	"placeholderName": "Category name"
+}

@@ -9,8 +9,10 @@ import { motion } from "framer-motion";
 
 import cssBasic from "../styles/Basic.module.css";
 import css from "./css/Gallery.module.css";
+import { useTranslation } from "react-i18next";
 
 const EditPicture = ({ image, edit, close }) => {
+	const { t } = useTranslation("gallery");
 	const [category, setCategory] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
@@ -59,15 +61,22 @@ const EditPicture = ({ image, edit, close }) => {
 			transition={{ type: "spring", duration: 1 }}
 		>
 			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
-			<h2>Úprava informací</h2>
+			<h2>{t("headerEditImage")}</h2>
 			<form onSubmit={handleSubmit(updateImage)}>
-				<InputBox placeholder="Název obrázku" register={register} type="text" name="title" icon={faHeading} white={true} />
-				<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faQuoteRight} white={true} />
+				<InputBox placeholder={t("placeholderImageTitle")} register={register} type="text" name="title" icon={faHeading} white={true} />
+				<InputBox
+					placeholder={t("placeholderImageDescription")}
+					register={register}
+					type="text"
+					name="description"
+					icon={faQuoteRight}
+					white={true}
+				/>
 
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
 					<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
 						<option value="default" disabled>
-							-- Přiřadit kategorii --
+							{t("placeholderSelectCategory")}
 						</option>
 						{category &&
 							category.map((el) => (
@@ -88,7 +97,7 @@ const EditPicture = ({ image, edit, close }) => {
 						))}
 				</ul>
 
-				<button className="blue_button">Uložit</button>
+				<button className="blue_button">{t("buttonSave")}</button>
 			</form>
 		</motion.section>
 	);

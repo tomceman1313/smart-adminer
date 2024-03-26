@@ -6,16 +6,15 @@ import Message from "../../Components/admin/Message";
 import RequireAuth from "../../Components/admin/RequireAuth";
 import useAuth from "../../Hooks/useAuth";
 import useViewport from "../../Hooks/useViewport";
-import { refreshAccessToken } from "../../modules/ApiAuth";
+import { logOut, refreshAccessToken } from "../../modules/ApiAuth";
 import Banner from "./Banner";
 import DesktopMenu from "./desktop-menu/DesktopMenu";
 import MobileMenu from "./mobile-menu/MobileMenu";
 import { ROUTES } from "./routes";
-import { logOut } from "../../modules/ApiAuth";
 
+import ImageEditor from "../../Components/common/image-editor/ImageEditor";
 import { getAllWithAuth } from "../../modules/ApiFunctions";
 import css from "./Dashboard.module.css";
-import ImageEditor from "../../Components/common/image-editor/ImageEditor";
 
 export default function Dashboard() {
 	const auth = useAuth();
@@ -73,7 +72,6 @@ export default function Dashboard() {
 								</Route>
 							))}
 						</Routes>
-
 						<Alert />
 						<Message />
 						<ImageEditor />

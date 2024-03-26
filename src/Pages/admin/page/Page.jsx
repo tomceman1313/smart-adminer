@@ -14,8 +14,10 @@ import { Helmet } from "react-helmet-async";
 
 import css from "./Page.module.css";
 import TextArea from "../../Components/basic/textarea/TextArea";
+import { useTranslation } from "react-i18next";
 
 export default function Page() {
+	const { t } = useTranslation("pages");
 	const { name } = useParams();
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
@@ -62,16 +64,16 @@ export default function Page() {
 	return (
 		<>
 			<Helmet>
-				<title>Obsah stránky | SmartAdminer</title>
+				<title>{t("htmlTitlePage")}</title>
 			</Helmet>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				{page ? (
 					<section className={css.page}>
-						<h2>Obsah stránky</h2>
+						<h2>{page.page_name}</h2>
 						<p>{page.info}</p>
 						{!!page.config.title && (
 							<InputBox
-								placeholder="Název"
+								placeholder={t("placeholderTitle")}
 								register={register}
 								type="text"
 								name="title"
@@ -83,9 +85,9 @@ export default function Page() {
 						{!!page.config.description && (
 							<TextArea
 								name="description"
+								placeholder={t("placeholderDescription")}
 								icon={faMagnifyingGlass}
 								register={register}
-								placeholder="Popisek"
 								defaultValue={page.description}
 								isRequired={true}
 							/>
@@ -94,10 +96,10 @@ export default function Page() {
 						{!!page.config.rich_editor ? (
 							<TextEditor value={body} setValue={setBody} isLiteVersion={false} headers={[1, 2, 3, 4, 5]} />
 						) : (
-							<TextArea name="body" icon={faTableColumns} register={register} placeholder="Text stránky" defaultValue={page.body} />
+							<TextArea name="body" icon={faTableColumns} register={register} placeholder={t("placeholderTextArea")} defaultValue={page.body} />
 						)}
 						<div className={css.control_box}>
-							<button>Uložit</button>
+							<button>{t("buttonSave")}</button>
 						</div>
 					</section>
 				) : (

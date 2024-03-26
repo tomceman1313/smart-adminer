@@ -1,0 +1,16 @@
+{
+	"htmlTitle": "Pages | SmartAdminer",
+	"headerPages": "Pages",
+	"noPagesFound": "No pages has been found",
+
+	"configSettingsTitle": "Title",
+	"configSettingsDescription": "Description",
+	"configSettingsRichEditor": "Rich editor",
+	"configSettingsImage": "Image",
+
+	"htmlTitlePage": "Page Content | SmartAdminer",
+	"placeholderTitle": "Title",
+	"placeholderDescription": "Description",
+	"placeholderTextArea": "Body of the page",
+	"buttonSave": "Save"
+}

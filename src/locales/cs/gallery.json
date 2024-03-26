@@ -1,0 +1,23 @@
+{
+	"htmlTitle": "Galerie | SmartAdminer",
+	"alertDeleteMultipleImages": "Smazat vybrané fotky?",
+	"textAllImages": "Veškeré fotky",
+	"positiveTextImageCreated": "Obrázek přidán do galerie",
+	"positiveTextImagesCreated": "Obrázky byly přidány do galerie",
+	"positiveTextImageUpdated": "Obrázek byl upraven",
+	"positiveTextImageDeleted": "Obrázek byl smazán",
+
+	"headerCreateImage": "Nový obrázek",
+	"headerCreateMultipleImages": "Přidání obrázků",
+	"headerEditImage": "Úprava informací",
+	"placeholderCategorySelect": "-- Přiřadit kategorii --",
+	"placeholderImageTitle": "Název obrázku",
+	"placeholderImageDescription": "Popisek",
+	"placeholderSelectCategory": "-- Přiřadit kategorii --",
+	"buttonSave": "Uložit",
+	"buttonCreate": "Vložit",
+	"buttonCreateMultiple": "Vložit více",
+
+	"headerNoImagesFound": "Nebyly nalezeny žádné obrázky",
+	"alertDeleteImage": "Smazat obrázek?"
+}

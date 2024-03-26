@@ -4,8 +4,11 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ConfigSettingValue from "./ConfigSettingValue";
 import { motion } from "framer-motion";
 import css from "./Pages.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Page({ page, redirectToPage, index }) {
+	const { t } = useTranslation("pages");
+
 	return (
 		<motion.li
 			className={css.page}
@@ -18,10 +21,10 @@ export default function Page({ page, redirectToPage, index }) {
 				<b>{page.info}</b>
 			</div>
 			<div className={css.page_configs}>
-				<ConfigSettingValue name="Nadpis" isPermitted={page.config.title} />
-				<ConfigSettingValue name="Popisek" isPermitted={page.config.description} />
-				<ConfigSettingValue name="Rozšířený editor" isPermitted={page.config.rich_editor} />
-				<ConfigSettingValue name="Obrázek" isPermitted={page.config.image} />
+				<ConfigSettingValue name={t("configSettingsTitle")} isPermitted={page.config.title} />
+				<ConfigSettingValue name={t("configSettingsDescription")} isPermitted={page.config.description} />
+				<ConfigSettingValue name={t("configSettingsRichEditor")} isPermitted={page.config.rich_editor} />
+				<ConfigSettingValue name={t("configSettingsImage")} isPermitted={page.config.image} />
 			</div>
 			<FontAwesomeIcon className={css.btn_open} icon={faPen} onClick={redirectToPage} />
 		</motion.li>

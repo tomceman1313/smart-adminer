@@ -1,0 +1,12 @@
+{
+	"header": "Kategorie",
+	"headerAddCategory": "Přidat kategorii:",
+	"alertDeleteCategory": "Opravdu si přejet odstranit kategorii {{name}}?",
+	"noDataFound": "Zatím nebyly přidány žádné kategorie",
+	"buttonCreateCategory": "Vytvořit",
+	"messageNameIsTaken": "Kategorie s tímto názvem již existuje",
+	"positiveTextCreatedCategory": "Kategorie byla přidána",
+	"positiveTextUpdatedCategory": "Kategorie byla upravena",
+	"positiveTextDeletedCategory": "Kategorie byla smazána",
+	"placeholderName": "Název kategorie"
+}

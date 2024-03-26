@@ -1,15 +1,18 @@
+import { useTranslation } from "react-i18next";
 import Permission from "./Permission";
 
 export default function PermissionsTable({ permissions, togglePermissionHandler }) {
+	const { t } = useTranslation("profiles");
+
 	return (
 		<table>
 			<thead>
 				<tr>
-					<th>Oblast</th>
-					<th>Čtení</th>
-					<th>Vytváření</th>
-					<th>Upravování</th>
-					<th>Odstraňování</th>
+					<th>{t("tableHeadSection")}</th>
+					<th>{t("tableHeadRead")}</th>
+					<th>{t("tableHeadCreate")}</th>
+					<th>{t("tableHeadUpdate")}</th>
+					<th>{t("tableHeadDelete")}</th>
 				</tr>
 			</thead>
 			<tbody>

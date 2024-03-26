@@ -14,7 +14,7 @@ export async function getRoles(setState, auth) {
 	return data.data;
 }
 
-export async function togglePermission(id, method, setMessage, auth) {
+export async function togglePermission(id, method, setMessage, positiveText, auth) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 	const response = await fetch(`${BASE_URL}/api/users/permissions/${id}/?method=${method}`, {
 		method: "PUT",
@@ -31,9 +31,9 @@ export async function togglePermission(id, method, setMessage, auth) {
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
 	if (response.status === 200) {
-		setMessage({ action: "success", text: "Obrázek byl smazán" });
+		setMessage({ action: "success", text: positiveText });
 	} else {
-		setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
+		setMessage({ action: "failure", text: "Operace se nezdařila", timeout: 6000 });
 	}
 }
 

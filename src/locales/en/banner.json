@@ -1,0 +1,108 @@
+{
+	"dashboard": {
+		"title": "Dashboard",
+		"description": "Overall information from your content"
+	},
+	"userAccounts": {
+		"usersList": {
+			"title": "Users management",
+			"description": "User details, creating and managing users"
+		},
+		"rolesAndPrivileges": {
+			"title": "Roles a Permissions",
+			"description": "Overview and management of role permissions"
+		}
+	},
+	"employees": {
+		"employeesList": {
+			"title": "Employees",
+			"description": "Creation and management of employee profiles"
+		},
+		"vacancies": {
+			"title": "Job advertisements",
+			"description": "Create and manage job position advertisements"
+		},
+		"newVacancy": {
+			"title": "Job advertisement",
+			"description": "Create a new job position advertisement"
+		}
+	},
+	"websiteContent": {
+		"sites": {
+			"title": "Pages",
+			"description": "Edit the dynamic content of your website"
+		},
+		"site": {
+			"title": "Content of page",
+			"description": "Edit the part of dynamic content your website"
+		},
+		"gallery": {
+			"title": "Gallery",
+			"description": "Manage photos in the gallery and create categories to sort them"
+		},
+		"documents": {
+			"title": "Documents",
+			"description": "Manage your documents and create categories to sort them"
+		},
+		"priceList": {
+			"title": "Price list",
+			"description": "Edit price list items, create new items and set promotional prices"
+		},
+		"notifications": {
+			"title": "Notifications",
+			"description": "Inform your visitors about important events"
+		}
+	},
+	"articles": {
+		"allArticles": {
+			"title": "Articles",
+			"description": "Create and manage your articles"
+		},
+		"article": {
+			"title": "Article",
+			"description": "Manage your article"
+		},
+		"newArticle": {
+			"title": "New Article",
+			"description": "Create a new article"
+		}
+	},
+	"events": {
+		"event": {
+			"title": "Event",
+			"description": "Manage your event"
+		},
+		"allEvents": {
+			"title": "Events",
+			"description": "Manage your events and create categories to sort them"
+		},
+		"newEvent": {
+			"title": "New Event",
+			"description": "Create a new event"
+		}
+	},
+	"products": {
+		"product": {
+			"title": "Product",
+			"description": "Manage your product"
+		},
+		"allProducts": {
+			"title": "Products",
+			"description": "Manage your products and create categories to sort them"
+		},
+		"newProduct": {
+			"title": "New Product",
+			"description": "Create a new product"
+		}
+	},
+	"orders": {
+		"allOrders": {
+			"title": "Orders",
+			"description": "Process received orders"
+		}
+	},
+	"profile": {
+		"title": "Your Profile",
+		"description": "Manage your profile"
+	}
+}

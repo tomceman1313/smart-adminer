@@ -23,9 +23,11 @@ import Switch from "../../Components/basic/switch/Switch";
 import ImageInput from "../../Components/basic/image-input/ImageInput";
 import cssBasic from "../styles/Basic.module.css";
 import css from "./Employees.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Employee({ employee, setEmployee, getData, departments, auth }) {
 	const { setMessage } = useInteraction();
+	const { t } = useTranslation("employees");
 
 	const { register, handleSubmit, reset, setValue } = useForm();
 	const [pickedDepartments, setPickedDepartments] = useState([]);
@@ -55,11 +57,11 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.find((dep) => dep.name === el.name));
 		if (employee?.id) {
 			data.departments_deleted = deletedDepartments.current;
-			await edit("employees", data, setMessage, "Profil zaměstnance byl upraven", auth);
+			await edit("employees", data, setMessage, t("positiveTextEditEmployee"), auth);
 		} else {
 			delete data.id;
 			delete data.department_id;
-			await create("employees", data, setMessage, "Profil zaměstnance byl vytvořen", auth);
+			await create("employees", data, setMessage, t("positiveTextCreateEmployee"), auth);
 		}
 		getData();
 		resetForm();
@@ -113,7 +115,7 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 		<AnimatePresence>
 			{employee && (
 				<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
-					<h2>Profil zaměstnance</h2>
+					<h2>{t("headerEmployee")}</h2>
 					<FontAwesomeIcon
 						id={css.close}
 						icon={faXmark}
@@ -123,19 +125,25 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 						}}
 					/>
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<InputBox placeholder="Titul před jménem" register={register} type="text" name="degree_before" icon={faUserGraduate} />
-						<InputBox placeholder="Křestní jméno" register={register} type="text" name="fname" icon={faImagePortrait} isRequired={true} />
-						<InputBox placeholder="Příjmení" register={register} type="text" name="lname" icon={faIdBadge} isRequired={true} />
-						<InputBox placeholder="Titul za jménem" register={register} type="text" name="degree_after" icon={faUserGraduate} />
+						<InputBox placeholder={t("placeholderDegreeBefore")} register={register} type="text" name="degree_before" icon={faUserGraduate} />
+						<InputBox placeholder={t("placeholderFirstName")} register={register} type="text" name="fname" icon={faImagePortrait} isRequired={true} />
+						<InputBox placeholder={t("placeholderLastName")} register={register} type="text" name="lname" icon={faIdBadge} isRequired={true} />
+						<InputBox placeholder={t("placeholderDegreeAfter")} register={register} type="text" name="degree_after" icon={faUserGraduate} />
 
-						<InputBox placeholder="Telefon" register={register} type="tel" name="phone" icon={faMobileScreen} />
-						<InputBox placeholder="Druhý telefon" register={register} type="tel" name="phone_secondary" icon={faMobileScreenButton} />
-						<InputBox placeholder="Email" register={register} type="email" name="email" icon={faAt} />
+						<InputBox placeholder={t("placeholderPhone")} register={register} type="tel" name="phone" icon={faMobileScreen} />
+						<InputBox
+							placeholder={t("placeholderSecondaryPhone")}
+							register={register}
+							type="tel"
+							name="phone_secondary"
+							icon={faMobileScreenButton}
+						/>
+						<InputBox placeholder={t("placeholderEmail")} register={register} type="email" name="email" icon={faAt} />
 
 						<div className={cssBasic.input_box}>
 							<select defaultValue={""} {...register("department_id")} onChange={chooseCategory}>
 								<option value="" disabled>
-									-- Zvolit oddělení --
+									{t("placeholderDepartmentSelect")}
 								</option>
 								{departments &&
 									departments.map((el) => (
@@ -156,17 +164,17 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 								))}
 						</ul>
 
-						<InputBox placeholder="Pozice" register={register} type="text" name="position" icon={faUserTag} isRequired={true} />
+						<InputBox placeholder={t("placeholderPosition")} register={register} type="text" name="position" icon={faUserTag} isRequired={true} />
 
-						<InputBox placeholder="Poznámky" register={register} type="text" name="notes" icon={faCommentDots} />
+						<InputBox placeholder={t("placeholderNotes")} register={register} type="text" name="notes" icon={faCommentDots} />
 
 						<ImageInput name="image" image={employee.image} path="employees" register={register} required={false} />
 
-						<Switch name="active" label="Zaměstnanec je viditelný:" register={register} />
+						<Switch name="active" label={t("placeholderIsVisible")} register={register} />
 
 						<input type="hidden" {...register("id")} />
 
-						<button style={{ marginTop: "20px" }}>Uložit</button>
+						<button style={{ marginTop: "20px" }}>{employee?.id ? t("buttonUpdateEmployee") : t("buttonCreateEmployee")}</button>
 					</form>
 				</motion.section>
 			)}

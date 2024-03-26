@@ -1,0 +1,46 @@
+{
+	"userAccounts": {
+		"name": "Uživatelské profily",
+		"usersList": "Seznam uživatelů",
+		"rolesAndPrivileges": "Role a práva"
+	},
+	"employees": {
+		"name": "Zaměstnanci",
+		"employeesList": "Seznam zaměstnanců",
+		"vacancies": "Inzerované pozice"
+	},
+	"websiteContent": {
+		"name": "Obsah stránek",
+		"sites": "Stránky",
+		"gallery": "Galerie",
+		"documents": "Dokumenty",
+		"priceList": "Ceník",
+		"notifications": "Upozornění"
+	},
+	"articles": {
+		"name": "Články",
+		"allArticles": "Přehled článků",
+		"newArticle": "Nový článek"
+	},
+	"events": {
+		"name": "Události",
+		"allEvents": "Přehled událostí",
+		"newEvent": "Nová událost"
+	},
+	"products": {
+		"name": "Produkty",
+		"allProducts": "Přehled produktů",
+		"newProduct": "Nový produkt"
+	},
+	"orders": {
+		"name": "Objednávky",
+		"allOrders": "Přehled objednávek"
+	},
+	"settings": {
+		"name": "Nastavení",
+		"userAccount": "Uživatelský profil"
+	},
+	"logout": {
+		"name": "Odhlásit"
+	}
+}

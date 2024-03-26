@@ -11,8 +11,10 @@ import { sliceDataBasedOnPageNumber } from "../../modules/BasicFunctions";
 import { Helmet } from "react-helmet-async";
 import ItemsController from "../../Components/common/items-controller/ItemsController";
 import useInteraction from "../../Hooks/useInteraction";
+import { useTranslation } from "react-i18next";
 
 export default function GalleryPage() {
+	const { t } = useTranslation("gallery");
 	const auth = useAuth();
 	const { page } = useParams();
 	const navigate = useNavigate();
@@ -57,12 +59,12 @@ export default function GalleryPage() {
 	}
 
 	async function editImageHandler(data) {
-		await edit("gallery", data, setMessage, "Obrázek byl upraven", auth);
+		await edit("gallery", data, setMessage, t("positiveTextImageUpdated"), auth);
 		loadData();
 	}
 
 	async function deleteImageHandler(id) {
-		await remove("gallery", id, setMessage, "Obrázek byl smazán", auth);
+		await remove("gallery", id, setMessage, t("positiveTextImageDeleted"), auth);
 		loadData();
 	}
 
@@ -81,7 +83,7 @@ export default function GalleryPage() {
 	return (
 		<div className={css.gallery}>
 			<Helmet>
-				<title>Galerie | SmartAdminer</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<Category
 				filterByCategory={filterImagesByCategory}
@@ -101,10 +103,10 @@ export default function GalleryPage() {
 				selectedItems={selectedImages}
 				toggleMultiSelectionActive={() => setIsMultiSelectionActive((prev) => !prev)}
 				settingsConfig={{
-					deleteQuestion: "Smazat vybrané fotky?",
+					deleteQuestion: t("alertDeleteMultipleImages"),
 					searchInput: "",
 					multiSelection: true,
-					allItemsText: "Veškeré fotky",
+					allItemsText: t("textAllImages"),
 				}}
 			/>
 			<ImageList

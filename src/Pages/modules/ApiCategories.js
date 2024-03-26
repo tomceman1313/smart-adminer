@@ -16,7 +16,7 @@ export async function getCategories(setState, apiClass) {
 	return data;
 }
 
-export async function createCategory(data, auth, setMessage, apiClass) {
+export async function createCategory(apiClass, data, setMessage, positiveText, auth) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories`, {
@@ -34,10 +34,10 @@ export async function createCategory(data, auth, setMessage, apiClass) {
 	const rdata = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla přidána" });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export async function updateCategory(data, auth, setMessage, apiClass) {
+export async function updateCategory(apiClass, data, setMessage, positiveText, auth) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${data.id}`, {
@@ -55,10 +55,10 @@ export async function updateCategory(data, auth, setMessage, apiClass) {
 	const rdata = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-	setMessage({ action: "success", text: "Kategorie byla upravena" });
+	setMessage({ action: "success", text: positiveText });
 }
 
-export async function deleteCategory(id, auth, setMessage, apiClass) {
+export async function deleteCategory(apiClass, id, setMessage, positiveText, auth) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${id}`, {
@@ -75,5 +75,5 @@ export async function deleteCategory(id, auth, setMessage, apiClass) {
 	const data = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: "Kategorie byla smazána" });
+	setMessage({ action: "success", text: positiveText });
 }

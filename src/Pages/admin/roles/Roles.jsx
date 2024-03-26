@@ -6,6 +6,7 @@ import { getAll, getAllWithAuth } from "../../modules/ApiFunctions";
 import { togglePermission } from "../../modules/ApiAuth";
 import PermissionsTable from "./PermissionsTable";
 import css from "./Roles.module.css";
+import { useTranslation } from "react-i18next";
 
 function assignPermissionsToRole(roles, permissions) {
 	return roles.map((role) => {
@@ -17,6 +18,7 @@ function assignPermissionsToRole(roles, permissions) {
 export default function Roles() {
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
+	const { t } = useTranslation("profiles");
 
 	const [roles, setRoles] = useState(null);
 
@@ -31,13 +33,13 @@ export default function Roles() {
 	}, [auth]);
 
 	async function togglePermissionHandler(permission_id, method) {
-		await togglePermission(permission_id, method, setMessage, auth);
+		await togglePermission(permission_id, method, setMessage, t("permissionTogglePositiveText"), auth);
 	}
 
 	return (
 		<div className={css.roles}>
 			<Helmet>
-				<title>Role a práva | SmartAdminer</title>
+				<title>{t("htmlRolesTitle")}</title>
 			</Helmet>
 
 			<section>

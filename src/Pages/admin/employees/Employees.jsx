@@ -9,10 +9,12 @@ import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Employees() {
 	const auth = useAuth();
 	const { setMessage, setAlert } = useInteraction();
+	const { t } = useTranslation("employees");
 
 	const allEmployees = useRef([]);
 
@@ -38,12 +40,12 @@ export default function Employees() {
 	}
 
 	async function deleteHandler(id) {
-		await remove("employees", id, setMessage, "Profil zaměstnance byl odstraněn", auth);
+		await remove("employees", id, setMessage, t("positiveTextDelete"), auth);
 		loadData();
 	}
 
 	function deleteEmployee(id, name) {
-		setAlert({ id: id, question: `Opravdu si přejete smazat profil zaměstnance ${name}?`, positiveHandler: deleteHandler });
+		setAlert({ id: id, question: t("alertDeleteEmployee", { name: name }), positiveHandler: deleteHandler });
 	}
 
 	function resetFilter() {
@@ -54,7 +56,7 @@ export default function Employees() {
 	return (
 		<>
 			<Helmet>
-				<title>Zaměstnanci | SmartAdminer</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<Departments
 				departments={departments}
@@ -69,9 +71,9 @@ export default function Employees() {
 				selectedCategory={selectedDepartment}
 				resetFilter={resetFilter}
 				settingsConfig={{
-					searchInput: "Jméno zaměstnance",
+					searchInput: t("placeholderSearchInput"),
 					multiSelection: false,
-					allItemsText: "Všichni zaměstnanci",
+					allItemsText: t("allEmployeesFilterText"),
 				}}
 			/>
 
@@ -82,7 +84,7 @@ export default function Employees() {
 							<EmployeeBasicInfo key={"employeeinfo-" + user.id} user={user} setEmployee={setEmployee} deleteEmployee={deleteEmployee} />
 						))
 					) : (
-						<section>Nejsou vloženy žádné profily zaměstnanců</section>
+						<section>{t("noDataFound")}</section>
 					)}
 				</ul>
 				<Employee employee={employee} setEmployee={setEmployee} getData={loadData} departments={departments} auth={auth} />

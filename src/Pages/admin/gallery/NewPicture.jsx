@@ -11,8 +11,10 @@ import { AnimatePresence } from "framer-motion";
 import cssBasic from "../styles/Basic.module.css";
 import AddMultiplePictures from "./AddMultiplePictures";
 import css from "./css/Gallery.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function NewPicture({ auth, setImages, categories }) {
+	const { t } = useTranslation("gallery");
 	const { setMessage } = useInteraction();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
@@ -30,7 +32,7 @@ export default function NewPicture({ auth, setImages, categories }) {
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
 		data.category_id = pickedCategories;
-		await create("gallery", data, setMessage, "Obrázek vložen", auth);
+		await create("gallery", data, setMessage, t("positiveTextImageCreated"), auth);
 		reset();
 		setPickedCategories([]);
 		loadData();
@@ -66,15 +68,15 @@ export default function NewPicture({ auth, setImages, categories }) {
 	return (
 		<>
 			<section className="half-section">
-				<h2>Nový obrázek</h2>
+				<h2>{t("headerCreateImage")}</h2>
 				<form onSubmit={handleSubmit(createNew)}>
-					<InputBox placeholder="Název obrázku" register={register} type="text" name="title" icon={faHeading} />
-					<InputBox placeholder="Popisek" register={register} type="text" name="description" icon={faQuoteRight} />
+					<InputBox placeholder={t("placeholderImageTitle")} register={register} type="text" name="title" icon={faHeading} />
+					<InputBox placeholder={t("placeholderImageDescription")} register={register} type="text" name="description" icon={faQuoteRight} />
 
 					<div className={cssBasic.input_box}>
 						<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
 							<option value="default" disabled>
-								-- Přiřadit kategorii --
+								{t("placeholderCategorySelect")}
 							</option>
 							{categories &&
 								categories.map((el) => (
@@ -86,7 +88,7 @@ export default function NewPicture({ auth, setImages, categories }) {
 						<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
 					</div>
 
-					<InputBox placeholder="Obrázek" register={register} type="file" name="image" icon={faImage} isRequired={true} accept="image/*" />
+					<InputBox register={register} type="file" name="image" icon={faImage} isRequired={true} accept="image/*" />
 
 					<ul className={css.picked_categories}>
 						{pickedCategories &&
@@ -97,9 +99,9 @@ export default function NewPicture({ auth, setImages, categories }) {
 							))}
 					</ul>
 
-					<button>Vložit</button>
+					<button>{t("buttonCreate")}</button>
 					<button type="button" className="blue_button" onClick={showAddMultiplePictures}>
-						Vložit více
+						{t("buttonCreateMultiple")}
 					</button>
 				</form>
 			</section>

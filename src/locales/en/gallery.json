@@ -1,0 +1,22 @@
+{
+	"htmlTitle": "Gallery | SmartAdminer",
+	"alertDeleteMultipleImages": "Delete selected images?",
+	"textAllImages": "All Images",
+	"positiveTextImageCreated": "Image has been added to the gallery",
+	"positiveTextImagesCreated": "Images have been added to the gallery",
+	"positiveTextImageUpdated": "Image has been updated",
+	"positiveTextImageDeleted": "Image has been deleted",
+
+	"headerCreateImage": "New Image",
+	"headerCreateMultipleImages": "New Images",
+	"headerEditImage": "Image details",
+	"placeholderCategorySelect": "-- Select category --",
+	"placeholderImageTitle": "Image title",
+	"placeholderImageDescription": "Description",
+	"buttonSave": "Save",
+	"buttonCreate": "Create",
+	"buttonCreateMultiple": "Create multiple",
+
+	"headerNoImagesFound": "No images have been found",
+	"alertDeleteImage": "Delete image?"
+}

@@ -1,0 +1,111 @@
+{
+	"dashboard": {
+		"title": "Přehled",
+		"description": "Nejdůležitější informace z chodu stránek"
+	},
+	"userAccounts": {
+		"usersList": {
+			"title": "Správa profilů",
+			"description": "Přehled a správa profilů"
+		},
+		"rolesAndPrivileges": {
+			"title": "Role a práva",
+			"description": "Přehled a správa práv rolí"
+		}
+	},
+	"employees": {
+		"employeesList": {
+			"title": "Seznam zaměstnanců",
+			"description": "Tvorba a správa zaměstnaneckých profilů"
+		},
+		"vacancies": {
+			"title": "Inzeráty pracovních pozic",
+			"description": "Tvořte a spravujte inzeráty pracovních pozic"
+		},
+		"newVacancy": {
+			"title": "Inzerát pracovní pozice",
+			"description": "Tvořte a spravujte inzeráty pracovních pozic"
+		}
+	},
+	"websiteContent": {
+		"sites": {
+			"title": "Stránky",
+			"description": "Upravuje dynamický obsah svých webových stránek"
+		},
+		"site": {
+			"title": "Obsah stránky",
+			"description": "Upravuje dynamický obsah webové stránky"
+		},
+		"gallery": {
+			"title": "Galerie",
+			"description": "Správa fotek v galerii a tvorba kategorií pro jejich rozřazení"
+		},
+		"documents": {
+			"title": "Dokumentový server",
+			"description": "Spravujte vaše dokumenty a tvořte kategorie pro jejich rozřazení"
+		},
+		"priceList": {
+			"title": "Ceník",
+			"description": "Upravujte položky ceníku, vytvářejte nové položky a nastavujte akční ceny"
+		},
+		"notifications": {
+			"title": "Upozornění",
+			"description": "Informujte své návštěvníky o mimořádných událostech"
+		}
+	},
+	"articles": {
+		"allArticles": {
+			"title": "Články",
+			"description": "Tvořte a spravujte své články"
+		},
+		"article": {
+			"title": "Článek",
+			"description": "Spravujte svůj článek"
+		},
+		"newArticle": {
+			"title": "Článek",
+			"description": "Vytvořte nový článek"
+		}
+	},
+	"events": {
+		"event": {
+			"title": "Událost",
+			"description": "Spravujte svou událost"
+		},
+		"allEvents": {
+			"title": "Události",
+			"description": "Spravujte své události a vytvářejte kategorie pro jejich rozřazení"
+		},
+		"newEvent": {
+			"title": "Událost",
+			"description": "Vytvořte novou událost"
+		}
+	},
+	"products": {
+		"product": {
+			"title": "Produkt",
+			"description": "Spravujte svůj produkt"
+		},
+		"allProducts": {
+			"title": "Produkty",
+			"description": "Spravujte své produkty a vytvářejte kategorie pro jejich rozřazení"
+		},
+		"newProduct": {
+			"title": "Produkt",
+			"description": "Vytvořte nový produkt"
+		}
+	},
+	"orders": {
+		"allOrders": {
+			"title": "Objednávky",
+			"description": "Vyřizujte obdržené objednávky"
+		}
+	},
+	"profile": {
+		"title": "Váš profil",
+		"description": "Spravujte svůj profil"
+	},
+	"logout": {
+		"name": "Odhlásit"
+	}
+}

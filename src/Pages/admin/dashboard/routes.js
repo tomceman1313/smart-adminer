@@ -119,14 +119,14 @@ export const ROUTES = [
 	},
 	{
 		name: "vacancy",
-		class: "vacancy",
+		class: "vacancies",
 		path: "vacancy",
 		element: <Vacancy />,
 		allowedRoles: [],
 	},
 	{
 		name: "vacancy-id",
-		class: "vacancy",
+		class: "vacancies",
 		path: "vacancy/:id",
 		element: <Vacancy />,
 		allowedRoles: [],

@@ -4,9 +4,11 @@ import { getAll } from "../../modules/ApiFunctions";
 import PageHeader from "./PageHeader";
 import css from "./Pages.module.css";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 
 export default function Pages() {
 	const [pages, setPages] = useState(null);
+	const { t } = useTranslation("pages");
 
 	useEffect(() => {
 		loadPages();
@@ -35,14 +37,12 @@ export default function Pages() {
 	return (
 		<div>
 			<Helmet>
-				<title>Stránky | SmartAdminer</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
 
 			<section>
-				<h2>Stránky</h2>
-				<ul className={css.vacancies}>
-					{pages ? pages.map((page) => <PageHeader key={page.pageName} page={page} />) : <p>Dosud nebyly přidány žádné obsahy stránek.</p>}
-				</ul>
+				<h2>{t("headerPages")}</h2>
+				<ul className={css.vacancies}>{pages ? pages.map((page) => <PageHeader key={page.pageName} page={page} />) : <p>{t("noPagesFound")}</p>}</ul>
 			</section>
 		</div>
 	);

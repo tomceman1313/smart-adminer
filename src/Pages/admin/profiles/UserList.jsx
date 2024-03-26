@@ -5,10 +5,12 @@ import PlusButton from "../../Components/basic/PlusButton";
 import { faAt, faCaretDown, faIdBadge, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useInteraction from "../../Hooks/useInteraction";
+import { useTranslation } from "react-i18next";
 import css from "./Profiles.module.css";
 
 export default function UserList({ users, roles, submitHandler, deleteHandler }) {
 	const { setAlert } = useInteraction();
+	const { t } = useTranslation("profiles");
 	const [userData, setUserData] = useState(null);
 	const [activeUserInfo, setActiveUserInfo] = useState(null);
 
@@ -19,11 +21,11 @@ export default function UserList({ users, roles, submitHandler, deleteHandler })
 
 	function privilegeToName(roleId) {
 		const selectedRole = roles.find((role) => role.id === roleId);
-		return selectedRole?.name ? selectedRole.name : "Neznámá role";
+		return selectedRole?.name ? selectedRole.name : t("unknownRole");
 	}
 
 	const deleteUser = (id, username) => {
-		setAlert({ id: id, question: `Smazat uživatele ${username}?`, positiveHandler: deleteHandler });
+		setAlert({ id: id, question: t("alertDeleteUser", { username: username }), positiveHandler: deleteHandler });
 	};
 
 	return (
@@ -60,8 +62,8 @@ export default function UserList({ users, roles, submitHandler, deleteHandler })
 									<FontAwesomeIcon icon={faAt} /> {user.email}
 								</label>
 							)}
-							<button onClick={() => showUserDetail(user.id)}>Upravit</button>
-							<button onClick={() => deleteUser(user.id, user.username)}>Smazat</button>
+							<button onClick={() => showUserDetail(user.id)}>{t("editButton")}</button>
+							<button onClick={() => deleteUser(user.id, user.username)}>{t("deleteButton")}</button>
 						</article>
 					</li>
 				))}

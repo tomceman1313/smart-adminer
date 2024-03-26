@@ -1,0 +1,38 @@
+{
+	"htmlTitle": "Zaměstnanci | SmartAdminer",
+	"positiveTextDelete": "Profil zaměstnance byl odstraněn",
+	"alertDeleteEmployee": "Smazat profil zaměstnance {{name}}?",
+	"placeholderSearchInput": "Jméno zaměstnance",
+	"allEmployeesFilterText": "Všichni zaměstnanci",
+	"noDataFound": "Nejsou vloženy žádné profily zaměstnanců",
+
+	"headerDepartments": "Oddělení",
+	"headerAddNewDepartment": "Přidat oddělení:",
+	"positiveTextCreateDepartment": "Oddělení bylo vytvořeno",
+	"positiveTextUpdateDepartment": "Oddělení bylo upraveno",
+	"positiveTextDeleteDepartment": "Oddělení bylo smazáno",
+	"alertDeleteDepartment": "Opravdu si přejete odstranit oddělení {{name}}?",
+	"messageNameIsTaken": "Oddělení s tímto názvem již existuje",
+	"placeholderNewDepartment": "Název oddělení",
+	"buttonCreateDepartment": "Vytvořit",
+
+	"altProfileImage": "Profilový obrázek zaměstnance",
+	"buttonEditEmployee": "Upravit",
+	"buttonDeleteEmployee": "Smazat",
+
+	"headerEmployee": "Profil zaměstnance",
+	"placeholderDegreeBefore": "Titul před jménem",
+	"placeholderFirstName": "Křestní jméno",
+	"placeholderLastName": "Příjmení",
+	"placeholderDegreeAfter": "Titul za jménem",
+	"placeholderPhone": "Telefon",
+	"placeholderSecondaryPhone": "Druhý telefon",
+	"placeholderEmail": "Email",
+	"placeholderDepartmentSelect": "-- Zvolit oddělení --",
+	"placeholderPosition": "Pozice",
+	"placeholderNotes": "Poznámky",
+	"placeholderIsVisible": "Zaměstnanec je viditelný:",
+	"buttonCreateEmployee": "Vytvořit",
+	"positiveTextEditEmployee": "Profil zaměstnance byl upraven",
+	"positiveTextCreateEmployee": "Profil zaměstnance byl vytvořen"
+}

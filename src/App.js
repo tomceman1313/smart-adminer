@@ -5,7 +5,7 @@ import Login from "./Pages/Login";
 import Dashboard from "./Pages/admin/dashboard/Dashboard";
 import { InteractionProvider } from "./Pages/context/InteractionContext";
 import { ImageEditorProvider } from "./Pages/context/ImageEditorContext";
-///demo/sulicka
+
 function App() {
 	return (
 		<div className="App">

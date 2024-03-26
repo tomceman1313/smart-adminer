@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { publicPath } from "../../modules/BasicFunctions";
 import css from "./Employees.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee }) {
+	const { t } = useTranslation("employees");
 	const [isMoreInfoVisible, setIsMoreInfoVisible] = useState(false);
 	const arrowIcon = useRef(null);
 
@@ -22,7 +24,7 @@ export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee })
 		<li>
 			<img
 				src={user.image ? `${publicPath}/images/employees/${user.image}` : `${publicPath}/images/employees/no_photo.jpg`}
-				alt="Profilový obrázek zaměstnance"
+				alt={t("altProfileImage")}
 			/>
 			<div>
 				<label>{`${user.degree_before} ${user.fname} ${user.lname} ${user.degree_after}`}</label>
@@ -38,15 +40,19 @@ export default function EmployeeBasicInfo({ user, deleteEmployee, setEmployee })
 							<FontAwesomeIcon icon={faIdBadge} />
 							{user.fname + " " + user.lname}
 						</label>
-						<label>
-							<FontAwesomeIcon icon={faMobileScreen} /> {user.phone}
-						</label>
-						<label>
-							<FontAwesomeIcon icon={faAt} /> {user.email}
-						</label>
-						<button onClick={showAllInfo}>Upravit</button>
+						{user?.phone && (
+							<label>
+								<FontAwesomeIcon icon={faMobileScreen} /> {user.phone}
+							</label>
+						)}
+						{user.email && (
+							<label>
+								<FontAwesomeIcon icon={faAt} /> {user.email}
+							</label>
+						)}
+						<button onClick={showAllInfo}>{t("buttonShowEmployeeDetail")}</button>
 						<button className="red_button" onClick={() => deleteEmployee(user.id, `${user.fname} ${user.lname}`)}>
-							Smazat
+							{t("buttonDeleteEmployee")}
 						</button>
 					</motion.article>
 				)}
