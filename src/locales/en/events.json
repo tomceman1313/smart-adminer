@@ -1,0 +1,31 @@
+{
+	"htmlTitleEvents": "Events | SmartAdminer",
+	"searchArticleTitle": "Event title",
+	"searchAllEvents": "All events",
+
+	"htmlTitleNewEvent": "New Event",
+	"headerBasicInfo": "Basic information",
+	"headerAdditionalInfo": "Additional information",
+	"headerEventBody": "Event body",
+	"headerAdditionalImages": "Additional images:",
+	"headerAddImages": "Add images:",
+	"headerFilter": "Filter:",
+
+	"positiveTextEventCreated": "Event has been created",
+	"positiveTextEventUpdated": "Event has been updated",
+	"positiveTextEventDeleted": "Event has been deleted",
+	"alertDeleteEvent": "Delete event?",
+
+	"placeholderTitle": "Title",
+	"placeholderDescription": "Description",
+	"placeholderIsVisible": "Event is visible:",
+	"placeholderDate": "Publication date",
+	"placeholderCategory": "-- Select category --",
+	"placeholderImage": "",
+	"placeholderImages": "",
+	"buttonCreate": "Create",
+	"buttonSave": "Save",
+	"buttonDelete": "Delete",
+	"buttonPreview": "Event preview",
+	"buttonReset": "Reset"
+}

@@ -1,0 +1,23 @@
+{
+	"htmlTitle": "User Profile | SmartAdminer",
+	"headerUserInfo": "User Credentials",
+
+	"positiveTextUserUpdated": "User info has been updated",
+	"positiveTextPasswordChanged": "Password has been changed",
+	"messagePasswordNotChanged": "Password has not been changed",
+	"messagePasswordsNotEquals": "Passwords are not equal",
+
+	"placeholderUsername": "Username",
+	"placeholderFirstName": "First name",
+	"placeholderLastName": "Last name",
+	"placeholderPhone": "Phone",
+	"placeholderEmail": "Email",
+	"placeholderPassword": "New password",
+	"placeholderRepeatPassword": "Repeat password",
+
+	"buttonChangePassword": "Change password",
+	"buttonSave": "Save",
+	"buttonEdit": "Edit",
+	"buttonChange": "Change",
+	"buttonCancel": "Cancel"
+}

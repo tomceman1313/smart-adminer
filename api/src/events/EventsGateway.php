@@ -100,7 +100,7 @@ class EventsGateway
     public function update(array $data)
     {
         $sql = "UPDATE events SET title = :title, description = :description, body = :body, 
-        date = :date, category_id = :category_id, owner_id = :owner_id, active = :active";
+        date = :date, category_id = :category_id, active = :active";
 
 
         $sql_values = [
@@ -109,7 +109,6 @@ class EventsGateway
             'body' => $data["body"],
             'date' => $data["date"],
             'category_id' => $data["category_id"],
-            'owner_id' => $data["owner_id"],
             'active' => $data["active"],
             'id' => $data["id"]
         ];

@@ -1,0 +1,27 @@
+{
+	"htmlTitle": "Notifications | SmartAdminer",
+	"headerNotificationsList": "Notifications",
+	"headerNewNotification": "New Notification",
+	"headerEditNotification": "Edit Notification",
+
+	"tableHeadTitle": "Title",
+	"tableHeadText": "Text",
+	"tableHeadUrl": "URL",
+	"tableHeadState": "State",
+	"noDataFound": "No notifications have been found",
+
+	"messageInvalidDates": "Notification start and end dates are incorrect",
+	"alertDeleteNotification": "Delete notification?",
+	"positiveTextNotificationCreated": "Notification has been created",
+	"positiveTextNotificationUpdated": "Notification has been updated",
+	"positiveTextNotificationDeleted": "Notification has been deleted",
+
+	"placeholderTitle": "Title",
+	"placeholderUrl": "URL",
+	"placeholderText": "Text",
+	"placeholderDateStart": "Start date",
+	"placeholderDateEnd": "End date",
+	"buttonCreate": "Create",
+	"buttonSave": "Save",
+	"buttonDelete": "Delete"
+}

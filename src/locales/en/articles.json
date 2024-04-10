@@ -1,0 +1,28 @@
+{
+	"htmlTitleArticles": "Articles | SmartAdminer",
+	"searchArticleTitle": "Article title",
+	"searchAllArticles": "All articles",
+
+	"htmlTitleNewArticle": "New Article",
+	"headerBasicInfo": "Basic information",
+	"headerAdditionalInfo": "Additional information",
+	"headerArticleBody": "Article body",
+	"headerAdditionalImages": "Additional images:",
+	"headerAddImages": "Add images:",
+	"positiveTextArticleCreated": "Article has been created",
+	"positiveTextArticleUpdated": "Article has been updated",
+	"positiveTextArticleDeleted": "Article has been deleted",
+	"alertDeleteArticle": "Delete article?",
+
+	"placeholderTitle": "Title",
+	"placeholderDescription": "Description",
+	"placeholderIsVisible": "Article is visible:",
+	"placeholderDate": "Publication date",
+	"placeholderCategory": "-- Select category --",
+	"placeholderImage": "",
+	"placeholderImages": "",
+	"buttonCreate": "Create",
+	"buttonSave": "Save",
+	"buttonDelete": "Delete",
+	"buttonPreview": "Article preview"
+}

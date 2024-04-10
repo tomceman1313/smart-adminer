@@ -1,0 +1,25 @@
+{
+	"htmlTitle": "Dokumenty | SmartAdminer",
+	"alertDeleteMultipleDocuments": "Smazat vybrané dokumenty?",
+	"placeholderSearchInput": "Název dokumentu",
+	"textAllDocuments": "Veškeré dokumenty",
+	"positiveTextDocumentCreated": "Soubor byl nahrán",
+	"positiveTextDocumentsCreated": "Soubory byly nahrány",
+	"positiveTextDocumentUpdated": "Soubor byl upraven",
+	"positiveTextDocumentDeleted": "Soubor byl smazán",
+	"positiveTextOrderChanged": "Pořadí dokumentů bylo upraveno",
+
+	"headerCreateDocument": "Nový soubor",
+	"headerCreateMultipleDocuments": "Přidání souborů",
+	"headerEditDocument": "Úprava dokumentu",
+	"placeholderCategorySelect": "-- Přiřadit kategorii --",
+	"placeholderDocumentTitle": "Název",
+	"placeholderDocumentDescription": "Popisek",
+	"placeholderDocumentDate": "Datum přidání",
+	"buttonSave": "Uložit",
+	"buttonCreate": "Vložit",
+	"buttonCreateMultiple": "Vložit více",
+
+	"noDataFound": "Nebyly nalezeny žádné soubory",
+	"alertDeleteDocument": "Smazat soubor?"
+}

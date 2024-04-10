@@ -1,0 +1,26 @@
+{
+	"htmlTitle": "Inzerované pozice | SmartAdminer",
+	"htmlTitleNewVacancy": "Nový inzerát",
+
+	"noDataFound": "Dosud nebyly přidány žádné inzeráty",
+
+	"headerPositions": "Pracovní místa",
+	"headerBasicInfo": "Základní informace",
+	"headerDetailText": "Detailní popis",
+
+	"positiveTextAdDeleted": "Inzerát byl odstraněn",
+	"positiveTextAdCreated": "Inzerát byl upraven",
+	"positiveTextAdUpdated": "Inzerát byl upraven",
+	"alertDeleteAd": "Opravdu si přejete smazat inzerát?",
+	"messageDetailDescriptionIsEmpty": "Detailní popis musí být vyplněn",
+
+	"placeholderTitle": "Název",
+	"placeholderDescription": "Popisek",
+	"placeholderDate": "Datum zveřejnění",
+	"placeholderIsVisible": "Inzerát je viditelný:",
+
+	"buttonSave": "Uložit",
+	"buttonCreate": "Vytvořit",
+	"buttonDelete": "Smazat",
+	"buttonPreview": "Náhled inzerátu"
+}

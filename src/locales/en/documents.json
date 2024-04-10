@@ -1,0 +1,25 @@
+{
+	"htmlTitle": "Files | SmartAdminer",
+	"alertDeleteMultipleDocuments": "Delete selected files?",
+	"placeholderSearchInput": "File name",
+	"textAllDocuments": "All files",
+	"positiveTextDocumentCreated": "File has been created",
+	"positiveTextDocumentsCreated": "Files have been created",
+	"positiveTextDocumentUpdated": "File has been updated",
+	"positiveTextDocumentDeleted": "File has been deleted",
+	"positiveTextOrderChanged": "Order of the files has been updated",
+
+	"headerCreateDocument": "New File",
+	"headerCreateMultipleDocuments": "New Files",
+	"headerEditDocument": "File detail",
+	"placeholderCategorySelect": "-- Select category --",
+	"placeholderDocumentTitle": "Title",
+	"placeholderDocumentDescription": "Description",
+	"placeholderDocumentDate": "Date of creation",
+	"buttonSave": "Save",
+	"buttonCreate": "Create",
+	"buttonCreateMultiple": "Create multiple",
+
+	"noDataFound": "No files have been found",
+	"alertDeleteDocument": "Delete file?"
+}

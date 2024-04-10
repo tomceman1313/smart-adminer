@@ -41,8 +41,8 @@
 			"description": "Manage photos in the gallery and create categories to sort them"
 		},
 		"documents": {
-			"title": "Documents",
-			"description": "Manage your documents and create categories to sort them"
+			"title": "Files",
+			"description": "Manage your files and create categories to sort them"
 		},
 		"priceList": {
 			"title": "Price list",

@@ -1,0 +1,28 @@
+.wrapper {
+	height: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.animated_check {
+	height: 20px;
+	width: 15px;
+}
+
+.animated_check path {
+	fill: none;
+	stroke: white;
+	stroke-width: 4;
+	stroke-dasharray: 23;
+	stroke-dashoffset: 23;
+	animation: draw 0.5s linear forwards;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+@keyframes draw {
+	to {
+		stroke-dashoffset: 0;
+	}
+}

@@ -12,7 +12,7 @@ class EmployeesGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM employees";
+        $sql = "SELECT * FROM employees ORDER BY lname";
         $stmt = $this->conn->query($sql);
 
         $departments = $this->getDepartments();

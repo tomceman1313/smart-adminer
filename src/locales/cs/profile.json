@@ -1,0 +1,23 @@
+{
+	"htmlTitle": "Správa profilu | SmartAdminer",
+	"headerUserInfo": "Uživatelské údaje",
+
+	"positiveTextUserUpdated": "Profil upraven",
+	"positiveTextPasswordChanged": "Heslo bylo úspěšně změněno",
+	"messagePasswordNotChanged": "Heslo se nepodařilo změnit",
+	"messagePasswordsNotEquals": "Hesla se neshodují",
+
+	"placeholderUsername": "Uživatelské jméno",
+	"placeholderFirstName": "Křestní jméno",
+	"placeholderLastName": "Příjmení",
+	"placeholderPhone": "Telefon",
+	"placeholderEmail": "Email",
+	"placeholderPassword": "Nové heslo",
+	"placeholderRepeatPassword": "Heslo znovu",
+
+	"buttonChangePassword": "Změnit heslo",
+	"buttonSave": "Uložit",
+	"buttonEdit": "Upravit",
+	"buttonChange": "Změnit",
+	"buttonCancel": "Zrušit"
+}

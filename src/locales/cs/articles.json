@@ -1,0 +1,28 @@
+{
+	"htmlTitleArticles": "Články | SmartAdminer",
+	"searchArticleTitle": "Nadpis článku",
+	"searchAllArticles": "Veškeré články",
+
+	"htmlTitleNewArticle": "Nový článek",
+	"headerBasicInfo": "Základní informace",
+	"headerAdditionalInfo": "Doplňující informace",
+	"headerArticleBody": "Text článku",
+	"headerAdditionalImages": "Obrázky pod článkem:",
+	"headerAddImages": "Přidat obrázky:",
+	"positiveTextArticleCreated": "Článek byl vytvořen",
+	"positiveTextArticleUpdated": "Článek byl upraven",
+	"positiveTextArticleDeleted": "Článek byl odstraněn",
+	"alertDeleteArticle": "Odstranit článek?",
+
+	"placeholderTitle": "Titulek",
+	"placeholderDescription": "Popisek",
+	"placeholderIsVisible": "Článek je viditelný:",
+	"placeholderDate": "Datum zveřejnění",
+	"placeholderCategory": "-- Kategorie článku --",
+	"placeholderImage": "",
+	"placeholderImages": "",
+	"buttonCreate": "Vytvořit",
+	"buttonSave": "Uložit",
+	"buttonDelete": "Smazat",
+	"buttonPreview": "Náhled článku"
+}

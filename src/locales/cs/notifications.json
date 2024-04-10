@@ -1,0 +1,27 @@
+{
+	"htmlTitle": "Upozornění | SmartAdminer",
+	"headerNotificationsList": "Seznam upozornění",
+	"headerNewNotification": "Nová notifikace",
+	"headerEditNotification": "Úprava upozornění",
+
+	"tableHeadTitle": "Nadpis",
+	"tableHeadText": "Text",
+	"tableHeadUrl": "URL",
+	"tableHeadState": "Stav",
+	"noDataFound": "Zatím nebyla přidána žádná upozornění",
+
+	"messageInvalidDates": "Datum začátku a konce upozornění je zadáno nesprávně",
+	"alertDeleteNotification": "Smazat notifikaci?",
+	"positiveTextNotificationCreated": "Upozornění vytvořeno",
+	"positiveTextNotificationUpdated": "Upozornění bylo upraveno",
+	"positiveTextNotificationDeleted": "Upozornění bylo odstraněno",
+
+	"placeholderTitle": "Nadpis",
+	"placeholderUrl": "Url adresa",
+	"placeholderText": "Text upozornění",
+	"placeholderDateStart": "Počáteční datum",
+	"placeholderDateEnd": "Konečné datum",
+	"buttonCreate": "Vytvořit",
+	"buttonSave": "Uložit",
+	"buttonDelete": "Smazat"
+}

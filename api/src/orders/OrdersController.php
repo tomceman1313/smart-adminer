@@ -31,7 +31,7 @@ class OrdersController
                 echo json_encode($data);
                 return;
 
-            case ($method == "GET" && $uri == "/api/orders/codes"):
+            case ($method == "GET" && $uri == "/api/orders/statuses"):
                 $data = $this->gateway->getStatusCodes();
                 echo json_encode($data);
                 return;

@@ -1,0 +1,31 @@
+{
+	"htmlTitleArticles": "Události | SmartAdminer",
+	"searchArticleTitle": "Nadpis události",
+	"searchAllArticles": "Veškeré události",
+
+	"htmlTitleNewArticle": "Nová událost",
+	"headerBasicInfo": "Základní informace",
+	"headerAdditionalInfo": "Doplňující informace",
+	"headerArticleBody": "Text události",
+	"headerAdditionalImages": "Obrázky k události:",
+	"headerAddImages": "Přidat obrázky:",
+	"headerFilter": "Filtrovat:",
+
+	"positiveTextEventCreated": "Událost byla vytvořen",
+	"positiveTextEventUpdated": "Událost byla upraven",
+	"positiveTextEventDeleted": "Událost byla odstraněn",
+	"alertDeleteEvent": "Odstranit událost?",
+
+	"placeholderTitle": "Titulek",
+	"placeholderDescription": "Popisek",
+	"placeholderIsVisible": "Událost je viditelná:",
+	"placeholderDate": "Datum zveřejnění",
+	"placeholderCategory": "-- Zvolte kategorii --",
+	"placeholderImage": "",
+	"placeholderImages": "",
+	"buttonCreate": "Vytvořit",
+	"buttonSave": "Uložit",
+	"buttonDelete": "Smazat",
+	"buttonPreview": "Náhled události",
+	"buttonReset": "Resetovat"
+}

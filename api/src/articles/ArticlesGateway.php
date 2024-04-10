@@ -166,14 +166,13 @@ class ArticlesGateway
 
     public function update(array $data)
     {
-        $sql = "UPDATE articles SET title = :title, description = :description, body = :body, date = :date, category_id = :category_id, owner_id = :owner_id, active = :active";
+        $sql = "UPDATE articles SET title = :title, description = :description, body = :body, date = :date, category_id = :category_id, active = :active";
         $sql_values = [
             'title' => $data["title"],
             'description' => $data["description"],
             'body' => $data["body"],
             'date' => $data["date"],
             'category_id' => $data["category_id"],
-            'owner_id' => $data["owner_id"],
             'active' => $data["active"],
             'id' => $data["id"]
         ];

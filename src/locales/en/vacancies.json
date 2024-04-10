@@ -1,0 +1,26 @@
+{
+	"htmlTitle": "Job Advertisement | SmartAdminer",
+	"htmlTitleNewVacancy": "New Job Advertisement",
+
+	"noDataFound": "No job advertisements have been added yet",
+
+	"headerPositions": "Job Advertisement",
+	"headerBasicInfo": "Basic information",
+	"headerDetailText": "Detail description",
+
+	"positiveTextAdDeleted": "Job advertisement has been deleted",
+	"positiveTextAdCreated": "Job advertisement has been created",
+	"positiveTextAdUpdated": "Job advertisement has been updated",
+	"alertDeleteAd": "Delete the advertisement?",
+	"messageDetailDescriptionIsEmpty": "A detailed description must be filled out",
+
+	"placeholderTitle": "Title",
+	"placeholderDescription": "Description",
+	"placeholderDate": "Publication date",
+	"placeholderIsVisible": "Ad is visible:",
+
+	"buttonSave": "Save",
+	"buttonCreate": "Create",
+	"buttonDelete": "Delete",
+	"buttonPreview": "Preview"
+}
