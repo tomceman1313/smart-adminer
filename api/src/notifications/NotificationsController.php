@@ -54,7 +54,7 @@ class NotificationsController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/notifications\/[0-9]*$/', $uri)):
-                $this->gateway->update($data["data"]);
+                $this->gateway->update($data["data"], $url_parts[3]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

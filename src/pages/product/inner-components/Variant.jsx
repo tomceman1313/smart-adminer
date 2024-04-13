@@ -4,17 +4,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 
-import css from "../styles/Product.module.css";
 import { useTranslation } from "react-i18next";
+import css from "../styles/Product.module.css";
 
 const Variant = ({ el, variants, setVariants, setParameters }) => {
 	const { t } = useTranslation("products");
 
 	const [variantName, setVariantName] = useState(el.name);
+	const debounceName = useDebounce(variantName);
+
 	const [price, setPrice] = useState(el.price);
 	const [inStock, setInStock] = useState(el.in_stock);
-
-	const debounceName = useDebounce(variantName);
 
 	useEffect(() => {
 		const indexUpdatedVariant = variants.indexOf(el);
@@ -23,7 +23,7 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 
 		setParameters((prev) => {
 			return prev.map((item) => {
-				if (item.variant === variantName) {
+				if (item.variant === el.name) {
 					item.variant = debounceName;
 				}
 				return item;

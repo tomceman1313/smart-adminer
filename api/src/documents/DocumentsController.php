@@ -32,6 +32,12 @@ class DocumentsController
                 echo json_encode($result);
                 return;
 
+            case ($method == "GET" && preg_match('/\/api\/documents\/\?categoryName=[0-9]*+/', $uri) && isset($_GET["categoryName"])):
+                $category_name = $_GET["categoryName"];
+                $result = $this->gateway->getByCategoryName($category_name);
+                echo json_encode($result);
+                return;
+
             case ($method == "GET" && preg_match('/\/api\/documents\/\?name=[\w%]+$/', $uri) && isset($_GET["name"])):
                 $document_name = $_GET["name"];
                 $result = $this->gateway->getByName($document_name);
@@ -135,7 +141,7 @@ class DocumentsController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/documents\/categories\/[0-9]*$/', $uri)):
-                $this->gateway->updateCategory($data["data"]);
+                $this->gateway->updateCategory($data["data"], $url_parts[4]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

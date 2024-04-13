@@ -1,6 +1,6 @@
 import React from "react";
 import css from "../styles/InputBoxWithPlaceholder.module.css";
-
+//unused
 export default function InputBoxWithPlaceholder({ placeholder, type, name, register }) {
 	return (
 		<div className={css.input}>

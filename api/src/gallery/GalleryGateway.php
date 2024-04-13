@@ -9,24 +9,30 @@ class GalleryGateway
         $this->path = $path;
     }
 
-    function getAll($page): array
+    function getAll($pagination): array
     {
-        $sql = "SELECT * FROM gallery ORDER BY id DESC";
+        $sql = "SELECT * FROM gallery ORDER BY id DESC LIMIT $pagination";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute();
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            $data["data"][] = $row;
         }
+
+        $sql = "SELECT COUNT(*) FROM gallery";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $length = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data["total_length"] = $length["COUNT(*)"];
 
         return $data;
     }
 
-    function getByCategory(string $category_id): array
+    function getByCategory(string $category_id, $pagination): array
     {
-        $sql = "SELECT * FROM image_category WHERE category_id=:id";
+        $sql = "SELECT * FROM image_category WHERE category_id=:id LIMIT $pagination";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'id' => $category_id
@@ -46,16 +52,22 @@ class GalleryGateway
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            $data["data"][] = $row;
         }
+
+        $sql = "SELECT COUNT(*) FROM gallery";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $length = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data["total_length"] = $length["COUNT(*)"];
 
         return $data;
     }
 
-    function getByCategoryName(string $category_name): array
+    function getByCategoryName(string $category_name, $pagination): array
     {
         $sql = "SELECT gallery.* FROM gallery_categories INNER JOIN image_category ON gallery_categories.id = image_category.category_id 
-        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name";
+        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name LIMIT $pagination";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -71,6 +83,7 @@ class GalleryGateway
         return $data;
     }
 
+    //unused
     public function get(string $id): array
     {
         $sql = "SELECT * FROM gallery WHERE id = :id LIMIT 1";
@@ -255,30 +268,26 @@ class GalleryGateway
         return $data;
     }
 
-    public function createCategory(array $data): bool
+    public function createCategory(array $data)
     {
         $sql = "INSERT INTO gallery_categories (name) VALUES (:name)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'name' => $data["name"]
         ]);
-
-        return true;
     }
 
-    public function updateCategory(array $data): bool
+    public function updateCategory(array $data, $id)
     {
         $sql = "UPDATE gallery_categories SET name = :name WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'name' => $data["name"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
-
-        return true;
     }
 
-    public function deleteCategory(string $id): int
+    public function deleteCategory(string $id)
     {
         $sql = "DELETE FROM gallery_categories WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -298,8 +307,5 @@ class GalleryGateway
             $stmt->bindValue(":id", $row["id"], PDO::PARAM_INT);
             $stmt->execute();
         }
-
-
-        return true;
     }
 }

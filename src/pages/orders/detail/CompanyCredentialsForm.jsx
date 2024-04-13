@@ -20,9 +20,15 @@ export default function CompanyCredentialsForm({ register, customer }) {
 					</h3>
 					{isVisible && (
 						<>
-							<InputBox placeholder={t("placeholderCompanyName")} register={register} name="company_name" icon={faCopyright} />
-							<InputBox placeholder={t("placeholderCIN")} register={register} name="ic" icon={faBuilding} />
-							<InputBox placeholder={t("placeholderVAT_ID")} register={register} name="dic" icon={faHandHoldingDollar} />
+							<InputBox
+								placeholder={t("placeholderCompanyName")}
+								register={register}
+								name="company_name"
+								defaultValue={customer.company_name}
+								icon={faCopyright}
+							/>
+							<InputBox placeholder={t("placeholderCIN")} register={register} name="ic" defaultValue={customer.ic} icon={faBuilding} />
+							<InputBox placeholder={t("placeholderVAT_ID")} register={register} name="dic" defaultValue={customer.dic} icon={faHandHoldingDollar} />
 						</>
 					)}
 				</div>

@@ -85,7 +85,7 @@ class OrdersController
                 ]);
                 break;
 
-            case ($method == "PUT" && preg_match('/^\/api\/orders\/status\/[0-9]+$/', $uri)):
+            case ($method == "PUT" && preg_match('/^\/api\/orders\/[0-9]+\/status$/', $uri)):
                 $this->gateway->updateStatus($data["data"]);
                 echo json_encode([
                     "message" => "Updated",

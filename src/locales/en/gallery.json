@@ -6,6 +6,7 @@
 	"positiveTextImagesCreated": "Images have been added to the gallery",
 	"positiveTextImageUpdated": "Image has been updated",
 	"positiveTextImageDeleted": "Image has been deleted",
+	"positiveTextImagesDeleted": "Images have been deleted",
 
 	"headerCreateImage": "New Image",
 	"headerCreateMultipleImages": "New Images",

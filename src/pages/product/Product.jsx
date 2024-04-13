@@ -110,7 +110,7 @@ export default function Product() {
 
 		data.categories = pickedCategories;
 		if (id) {
-			if (product.current.name !== data.name && !isAvailable) {
+			if (product.name !== data.name && !isAvailable) {
 				setMessage({ action: "alert", text: t("messageProductExists") });
 				return;
 			}
@@ -167,7 +167,7 @@ export default function Product() {
 	return (
 		<>
 			<Helmet>
-				<title>{id ? product?.title : t("htmlTitleProduct")} | SmartAdminer</title>
+				<title>{product?.name ? product.name : t("htmlTitleProduct")} | SmartAdminer</title>
 			</Helmet>
 			{manufacturers ? (
 				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +212,7 @@ export default function Product() {
 					<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
 					{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
 
-					<DetailText detailText={detailText} setDetailText={setDetailText} />
+					<DetailText detailText={detailText} setDetailText={setDetailText} key={detailText ? "filled" : "empty"} />
 
 					<section className={css.images}>
 						<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />

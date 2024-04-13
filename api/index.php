@@ -53,7 +53,7 @@ $URL_PARTS = explode("/", $URI);
 $REQUEST_METHOD = $_SERVER['REQUEST_METHOD'];
 
 $id = null;
-$page = null;
+$page = 0;
 $controller = null;
 
 if (isset($_GET["id"])) {

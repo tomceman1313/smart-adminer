@@ -1,7 +1,7 @@
 import { BASE_URL } from "./ApiFunctions";
 
 export async function findById(id) {
-	const response = await fetch(`${BASE_URL}/api/?class=orders&action=findById&id=${id}`, {
+	const response = await fetch(`${BASE_URL}/api/orders/filter/${id}`, {
 		method: "GET",
 	});
 

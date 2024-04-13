@@ -38,7 +38,7 @@ class NotificationsGateway
         ]);
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $sql = "UPDATE notifications SET title = :title, text = :text, path = :path,
          start = :start, end = :end WHERE id = :id";
@@ -55,7 +55,7 @@ class NotificationsGateway
             'path' => $data["path"],
             'start' => $data["start"],
             'end' => $data["end"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
     }
 

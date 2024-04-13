@@ -1,20 +1,19 @@
-import { faHashtag, faXmark, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { multipleCreate } from "../../modules/ApiDocuments";
 import { getCategories } from "../../modules/ApiCategories";
-import useInteraction from "../../hooks/useInteraction";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
-import cssBasic from "../../components/styles/Basic.module.css";
-import css from "./css/Documents.module.css";
 import { useTranslation } from "react-i18next";
+import cssBasic from "../../components/styles/Basic.module.css";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import css from "./css/Documents.module.css";
 
-const AddMultipleFiles = ({ auth, close, refreshFiles }) => {
+const AddMultipleFiles = ({ close, refreshFiles }) => {
 	const { t } = useTranslation("documents");
-	const { setMessage } = useInteraction();
+	const { multipleCreate } = useBasicApiFunctions();
 	const [category, setCategory] = useState(null);
 	const { register, handleSubmit, reset } = useForm();
 
@@ -34,8 +33,7 @@ const AddMultipleFiles = ({ auth, close, refreshFiles }) => {
 		const date = new Date();
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
-		await multipleCreate(data, auth);
-		setMessage({ action: "success", text: t("positiveTextDocumentsCreated") });
+		await multipleCreate(data, t("positiveTextDocumentsCreated"));
 		reset();
 		refreshFiles();
 		close();

@@ -32,7 +32,7 @@ export default function Dashboard() {
 		loadPermissions();
 
 		async function loadPermissions() {
-			const _permissions = await getAllWithAuth(`users/permissions/${auth.userInfo.role}`, auth);
+			const _permissions = await getAllWithAuth(`users/roles/${auth.userInfo.role}/permissions`, auth);
 			setPermissions(_permissions);
 		}
 	}, [auth, navigate, location]);

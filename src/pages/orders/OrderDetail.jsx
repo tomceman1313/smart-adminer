@@ -49,10 +49,6 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 		setValue("completed_date", makeDateFormat(_order.completed_date, "str"));
 		setValue("comments", _order.comments);
 
-		setValue("company_name", _order.customer.company_name);
-		setValue("ic", _order.customer.ic ? _order.customer.ic : "");
-		setValue("dic", _order.customer.dic ? _order.customer.dic : "");
-
 		setValue("status_code", _order.status_code);
 		setValue("payment_method", _order.payment_method);
 		setValue("shipping_type_id", _order.shipping_type_id);
@@ -72,8 +68,8 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 		if (data.completed_date) {
 			data.completed_date = makeDateFormat(data.completed_date);
 		}
-
 		data.customer_id = order.customer.id;
+		console.log(data);
 		await edit("orders", data, setMessage, t("positiveTextOrderUpdated"), auth);
 		reloadData();
 		setVisible(false);

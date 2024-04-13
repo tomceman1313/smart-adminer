@@ -26,7 +26,6 @@ export default function Orders() {
 	async function loadData() {
 		const _orders = await filterOrders([]);
 		setOrders(_orders);
-		console.log(orders);
 		const _shipping_types = await getShippingTypes();
 		setShippingTypes(_shipping_types);
 		const _status_codes = await getStatusCodes();

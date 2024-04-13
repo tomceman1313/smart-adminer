@@ -44,13 +44,13 @@ class ManufacturerGateway
         ]);
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $sql = "UPDATE product_manufacturers SET name = :name WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'name' => $data["name"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
     }
 

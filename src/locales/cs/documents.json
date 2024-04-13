@@ -7,6 +7,7 @@
 	"positiveTextDocumentsCreated": "Soubory byly nahrány",
 	"positiveTextDocumentUpdated": "Soubor byl upraven",
 	"positiveTextDocumentDeleted": "Soubor byl smazán",
+	"positiveTextDocumentsDeleted": "Soubory byly smazány",
 	"positiveTextOrderChanged": "Pořadí dokumentů bylo upraveno",
 
 	"headerCreateDocument": "Nový soubor",

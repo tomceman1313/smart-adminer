@@ -1,47 +1,55 @@
-import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import useAuth from "../../hooks/useAuth";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
-import { getAll, remove } from "../../modules/ApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
 import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
-import { useTranslation } from "react-i18next";
 
 export default function Employees() {
 	const auth = useAuth();
-	const { setMessage, setAlert } = useInteraction();
+	const { getAll, remove, getByCategory } = useBasicApiFunctions();
+	const { searchByName } = useItemsControllerApiFunctions();
+	const { setAlert } = useInteraction();
 	const { t } = useTranslation("employees");
 
 	const allEmployees = useRef([]);
 
-	const [employees, setEmployees] = useState([]);
 	const [employee, setEmployee] = useState(null);
 	const [departments, setDepartments] = useState(null);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 
-	useEffect(() => {
-		loadData();
-	}, []);
-
-	async function loadData() {
-		const data = await getAll("employees");
-		allEmployees.current = data;
-		setEmployees(data);
-	}
+	const [searchedName, setSearchedName] = useState("");
+	const { data: employees, refetch } = useQuery({
+		queryKey: ["employees", selectedDepartment, searchedName],
+		queryFn: async () => {
+			let data;
+			if (searchedName !== "") {
+				data = await searchByName("employees", searchedName, selectedDepartment);
+			} else if (selectedDepartment) {
+				data = await getByCategory("employees", selectedDepartment.id);
+			} else {
+				data = await getAll("employees");
+				allEmployees.current = data;
+			}
+			return data;
+		},
+	});
 
 	async function filterEmployeesByDepartment(id, name) {
-		const filteredEmployees = await allEmployees.current.filter((empl) => empl.departments.find((dep) => dep.department_id === id));
-		setEmployees(filteredEmployees);
 		setSelectedDepartment({ id: id, name: name });
 	}
 
 	async function deleteHandler(id) {
-		await remove("employees", id, setMessage, t("positiveTextDelete"), auth);
-		loadData();
+		await remove("employees", id, t("positiveTextDelete"));
+		refetch();
 	}
 
 	function deleteEmployee(id, name) {
@@ -49,7 +57,7 @@ export default function Employees() {
 	}
 
 	function resetFilter() {
-		setEmployees(allEmployees.current);
+		refetch();
 		setSelectedDepartment(null);
 	}
 
@@ -61,13 +69,12 @@ export default function Employees() {
 			<Departments
 				departments={departments}
 				setDepartments={setDepartments}
-				refreshAllData={loadData}
+				refreshAllData={refetch}
 				filterEmployeesByDepartment={filterEmployeesByDepartment}
 			/>
 
 			<ItemsController
-				apiClass="employees"
-				setState={setEmployees}
+				setSearchedName={setSearchedName}
 				selectedCategory={selectedDepartment}
 				resetFilter={resetFilter}
 				settingsConfig={{
@@ -79,7 +86,7 @@ export default function Employees() {
 
 			<section className="no-section">
 				<ul className={css.employees}>
-					{employees.length > 0 ? (
+					{employees?.length > 0 ? (
 						employees.map((user) => (
 							<EmployeeBasicInfo key={"employeeinfo-" + user.id} user={user} setEmployee={setEmployee} deleteEmployee={deleteEmployee} />
 						))
@@ -87,7 +94,7 @@ export default function Employees() {
 						<section>{t("noDataFound")}</section>
 					)}
 				</ul>
-				<Employee employee={employee} setEmployee={setEmployee} getData={loadData} departments={departments} auth={auth} />
+				<Employee employee={employee} setEmployee={setEmployee} getData={refetch} departments={departments} auth={auth} />
 			</section>
 
 			<PlusButton onClick={() => setEmployee({})} />

@@ -114,7 +114,7 @@ class AuthGateway
     /**
      * * Gets permissions of given role within called class
      */
-    private function getRolePermission($role_id, $class): array
+    private function getRolePermission($role_id, $class)
     {
         $sql = "SELECT * FROM role_permission WHERE role_id = :role_id AND class = :class LIMIT 1";
         $stmt = $this->conn->prepare($sql);

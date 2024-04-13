@@ -6,6 +6,7 @@
 	"positiveTextImagesCreated": "Obrázky byly přidány do galerie",
 	"positiveTextImageUpdated": "Obrázek byl upraven",
 	"positiveTextImageDeleted": "Obrázek byl smazán",
+	"positiveTextImagesDeleted": "Obrázky byly smazány",
 
 	"headerCreateImage": "Nový obrázek",
 	"headerCreateMultipleImages": "Přidání obrázků",

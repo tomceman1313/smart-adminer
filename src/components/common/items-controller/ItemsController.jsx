@@ -1,15 +1,14 @@
-import SearchInput from "../../basic/search-input/SearchInput";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilterCircleXmark, faTrashCan, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faFilterCircleXmark, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
-import useInteraction from "../../../hooks/useInteraction";
-import css from "./ItemsController.module.css";
 import { useTranslation } from "react-i18next";
+import useInteraction from "../../../hooks/useInteraction";
+import SearchInput from "../../basic/search-input/SearchInput";
+import css from "./ItemsController.module.css";
 
 export default function ItemsController({
-	apiClass,
-	setState,
+	setSearchedName,
 	selectedCategory,
 	selectedItems,
 	isMultiSelection,
@@ -52,13 +51,7 @@ export default function ItemsController({
 					</h3>
 
 					{settingsConfig.searchInput && (
-						<SearchInput
-							key={`search-${selectedCategory?.name}`}
-							apiClass={apiClass}
-							placeholder={settingsConfig.searchInput}
-							selectedCategory={selectedCategory}
-							setState={setState}
-						/>
+						<SearchInput key={`search-${selectedCategory?.name}`} setSearchedName={setSearchedName} placeholder={settingsConfig.searchInput} />
 					)}
 
 					<div className={css.controls}>

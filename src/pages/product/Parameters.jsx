@@ -19,7 +19,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 
 	//change activeVariant to first in list after some variant is changed
 	useEffect(() => {
-		if (activeParamsIndex !== 0) changeVariant(variants[0]?.name);
+		changeVariant(variants[0]?.name);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [variants]);
 

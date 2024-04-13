@@ -90,7 +90,7 @@ class ArticlesGateway
         return $data;
     }
 
-    function getByCategoryName(string $category_name): array
+    public function getByCategoryName(string $category_name): array
     {
         $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles_categories.name = :category_name";
         $stmt = $this->conn->prepare($sql);
@@ -164,7 +164,7 @@ class ArticlesGateway
         }
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $sql = "UPDATE articles SET title = :title, description = :description, body = :body, date = :date, category_id = :category_id, active = :active";
         $sql_values = [
@@ -174,7 +174,7 @@ class ArticlesGateway
             'date' => $data["date"],
             'category_id' => $data["category_id"],
             'active' => $data["active"],
-            'id' => $data["id"]
+            'id' => $id
         ];
 
 
@@ -271,7 +271,7 @@ class ArticlesGateway
         return true;
     }
 
-    public function updateCategory(array $data): bool
+    public function updateCategory(array $data, $id): bool
     {
         $sql = "UPDATE articles_categories SET name = :name WHERE id = :id";
 
@@ -279,7 +279,7 @@ class ArticlesGateway
 
         $stmt->execute([
             'name' => $data["name"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
 
         return true;

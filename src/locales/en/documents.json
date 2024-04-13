@@ -7,6 +7,7 @@
 	"positiveTextDocumentsCreated": "Files have been created",
 	"positiveTextDocumentUpdated": "File has been updated",
 	"positiveTextDocumentDeleted": "File has been deleted",
+	"positiveTextDocumentsDeleted": "Files have been deleted",
 	"positiveTextOrderChanged": "Order of the files has been updated",
 
 	"headerCreateDocument": "New File",

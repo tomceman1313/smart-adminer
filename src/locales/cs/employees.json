@@ -17,7 +17,7 @@
 	"buttonCreateDepartment": "Vytvořit",
 
 	"altProfileImage": "Profilový obrázek zaměstnance",
-	"buttonEditEmployee": "Upravit",
+	"buttonShowEmployeeDetail": "Upravit",
 	"buttonDeleteEmployee": "Smazat",
 
 	"headerEmployee": "Profil zaměstnance",
@@ -33,6 +33,7 @@
 	"placeholderNotes": "Poznámky",
 	"placeholderIsVisible": "Zaměstnanec je viditelný:",
 	"buttonCreateEmployee": "Vytvořit",
+	"buttonUpdateEmployee": "Uložit",
 	"positiveTextEditEmployee": "Profil zaměstnance byl upraven",
 	"positiveTextCreateEmployee": "Profil zaměstnance byl vytvořen"
 }

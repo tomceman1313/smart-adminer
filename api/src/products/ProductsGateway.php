@@ -78,7 +78,7 @@ class ProductsGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM products";
+        $sql = "SELECT * FROM products ORDER BY id DESC";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute();

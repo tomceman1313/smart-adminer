@@ -7,8 +7,8 @@ export default function useBasicApiFunctions() {
 	const { setMessage } = useInteraction();
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
-	async function getAll(apiClass) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}`, {
+	async function getAll(apiClass, page) {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}${page ? `/?page=${page}` : ""}`, {
 			method: "GET",
 		});
 
@@ -162,5 +162,16 @@ export default function useBasicApiFunctions() {
 		}
 	}
 
-	return { getAll, get, getByName, getByCategory, create, edit, remove, updateOrder, deleteImage, checkNameAvailability };
+	return {
+		getAll,
+		get,
+		getByName,
+		getByCategory,
+		create,
+		edit,
+		remove,
+		updateOrder,
+		deleteImage,
+		checkNameAvailability,
+	};
 }

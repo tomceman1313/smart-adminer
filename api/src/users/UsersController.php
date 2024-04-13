@@ -44,7 +44,7 @@ class UsersController
 
         //API endpoints for all authenticated users
         switch ($method | $uri) {
-            case ($method == "GET" && preg_match('/^\/api\/users\/permissions\/[0-9]*$/', $uri)):
+            case ($method == "GET" && preg_match('/^\/api\/users\/roles\/[0-9]*\/permissions$/', $uri)):
                 $result = $this->gateway->getRolePermissions($url_parts[4]);
                 echo json_encode([
                     "data" => $result,
@@ -66,7 +66,7 @@ class UsersController
                     return;
 
                 case ($method == "PUT" && preg_match('/^\/api\/users\/[0-9]*$/', $uri)):
-                    $this->gateway->update($data["data"]);
+                    $this->gateway->update($data["data"], $url_parts[3]);
                     echo json_encode([
                         "message" => "User edited",
                         "token" => $authAction["token"]

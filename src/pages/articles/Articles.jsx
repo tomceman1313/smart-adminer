@@ -10,33 +10,37 @@ import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 import css from "./Articles.module.css";
 import { useTranslation } from "react-i18next";
+import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
 
 const Articles = () => {
 	const { t } = useTranslation("articles");
 	const navigate = useNavigate();
 	const { getAll, getByCategory } = useBasicApiFunctions();
-
-	const [articles, setArticles] = useState(null);
-	const { refetch: refetchArticles, isLoading } = useQuery({
-		queryKey: ["articles"],
-		queryFn: async () => {
-			const data = await getAll("articles");
-			setSelectedCategory(null);
-			setArticles(data);
-			return data;
-		},
-	});
+	const { searchByName } = useItemsControllerApiFunctions();
 
 	const [categories, setCategories] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
-	useQuery({
-		queryKey: ["categories", selectedCategory],
+	const [searchedName, setSearchedName] = useState("");
+
+	const {
+		data: articles,
+		refetch: refetchArticles,
+		isLoading,
+	} = useQuery({
+		queryKey: ["articles", selectedCategory, searchedName],
 		queryFn: async () => {
-			const data = await getByCategory("articles", selectedCategory?.id);
-			setArticles(data);
+			let data;
+			if (searchedName !== "") {
+				data = await searchByName("articles", searchedName, selectedCategory);
+			} else if (selectedCategory) {
+				data = await getByCategory("articles", selectedCategory?.id);
+			} else {
+				data = await getAll("articles");
+				setSelectedCategory(null);
+			}
+
 			return data;
 		},
-		enabled: false,
 	});
 
 	const openArticleDetails = (e) => {
@@ -65,8 +69,7 @@ const Articles = () => {
 				/>
 
 				<ItemsController
-					apiClass="articles"
-					setState={setArticles}
+					setSearchedName={setSearchedName}
 					selectedCategory={selectedCategory}
 					resetFilter={refetchArticles}
 					settingsConfig={{

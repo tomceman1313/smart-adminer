@@ -1,19 +1,18 @@
-import { faFile, faHashtag, faHeading, faImage, faInfo, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays, faFile, faHashtag, faHeading, faImage, faInfo } from "@fortawesome/free-solid-svg-icons";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import InputBox from "../../components/basic/InputBox";
-import useInteraction from "../../hooks/useInteraction";
-import { create } from "../../modules/ApiFunctions";
-import { convertBase64, makeDate, makeDateFormat } from "../../modules/BasicFunctions";
-import DatePicker from "../../components/basic/DatePicker";
-import { AnimatePresence } from "framer-motion";
-import AddMultipleFiles from "./AddMultipleFiles";
-import Select from "../../components/basic/select/Select";
 import { useTranslation } from "react-i18next";
+import DatePicker from "../../components/basic/DatePicker";
+import InputBox from "../../components/basic/InputBox";
+import Select from "../../components/basic/select/Select";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import { convertBase64, makeDate, makeDateFormat } from "../../modules/BasicFunctions";
+import AddMultipleFiles from "./AddMultipleFiles";
 
-const NewDocument = ({ auth, refreshData, categories }) => {
+const NewDocument = ({ refreshData, categories }) => {
 	const { t } = useTranslation("documents");
-	const { setMessage } = useInteraction();
+	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
 	const { register, handleSubmit, reset } = useForm();
@@ -42,7 +41,7 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 			const date = new Date();
 			data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 		}
-		await create("documents", data, setMessage, t("positiveTextDocumentCreated"), auth);
+		await create("documents", data, t("positiveTextDocumentCreated"));
 		reset();
 		refreshData();
 	};
@@ -78,7 +77,7 @@ const NewDocument = ({ auth, refreshData, categories }) => {
 			</section>
 
 			<AnimatePresence>
-				{addMultiplePictures && <AddMultipleFiles auth={auth} close={() => setAddMultiplePictures(false)} refreshFiles={refreshData} />}
+				{addMultiplePictures && <AddMultipleFiles close={() => setAddMultiplePictures(false)} refreshFiles={refreshData} />}
 			</AnimatePresence>
 		</>
 	);

@@ -47,7 +47,7 @@ class CategoryGateway
         return true;
     }
 
-    public function updateCategory(array $data): bool
+    public function updateCategory(array $data, $id): bool
     {
         $sql = "UPDATE products_category SET name = :name WHERE id = :id";
 
@@ -55,7 +55,7 @@ class CategoryGateway
 
         $stmt->execute([
             'name' => $data["name"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
 
         return true;

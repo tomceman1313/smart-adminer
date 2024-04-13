@@ -246,13 +246,9 @@ class OrdersGateway
 
     public function update(array $data)
     {
-        $sql = "UPDATE customers SET fname = :fname, lname = :lname, address = :address, city = :city, postal_code = :postal_code, phone = :phone, email = :email, 
-        company_name = :company_name, ic = :ic, dic = :dic, delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address = :delivery_address, delivery_city = :delivery_city, 
-        delivery_postal_code = :delivery_postal_code WHERE id = :id";
+        $sql = "UPDATE customers SET fname = :fname, lname = :lname, address = :address, city = :city, postal_code = :postal_code, phone = :phone, email = :email";
 
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
+        $sql_values = [
             'id' => $data["customer_id"],
             'fname' => $data["fname"],
             'lname' => $data["lname"],
@@ -261,17 +257,35 @@ class OrdersGateway
             'postal_code' => $data["postal_code"],
             'phone' => $data["phone"],
             'email' => $data["email"],
-            'company_name' => $data["company_name"],
-            'ic' => $data["ic"],
-            'dic' => $data["dic"],
-            'delivery_fname' => $data["delivery_fname"],
-            'delivery_lname' => $data["delivery_lname"],
-            'delivery_address' => $data["delivery_address"],
-            'delivery_city' => $data["delivery_city"],
-            'delivery_postal_code' => $data["delivery_postal_code"]
-        ]);
+        ];
 
-        $sql = "UPDATE orders SET status_code = :status_code, payment_method = :payment_method, shipping_type_id = :shipping_type_id, shipped_date = :shipped_date, completed_date = :completed_date, comments = :comments WHERE id = :id";
+        if (isset($data["delivery_address"])) {
+            $sql_values["delivery_fname"] = $data["delivery_fname"];
+            $sql_values["delivery_lname"] = $data["delivery_lname"];
+            $sql_values["delivery_address"] = $data["delivery_address"];
+            $sql_values["delivery_city"] = $data["delivery_city"];
+            $sql_values["delivery_postal_code"] = $data["delivery_postal_code"];
+
+            $sql .= ", delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address = :delivery_address, delivery_city = :delivery_city, 
+            delivery_postal_code = :delivery_postal_code";
+        }
+
+        if (isset($data["company_name"])) {
+            $sql_values["company_name"] = $data["company_name"];
+            $sql_values["ic"] = $data["ic"];
+            $sql_values["dic"] = $data["dic"];
+
+            $sql .= ", company_name = :company_name, ic = :ic, dic = :dic";
+        }
+
+        $sql .= " WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute($sql_values);
+
+        $sql = "UPDATE orders SET status_code = :status_code, payment_method = :payment_method, shipping_type_id = :shipping_type_id, 
+            order_date = :order_date, shipped_date = :shipped_date, completed_date = :completed_date, comments = :comments WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -279,6 +293,7 @@ class OrdersGateway
             'status_code' => $data["status_code"],
             'payment_method' => $data["payment_method"],
             'shipping_type_id' => $data["shipping_type_id"],
+            'order_date' => $data["order_date"],
             'shipped_date' => $data["shipped_date"],
             'completed_date' => $data["completed_date"],
             'comments' => $data["comments"]

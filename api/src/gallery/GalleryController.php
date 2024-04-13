@@ -18,24 +18,32 @@ class GalleryController
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
+        $uri = preg_replace('/page=[0-9]+/', "", $uri);
+        $uri = preg_replace('/\/\?\&/', "/?", $uri);
+        $uri = preg_replace('/\/\?$/', "", $uri);
         $url_parts = explode("/", $uri);
 
+        $limit = 8;
+        $offset = ($page > 0 ? $page - 1 : 0) * $limit;
+        $pagination = "$offset, $limit";
 
         switch ($method | $uri) {
             case ($method == "GET" && $uri == "/api/gallery"):
-                $result = $this->gateway->getAll($page);
+                $result = $this->gateway->getAll($pagination);
+                $result["total_pages"] = round($result["total_length"] / $limit);
                 echo json_encode($result);
                 return;
 
             case ($method == "GET" && preg_match('/\/api\/gallery\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
                 $category_id = $_GET["category"];
-                $result = $this->gateway->getByCategory($category_id);
+                $result = $this->gateway->getByCategory($category_id, $pagination);
+                $result["total_pages"] = round($result["total_length"] / $limit);
                 echo json_encode($result);
                 return;
 
             case ($method == "GET" && preg_match('/\/api\/gallery\/\?categoryName=[0-9]*/', $uri) && isset($_GET["categoryName"])):
                 $category_name = $_GET["categoryName"];
-                $result = $this->gateway->getByCategoryName($category_name);
+                $result = $this->gateway->getByCategoryName($category_name, $pagination);
                 echo json_encode($result);
                 return;
 
@@ -80,7 +88,7 @@ class GalleryController
                 $this->gateway->multipleCreate($data["ids"]);
                 http_response_code(201);
                 echo json_encode([
-                    "message" => "Items created",
+                    "message" => "Images created",
                     "token" => $authAction["token"]
                 ]);
                 break;
@@ -96,7 +104,7 @@ class GalleryController
             case ($method == "DELETE" && preg_match('/^\/api\/gallery\/[0-9]*$/', $uri)):
                 $this->gateway->delete($url_parts[3]);
                 echo json_encode([
-                    "message" => "Item deleted",
+                    "message" => "Image deleted",
                     "token" => $authAction["token"]
                 ]);
                 break;
@@ -105,7 +113,7 @@ class GalleryController
                 if ($decoded_ids_array !== null) {
                     $this->gateway->multipleDelete($decoded_ids_array);
                     echo json_encode([
-                        "message" => "Items deleted",
+                        "message" => "Images deleted",
                         "token" => $authAction["token"]
                     ]);
                 } else {
@@ -123,7 +131,7 @@ class GalleryController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/gallery\/categories\/[0-9]*$/', $uri)):
-                $this->gateway->updateCategory($data["data"]);
+                $this->gateway->updateCategory($data["data"], $url_parts[4]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

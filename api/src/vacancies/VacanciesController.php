@@ -58,7 +58,7 @@ class VacanciesController
                 ]);
                 break;
             case ($method == "PUT" && preg_match('/^\/api\/vacancies\/[0-9]*$/', $uri)):
-                $result = $this->gateway->update($data["data"]);
+                $result = $this->gateway->update($data["data"], $url_parts[3]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

@@ -52,7 +52,7 @@ class UsersGateway
         return $this->conn->lastInsertId();
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $sql = "UPDATE users SET username = :username, tel = :tel, email = :email, fname = :fname, lname = :lname";
 
@@ -62,7 +62,7 @@ class UsersGateway
             "email" => $data["email"],
             "fname" => $data["fname"],
             "lname" => $data["lname"],
-            "id" => $data["id"],
+            "id" => $id,
         ];
 
         if (isset($data["role_id"])) {

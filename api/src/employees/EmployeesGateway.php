@@ -35,6 +35,13 @@ class EmployeesGateway
         ]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return null;
+        }
+
+        $departments = $this->getDepartments();
+        $data["departments"] = $this->getEmployeeDepartments($id, $departments);
         return $data;
     }
 

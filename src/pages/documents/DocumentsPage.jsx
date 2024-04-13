@@ -1,65 +1,76 @@
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import Category from "../../components/common/categories-component/Category";
-import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
-import { multipleDelete } from "../../modules/ApiDocuments";
-import { getAll, getByCategory, remove, updateOrder } from "../../modules/ApiFunctions";
+import ItemsController from "../../components/common/items-controller/ItemsController";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
 import DocumentList from "./DocumentList";
 import EditDocument from "./EditDocument";
 import NewDocument from "./NewDocument";
-import ItemsController from "../../components/common/items-controller/ItemsController";
 import css from "./css/Documents.module.css";
-import { useTranslation } from "react-i18next";
 
 export default function DocumentsPage() {
 	const { t } = useTranslation("documents");
-	const auth = useAuth();
-	const { setMessage } = useInteraction();
-	const [documents, setDocuments] = useState(null);
+	const { getAll, getByCategory, remove, updateOrder } = useBasicApiFunctions();
+	const { multipleDelete, searchByName } = useItemsControllerApiFunctions();
 	const [categories, setCategories] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [editedDocument, setEditedDocument] = useState(null);
 	const [isMultiSelection, setIsMultiSelection] = useState(false);
 	const selectedDocuments = useRef(new Map());
 
-	useEffect(() => {
-		loadData();
-	}, []);
-
-	function editDocument(info) {
-		setEditedDocument(info);
-	}
-
-	async function loadData() {
-		const data = await getAll("documents");
-		setSelectedCategory(null);
-		setDocuments(data);
-	}
-
-	async function filterByCategory(id) {
-		const data = await getByCategory("documents", id);
-		setDocuments(data);
-		const categoryName = categories.filter((item) => item.id === id);
-		setSelectedCategory(categoryName[0]);
-	}
+	const [documents, setDocuments] = useState(null);
+	const [searchedName, setSearchedName] = useState("");
+	const { refetch } = useQuery({
+		queryKey: ["documents", selectedCategory, searchedName],
+		queryFn: async () => {
+			let data;
+			if (searchedName !== "") {
+				data = await searchByName("documents", searchedName, selectedCategory);
+			} else if (selectedCategory) {
+				data = await getByCategory("documents", selectedCategory.id);
+			} else {
+				data = await getAll("documents");
+				setSelectedCategory(null);
+			}
+			setDocuments(data);
+			return data;
+		},
+	});
 
 	async function deleteDocumentHandler(id) {
-		await remove("documents", id, setMessage, t("positiveTextDocumentDeleted"), auth);
-		loadData();
+		await remove("documents", id, t("positiveTextDocumentDeleted"));
+		refetch();
 	}
 
 	async function deleteDocumentsHandler(ids) {
-		await multipleDelete(ids, auth, setMessage);
-		loadData();
+		await multipleDelete(ids, t("positiveTextDocumentsDeleted"));
+		refetch();
 		setIsMultiSelection(false);
 	}
 
 	async function orderDocumentsHandler(documentsIds) {
 		const categoryId = categories.find((category) => category.name === selectedCategory.name)?.id;
 		const data = { category_id: categoryId, documents_ids: documentsIds };
-		await updateOrder("documents", data, setMessage, t("positiveTextOrderChanged"), auth);
+		await updateOrder("documents", data, t("positiveTextOrderChanged"));
+	}
+
+	function filterByCategory(id) {
+		const categoryName = categories.filter((item) => item.id === id);
+		setSelectedCategory(categoryName[0]);
+	}
+
+	function editDocument(info) {
+		setEditedDocument(info);
+	}
+
+	function resetFilter() {
+		refetch();
+		setSelectedCategory(null);
+		setSearchedName("");
 	}
 
 	return (
@@ -67,21 +78,14 @@ export default function DocumentsPage() {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<Category
-				categories={categories}
-				setCategories={setCategories}
-				apiClass="documents"
-				filterByCategory={filterByCategory}
-				reloadData={loadData}
-			/>
-			<NewDocument auth={auth} refreshData={loadData} categories={categories} />
+			<Category categories={categories} setCategories={setCategories} apiClass="documents" filterByCategory={filterByCategory} reloadData={refetch} />
+			<NewDocument refreshData={refetch} categories={categories} />
 			<ItemsController
-				apiClass="documents"
-				setState={setDocuments}
+				setSearchedName={setSearchedName}
 				selectedCategory={selectedCategory}
 				isMultiSelection={isMultiSelection}
 				deleteItems={deleteDocumentsHandler}
-				resetFilter={loadData}
+				resetFilter={resetFilter}
 				selectedItems={selectedDocuments}
 				toggleMultiSelectionActive={() => setIsMultiSelection((prev) => !prev)}
 				settingsConfig={{
@@ -99,13 +103,13 @@ export default function DocumentsPage() {
 				setDocumentsOrderHandler={orderDocumentsHandler}
 				editDocument={editDocument}
 				selectedCategory={selectedCategory}
-				resetFilter={loadData}
+				resetFilter={resetFilter}
 				selectedDocuments={selectedDocuments}
 				isMultiSelection={isMultiSelection}
 			/>
 			<AnimatePresence>
 				{editedDocument && (
-					<EditDocument editedDocument={editedDocument} auth={auth} categories={categories} refreshData={loadData} setVisible={setEditedDocument} />
+					<EditDocument editedDocument={editedDocument} categories={categories} refreshData={refetch} setVisible={setEditedDocument} />
 				)}
 			</AnimatePresence>
 		</div>

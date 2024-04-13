@@ -38,6 +38,12 @@ class EventsController
                 echo json_encode($data);
                 return;
 
+            case ($method == "GET" && preg_match('/^\/api\/events\/\?categoryName=[\w%]+$/', $uri) && isset($_GET["categoryName"])):
+                $category_name = $_GET["categoryName"];
+                $data = $this->gateway->getByCategoryName($category_name);
+                echo json_encode($data);
+                return;
+
             case ($method == "GET" && $uri == "/api/events/categories"):
                 $result = $this->gateway->getCategories();
                 echo json_encode($result);

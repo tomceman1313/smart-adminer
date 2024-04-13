@@ -71,7 +71,7 @@ class PagesGateway
         return $data;
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $new_image_name = "";
         if (isset($data["prev_image"])) {
@@ -90,13 +90,13 @@ class PagesGateway
             'description' => isset($data["description"]) ? $data["description"] : "",
             'body' => $data["body"],
             'image' => isset($data["prev_image"]) ? $new_image_name : $data["image"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
 
         if (isset($data["inner_images"])) {
             $innerImages = $data["inner_images"];
             foreach ($innerImages as $image) {
-                $this->createImage($image["name"], $image["file"], $data["id"], "inner");
+                $this->createImage($image["name"], $image["file"], $id, "inner");
             }
         }
 

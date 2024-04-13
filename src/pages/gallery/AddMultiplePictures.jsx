@@ -1,20 +1,18 @@
-import { faHashtag, faXmark, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { multipleCreate } from "../../modules/ApiGallery";
 import { getCategories } from "../../modules/ApiCategories";
-import useInteraction from "../../hooks/useInteraction";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
-
-import cssBasic from "../../components/styles/Basic.module.css";
-import css from "./css/Gallery.module.css";
 import { useTranslation } from "react-i18next";
+import cssBasic from "../../components/styles/Basic.module.css";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import css from "./css/Gallery.module.css";
 
-const AddMultiplePictures = ({ auth, close, refreshImages }) => {
+const AddMultiplePictures = ({ close, refreshImages }) => {
 	const { t } = useTranslation("gallery");
-	const { setMessage } = useInteraction();
+	const { multipleCreate } = useBasicApiFunctions();
 	const [categories, setCategories] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
@@ -35,8 +33,7 @@ const AddMultiplePictures = ({ auth, close, refreshImages }) => {
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 		data.category_id = pickedCategories;
 
-		await multipleCreate(data, auth);
-		setMessage({ action: "success", text: t("positiveTextImagesCreated") });
+		await multipleCreate(data, t("positiveTextImagesCreated"));
 		reset();
 		setPickedCategories([]);
 		refreshImages();

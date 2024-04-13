@@ -87,7 +87,6 @@ class ArticlesController
         switch ($method | $uri) {
             case ($method == "POST" && $uri == "/api/articles"):
                 $userId = $this->auth->decodeToken($authAction["token"]);
-                var_dump($userId);
                 if ($userId != null) {
                     $id = $this->gateway->create($data["data"], $userId);
                     http_response_code(201);
@@ -100,7 +99,8 @@ class ArticlesController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/articles\/[0-9]+$/', $uri)):
-                $result = $this->gateway->update($data["data"]);
+
+                $result = $this->gateway->update($data["data"], $url_parts[3]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]
@@ -134,7 +134,7 @@ class ArticlesController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/articles\/categories\/[0-9]+$/', $uri)):
-                $result = $this->gateway->updateCategory($data["data"]);
+                $result = $this->gateway->updateCategory($data["data"], $url_parts[4]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

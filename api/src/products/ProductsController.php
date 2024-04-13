@@ -64,11 +64,6 @@ class ProductsController
                 echo json_encode($result);
                 return;
 
-            case ($method == "GET" && $uri == "/api/products/categories"):
-                $result = $this->category->getCategories();
-                echo json_encode($result);
-                return;
-
             case ($method == "GET" && preg_match('/\/api\/products\/name\/\?name=\w+/', $uri) && isset($_GET["name"])):
                 $name = $_GET["name"];
                 $result = $this->gateway->checkNameAvailability($name);
@@ -137,7 +132,7 @@ class ProductsController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/products\/categories\/[0-9]+$/', $uri)):
-                $result = $this->category->updateCategory($data["data"]);
+                $result = $this->category->updateCategory($data["data"], $url_parts[4]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]
@@ -162,7 +157,7 @@ class ProductsController
                 break;
 
             case ($method == "PUT" && preg_match('/^\/api\/products\/manufacturers\/[0-9]+$/', $uri)):
-                $this->manufacturer->update($data["data"]);
+                $this->manufacturer->update($data["data"], $url_parts[4]);
                 echo json_encode([
                     "message" => "Updated",
                     "token" => $authAction["token"]

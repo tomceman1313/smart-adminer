@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Pagination from "../../components/common/pagination/Pagination";
+import PaginationServerLoading from "../../components/common/pagination/PaginationServerLoading";
 import useInteraction from "../../hooks/useInteraction";
 
 import { AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import EditPicture from "./EditPicture";
 import Image from "./Image";
 import css from "./css/Images.module.css";
-import { useTranslation } from "react-i18next";
 
-export default function ImageList({ images, allLoadedImages, deleteImageHandler, selectedImages, isMultiSelectionActive, editImageHandler }) {
+export default function ImageList({ images, deleteImageHandler, selectedImages, isMultiSelectionActive, editImageHandler }) {
 	const { t } = useTranslation("gallery");
 	const { setAlert } = useInteraction();
 	const [showEditCont, setShowEditCont] = useState(null);
@@ -37,7 +37,7 @@ export default function ImageList({ images, allLoadedImages, deleteImageHandler,
 					)}
 				</AnimatePresence>
 			</section>
-			{images?.length > 0 && <Pagination dataLength={allLoadedImages.current.length} numberOfItemsInPage={12} path={"/gallery"} />}
+			{images?.length > 0 && <PaginationServerLoading path="/gallery/" totalPages={2} />}
 			<AnimatePresence>
 				{showEditCont && <EditPicture image={showEditCont} edit={editImageHandler} close={() => setShowEditCont(null)} />}
 			</AnimatePresence>

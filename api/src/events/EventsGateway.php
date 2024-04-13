@@ -10,6 +10,19 @@ class EventsGateway
         $this->path = $path;
     }
 
+    function getAll(): array
+    {
+        $sql = "SELECT * FROM events ORDER BY date DESC";
+        $stmt = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function get(string $id): array
     {
         $sql = "SELECT * FROM events WHERE id = :id LIMIT 1";
@@ -53,10 +66,14 @@ class EventsGateway
         return $data;
     }
 
-    function getAll(): array
+    public function getByCategoryName(string $category_name): array
     {
-        $sql = "SELECT * FROM events ORDER BY date DESC";
-        $stmt = $this->conn->query($sql);
+        $sql = "SELECT events.* FROM events INNER JOIN events_categories ON events.category_id = events_categories.id WHERE events_categories.name = :category_name";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -278,15 +295,15 @@ class EventsGateway
 
     private function deleteInnerImage($image_name)
     {
-        $sql = "DELETE FROM article_images WHERE name = :name";
+        $sql = "DELETE FROM events_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $image_name
         ]);
 
-        if (file_exists("{$this->path}/images/articles/{$image_name}")) {
-            unlink("{$this->path}/images/articles/{$image_name}");
+        if (file_exists("{$this->path}/images/events/{$image_name}")) {
+            unlink("{$this->path}/images/events/{$image_name}");
         }
     }
 }

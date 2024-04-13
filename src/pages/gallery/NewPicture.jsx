@@ -3,19 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
-import useInteraction from "../../hooks/useInteraction";
-import { create, getAll } from "../../modules/ApiFunctions";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
-
 import { AnimatePresence } from "framer-motion";
-import cssBasic from "../../components/styles/Basic.module.css";
-import AddMultiplePictures from "./AddMultiplePictures";
-import css from "./css/Gallery.module.css";
 import { useTranslation } from "react-i18next";
+import cssBasic from "../../components/styles/Basic.module.css";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import AddMultiplePictures from "./AddMultiplePictures";
 
-export default function NewPicture({ auth, setImages, categories }) {
+import css from "./css/Gallery.module.css";
+
+export default function NewPicture({ reloadData, categories }) {
 	const { t } = useTranslation("gallery");
-	const { setMessage } = useInteraction();
+	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
 	const [pickedCategories, setPickedCategories] = useState([]);
@@ -32,16 +31,11 @@ export default function NewPicture({ auth, setImages, categories }) {
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
 		data.category_id = pickedCategories;
-		await create("gallery", data, setMessage, t("positiveTextImageCreated"), auth);
+		await create("gallery", data, t("positiveTextImageCreated"));
 		reset();
 		setPickedCategories([]);
-		loadData();
+		reloadData();
 	};
-
-	async function loadData() {
-		const data = await getAll("gallery", auth);
-		setImages(data);
-	}
 
 	const chooseCategory = (e) => {
 		const name = categories.filter((item) => item.id === parseInt(e.target.value));
@@ -107,7 +101,7 @@ export default function NewPicture({ auth, setImages, categories }) {
 			</section>
 
 			<AnimatePresence>
-				{addMultiplePictures && <AddMultiplePictures auth={auth} close={() => setAddMultiplePictures(false)} refreshImages={loadData} />}
+				{addMultiplePictures && <AddMultiplePictures close={() => setAddMultiplePictures(false)} refreshImages={reloadData} />}
 			</AnimatePresence>
 		</>
 	);

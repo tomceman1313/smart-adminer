@@ -49,7 +49,7 @@ class PriceListGateway
         return $this->conn->lastInsertId();
     }
 
-    public function update(array $data): int
+    public function update(array $data, $id): int
     {
         $sql = "UPDATE pricelist SET name = :name, price = :price, special_price = :special_price,
          special_price_start = :start, special_price_end = :end WHERE id = :id";
@@ -66,7 +66,7 @@ class PriceListGateway
             'special_price' => $data["special_price"],
             'start' => $data["start"],
             'end' => $data["end"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
 
         return true;

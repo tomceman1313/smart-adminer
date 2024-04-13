@@ -2,20 +2,19 @@ import { faCalendarDays, faHashtag, faHeading, faInfo, faXmark } from "@fortawes
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import DatePicker from "../../components/basic/DatePicker";
 import InputBox from "../../components/basic/InputBox";
 import FileInput from "../../components/basic/file-input/FIleInput";
 import ImageInput from "../../components/basic/image-input/ImageInput";
 import Select from "../../components/basic/select/Select";
-import useInteraction from "../../hooks/useInteraction";
-import { edit } from "../../modules/ApiFunctions";
+import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
 import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import css from "./css/EditDocument.module.css";
-import { useTranslation } from "react-i18next";
 
-export default function EditDocument({ editedDocument, auth, refreshData, categories, setVisible }) {
+export default function EditDocument({ editedDocument, refreshData, categories, setVisible }) {
 	const { t } = useTranslation("documents");
-	const { setMessage } = useInteraction();
+	const { edit } = useBasicApiFunctions();
 	const { register, handleSubmit, reset } = useForm();
 
 	const onSubmit = async (data) => {
@@ -39,7 +38,7 @@ export default function EditDocument({ editedDocument, auth, refreshData, catego
 		data.date = makeDateFormat(data.date);
 		data.id = editedDocument.id;
 
-		await edit("documents", data, setMessage, t("positiveTextDocumentUpdated"), auth);
+		await edit("documents", data, t("positiveTextDocumentUpdated"));
 		reset();
 		refreshData();
 		setVisible(false);

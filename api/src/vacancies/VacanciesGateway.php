@@ -53,7 +53,7 @@ class VacanciesGateway
         ]);
     }
 
-    public function update(array $data)
+    public function update(array $data, $id)
     {
         $sql = "UPDATE vacancies SET title = :title, description = :description, detail = :detail,
         date = :date, active = :active";
@@ -64,7 +64,7 @@ class VacanciesGateway
             'detail' => $data["detail"],
             'date' => $data["date"],
             'active' => $data["active"],
-            'id' => $data["id"]
+            'id' => $id
         ];
 
         if (isset($data["image"])) {

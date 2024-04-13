@@ -114,7 +114,7 @@ export default function Article() {
 				<title>{article?.title ? article.title : t("htmlTitleNewArticle")} | SmartAdminer</title>
 			</Helmet>
 			{categories && (id ? article : true) ? (
-				<form onSubmit={handleSubmit(onSubmit)} className={css.article} key={article?.title + `${new Date().getTime()}`}>
+				<form onSubmit={handleSubmit(onSubmit)} className={css.article} key={article?.title}>
 					<section>
 						<h2>{t("headerBasicInfo")}</h2>
 						<InputBox

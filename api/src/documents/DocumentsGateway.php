@@ -58,6 +58,31 @@ class DocumentsGateway
         return $data;
     }
 
+    public function getByCategoryName(string $category_name): array
+    {
+        $sql = "SELECT doc.*, doc_order.position FROM documents as doc 
+        LEFT OUTER JOIN document_order as doc_order ON doc.id = doc_order.document_id 
+        INNER JOIN documents_categories AS category ON category.id = doc.category_id 
+        WHERE category.name = :category_name ORDER BY -doc_order.position DESC, doc.id DESC";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (file_exists("{$this->path}/files/documents/" . $row["name"])) {
+                $row["size"] = filesize("{$this->path}/files/documents/" . $row["name"]);
+            } else {
+                $row["size"] = 0;
+            }
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function getByName(string $title, int $category_id = NULL): array
     {
         $sql_values = [
@@ -287,14 +312,14 @@ class DocumentsGateway
         ]);
     }
 
-    public function updateCategory(array $data)
+    public function updateCategory(array $data, $id)
     {
         $sql = "UPDATE documents_categories SET name = :name WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             'name' => $data["name"],
-            'id' => $data["id"]
+            'id' => $id
         ]);
     }
 
