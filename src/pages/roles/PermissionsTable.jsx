@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import Permission from "./Permission";
 
 export default function PermissionsTable({ permissions, togglePermissionHandler }) {
-	const { t } = useTranslation("profiles");
+	const { t } = useTranslation(["profiles", "privileges"]);
 
 	return (
 		<table>
@@ -18,7 +18,7 @@ export default function PermissionsTable({ permissions, togglePermissionHandler 
 			<tbody>
 				{permissions.map((permission) => (
 					<tr key={`permission-${permission.id}`}>
-						<td>{permission.class}</td>
+						<td>{t(`privileges:${permission.class}`)}</td>
 						<Permission permission={permission.get_permission} clickHandler={() => togglePermissionHandler(permission.id, "get")} />
 						<Permission permission={permission.post_permission} clickHandler={() => togglePermissionHandler(permission.id, "post")} />
 						<Permission permission={permission.put_permission} clickHandler={() => togglePermissionHandler(permission.id, "put")} />

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import PlusButton from "../../components/basic/PlusButton";
-import Category from "../../components/common/categories-component/Category";
+import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import ArticleCardLoader from "../../components/loaders/ArticleCardLoader";
 import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
@@ -59,7 +59,7 @@ const Articles = () => {
 				<title>{t("htmlTitleArticles")}</title>
 			</Helmet>
 			<div className={css.articles}>
-				<Category
+				<CategoriesController
 					categories={categories}
 					setCategories={setCategories}
 					apiClass="articles"

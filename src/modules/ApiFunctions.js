@@ -1,9 +1,7 @@
-//before production change BASE_URL, publicFolderPath.php and publicPath (BasicFunctions.js)
-// change package.json a App.js router
-
-//export const BASE_URL = "https://domov-sulicka.cz/admin";
-//export const BASE_URL = "https://seniori.domov-sulicka.cz/admin";
-export const BASE_URL = "http://localhost:4300";
+//export const BASE_URL = "http://localhost:4300";
+//export const BASE_URL = "https://dozp-sulicka.cz/admin";
+//export const BASE_URL = "https://domovsenioru-sulicka.cz/admin";
+export const BASE_URL = process.env.REACT_APP_API_URL;
 
 export async function getAll(apiClass) {
 	const response = await fetch(`${BASE_URL}/api/${apiClass}`, {

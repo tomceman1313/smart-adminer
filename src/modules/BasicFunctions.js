@@ -2,10 +2,10 @@ import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@forta
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //dev
-export const publicPath = "/admin";
+//export const publicPath = "/admin";
 //production
 //export const publicPath = "https://seniori.domov-sulicka.cz/admin";
-//export const publicPath = "https://domov-sulicka.cz/admin";
+export const publicPath = process.env.REACT_APP_PUBLIC_PATH;
 /**
  ** Creates random ID for temporary use
  * @returns number
@@ -114,7 +114,7 @@ export function isPermitted(permission, onClick) {
 }
 
 /**
- * * Otevře nový tab s obrázkem
+ * * Opens new tab with given url
  * @param {string} url
  */
 

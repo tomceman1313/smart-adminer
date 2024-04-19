@@ -52,8 +52,8 @@ export default function useBasicApiFunctions() {
 		return data;
 	}
 
-	async function getByCategory(apiClass, id) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/?category=${id}`, {
+	async function getByCategory(apiClass, id, page) {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}/?${page ? `page=${page}&` : ""}category=${id}`, {
 			method: "GET",
 		});
 

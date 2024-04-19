@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 
 import MenuLink from "./MenuLink";
 import MenuSection from "./MenuSection";
+import { ROUTES } from "../routes";
 
 import css from "./MenuComponents.module.css";
 import { useTranslation } from "react-i18next";
@@ -14,26 +15,22 @@ export default function Menu({ permissions, logOut }) {
 	const location = useLocation();
 	const { t } = useTranslation("menu");
 
-	const [activeSection, setActiveSection] = useState("");
+	const [activeSection, setActiveSection] = useState("dfd");
 	const [activeLink, setActiveLink] = useState("");
 
 	useEffect(() => {
 		const path = location.pathname.split("/");
-		setActiveLink(path[1]);
-	}, [location]);
-
-	function openMenuSection(sectionName) {
-		if (sectionName === activeSection) {
-			setActiveSection("");
-		} else {
-			setActiveSection(sectionName);
+		const activeRoute = ROUTES.find((route) => route.name === path[1]);
+		if (activeRoute) {
+			setActiveLink(activeRoute.name);
+			setActiveSection(activeRoute.menuSection);
 		}
-	}
+	}, [location]);
 
 	return (
 		<>
 			{permissions.users && (
-				<MenuSection title={t("userAccounts.name")} name="profiles" icon={faIdCard} activeSection={activeSection} openMenuSection={openMenuSection}>
+				<MenuSection title={t("userAccounts.name")} name="profiles" icon={faIdCard} activeSection={activeSection} openMenuSection={setActiveSection}>
 					<MenuLink title={t("userAccounts.usersList")} name="users" path="/users" activeLink={activeLink} />
 					<MenuLink title={t("userAccounts.rolesAndPrivileges")} name="roles" path="/roles" activeLink={activeLink} />
 				</MenuSection>
@@ -45,7 +42,7 @@ export default function Menu({ permissions, logOut }) {
 					name="employees-section"
 					icon={faPeopleGroup}
 					activeSection={activeSection}
-					openMenuSection={openMenuSection}
+					openMenuSection={setActiveSection}
 				>
 					{permissions.employees && <MenuLink title={t("employees.employeesList")} name="employees" path="/employees" activeLink={activeLink} />}
 					{permissions.vacancies && <MenuLink title={t("employees.vacancies")} name="vacancies" path="/vacancies" activeLink={activeLink} />}
@@ -53,7 +50,13 @@ export default function Menu({ permissions, logOut }) {
 			)}
 
 			{(permissions.pages || permissions.gallery || permissions.documents || permissions.pricelist || permissions.notifications) && (
-				<MenuSection title={t("websiteContent.name")} name="content" icon={faDisplay} activeSection={activeSection} openMenuSection={openMenuSection}>
+				<MenuSection
+					title={t("websiteContent.name")}
+					name="content"
+					icon={faDisplay}
+					activeSection={activeSection}
+					openMenuSection={setActiveSection}
+				>
 					{permissions.pages && <MenuLink title={t("websiteContent.sites")} name="pages" path="/pages" activeLink={activeLink} />}
 					{permissions.gallery && <MenuLink title={t("websiteContent.gallery")} name="gallery" path="/gallery" activeLink={activeLink} />}
 					{permissions.documents && <MenuLink title={t("websiteContent.documents")} name="documents" path="/documents" activeLink={activeLink} />}
@@ -70,7 +73,8 @@ export default function Menu({ permissions, logOut }) {
 					name="articles-section"
 					icon={faNewspaper}
 					activeSection={activeSection}
-					openMenuSection={openMenuSection}
+					openMenuSection={setActiveSection}
+					redirectLocation="/articles"
 				>
 					<MenuLink title={t("articles.allArticles")} name="articles" path="/articles" activeLink={activeLink} />
 					<MenuLink title={t("articles.newArticle")} name="new-article" path="/new-article" activeLink={activeLink} />
@@ -83,7 +87,8 @@ export default function Menu({ permissions, logOut }) {
 					name="events-section"
 					icon={faCalendarDays}
 					activeSection={activeSection}
-					openMenuSection={openMenuSection}
+					openMenuSection={setActiveSection}
+					redirectLocation="/events"
 				>
 					<MenuLink title={t("events.allEvents")} name="events" path="/events" activeLink={activeLink} />
 					<MenuLink title={t("events.newEvent")} name="new-event" path="/new-event" activeLink={activeLink} />
@@ -96,7 +101,8 @@ export default function Menu({ permissions, logOut }) {
 					name="products-section"
 					icon={faShoppingCart}
 					activeSection={activeSection}
-					openMenuSection={openMenuSection}
+					openMenuSection={setActiveSection}
+					redirectLocation="/products"
 				>
 					<MenuLink title={t("products.allProducts")} name="products" path="/products" activeLink={activeLink} />
 					<MenuLink title={t("products.newProduct")} name="new-product" path="/new-product" activeLink={activeLink} />
@@ -109,14 +115,21 @@ export default function Menu({ permissions, logOut }) {
 					name="orders-section"
 					icon={faBasketShopping}
 					activeSection={activeSection}
-					openMenuSection={openMenuSection}
+					openMenuSection={setActiveSection}
+					redirectLocation="/orders"
 				>
 					<MenuLink title={t("orders.allOrders")} name="orders" path="/orders" activeLink={activeLink} />
 				</MenuSection>
 			)}
 
 			{permissions && (
-				<MenuSection title={t("settings.name")} name="settings" icon={faGear} activeSection={activeSection} openMenuSection={openMenuSection}>
+				<MenuSection
+					title={t("settings.name")}
+					name="settings-section"
+					icon={faGear}
+					activeSection={activeSection}
+					openMenuSection={setActiveSection}
+				>
 					<MenuLink title={t("settings.userAccount")} name="profile" path="/profile" activeLink={activeLink} />
 				</MenuSection>
 			)}
@@ -124,7 +137,7 @@ export default function Menu({ permissions, logOut }) {
 			<li className={css.menu_section}>
 				<div id="logout" onClick={logOut}>
 					<FontAwesomeIcon className={css.icon} icon={faPowerOff} />
-					<label>{t("logout.name")}</label>
+					<label className={css.section_title}>{t("logout.name")}</label>
 				</div>
 			</li>
 		</>

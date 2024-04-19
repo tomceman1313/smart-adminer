@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Alert from "../../components/admin/Alert";
@@ -12,6 +12,7 @@ import DesktopMenu from "./desktop-menu/DesktopMenu";
 import MobileMenu from "./mobile-menu/MobileMenu";
 import { ROUTES } from "./routes";
 
+import { useQuery } from "@tanstack/react-query";
 import ImageEditor from "../../components/common/image-editor/ImageEditor";
 import { getAllWithAuth } from "../../modules/ApiFunctions";
 import css from "./Dashboard.module.css";
@@ -22,18 +23,18 @@ export default function Dashboard() {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const [permissions, setPermissions] = useState(null);
+	const { data: permissions } = useQuery({
+		queryKey: ["permissions"],
+		queryFn: async () => {
+			const data = await getAllWithAuth(`users/roles/${auth.userInfo.role}/permissions`, auth);
+			return data;
+		},
+	});
 
 	useEffect(() => {
 		if (auth.userInfo == null) {
 			refreshAccessToken(navigate, location.pathname, auth);
 			return;
-		}
-		loadPermissions();
-
-		async function loadPermissions() {
-			const _permissions = await getAllWithAuth(`users/roles/${auth.userInfo.role}/permissions`, auth);
-			setPermissions(_permissions);
 		}
 	}, [auth, navigate, location]);
 

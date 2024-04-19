@@ -7,8 +7,8 @@ export default function DesktopMenu({ permissions, logOut }) {
 	return (
 		<div className={css.menu}>
 			<div className={css.logo_cont}>
-				<img src={`${publicPath}/images/logo512.png`} alt="logo" />
-				<label className={css.title}>Adminer</label>
+				<img src={`${publicPath}/favicon.svg`} className={css.logo} alt="logo" />
+				<img src={`${publicPath}/logo-white.svg`} className={css.logo_text} alt="logo" />
 			</div>
 			<ul>
 				<Menu permissions={permissions} logOut={logOut} />

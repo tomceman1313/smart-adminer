@@ -104,7 +104,7 @@ class UsersGateway
 
     public function getPermissions(): array
     {
-        $sql = "SELECT * from role_permission ORDER BY role_id";
+        $sql = "SELECT * from role_permission ORDER BY role_id, class";
         $stmt = $this->conn->query($sql);
 
         $data = [];

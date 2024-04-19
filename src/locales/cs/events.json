@@ -1,12 +1,12 @@
 {
-	"htmlTitleArticles": "Události | SmartAdminer",
-	"searchArticleTitle": "Nadpis události",
-	"searchAllArticles": "Veškeré události",
+	"htmlTitleEvents": "Události | SmartAdminer",
+	"searchEventsTitle": "Nadpis události",
+	"searchAllEvents": "Veškeré události",
 
-	"htmlTitleNewArticle": "Nová událost",
+	"htmlTitleNewEvent": "Nová událost",
 	"headerBasicInfo": "Základní informace",
 	"headerAdditionalInfo": "Doplňující informace",
-	"headerArticleBody": "Text události",
+	"headerEventBody": "Text události",
 	"headerAdditionalImages": "Obrázky k události:",
 	"headerAddImages": "Přidat obrázky:",
 	"headerFilter": "Filtrovat:",

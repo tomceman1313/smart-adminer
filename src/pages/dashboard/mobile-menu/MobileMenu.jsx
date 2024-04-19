@@ -19,8 +19,8 @@ const MobileMenu = ({ permissions, logOut }) => {
 	return (
 		<motion.div className={css.menu} initial={false} animate={isOpen ? "open" : "closed"}>
 			<div className={css.logo_title}>
-				<img src={`${publicPath}/images/logo512.png`} alt="logo" />
-				<label className={css.title}>Adminer Mobile</label>
+				<img src={`${publicPath}/favicon.svg`} className={css.logo} alt="logo" />
+				<img src={`${publicPath}/logo-white.svg`} className={css.logo_text} alt="logo" />
 			</div>
 			<MenuToggle toggle={() => toggleOpen()} css={css} />
 			<AnimatePresence>

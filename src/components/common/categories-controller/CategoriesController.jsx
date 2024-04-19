@@ -10,7 +10,7 @@ import Item from "../controlled-item/Item";
 import css from "./Category.module.css";
 import { useTranslation } from "react-i18next";
 
-export default function Category({ categories, setCategories, apiClass, filterByCategory, reloadData, fullSize }) {
+export default function CategoriesController({ categories, setCategories, apiClass, filterByCategory, reloadData, fullSize }) {
 	const { t } = useTranslation("categoriesC");
 	const auth = useAuth();
 	const { setMessage } = useInteraction();
@@ -78,7 +78,7 @@ export default function Category({ categories, setCategories, apiClass, filterBy
 			</div>
 			<h3>{t("headerAddCategory")}</h3>
 			<form onSubmit={handleSubmit(create)}>
-				<InputBox placeholder={t("placeholderName")} name={"name"} register={register} type={"text"} icon={faFont} white={false} isRequired />
+				<InputBox placeholder={t("placeholderName")} name="name" register={register} type="text" icon={faFont} white={false} isRequired />
 				<button>{t("buttonCreateCategory")}</button>
 			</form>
 		</section>

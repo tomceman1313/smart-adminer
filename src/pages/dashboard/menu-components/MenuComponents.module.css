@@ -14,9 +14,10 @@
 	transition: all 0.5s;
 }
 
-.menu_section div label {
+.section_title {
 	cursor: pointer;
 	color: #b7c0cd;
+	transition: color 0.5s;
 }
 
 .menu_section article {
@@ -26,7 +27,7 @@
 	transition: max-height 0.7s ease-in-out;
 }
 
-.menu_section a {
+.menu_link {
 	display: block;
 	margin: 15px 0 15px 35px;
 	font-size: 18px;
@@ -35,11 +36,12 @@
 	transition: all 0.5s;
 }
 
-.menu_section a:hover {
+.menu_link a:hover {
 	color: #42a5f5;
 }
 
-.menu_section div:hover label {
+.menu_section div:hover label,
+.menu_section div:hover a {
 	color: white !important;
 }
 
@@ -68,7 +70,11 @@
 	max-height: 300px;
 }
 
-.active label {
+.active .section_title {
+	color: white !important;
+}
+
+.active .icon {
 	color: white !important;
 }
 

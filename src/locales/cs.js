@@ -13,6 +13,7 @@ import products from "./cs/products.json";
 import orders from "./cs/orders.json";
 import vacancies from "./cs/vacancies.json";
 import profile from "./cs/profile.json";
+import privileges from "./cs/privileges.json";
 
 import categoriesComponent from "./cs/components/categories.json";
 import itemsControllerComponent from "./cs/components/items-controller.json";
@@ -33,6 +34,7 @@ export const CS = {
 	orders: orders,
 	vacancies: vacancies,
 	profile: profile,
+	privileges: privileges,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
 };

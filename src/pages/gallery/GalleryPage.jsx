@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import Category from "../../components/common/categories-component/Category";
+import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
 import ImageList from "./ImageList";
@@ -69,7 +69,7 @@ export default function GalleryPage() {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<Category
+			<CategoriesController
 				filterByCategory={filterImagesByCategory}
 				categories={categories}
 				setCategories={setCategories}

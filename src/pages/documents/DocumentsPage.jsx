@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import Category from "../../components/common/categories-component/Category";
+import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
 import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
@@ -78,7 +78,13 @@ export default function DocumentsPage() {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<Category categories={categories} setCategories={setCategories} apiClass="documents" filterByCategory={filterByCategory} reloadData={refetch} />
+			<CategoriesController
+				categories={categories}
+				setCategories={setCategories}
+				apiClass="documents"
+				filterByCategory={filterByCategory}
+				reloadData={refetch}
+			/>
 			<NewDocument refreshData={refetch} categories={categories} />
 			<ItemsController
 				setSearchedName={setSearchedName}

@@ -13,6 +13,7 @@ import products from "./en/products.json";
 import orders from "./en/orders.json";
 import vacancies from "./en/vacancies.json";
 import profile from "./en/profile.json";
+import privileges from "./en/privileges.json";
 
 import categoriesComponent from "./en/components/categories.json";
 import itemsControllerComponent from "./en/components/items-controller.json";
@@ -33,6 +34,7 @@ export const EN = {
 	orders: orders,
 	vacancies: vacancies,
 	profile: profile,
+	privileges: privileges,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
 };

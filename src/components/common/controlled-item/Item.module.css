@@ -29,11 +29,11 @@
 }
 
 .filter_button {
-	background-color: var(--green);
+	background-color: var(--main);
 }
 
 .edit_button {
-	background-color: var(--main);
+	background-color: var(--green);
 }
 
 .delete_button {
@@ -41,11 +41,11 @@
 }
 
 .filter_button:hover {
-	background-color: var(--green-dark);
+	background-color: var(--main-dark);
 }
 
 .edit_button:hover {
-	background-color: var(--main-dark);
+	background-color: var(--green-dark);
 }
 
 .delete_button:hover {

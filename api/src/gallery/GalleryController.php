@@ -30,14 +30,22 @@ class GalleryController
         switch ($method | $uri) {
             case ($method == "GET" && $uri == "/api/gallery"):
                 $result = $this->gateway->getAll($pagination);
-                $result["total_pages"] = round($result["total_length"] / $limit);
+                if (($result["total_length"] / $limit) == 0) {
+                    $result["total_pages"] = 0;
+                } else {
+                    $result["total_pages"] = ceil($result["total_length"] / $limit);
+                }
                 echo json_encode($result);
                 return;
 
             case ($method == "GET" && preg_match('/\/api\/gallery\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
                 $category_id = $_GET["category"];
                 $result = $this->gateway->getByCategory($category_id, $pagination);
-                $result["total_pages"] = round($result["total_length"] / $limit);
+                if (($result["total_length"] / $limit) == 0) {
+                    $result["total_pages"] = 0;
+                } else {
+                    $result["total_pages"] = ceil($result["total_length"] / $limit);
+                }
                 echo json_encode($result);
                 return;
 

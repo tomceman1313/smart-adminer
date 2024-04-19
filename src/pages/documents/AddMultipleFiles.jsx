@@ -8,12 +8,12 @@ import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
 import { useTranslation } from "react-i18next";
 import cssBasic from "../../components/styles/Basic.module.css";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
 import css from "./css/Documents.module.css";
 
 const AddMultipleFiles = ({ close, refreshFiles }) => {
 	const { t } = useTranslation("documents");
-	const { multipleCreate } = useBasicApiFunctions();
+	const { multipleCreate } = useItemsControllerApiFunctions();
 	const [category, setCategory] = useState(null);
 	const { register, handleSubmit, reset } = useForm();
 

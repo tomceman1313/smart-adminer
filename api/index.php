@@ -46,7 +46,7 @@ if ($method == "OPTIONS") {
 $database = new Database("localhost", "cms_seniori", "penziontop4fancz", "heslo");
 
 //production
-//$database = new Database("localhost", "u351850998_cms", "u351850998_tomas", "Tomikz13");
+//$database = new Database("localhost", "u139635604_admin_console", "u139635604_admin_user", "DomovSulicka2024");
 //$database = new Database("localhost", "u139635604_cms", "u139635604_admin", "Domov_sulicka2024");
 $URI = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
 $URL_PARTS = explode("/", $URI);

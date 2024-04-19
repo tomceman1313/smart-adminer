@@ -9,7 +9,7 @@ import { faFont } from "@fortawesome/free-solid-svg-icons";
 import InputBox from "../../components/basic/InputBox";
 import Item from "../../components/common/controlled-item/Item";
 
-import css from "../../components/common/categories-component/Category.module.css";
+import css from "../../components/common/categories-controller/Category.module.css";
 import { useTranslation } from "react-i18next";
 
 export default function Manufacturers({ manufacturers, setManufacturers }) {

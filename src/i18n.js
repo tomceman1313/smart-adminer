@@ -10,7 +10,6 @@ const resources = {
 };
 
 i18n.use(initReactI18next).init({
-	ns: ["menu", "banner", "profiles", "employees", "pages", "gallery", "categoriesC", "documents"],
 	resources,
 	lng: "cs",
 	fallbackLng: "cs",

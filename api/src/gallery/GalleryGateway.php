@@ -32,7 +32,7 @@ class GalleryGateway
 
     function getByCategory(string $category_id, $pagination): array
     {
-        $sql = "SELECT * FROM image_category WHERE category_id=:id LIMIT $pagination";
+        $sql = "SELECT * FROM image_category WHERE category_id=:id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'id' => $category_id
@@ -42,12 +42,13 @@ class GalleryGateway
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $ids[] = $row["image_id"];
         }
-
         if (sizeof($ids) == 0) {
-            return [];
+            $data = [];
+            $data["total_length"] = 0;
+            return $data;
         }
 
-        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC LIMIT $pagination";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -55,7 +56,7 @@ class GalleryGateway
             $data["data"][] = $row;
         }
 
-        $sql = "SELECT COUNT(*) FROM gallery";
+        $sql = "SELECT COUNT(*) FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $length = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlusButton from "../../components/basic/PlusButton";
-import Category from "../../components/common/categories-component/Category";
+import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import FilterNotifier from "../../components/common/filter-notifier/FilterNotifier";
 import { getAll, getByCategory } from "../../modules/ApiFunctions";
 import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
@@ -65,7 +65,7 @@ const Events = () => {
 			<Helmet>
 				<title>{t("htmlTitleEvents")}</title>
 			</Helmet>
-			<Category
+			<CategoriesController
 				categories={categories}
 				setCategories={setCategories}
 				apiClass="events"
