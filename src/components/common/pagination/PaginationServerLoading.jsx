@@ -18,7 +18,12 @@ export default function PaginationServerLoading({ path, totalPages }) {
 		<div className={css.pagination}>
 			{pages.length > 0 ? (
 				pages.map((item) => (
-					<Link to={`${path}/${item}`} key={`page-${item}`} className={(!page && item === 1) || Number(page) === item ? css.active : ""}>
+					<Link
+						to={`${path}/${item}`}
+						key={`page-${item}`}
+						className={(!page && item === 1) || Number(page) === item ? css.active : ""}
+						preventScrollReset={true}
+					>
 						{item}
 					</Link>
 				))

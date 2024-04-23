@@ -17,8 +17,10 @@ class AuthController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-        $url_parts = explode("/", $uri);
+        $uri = preg_replace('/^.*api/', "/api", $_SERVER["REQUEST_URI"]);
+        $uri = preg_replace('/page=[0-9]+/', "", $uri);
+        $uri = preg_replace('/\/\?\&/', "/?", $uri);
+        $uri = preg_replace('/\/\?$/', "", $uri);
 
         switch ($method | $uri) {
             case ($method == "POST" && $uri == "/api/auth/login"):

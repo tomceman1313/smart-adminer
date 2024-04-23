@@ -152,7 +152,7 @@ class UsersGateway
         ]);
     }
 
-    public function changePassword(array $data)
+    public function changePassword(array $data, $id)
     {
         $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
         $sql = "UPDATE users SET password = :password WHERE id = :id";
@@ -160,7 +160,7 @@ class UsersGateway
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'password' => $hashedPassword,
-            'id' => $data['id']
+            'id' => $id
         ]);
     }
 

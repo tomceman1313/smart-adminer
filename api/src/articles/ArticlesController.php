@@ -9,17 +9,17 @@ class ArticlesController
     }
 
 
-    public function processRequest(?string $page, $authAction): void
+    public function processRequest($authAction): void
     {
-        $this->controller($page, $authAction);
+        $this->controller($authAction);
     }
 
-    private function controller(?string $page, $authAction): void
+    private function controller($authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-        $url_parts = explode("/", $uri);
+        $uri = $this->utils->getUrlParts()["url"];
+        $url_parts = $this->utils->getUrlParts()["url_parts"];
 
         switch ($method | $uri) {
             case ($method == "GET" && $uri == "/api/articles"):

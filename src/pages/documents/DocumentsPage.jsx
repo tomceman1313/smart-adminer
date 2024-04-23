@@ -47,7 +47,7 @@ export default function DocumentsPage() {
 	}
 
 	async function deleteDocumentsHandler(ids) {
-		await multipleDelete(ids, t("positiveTextDocumentsDeleted"));
+		await multipleDelete("documents", ids, t("positiveTextDocumentsDeleted"));
 		refetch();
 		setIsMultiSelection(false);
 	}

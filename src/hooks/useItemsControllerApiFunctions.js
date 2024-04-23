@@ -23,8 +23,8 @@ export default function useItemsControllerApiFunctions() {
 		return records;
 	}
 
-	async function multipleCreate(data, positiveText) {
-		const response = await fetch(`${BASE_URL}/api/documents/multiple`, {
+	async function multipleCreate(apiClass, data, positiveText) {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}/multiple`, {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 			body: JSON.stringify({ data: data }),
@@ -42,10 +42,10 @@ export default function useItemsControllerApiFunctions() {
 		return;
 	}
 
-	async function multipleDelete(ids, positiveText) {
+	async function multipleDelete(apiClass, ids, positiveText) {
 		const encodedIds = encodeURIComponent(JSON.stringify(ids));
 
-		const response = await fetch(`${BASE_URL}/api/documents/multiple/${encodedIds}`, {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}/multiple/${encodedIds}`, {
 			method: "DELETE",
 			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
 			credentials: "include",

@@ -8,50 +8,33 @@ class GalleryController
     }
 
 
-    public function processRequest(?string $page, $authAction): void
+    public function processRequest($authAction): void
     {
-        $this->controller($page, $authAction);
+        $this->controller($authAction);
     }
 
-    private function controller(?string $page, $authAction): void
+    private function controller($authAction): void
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-        $uri = preg_replace('/page=[0-9]+/', "", $uri);
-        $uri = preg_replace('/\/\?\&/', "/?", $uri);
-        $uri = preg_replace('/\/\?$/', "", $uri);
-        $url_parts = explode("/", $uri);
-
-        $limit = 8;
-        $offset = ($page > 0 ? $page - 1 : 0) * $limit;
-        $pagination = "$offset, $limit";
+        $uri = $this->utils->getUrlParts()["url"];
+        $url_parts = $this->utils->getUrlParts()["url_parts"];
 
         switch ($method | $uri) {
             case ($method == "GET" && $uri == "/api/gallery"):
-                $result = $this->gateway->getAll($pagination);
-                if (($result["total_length"] / $limit) == 0) {
-                    $result["total_pages"] = 0;
-                } else {
-                    $result["total_pages"] = ceil($result["total_length"] / $limit);
-                }
+                $result = $this->gateway->getAll();
                 echo json_encode($result);
                 return;
 
             case ($method == "GET" && preg_match('/\/api\/gallery\/\?category=[0-9]*/', $uri) && isset($_GET["category"])):
                 $category_id = $_GET["category"];
-                $result = $this->gateway->getByCategory($category_id, $pagination);
-                if (($result["total_length"] / $limit) == 0) {
-                    $result["total_pages"] = 0;
-                } else {
-                    $result["total_pages"] = ceil($result["total_length"] / $limit);
-                }
+                $result = $this->gateway->getByCategory($category_id);
                 echo json_encode($result);
                 return;
 
             case ($method == "GET" && preg_match('/\/api\/gallery\/\?categoryName=[0-9]*/', $uri) && isset($_GET["categoryName"])):
                 $category_name = $_GET["categoryName"];
-                $result = $this->gateway->getByCategoryName($category_name, $pagination);
+                $result = $this->gateway->getByCategoryName($category_name);
                 echo json_encode($result);
                 return;
 

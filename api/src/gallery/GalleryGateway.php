@@ -7,11 +7,16 @@ class GalleryGateway
         include(dirname(__FILE__) . '/../publicFolderPath.php');
         $this->utils = new Utils($database);
         $this->path = $path;
+        $this->page = $this->utils->getUrlParams("page", 0);
+
+        $this->limit = 8;
+        $offset = ($this->page > 0 ? $this->page - 1 : 0) * $this->limit;
+        $this->pagination = "$offset, $this->limit";
     }
 
-    function getAll($pagination): array
+    function getAll(): array
     {
-        $sql = "SELECT * FROM gallery ORDER BY id DESC LIMIT $pagination";
+        $sql = "SELECT * FROM gallery ORDER BY id DESC LIMIT $this->pagination";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute();
@@ -25,12 +30,13 @@ class GalleryGateway
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $length = $stmt->fetch(PDO::FETCH_ASSOC);
-        $data["total_length"] = $length["COUNT(*)"];
+
+        $data["total_length"] = $this->utils->getTotalPages($length["COUNT(*)"], $this->limit);
 
         return $data;
     }
 
-    function getByCategory(string $category_id, $pagination): array
+    function getByCategory(string $category_id): array
     {
         $sql = "SELECT * FROM image_category WHERE category_id=:id";
         $stmt = $this->conn->prepare($sql);
@@ -48,7 +54,7 @@ class GalleryGateway
             return $data;
         }
 
-        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC LIMIT $pagination";
+        $sql = "SELECT * FROM gallery WHERE id IN (" . implode(',', $ids) . ") ORDER BY id DESC LIMIT $this->pagination";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -60,15 +66,15 @@ class GalleryGateway
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $length = $stmt->fetch(PDO::FETCH_ASSOC);
-        $data["total_length"] = $length["COUNT(*)"];
+        $data["total_length"] = $data["total_length"] = $this->utils->getTotalPages($length["COUNT(*)"], $this->limit);
 
         return $data;
     }
 
-    function getByCategoryName(string $category_name, $pagination): array
+    function getByCategoryName(string $category_name): array
     {
         $sql = "SELECT gallery.* FROM gallery_categories INNER JOIN image_category ON gallery_categories.id = image_category.category_id 
-        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name LIMIT $pagination";
+        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name LIMIT $this->pagination";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -78,8 +84,17 @@ class GalleryGateway
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            $data["data"][] = $row;
         }
+
+        $sql = "SELECT COUNT(*) FROM gallery_categories INNER JOIN image_category ON gallery_categories.id = image_category.category_id 
+        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name LIMIT $this->pagination";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'category_name' => $category_name
+        ]);
+        $length = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data["total_length"] = $data["total_length"] = $this->utils->getTotalPages($length["COUNT(*)"], $this->limit);
 
         return $data;
     }

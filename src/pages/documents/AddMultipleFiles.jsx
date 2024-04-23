@@ -33,7 +33,7 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 		const date = new Date();
 		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
-		await multipleCreate(data, t("positiveTextDocumentsCreated"));
+		await multipleCreate("documents", data, t("positiveTextDocumentsCreated"));
 		reset();
 		refreshFiles();
 		close();

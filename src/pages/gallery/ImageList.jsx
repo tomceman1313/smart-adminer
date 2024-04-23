@@ -8,7 +8,7 @@ import EditPicture from "./EditPicture";
 import Image from "./Image";
 import css from "./css/Images.module.css";
 
-export default function ImageList({ images, deleteImageHandler, selectedImages, isMultiSelectionActive, editImageHandler }) {
+export default function ImageList({ images, totalPages, deleteImageHandler, selectedImages, isMultiSelectionActive, editImageHandler }) {
 	const { t } = useTranslation("gallery");
 	const { setAlert } = useInteraction();
 	const [showEditCont, setShowEditCont] = useState(null);
@@ -37,7 +37,7 @@ export default function ImageList({ images, deleteImageHandler, selectedImages, 
 					)}
 				</AnimatePresence>
 			</section>
-			{images?.length > 0 && <PaginationServerLoading path="/gallery/" totalPages={2} />}
+			{images?.length > 0 && <PaginationServerLoading path="/gallery/" totalPages={totalPages} />}
 			<AnimatePresence>
 				{showEditCont && <EditPicture image={showEditCont} edit={editImageHandler} close={() => setShowEditCont(null)} />}
 			</AnimatePresence>

@@ -59,10 +59,11 @@ export async function refreshAccessToken(navigate, from, auth) {
 }
 
 export async function changePassword(postData, auth) {
-	const response = await fetch(`${BASE_URL}/api/users/password`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-		body: JSON.stringify({ data: postData, token: auth.userInfo.token }),
+	const bearer = `Bearer ${auth.userInfo.token}`;
+	const response = await fetch(`${BASE_URL}/api/users/${auth.userInfo.id}/password`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		body: JSON.stringify({ data: postData }),
 		credentials: "include",
 	});
 
@@ -73,7 +74,7 @@ export async function changePassword(postData, auth) {
 
 	const data = await response.json();
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	return data.success;
+	return true;
 }
 
 export async function logOut(auth) {

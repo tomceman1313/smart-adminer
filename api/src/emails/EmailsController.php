@@ -16,8 +16,8 @@ class EmailsController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-        $url_parts = explode("/", $uri);
+        $uri = $this->utils->getUrlParts()["url"];
+        $url_parts = $this->utils->getUrlParts()["url_parts"];
 
         switch ($method | $uri) {
             case ($method == "POST" && $uri == "/api/emails"):

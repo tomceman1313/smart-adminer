@@ -8,6 +8,43 @@ class Utils
         $this->path = $path;
     }
 
+    public function getUrlParts(): array
+    {
+        $uri = preg_replace('/^.*api/', "/api", $_SERVER["REQUEST_URI"]);
+        $uri = preg_replace('/page=[0-9]+/', "", $uri);
+        $uri = preg_replace('/\/\?\&/', "/?", $uri);
+        $uri = preg_replace('/\/\?$/', "", $uri);
+        $url_parts = explode("/", $uri);
+
+        return array("url" => $uri, "url_parts" => $url_parts);
+    }
+
+    public function getUrlParams(string $param_name, $return_value)
+    {
+        if (isset($_GET[$param_name])) {
+            return $_GET[$param_name];
+        }
+
+        return $return_value;
+    }
+
+    public function getPagination(int $page, int $limit)
+    {
+        $limit = 8;
+        $offset = ($page > 0 ? $page - 1 : 0) * $limit;
+        $pagination = "$offset, $limit";
+    }
+
+    public function getTotalPages($total_length, $limit)
+    {
+        if (($total_length / $limit) == 0) {
+            return 0;
+        } else {
+            return ceil($total_length / $limit);
+        }
+    }
+
+
     public function checkUserAuthorization(string $method, array $permissions): bool
     {
         $method_permission = strtolower($method) . "_permission";

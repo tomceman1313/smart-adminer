@@ -19,9 +19,7 @@ const NewPassword = ({ isVisible, close, setMessage }) => {
 			return;
 		}
 
-		data.id = auth.userInfo.id;
 		const result = await changePassword(data, auth);
-
 		if (!result) {
 			setMessage({ action: "failure", text: t("messagePasswordNotChanged") });
 			return;

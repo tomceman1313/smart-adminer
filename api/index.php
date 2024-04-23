@@ -1,4 +1,6 @@
 <?php
+$ENV = parse_ini_file('.env');
+ini_set('display_errors', $ENV["DEV_MODE"]);
 
 $DIRECTORIES = array(
     "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images"
@@ -24,11 +26,7 @@ foreach ($FILES as $file) {
     }
 }
 
-//Dev
 header("Access-Control-Allow-Origin: http://localhost:3000");
-
-//Production 
-//header("Access-Control-Allow-Origin: https://domov-sulicka.cz");
 header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
@@ -43,26 +41,16 @@ if ($method == "OPTIONS") {
     die();
 }
 
-$database = new Database("localhost", "cms_seniori", "penziontop4fancz", "heslo");
+$database = new Database($ENV["DB_HOST"], $ENV["DB_NAME"], $ENV["DB_USER"], $ENV["DB_PASSWORD"]);
+$utils = new Utils($database);
 
-//production
-//$database = new Database("localhost", "u139635604_admin_console", "u139635604_admin_user", "DomovSulicka2024");
-//$database = new Database("localhost", "u139635604_cms", "u139635604_admin", "Domov_sulicka2024");
-$URI = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-$URL_PARTS = explode("/", $URI);
+
+$URI = $utils->getUrlParts()["url"];
+$URL_PARTS = $utils->getUrlParts()["url_parts"];
 $REQUEST_METHOD = $_SERVER['REQUEST_METHOD'];
 
-$id = null;
-$page = 0;
+
 $controller = null;
-
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-}
-
-if (isset($_GET["page"])) {
-    $page = $_GET["page"];
-}
 
 $authAction = false;
 $auth = new AuthGateway($database);
@@ -96,33 +84,33 @@ switch ($URL_PARTS[2]) {
         break;
     case 'articles':
         $controller = new ArticlesController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
     case 'gallery':
         $controller = new GalleryController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
 
     case 'documents':
         $controller = new DocumentsController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
     case 'events':
         $controller = new EventsController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
 
     case 'vacancies':
         $controller = new VacanciesController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
     case 'employees':
         $controller = new EmployeesController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
     case 'orders':
         $controller = new OrdersController($database);
-        $controller->processRequest($page, $authAction);
+        $controller->processRequest($authAction);
         break;
     case 'emails':
         $controller = new EmailsController($database);

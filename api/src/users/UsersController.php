@@ -18,8 +18,8 @@ class UsersController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = str_replace("admin/", "", $_SERVER["REQUEST_URI"]);
-        $url_parts = explode("/", $uri);
+        $uri = $this->utils->getUrlParts()["url"];
+        $url_parts = $this->utils->getUrlParts()["url_parts"];
 
         switch ($method | $uri) {
             case ($method == "GET" && preg_match('/\/api\/users\/name\/\?name=\w*/', $uri) && isset($_GET["name"])):
@@ -74,7 +74,7 @@ class UsersController
                     return;
 
                 case ($method == "PUT" && preg_match('/^\/api\/users\/[0-9]*\/password$/', $uri)):
-                    $this->gateway->changePassword($data["data"]);
+                    $this->gateway->changePassword($data["data"], $url_parts[3]);
                     echo json_encode([
                         "message" => "Password change",
                         "token" => $authAction["token"]

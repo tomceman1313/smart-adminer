@@ -34,14 +34,12 @@ const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImage
 
 		setClicked((prev) => !prev);
 	};
-
 	return (
 		<motion.div
 			key={el.id}
 			onClick={onClickHandler}
 			initial={{ scale: 0.6 }}
 			animate={{ scale: 1 }}
-			exit={{ scale: 0.6 }}
 			transition={{
 				duration: 0.3,
 				ease: "easeInOut",

@@ -6,13 +6,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
 import ImageList from "./ImageList";
 import NewPicture from "./NewPicture";
 import css from "./css/Gallery.module.css";
 
 export default function GalleryPage() {
 	const { t } = useTranslation("gallery");
-	const { edit, getAll, getByCategory, remove, multipleDelete } = useBasicApiFunctions();
+	const { edit, getAll, getByCategory, remove } = useBasicApiFunctions();
+	const { multipleDelete } = useItemsControllerApiFunctions();
 	const { page } = useParams();
 	const navigate = useNavigate();
 
@@ -22,7 +24,11 @@ export default function GalleryPage() {
 	const [isMultiSelectionActive, setIsMultiSelectionActive] = useState(false);
 	const selectedImages = useRef(new Map());
 
-	const { data: images, refetch } = useQuery({
+	const {
+		data: images,
+		refetch,
+		isLoading,
+	} = useQuery({
 		queryKey: ["images", page, selectedCategory],
 		queryFn: async () => {
 			let data;
@@ -32,7 +38,8 @@ export default function GalleryPage() {
 				data = await getAll("gallery", page);
 				setSelectedCategory(null);
 			}
-			return data.data;
+
+			return data;
 		},
 	});
 
@@ -53,7 +60,7 @@ export default function GalleryPage() {
 	}
 
 	async function deleteImagesHandler(ids) {
-		await multipleDelete(ids, t("positiveTextImagesDeleted"));
+		await multipleDelete("gallery", ids, t("positiveTextImagesDeleted"));
 		refetch();
 		setIsMultiSelectionActive(false);
 		selectedImages.current = new Map();
@@ -91,13 +98,19 @@ export default function GalleryPage() {
 					allItemsText: t("textAllImages"),
 				}}
 			/>
-			<ImageList
-				images={images}
-				deleteImageHandler={deleteImageHandler}
-				editImageHandler={editImageHandler}
-				isMultiSelectionActive={isMultiSelectionActive}
-				selectedImages={selectedImages}
-			/>
+
+			{isLoading && <h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>Načítání</h2>}
+			{images && (
+				<ImageList
+					key={`images-c${selectedCategory?.name}`}
+					images={images?.data}
+					totalPages={images?.total_length}
+					deleteImageHandler={deleteImageHandler}
+					editImageHandler={editImageHandler}
+					isMultiSelectionActive={isMultiSelectionActive}
+					selectedImages={selectedImages}
+				/>
+			)}
 		</div>
 	);
 }
