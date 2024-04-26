@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import cssBasic from "../../components/styles/Basic.module.css";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import { getCategories } from "../../modules/ApiCategories";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import css from "./css/Gallery.module.css";
@@ -30,7 +30,11 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 		}
 		data.images = imagesArray;
 		const date = new Date();
-		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+		data.date = makeDate(
+			date.getFullYear(),
+			date.getMonth() + 1,
+			date.getDate()
+		);
 		data.category_id = pickedCategories;
 
 		await multipleCreate("gallery", data, t("positiveTextImagesCreated"));
@@ -41,8 +45,12 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 	};
 
 	const chooseCategory = (e) => {
-		const name = categories.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
+		const name = categories.filter(
+			(item) => item.id === parseInt(e.target.value)
+		);
+		const alreadyIn = pickedCategories.find(
+			(item) => item.id === parseInt(e.target.value)
+		);
 		setValue("category_id", "default");
 		if (alreadyIn) {
 			return;
@@ -54,7 +62,9 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 	};
 
 	const removeFromPicked = (e) => {
-		const removed = pickedCategories.filter((item) => item.id !== parseInt(e.target.id));
+		const removed = pickedCategories.filter(
+			(item) => item.id !== parseInt(e.target.id)
+		);
 		setPickedCategories(removed);
 	};
 
@@ -66,11 +76,20 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 			exit={{ y: "-300%" }}
 			transition={{ type: "spring", duration: 1 }}
 		>
-			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
+			<FontAwesomeIcon
+				className={css.close_btn}
+				icon={faXmark}
+				onClick={close}
+			/>
 			<h2>{t("headerCreateMultipleImages")}</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
+					<select
+						defaultValue={"default"}
+						{...register("category_id")}
+						onChange={chooseCategory}
+						required
+					>
 						<option value="default" disabled>
 							{t("placeholderCategorySelect")}
 						</option>
@@ -85,7 +104,12 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 				</div>
 
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<input type="file" accept="image/*" {...register("images")} multiple />
+					<input
+						type="file"
+						accept="image/*"
+						{...register("images")}
+						multiple
+					/>
 					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
 				</div>
 

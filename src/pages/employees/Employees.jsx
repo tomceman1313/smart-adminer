@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import useAuth from "../../hooks/useAuth";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
@@ -32,7 +32,11 @@ export default function Employees() {
 		queryFn: async () => {
 			let data;
 			if (searchedName !== "") {
-				data = await searchByName("employees", searchedName, selectedDepartment);
+				data = await searchByName(
+					"employees",
+					searchedName,
+					selectedDepartment
+				);
 			} else if (selectedDepartment) {
 				data = await getByCategory("employees", selectedDepartment.id);
 			} else {
@@ -53,7 +57,11 @@ export default function Employees() {
 	}
 
 	function deleteEmployee(id, name) {
-		setAlert({ id: id, question: t("alertDeleteEmployee", { name: name }), positiveHandler: deleteHandler });
+		setAlert({
+			id: id,
+			question: t("alertDeleteEmployee", { name: name }),
+			positiveHandler: deleteHandler,
+		});
 	}
 
 	function resetFilter() {
@@ -88,13 +96,24 @@ export default function Employees() {
 				<ul className={css.employees}>
 					{employees?.length > 0 ? (
 						employees.map((user) => (
-							<EmployeeBasicInfo key={"employeeinfo-" + user.id} user={user} setEmployee={setEmployee} deleteEmployee={deleteEmployee} />
+							<EmployeeBasicInfo
+								key={"employeeinfo-" + user.id}
+								user={user}
+								setEmployee={setEmployee}
+								deleteEmployee={deleteEmployee}
+							/>
 						))
 					) : (
 						<section>{t("noDataFound")}</section>
 					)}
 				</ul>
-				<Employee employee={employee} setEmployee={setEmployee} getData={refetch} departments={departments} auth={auth} />
+				<Employee
+					employee={employee}
+					setEmployee={setEmployee}
+					getData={refetch}
+					departments={departments}
+					auth={auth}
+				/>
 			</section>
 
 			<PlusButton onClick={() => setEmployee({})} />

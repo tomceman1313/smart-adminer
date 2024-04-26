@@ -8,7 +8,7 @@ import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 
 import { useTranslation } from "react-i18next";
 import cssBasic from "../../components/styles/Basic.module.css";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import css from "./css/Documents.module.css";
 
 const AddMultipleFiles = ({ close, refreshFiles }) => {
@@ -31,7 +31,11 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 		}
 		data.files = filesArray;
 		const date = new Date();
-		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+		data.date = makeDate(
+			date.getFullYear(),
+			date.getMonth() + 1,
+			date.getDate()
+		);
 
 		await multipleCreate("documents", data, t("positiveTextDocumentsCreated"));
 		reset();
@@ -47,11 +51,19 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 			exit={{ y: "-300%" }}
 			transition={{ type: "spring", duration: 1 }}
 		>
-			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
+			<FontAwesomeIcon
+				className={css.close_btn}
+				icon={faXmark}
+				onClick={close}
+			/>
 			<h2>{t("headerCreateMultipleDocuments")}</h2>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<select defaultValue={"default"} {...register("category_id")} required>
+					<select
+						defaultValue={"default"}
+						{...register("category_id")}
+						required
+					>
 						<option value="default" disabled>
 							{t("placeholderCategorySelect")}
 						</option>

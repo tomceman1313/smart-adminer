@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import ImageList from "./ImageList";
 import NewPicture from "./NewPicture";
 import css from "./css/Gallery.module.css";
@@ -90,7 +90,9 @@ export default function GalleryPage() {
 				deleteItems={deleteImagesHandler}
 				resetFilter={resetFilter}
 				selectedItems={selectedImages}
-				toggleMultiSelectionActive={() => setIsMultiSelectionActive((prev) => !prev)}
+				toggleMultiSelectionActive={() =>
+					setIsMultiSelectionActive((prev) => !prev)
+				}
 				settingsConfig={{
 					deleteQuestion: t("alertDeleteMultipleImages"),
 					searchInput: "",
@@ -99,7 +101,11 @@ export default function GalleryPage() {
 				}}
 			/>
 
-			{isLoading && <h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>Načítání</h2>}
+			{isLoading && (
+				<h2 style={{ fontSize: "1.2rem", textAlign: "center", width: "100%" }}>
+					Načítání
+				</h2>
+			)}
 			{images && (
 				<ImageList
 					key={`images-c${selectedCategory?.name}`}

@@ -4,7 +4,7 @@ import Menu from "../menu-components/Menu";
 import { MenuToggle } from "./MenuToggle";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-
+import { Link } from "react-router-dom";
 import css from "./MobileMenu.module.css";
 
 const MobileMenu = ({ permissions, logOut }) => {
@@ -17,15 +17,34 @@ const MobileMenu = ({ permissions, logOut }) => {
 	}, [location]);
 
 	return (
-		<motion.div className={css.menu} initial={false} animate={isOpen ? "open" : "closed"}>
-			<div className={css.logo_title}>
-				<img src={`${publicPath}/favicon.svg`} className={css.logo} alt="logo" />
-				<img src={`${publicPath}/logo-white.svg`} className={css.logo_text} alt="logo" />
-			</div>
+		<motion.div
+			className={css.menu}
+			initial={false}
+			animate={isOpen ? "open" : "closed"}
+		>
+			<Link to="/">
+				<div className={css.logo_title}>
+					<img
+						src={`${publicPath}/favicon.svg`}
+						className={css.logo}
+						alt="logo"
+					/>
+					<img
+						src={`${publicPath}/logo-white.svg`}
+						className={css.logo_text}
+						alt="logo"
+					/>
+				</div>
+			</Link>
 			<MenuToggle toggle={() => toggleOpen()} css={css} />
 			<AnimatePresence>
 				{isOpen && (
-					<motion.ul initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ type: "spring", bounce: 0 }}>
+					<motion.ul
+						initial={{ x: "-100%" }}
+						animate={{ x: 0 }}
+						exit={{ x: "-100%" }}
+						transition={{ type: "spring", bounce: 0 }}
+					>
 						<Menu permissions={permissions} logOut={logOut} />
 					</motion.ul>
 				)}

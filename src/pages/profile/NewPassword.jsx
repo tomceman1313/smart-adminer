@@ -2,15 +2,16 @@ import { faUnlock, faUnlockKeyhole } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
-import useAuth from "../../hooks/useAuth";
-import { changePassword } from "../../modules/ApiAuth";
+import useAuthApi from "../../hooks/api/useAuthApi";
 
-import css from "./NewPassword.module.css";
 import { useTranslation } from "react-i18next";
+import css from "./NewPassword.module.css";
+import useInteraction from "../../hooks/useInteraction";
 
-const NewPassword = ({ isVisible, close, setMessage }) => {
+const NewPassword = ({ isVisible, close }) => {
 	const { t } = useTranslation("profile");
-	const auth = useAuth();
+	const { setMessage } = useInteraction();
+	const { changePassword } = useAuthApi();
 	const { register, handleSubmit, reset } = useForm();
 
 	const onSubmit = async (data) => {
@@ -19,7 +20,7 @@ const NewPassword = ({ isVisible, close, setMessage }) => {
 			return;
 		}
 
-		const result = await changePassword(data, auth);
+		const result = await changePassword(data);
 		if (!result) {
 			setMessage({ action: "failure", text: t("messagePasswordNotChanged") });
 			return;

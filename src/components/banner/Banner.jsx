@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { PAGES_BANNER_INFO } from "./bannerInfo";
 
-import css from "./Dashboard.module.css";
+import css from "./Banner.module.css";
 import { useTranslation } from "react-i18next";
 
 export default function Banner() {
@@ -25,7 +25,10 @@ export default function Banner() {
 		}
 
 		//remove numbers (ids) in url
-		while (Number(path.charAt(path.length - 1)) || Number(path.charAt(path.length - 1)) === 0) {
+		while (
+			Number(path.charAt(path.length - 1)) ||
+			Number(path.charAt(path.length - 1)) === 0
+		) {
 			path = path.slice(0, -1);
 		}
 

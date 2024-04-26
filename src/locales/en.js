@@ -14,6 +14,10 @@ import orders from "./en/orders.json";
 import vacancies from "./en/vacancies.json";
 import profile from "./en/profile.json";
 import privileges from "./en/privileges.json";
+import settings from "./en/settings.json";
+import login from "./en/login.json";
+
+import common from "./en/common.json";
 
 import categoriesComponent from "./en/components/categories.json";
 import itemsControllerComponent from "./en/components/items-controller.json";
@@ -35,6 +39,9 @@ export const EN = {
 	vacancies: vacancies,
 	profile: profile,
 	privileges: privileges,
+	settings: settings,
+	login: login,
+	common: common,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
 };

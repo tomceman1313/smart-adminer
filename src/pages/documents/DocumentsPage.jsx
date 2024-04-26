@@ -5,8 +5,8 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import DocumentList from "./DocumentList";
 import EditDocument from "./EditDocument";
 import NewDocument from "./NewDocument";
@@ -53,7 +53,9 @@ export default function DocumentsPage() {
 	}
 
 	async function orderDocumentsHandler(documentsIds) {
-		const categoryId = categories.find((category) => category.name === selectedCategory.name)?.id;
+		const categoryId = categories.find(
+			(category) => category.name === selectedCategory.name
+		)?.id;
 		const data = { category_id: categoryId, documents_ids: documentsIds };
 		await updateOrder("documents", data, t("positiveTextOrderChanged"));
 	}
@@ -115,7 +117,12 @@ export default function DocumentsPage() {
 			/>
 			<AnimatePresence>
 				{editedDocument && (
-					<EditDocument editedDocument={editedDocument} categories={categories} refreshData={refetch} setVisible={setEditedDocument} />
+					<EditDocument
+						editedDocument={editedDocument}
+						categories={categories}
+						refreshData={refetch}
+						setVisible={setEditedDocument}
+					/>
 				)}
 			</AnimatePresence>
 		</div>

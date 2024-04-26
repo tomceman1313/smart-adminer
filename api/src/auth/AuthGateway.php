@@ -16,6 +16,7 @@ class AuthGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
+        $this->usersApi = new UsersGateway($database);
     }
 
     /**
@@ -47,7 +48,10 @@ class AuthGateway
 
             $jwt_refresh = JWT::encode(array('iat' => $iat, 'exp' => $iat + 60 * 60, 'user_id' => $user["id"], 'user' => $user["username"], 'role_id' => $user["role_id"]), $this->key, 'HS512');
             setcookie("refresh_token", $jwt_refresh, time() + 3600, '/', "", false, true);
-            return array("token" => $jwt, "username" => $user["username"], "role" => $user["role_id"], "id" => $user["id"]);
+
+            $permissions = $this->usersApi->getRolePermissions($user["role_id"]);
+
+            return array("token" => $jwt, "username" => $user["username"], "role" => $user["role_id"], "id" => $user["id"], "permissions" => $permissions);
         }
 
         return false;
@@ -80,7 +84,9 @@ class AuthGateway
             'role_id' => $decoded->role_id
         );
 
-        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "username" => $decoded->user, "role" => $decoded->role_id, "id" => $decoded->user_id);
+        $permissions = $this->usersApi->getRolePermissions($decoded->role_id);
+
+        return array("token" => JWT::encode($payload, $this->key, 'HS512'), "username" => $decoded->user, "role" => $decoded->role_id, "id" => $decoded->user_id, "permissions" => $permissions);
     }
 
     /**
@@ -104,6 +110,7 @@ class AuthGateway
             }
             $permissions = $this->getRolePermission($response["role"], $class);
             return [
+                'id' => $response["id"],
                 'token' => $response["token"],
                 'permissions' => $permissions
             ];

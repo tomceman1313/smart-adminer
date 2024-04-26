@@ -1,4 +1,10 @@
-import { faCalendarDays, faHashtag, faHeading, faInfo, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCalendarDays,
+	faHashtag,
+	faHeading,
+	faInfo,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -8,11 +14,16 @@ import InputBox from "../../components/basic/InputBox";
 import FileInput from "../../components/basic/file-input/FIleInput";
 import ImageInput from "../../components/basic/image-input/ImageInput";
 import Select from "../../components/basic/select/Select";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
 import css from "./css/EditDocument.module.css";
 
-export default function EditDocument({ editedDocument, refreshData, categories, setVisible }) {
+export default function EditDocument({
+	editedDocument,
+	refreshData,
+	categories,
+	setVisible,
+}) {
 	const { t } = useTranslation("documents");
 	const { edit } = useBasicApiFunctions();
 	const { register, handleSubmit, reset } = useForm();
@@ -45,7 +56,13 @@ export default function EditDocument({ editedDocument, refreshData, categories, 
 	};
 
 	return (
-		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
+		<motion.section
+			className={css.edit}
+			initial={{ x: -600 }}
+			animate={{ x: 0 }}
+			exit={{ x: -600 }}
+			transition={{ type: "spring", duration: 1 }}
+		>
 			<h2>{t("headerEditDocument")}</h2>
 			<FontAwesomeIcon
 				id={css.close}
@@ -80,8 +97,20 @@ export default function EditDocument({ editedDocument, refreshData, categories, 
 					icon={faHashtag}
 					defaultValue={editedDocument.category_id}
 				/>
-				<ImageInput image={editedDocument.image} name="image" path="documents" register={register} title="Náhledový obrázek" required={false} />
-				<FileInput fileName={editedDocument.name} name="file" register={register} title="Uložený dokument" />
+				<ImageInput
+					image={editedDocument.image}
+					name="image"
+					path="documents"
+					register={register}
+					title="Náhledový obrázek"
+					required={false}
+				/>
+				<FileInput
+					fileName={editedDocument.name}
+					name="file"
+					register={register}
+					title="Uložený dokument"
+				/>
 				<DatePicker
 					register={register}
 					name="date"

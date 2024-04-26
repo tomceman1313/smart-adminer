@@ -1,0 +1,26 @@
+.orders {
+	aspect-ratio: 3 / 1;
+}
+
+.orders h4 {
+	margin: 0;
+	text-align: center;
+	font-size: 1.8rem;
+	margin-bottom: 20px;
+}
+
+@media (max-width: 1300px) {
+	.orders {
+		aspect-ratio: 2 / 1;
+	}
+
+	.orders h4 {
+		font-size: 1.5rem;
+	}
+}
+
+@media (max-width: 900px) {
+	.orders {
+		aspect-ratio: 1;
+	}
+}

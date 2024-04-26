@@ -1,4 +1,9 @@
-import { faEye, faHashtag, faHeading, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+	faEye,
+	faHashtag,
+	faHeading,
+	faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -13,14 +18,17 @@ import Select from "../../components/basic/select/Select";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import Switch from "../../components/basic/switch/Switch";
 import ArticlePreview from "../../components/common/article-preview/ArticlePreview";
-import useApiCategories from "../../hooks/useApiCategories";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useApiCategories from "../../hooks/api/useApiCategories";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
 import { makeDateFormat } from "../../modules/BasicFunctions";
 import { checkInnerImage } from "../../modules/TextEditorFunctions";
 import css from "./Article.module.css";
 import ImagesUnderArticle from "./ImagesUnderArticle";
-import { formatArticlePreviewData, formatSubmittedData } from "./helperFunctions";
+import {
+	formatArticlePreviewData,
+	formatSubmittedData,
+} from "./helperFunctions";
 import { useTranslation } from "react-i18next";
 
 export default function Article() {
@@ -80,7 +88,13 @@ export default function Article() {
 	});
 
 	async function onSubmit(data) {
-		let formattedData = await formatSubmittedData(data, article, body, originalImages, setMessage);
+		let formattedData = await formatSubmittedData(
+			data,
+			article,
+			body,
+			originalImages,
+			setMessage
+		);
 		if (!formattedData) {
 			return;
 		}
@@ -100,7 +114,11 @@ export default function Article() {
 	}
 
 	async function removeArticle() {
-		setAlert({ id: id, question: t("alertDeleteArticle"), positiveHandler: removeHandler });
+		setAlert({
+			id: id,
+			question: t("alertDeleteArticle"),
+			positiveHandler: removeHandler,
+		});
 	}
 
 	async function openArticlePreview() {
@@ -111,10 +129,17 @@ export default function Article() {
 	return (
 		<>
 			<Helmet>
-				<title>{article?.title ? article.title : t("htmlTitleNewArticle")} | SmartAdminer</title>
+				<title>
+					{article?.title ? article.title : t("htmlTitleNewArticle")} |
+					SmartAdminer
+				</title>
 			</Helmet>
 			{categories && (id ? article : true) ? (
-				<form onSubmit={handleSubmit(onSubmit)} className={css.article} key={article?.title}>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className={css.article}
+					key={article?.title}
+				>
 					<section>
 						<h2>{t("headerBasicInfo")}</h2>
 						<InputBox
@@ -134,7 +159,12 @@ export default function Article() {
 							icon={faMagnifyingGlass}
 							defaultValue={article?.description}
 						/>
-						<Switch name="active" label={t("placeholderIsVisible")} register={register} defaultValue={article?.active} />
+						<Switch
+							name="active"
+							label={t("placeholderIsVisible")}
+							register={register}
+							defaultValue={article?.active}
+						/>
 					</section>
 
 					<section>
@@ -155,12 +185,21 @@ export default function Article() {
 							placeholderValue={t("placeholderCategory")}
 							defaultValue={article?.category_id}
 						/>
-						<ImageInput image={article?.image} name="image" path="articles" register={register} />
+						<ImageInput
+							image={article?.image}
+							name="image"
+							path="articles"
+							register={register}
+						/>
 					</section>
 
 					<section>
 						<h2>{t("headerArticleBody")}</h2>
-						<TextEditor value={body} setValue={setBody} key={body ? "filled" : "empty"} />
+						<TextEditor
+							value={body}
+							setValue={setBody}
+							key={body ? "filled" : "empty"}
+						/>
 						<ImagesUnderArticle
 							register={register}
 							underArticleImages={underArticleImages}
@@ -169,13 +208,24 @@ export default function Article() {
 						/>
 
 						<div className={css.control_box}>
-							<SubmitButton status={id ? statusUpdate : statusCreate} value={id ? t("buttonSave") : t("buttonCreate")} />
-							<button type="button" className={css.btn_preview} onClick={openArticlePreview}>
+							<SubmitButton
+								status={id ? statusUpdate : statusCreate}
+								value={id ? t("buttonSave") : t("buttonCreate")}
+							/>
+							<button
+								type="button"
+								className={css.btn_preview}
+								onClick={openArticlePreview}
+							>
 								<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 								{t("buttonPreview")}
 							</button>
 							{article && (
-								<button type="button" className="red_button" onClick={removeArticle}>
+								<button
+									type="button"
+									className="red_button"
+									onClick={removeArticle}
+								>
 									{t("buttonDelete")}
 								</button>
 							)}
@@ -185,7 +235,11 @@ export default function Article() {
 			) : (
 				<h3>Načítání článku</h3>
 			)}
-			<ArticlePreview article={articlePreview} close={() => setArticlePreview(null)} typeOfPreview="articles" />
+			<ArticlePreview
+				article={articlePreview}
+				close={() => setArticlePreview(null)}
+				typeOfPreview="articles"
+			/>
 		</>
 	);
 }

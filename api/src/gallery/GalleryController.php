@@ -99,7 +99,7 @@ class GalleryController
                     "token" => $authAction["token"]
                 ]);
                 break;
-            case ($method == "DELETE" && preg_match('/^\/api\/gallery\/multiple\/[\w%]*$/', $uri)):
+            case ($method == "DELETE" && preg_match('/^\/api\/gallery\/multiple\/[\w%]+$/', $uri)):
                 $decoded_ids_array = json_decode(urldecode($url_parts[4]), true);
                 if ($decoded_ids_array !== null) {
                     $this->gateway->multipleDelete($decoded_ids_array);

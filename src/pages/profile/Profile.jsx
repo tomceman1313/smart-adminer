@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { useForm } from "react-hook-form";
-import { edit, getWithAuth } from "../../modules/ApiFunctions";
-import { faAt, faIdBadge, faImagePortrait, faMobileScreen, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+	faAt,
+	faIdBadge,
+	faImagePortrait,
+	faMobileScreen,
+	faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet-async";
 import InputBox from "../../components/basic/InputBox";
 import NewPassword from "./NewPassword";
@@ -13,7 +18,7 @@ import { useTranslation } from "react-i18next";
 const Profile = () => {
 	const { t } = useTranslation("profile");
 	const auth = useAuth();
-	const { setMessage } = useInteraction();
+	const { edit, getWithAuth } = useBasicApiFunctions();
 	const [isEditing, setIsEditing] = useState(false);
 	const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
 	const { register, handleSubmit, setValue, setFocus } = useForm();
@@ -24,7 +29,7 @@ const Profile = () => {
 	}, []);
 
 	async function loadData() {
-		const userData = await getWithAuth("users", auth.userInfo.id, auth);
+		const userData = await getWithAuth("users", auth.userInfo.id);
 		setValue("username", userData.username);
 		setValue("fname", userData.fname);
 		setValue("lname", userData.lname);
@@ -41,7 +46,7 @@ const Profile = () => {
 		}
 		setIsEditing(!isEditing);
 
-		edit("users", data, setMessage, t("positiveTextUserUpdated"), auth);
+		edit("users", data, t("positiveTextUserUpdated"));
 	};
 
 	return (
@@ -89,7 +94,15 @@ const Profile = () => {
 						isRequired
 						readOnly={!isEditing}
 					/>
-					<InputBox type="email" name="email" placeholder={t("placeholderEmail")} register={register} icon={faAt} isRequired readOnly={!isEditing} />
+					<InputBox
+						type="email"
+						name="email"
+						placeholder={t("placeholderEmail")}
+						register={register}
+						icon={faAt}
+						isRequired
+						readOnly={!isEditing}
+					/>
 					<input type="hidden" {...register("id")} />
 					<button type="button" onClick={() => setIsNewPasswordVisible(true)}>
 						{t("buttonChangePassword")}
@@ -99,7 +112,10 @@ const Profile = () => {
 					</button>
 				</form>
 			</section>
-			<NewPassword isVisible={isNewPasswordVisible} close={() => setIsNewPasswordVisible(false)} setMessage={setMessage} />
+			<NewPassword
+				isVisible={isNewPasswordVisible}
+				close={() => setIsNewPasswordVisible(false)}
+			/>
 		</div>
 	);
 };

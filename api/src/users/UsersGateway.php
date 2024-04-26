@@ -87,7 +87,7 @@ class UsersGateway
         ]);
     }
 
-
+    /**------------------------------------------------------------ ROLES */
 
     public function getRoles(): array
     {
@@ -101,6 +101,61 @@ class UsersGateway
 
         return $data;
     }
+
+    public function createRole(array $data)
+    {
+        $sql = "INSERT INTO roles (name) VALUES (:name)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            "name" => $data["name"]
+        ]);
+
+        $role_id = $this->conn->lastInsertId();
+
+        $sql = "SELECT DISTINCT class FROM role_permission";
+        $stmt = $this->conn->query($sql);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "INSERT INTO role_permission (role_id, class, get_permission, post_permission, put_permission, delete_permission) VALUES (:role_id, :class, 0, 0, 0, 0)";
+            $stmt_permission = $this->conn->prepare($sql);
+            $stmt_permission->execute([
+                "role_id" => $role_id,
+                "class" => $row["class"]
+            ]);
+        }
+    }
+
+    public function updateRole(array $data, $id)
+    {
+        $sql = "UPDATE roles SET name = :name WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            "name" => $data["name"],
+            "id" => $id
+        ]);
+    }
+
+    public function deleteRole($id)
+    {
+        $sql = "DELETE FROM roles WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            "id" => $id
+        ]);
+
+        $sql = "DELETE FROM role_permission WHERE role_id = :role_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            "role_id" => $id
+        ]);
+
+        $sql = "DELETE FROM users WHERE role_id = :role_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            "role_id" => $id
+        ]);
+    }
+
+    /**------------------------------------------------------------------ PERMISSIONS */
 
     public function getPermissions(): array
     {
@@ -150,6 +205,20 @@ class UsersGateway
             "method" => $permission[$permission_method] == 1 ? 0 : 1,
             "id" => $id,
         ]);
+    }
+
+    public function createPermissions(string $class)
+    {
+        $roles = $this->getRoles();
+
+        foreach ($roles as $role) {
+            $sql = "INSERT INTO role_permission (role_id, class, get_permission, post_permission, put_permission, delete_permission) VALUES (:role_id, :class, 0, 0, 0, 0)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                "role_id" => $role["id"],
+                "class" => $class
+            ]);
+        }
     }
 
     public function changePassword(array $data, $id)

@@ -1,6 +1,6 @@
-import { BASE_URL } from "../modules/ApiFunctions";
-import useAuth from "./useAuth";
-import useInteraction from "./useInteraction";
+import { BASE_URL } from "../../modules/ApiFunctions";
+import useAuth from "../useAuth";
+import useInteraction from "../useInteraction";
 
 export default function useApiCategories() {
 	const auth = useAuth();
@@ -10,7 +10,9 @@ export default function useApiCategories() {
 	async function getCategories(apiClass) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/categories`, {
 			method: "GET",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			},
 			credentials: "include",
 		});
 
@@ -25,7 +27,10 @@ export default function useApiCategories() {
 	async function createCategory(apiClass, data, positiveText) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/categories`, {
 			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
 			body: JSON.stringify({ data: data }),
 			credentials: "include",
 		});
@@ -42,12 +47,18 @@ export default function useApiCategories() {
 	}
 
 	async function updateCategory(apiClass, data, positiveText) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${data.id}`, {
-			method: "PUT",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-			body: JSON.stringify({ data: data }),
-			credentials: "include",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/categories/${data.id}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+					Authorization: bearer,
+				},
+				body: JSON.stringify({ data: data }),
+				credentials: "include",
+			}
+		);
 
 		if (response.status === 403) {
 			auth.setUserInfo(null);
@@ -61,11 +72,17 @@ export default function useApiCategories() {
 	}
 
 	async function deleteCategory(apiClass, id, positiveText) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/categories/${id}`, {
-			method: "DELETE",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-			credentials: "include",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/categories/${id}`,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+					Authorization: bearer,
+				},
+				credentials: "include",
+			}
+		);
 
 		if (response.status === 403) {
 			auth.setUserInfo(null);

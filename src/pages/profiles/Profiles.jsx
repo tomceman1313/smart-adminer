@@ -56,11 +56,11 @@ export default function Profiles() {
 	}
 
 	return (
-		<section className="no-section" style={{ position: "relative" }}>
+		<div className="no-section" style={{ position: "relative" }}>
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<div className={css.users}>{users && <UserList users={users} roles={roles} submitHandler={submitHandler} deleteHandler={deleteHandler} />}</div>
-		</section>
+		</div>
 	);
 }

@@ -27,12 +27,7 @@ class AuthController
                 $response = $this->gateway->login($data);
                 if ($response) {
                     http_response_code(200);
-                    echo json_encode([
-                        "token" => $response["token"],
-                        "username" => $response["username"],
-                        "role" => $response["role"],
-                        "id" => $response["id"]
-                    ]);
+                    echo json_encode($response);
                 } else {
                     http_response_code(401);
                     echo json_encode([

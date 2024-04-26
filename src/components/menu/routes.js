@@ -1,24 +1,33 @@
-import Article from "../article/Article";
-import Articles from "../articles/Articles";
-import DocumentsPage from "../documents/DocumentsPage";
-import Employees from "../employees/Employees";
-import Event from "../events/Event";
-import Events from "../events/Events";
-import GalleryPage from "../gallery/GalleryPage";
-import Notifications from "../notifications/Notifications";
-import Orders from "../orders/Orders";
-import Page from "../page/Page";
-import Pages from "../pages/Pages";
-import Pricelist from "../pricelist/Pricelist";
-import Product from "../product/Product";
-import Products from "../products/Products";
-import Profile from "../profile/Profile";
-import Profiles from "../profiles/Profiles";
-import Roles from "../roles/Roles";
-import Vacancies from "../vacancies/Vacancies";
-import Vacancy from "../vacancy/Vacancy";
+import Article from "../../pages/article/Article";
+import Articles from "../../pages/articles/Articles";
+import DocumentsPage from "../../pages/documents/DocumentsPage";
+import Employees from "../../pages/employees/Employees";
+import Event from "../../pages/events/Event";
+import Events from "../../pages/events/Events";
+import GalleryPage from "../../pages/gallery/GalleryPage";
+import Notifications from "../../pages/notifications/Notifications";
+import Orders from "../../pages/orders/Orders";
+import Page from "../../pages/page/Page";
+import Pages from "../../pages/pages/Pages";
+import Pricelist from "../../pages/pricelist/Pricelist";
+import Product from "../../pages/product/Product";
+import Products from "../../pages/products/Products";
+import Profile from "../../pages/profile/Profile";
+import Profiles from "../../pages/profiles/Profiles";
+import Roles from "../../pages/roles/Roles";
+import SettingsPage from "../../pages/settings/SettingsPage";
+import Vacancies from "../../pages/vacancies/Vacancies";
+import Vacancy from "../../pages/vacancy/Vacancy";
+import DashboardContent from "../../pages/dashboard/DashboardContent";
 
 export const ROUTES = [
+	{
+		name: "dashboard",
+		class: "stats",
+		path: "/",
+		element: <DashboardContent />,
+		menuSection: "",
+	},
 	{
 		name: "users",
 		class: "users",
@@ -186,5 +195,12 @@ export const ROUTES = [
 		path: "event/:id",
 		element: <Event />,
 		menuSection: "events-section",
+	},
+	{
+		name: "settings",
+		class: "settings",
+		path: "settings",
+		element: <SettingsPage />,
+		menuSection: "settings-section",
 	},
 ];

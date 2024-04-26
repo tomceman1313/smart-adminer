@@ -6,11 +6,15 @@ import PlusButton from "../../components/basic/PlusButton";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import ItemsController from "../../components/common/items-controller/ItemsController";
 import ArticleCardLoader from "../../components/loaders/ArticleCardLoader";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
-import { isPermitted, makeDateFormat, publicPath } from "../../modules/BasicFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import {
+	isPermitted,
+	makeDateFormat,
+	publicPath,
+} from "../../modules/BasicFunctions";
 import css from "./Articles.module.css";
 import { useTranslation } from "react-i18next";
-import useItemsControllerApiFunctions from "../../hooks/useItemsControllerApiFunctions";
+import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 
 const Articles = () => {
 	const { t } = useTranslation("articles");
@@ -84,8 +88,15 @@ const Articles = () => {
 					<section className={`${css.articles_list} no-section`}>
 						{articles &&
 							articles.map((article) => (
-								<article key={article.id} id={article.id} onClick={openArticleDetails}>
-									<img src={`${publicPath}/images/articles/${article.image}`} alt="" />
+								<article
+									key={article.id}
+									id={article.id}
+									onClick={openArticleDetails}
+								>
+									<img
+										src={`${publicPath}/images/articles/${article.image}`}
+										alt=""
+									/>
 									<div>
 										<h3>{article.title}</h3>
 										<p>{article.description}</p>

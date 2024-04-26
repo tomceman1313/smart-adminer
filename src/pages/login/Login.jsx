@@ -1,59 +1,56 @@
-import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
-import css from "./Login.module.css";
-
-import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import Message from "../../components/admin/Message";
 import InputBox from "../../components/basic/InputBox";
-import { BASE_URL } from "../../modules/ApiFunctions";
-import { Helmet } from "react-helmet-async";
+import useAuthApi from "../../hooks/api/useAuthApi";
+import css from "./Login.module.css";
 
 export default function Login() {
+	const { t } = useTranslation(["login", "common"]);
 	const { register, handleSubmit } = useForm();
-	const { setMessage } = useInteraction();
+	const { signIn } = useAuthApi();
 
-	const navigate = useNavigate();
-	const location = useLocation();
-	let from = location?.state?.from || "/";
-
-	const auth = useAuth();
-
-	async function onSubmit(data) {
-		const response = await fetch(BASE_URL + "/api/auth/login", {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-			credentials: "include",
-			body: JSON.stringify(data),
-		});
-
-		const _data = await response.json();
-
-		if (response.status === 200) {
-			auth.setUserInfo({ role: _data.role, username: _data.username, token: _data.token, id: _data.id });
-			navigate(from, { state: { from: location }, replace: true });
-			return;
-		}
-
-		setMessage({ action: "alert", text: "Přihlašovací údaje nejsou správné" });
+	function onSubmit(data) {
+		signIn(data);
 	}
 
 	return (
-		<div className={css.login}>
+		<>
 			<Helmet>
-				<title>Přihlášení | SmartAdminer</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<section>
-				<h2>PŘIHLÁŠENÍ</h2>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<InputBox type="text" name="username" register={register} placeholder="Uživatelské jméno" icon={faUser} isRequired={true} />
-					<InputBox type="password" name="password" register={register} placeholder="Heslo" icon={faLock} isRequired={true} />
-					<input type="submit" />
-				</form>
-			</section>
-			<Message />
-		</div>
+			<div className={css.login}>
+				<section
+					initial={{ opacity: 0.5 }}
+					animate={{ opacity: 1 }}
+					transition={{ type: "spring", duration: 0.8 }}
+				>
+					<h2>{t("headerLogin")}</h2>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<InputBox
+							type="text"
+							name="username"
+							register={register}
+							placeholder={t("placeholderUsername")}
+							icon={faUser}
+							isRequired
+						/>
+						<InputBox
+							type="password"
+							name="password"
+							register={register}
+							placeholder={t("placeholderPassword")}
+							icon={faLock}
+							isRequired
+						/>
+						<input type="submit" value={t("common:buttonLogin")} />
+					</form>
+				</section>
+
+				<Message />
+			</div>
+		</>
 	);
 }

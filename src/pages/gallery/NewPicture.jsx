@@ -1,4 +1,9 @@
-import { faHashtag, faHeading, faImage, faQuoteRight } from "@fortawesome/free-solid-svg-icons";
+import {
+	faHashtag,
+	faHeading,
+	faImage,
+	faQuoteRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -7,7 +12,7 @@ import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import cssBasic from "../../components/styles/Basic.module.css";
-import useBasicApiFunctions from "../../hooks/useBasicApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import AddMultiplePictures from "./AddMultiplePictures";
 
 import css from "./css/Gallery.module.css";
@@ -28,7 +33,11 @@ export default function NewPicture({ reloadData, categories }) {
 			data.image = "no-change";
 		}
 		const date = new Date();
-		data.date = makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+		data.date = makeDate(
+			date.getFullYear(),
+			date.getMonth() + 1,
+			date.getDate()
+		);
 
 		data.category_id = pickedCategories;
 		await create("gallery", data, t("positiveTextImageCreated"));
@@ -38,8 +47,12 @@ export default function NewPicture({ reloadData, categories }) {
 	};
 
 	const chooseCategory = (e) => {
-		const name = categories.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
+		const name = categories.filter(
+			(item) => item.id === parseInt(e.target.value)
+		);
+		const alreadyIn = pickedCategories.find(
+			(item) => item.id === parseInt(e.target.value)
+		);
 		setValue("category_id", "default");
 		if (alreadyIn) {
 			return;
@@ -51,7 +64,9 @@ export default function NewPicture({ reloadData, categories }) {
 	};
 
 	const removeFromPicked = (e) => {
-		const removed = pickedCategories.filter((item) => item.id !== parseInt(e.target.id));
+		const removed = pickedCategories.filter(
+			(item) => item.id !== parseInt(e.target.id)
+		);
 		setPickedCategories(removed);
 	};
 
@@ -64,11 +79,28 @@ export default function NewPicture({ reloadData, categories }) {
 			<section className="half-section">
 				<h2>{t("headerCreateImage")}</h2>
 				<form onSubmit={handleSubmit(createNew)}>
-					<InputBox placeholder={t("placeholderImageTitle")} register={register} type="text" name="title" icon={faHeading} />
-					<InputBox placeholder={t("placeholderImageDescription")} register={register} type="text" name="description" icon={faQuoteRight} />
+					<InputBox
+						placeholder={t("placeholderImageTitle")}
+						register={register}
+						type="text"
+						name="title"
+						icon={faHeading}
+					/>
+					<InputBox
+						placeholder={t("placeholderImageDescription")}
+						register={register}
+						type="text"
+						name="description"
+						icon={faQuoteRight}
+					/>
 
 					<div className={cssBasic.input_box}>
-						<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
+						<select
+							defaultValue={"default"}
+							{...register("category_id")}
+							onChange={chooseCategory}
+							required
+						>
 							<option value="default" disabled>
 								{t("placeholderCategorySelect")}
 							</option>
@@ -82,7 +114,14 @@ export default function NewPicture({ reloadData, categories }) {
 						<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
 					</div>
 
-					<InputBox register={register} type="file" name="image" icon={faImage} isRequired={true} accept="image/*" />
+					<InputBox
+						register={register}
+						type="file"
+						name="image"
+						icon={faImage}
+						isRequired={true}
+						accept="image/*"
+					/>
 
 					<ul className={css.picked_categories}>
 						{pickedCategories &&
@@ -94,14 +133,23 @@ export default function NewPicture({ reloadData, categories }) {
 					</ul>
 
 					<button>{t("buttonCreate")}</button>
-					<button type="button" className="blue_button" onClick={showAddMultiplePictures}>
+					<button
+						type="button"
+						className="blue_button"
+						onClick={showAddMultiplePictures}
+					>
 						{t("buttonCreateMultiple")}
 					</button>
 				</form>
 			</section>
 
 			<AnimatePresence>
-				{addMultiplePictures && <AddMultiplePictures close={() => setAddMultiplePictures(false)} refreshImages={reloadData} />}
+				{addMultiplePictures && (
+					<AddMultiplePictures
+						close={() => setAddMultiplePictures(false)}
+						refreshImages={reloadData}
+					/>
+				)}
 			</AnimatePresence>
 		</>
 	);

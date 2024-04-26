@@ -8,6 +8,8 @@
 	--red: #d3384b;
 	--red-dark: #bb2f40;
 	--gray: #d6dde1;
+	--section-shadow: 0 0 5px 0 rgb(43 43 43 / 10%),
+		0 11px 6px -7px rgb(43 43 43 / 10%);
 }
 
 body,
@@ -20,6 +22,7 @@ html {
 	scrollbar-color: var(--main) #333;
 	scrollbar-width: thin;
 	scroll-behavior: smooth;
+	background-color: #f2f7fb;
 }
 
 input,
@@ -108,7 +111,7 @@ section {
 	border-radius: 8px;
 	padding: 55px;
 	background: white;
-	box-shadow: 0 0 5px 0 rgb(43 43 43 / 10%), 0 11px 6px -7px rgb(43 43 43 / 10%);
+	box-shadow: var(--section-shadow);
 	color: #333;
 	margin-bottom: 15px;
 	overflow: hidden;
@@ -191,6 +194,13 @@ html::-webkit-scrollbar-thumb:hover {
 	border-radius: 12px;
 }
 
+/* @media (min-width: 1600px) {
+	section {
+		animation-name: fadeIn;
+		animation-duration: 1s;
+	}
+} */
+
 @media (max-width: 1200px) {
 	.half-section {
 		width: calc(100% - 110px);
@@ -203,6 +213,7 @@ html::-webkit-scrollbar-thumb:hover {
 	}
 
 	section {
+		width: calc(100% - 60px);
 		padding: 30px;
 	}
 
@@ -221,6 +232,16 @@ html::-webkit-scrollbar-thumb:hover {
 		bottom: 30px;
 		right: 30px;
 		font-size: 1.5rem;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		transform: scale(0.9);
+	}
+
+	to {
+		transform: scale(1);
 	}
 }
 

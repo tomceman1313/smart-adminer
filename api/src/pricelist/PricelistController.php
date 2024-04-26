@@ -54,7 +54,7 @@ class PriceListController
                 ]);
                 break;
 
-            case ($method == "PUT" && preg_match('/^\/api\/pricelist\/[0-9]*$/', $uri)):
+            case ($method == "PUT" && preg_match('/^\/api\/pricelist\/[0-9]+$/', $uri)):
                 $result = $this->gateway->update($data["data"], $url_parts[3]);
                 http_response_code(200);
                 echo json_encode([
@@ -63,7 +63,7 @@ class PriceListController
                 ]);
                 break;
 
-            case ($method == "DELETE" && preg_match('/^\/api\/pricelist\/[0-9]*$/', $uri)):
+            case ($method == "DELETE" && preg_match('/^\/api\/pricelist\/[0-9]+$/', $uri)):
                 $this->gateway->delete($url_parts[3]);
                 http_response_code(200);
                 echo json_encode([

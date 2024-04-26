@@ -3,7 +3,7 @@ $ENV = parse_ini_file('.env');
 ini_set('display_errors', $ENV["DEV_MODE"]);
 
 $DIRECTORIES = array(
-    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images"
+    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images", "Settings", "Stats"
 );
 
 $FILES = array(
@@ -122,6 +122,14 @@ switch ($URL_PARTS[2]) {
         break;
     case 'images':
         $controller = new ImagesController($database);
+        $controller->processRequest($authAction);
+        break;
+    case 'settings':
+        $controller = new SettingsController($database);
+        $controller->processRequest($authAction);
+        break;
+    case 'stats':
+        $controller = new StatsController($database);
         $controller->processRequest($authAction);
         break;
     default:

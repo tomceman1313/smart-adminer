@@ -9,9 +9,11 @@ const resources = {
 	cs: CS,
 };
 
+const defaultLanguage = localStorage.getItem("language");
+
 i18n.use(initReactI18next).init({
 	resources,
-	lng: "cs",
+	lng: defaultLanguage ? defaultLanguage : "cs",
 	fallbackLng: "cs",
 	debug: false,
 

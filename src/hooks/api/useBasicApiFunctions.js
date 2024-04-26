@@ -1,6 +1,6 @@
-import { BASE_URL } from "../modules/ApiFunctions";
-import useAuth from "./useAuth";
-import useInteraction from "./useInteraction";
+import { BASE_URL } from "../../modules/ApiFunctions";
+import useAuth from "../useAuth";
+import useInteraction from "../useInteraction";
 
 export default function useBasicApiFunctions() {
 	const auth = useAuth();
@@ -8,10 +8,12 @@ export default function useBasicApiFunctions() {
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
 	async function getAll(apiClass, page) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}${page ? `/?page=${page}` : ""}`, {
-			method: "GET",
-		});
-
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}${page ? `/?page=${page}` : ""}`,
+			{
+				method: "GET",
+			}
+		);
 		const data = await response.json();
 
 		return data;
@@ -26,36 +28,42 @@ export default function useBasicApiFunctions() {
 		return data;
 	}
 
-	/**
-	 *
-	 * @param {string} apiClass
-	 * @param {string} name
-	 * @param {string} category - optional for getting only records of given category
-	 * @returns object[]
-	 */
 	async function getByName(apiClass, name, categoryId) {
 		const categoryParam = `&categoryId=${categoryId}`;
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/?name=${name}${categoryId ? categoryParam : ""}`, {
-			method: "GET",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/?name=${name}${
+				categoryId ? categoryParam : ""
+			}`,
+			{
+				method: "GET",
+			}
+		);
 
 		const data = await response.json();
 		return data;
 	}
 
 	async function checkNameAvailability(apiClass, name) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/name/?name=${name}`, {
-			method: "GET",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/name/?name=${name}`,
+			{
+				method: "GET",
+			}
+		);
 
 		const data = await response.json();
 		return data;
 	}
 
 	async function getByCategory(apiClass, id, page) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/?${page ? `page=${page}&` : ""}category=${id}`, {
-			method: "GET",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/?${
+				page ? `page=${page}&` : ""
+			}category=${id}`,
+			{
+				method: "GET",
+			}
+		);
 
 		const data = await response.json();
 		return data;
@@ -86,7 +94,10 @@ export default function useBasicApiFunctions() {
 	async function edit(apiClass, data, positiveText) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/${data.id}`, {
 			method: "PUT",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
 			body: JSON.stringify({ data: data }),
 			credentials: "include",
 		});
@@ -105,7 +116,10 @@ export default function useBasicApiFunctions() {
 	async function remove(apiClass, id, positiveText) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/${id}`, {
 			method: "DELETE",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
 			credentials: "include",
 		});
 
@@ -123,7 +137,10 @@ export default function useBasicApiFunctions() {
 	async function updateOrder(apiClass, data, positiveText) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/order`, {
 			method: "PUT",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
 			body: JSON.stringify({ data: data }),
 			credentials: "include",
 		});
@@ -141,11 +158,17 @@ export default function useBasicApiFunctions() {
 	}
 
 	async function deleteImage(apiClass, id, imageId) {
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/${id}/images/${imageId}`, {
-			method: "DELETE",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-			credentials: "include",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/${id}/images/${imageId}`,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+					Authorization: bearer,
+				},
+				credentials: "include",
+			}
+		);
 
 		if (response.status === 403) {
 			auth.setUserInfo(null);
@@ -158,13 +181,49 @@ export default function useBasicApiFunctions() {
 		if (response.status === 200) {
 			setMessage({ action: "success", text: "Obrázek byl smazán" });
 		} else {
-			setMessage({ action: "failure", text: "Smazání položky nebylo provedeno", timeout: 6000 });
+			setMessage({
+				action: "failure",
+				text: "Smazání položky nebylo provedeno",
+				timeout: 6000,
+			});
 		}
+	}
+
+	async function getAllWithAuth(apiClass) {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
+			credentials: "include",
+		});
+
+		const data = await response.json();
+		auth.setUserInfo({ ...auth.userInfo, token: data.token });
+		return data.data;
+	}
+
+	async function getWithAuth(apiClass, id) {
+		const response = await fetch(`${BASE_URL}/api/${apiClass}/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
+			credentials: "include",
+		});
+
+		const data = await response.json();
+		auth.setUserInfo({ ...auth.userInfo, token: data.token });
+		return data.data;
 	}
 
 	return {
 		getAll,
+		getAllWithAuth,
 		get,
+		getWithAuth,
 		getByName,
 		getByCategory,
 		create,

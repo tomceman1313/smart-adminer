@@ -38,6 +38,7 @@
 	},
 	"settings": {
 		"name": "Settings",
+		"settings": "Settings",
 		"userAccount": "User account"
 	},
 	"logout": {

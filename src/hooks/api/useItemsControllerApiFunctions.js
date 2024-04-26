@@ -1,7 +1,7 @@
-import { BASE_URL } from "../modules/ApiFunctions";
-import useAuth from "./useAuth";
+import { BASE_URL } from "../../modules/ApiFunctions";
+import useAuth from "../useAuth";
 import useBasicApiFunctions from "./useBasicApiFunctions";
-import useInteraction from "./useInteraction";
+import useInteraction from "../useInteraction";
 
 export default function useItemsControllerApiFunctions() {
 	const auth = useAuth();
@@ -19,14 +19,21 @@ export default function useItemsControllerApiFunctions() {
 			}
 			return records;
 		}
-		records = await getByName(apiClass, searchedTerm, selectedCategory?.id ? selectedCategory.id : null);
+		records = await getByName(
+			apiClass,
+			searchedTerm,
+			selectedCategory?.id ? selectedCategory.id : null
+		);
 		return records;
 	}
 
 	async function multipleCreate(apiClass, data, positiveText) {
 		const response = await fetch(`${BASE_URL}/api/${apiClass}/multiple`, {
 			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
 			body: JSON.stringify({ data: data }),
 			credentials: "include",
 		});
@@ -45,11 +52,17 @@ export default function useItemsControllerApiFunctions() {
 	async function multipleDelete(apiClass, ids, positiveText) {
 		const encodedIds = encodeURIComponent(JSON.stringify(ids));
 
-		const response = await fetch(`${BASE_URL}/api/${apiClass}/multiple/${encodedIds}`, {
-			method: "DELETE",
-			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-			credentials: "include",
-		});
+		const response = await fetch(
+			`${BASE_URL}/api/${apiClass}/multiple/${encodedIds}`,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+					Authorization: bearer,
+				},
+				credentials: "include",
+			}
+		);
 
 		if (response.status === 403) {
 			auth.setUserInfo(null);
