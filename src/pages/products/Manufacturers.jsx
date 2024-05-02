@@ -2,7 +2,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useInteraction from "../../hooks/useInteraction";
 import useAuth from "../../hooks/useAuth";
-import { getManufacturers, createManufacturer, updateManufacturer, deleteManufacturer } from "../../modules/ApiProductManufacturers";
+import {
+	getManufacturers,
+	createManufacturer,
+	updateManufacturer,
+	deleteManufacturer,
+} from "../../modules/ApiProductManufacturers";
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 
@@ -44,12 +49,18 @@ export default function Manufacturers({ manufacturers, setManufacturers }) {
 	};
 
 	return (
-		<section className={css.category}>
+		<section className={`${css.category} half-section`}>
 			<h2>{t("headerManufacturers")}</h2>
 			<ul className={css.category_list}>
 				{manufacturers?.length ? (
 					manufacturers.map((el) => (
-						<Item key={el.id} el={el} remove={remove} edit={update} deleteQuestion={t("alertDeleteManufacturer", { name: el.name })} />
+						<Item
+							key={el.id}
+							el={el}
+							remove={remove}
+							edit={update}
+							deleteQuestion={t("alertDeleteManufacturer", { name: el.name })}
+						/>
 					))
 				) : (
 					<p>{t("noManufacturersFound")}</p>

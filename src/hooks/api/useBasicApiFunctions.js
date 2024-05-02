@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { BASE_URL } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
 import useInteraction from "../useInteraction";
@@ -80,7 +81,7 @@ export default function useBasicApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -88,7 +89,7 @@ export default function useBasicApiFunctions() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	async function edit(apiClass, data, positiveText) {
@@ -102,7 +103,7 @@ export default function useBasicApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -110,7 +111,7 @@ export default function useBasicApiFunctions() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	async function remove(apiClass, id, positiveText) {
@@ -123,7 +124,7 @@ export default function useBasicApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -131,7 +132,7 @@ export default function useBasicApiFunctions() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	async function updateOrder(apiClass, data, positiveText) {
@@ -145,7 +146,7 @@ export default function useBasicApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -153,7 +154,7 @@ export default function useBasicApiFunctions() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 		return;
 	}
 
@@ -170,7 +171,7 @@ export default function useBasicApiFunctions() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}

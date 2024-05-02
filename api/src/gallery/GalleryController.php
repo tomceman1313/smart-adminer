@@ -50,9 +50,9 @@ class GalleryController
         }
 
         if (!$authAction) {
-            http_response_code(403);
+            http_response_code(401);
             echo json_encode([
-                "message" => "Access denied"
+                "message" => "Unauthenticated"
             ]);
             return;
         }
@@ -76,7 +76,7 @@ class GalleryController
                 break;
 
             case ($method == "POST" && $uri == "/api/gallery/multiple"):
-                $this->gateway->multipleCreate($data["ids"]);
+                $this->gateway->multipleCreate($data["data"]);
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Images created",

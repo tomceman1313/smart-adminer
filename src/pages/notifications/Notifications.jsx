@@ -1,16 +1,17 @@
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import css from "./Notifications.module.css";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
-import { getAll } from "../../modules/ApiFunctions";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { isActive } from "../../modules/BasicFunctions";
 import EditNotification from "./EditNotification";
 import NewNotification from "./NewNotification";
-import { AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
+import css from "./Notifications.module.css";
 
 const Notifications = () => {
 	const { t } = useTranslation("notifications");
+	const { getAll } = useBasicApiFunctions();
 
 	const [notifications, setNotifications] = useState(null);
 	const [editNotification, setEditNotification] = useState(false);
@@ -67,8 +68,19 @@ const Notifications = () => {
 					<p>{t("noDataFound")}</p>
 				)}
 
-				<EditNotification notification={editNotification} loadData={loadData} setEditNotification={setEditNotification} />
-				<AnimatePresence>{showAddItemCont && <NewNotification loadData={loadData} setShowCreateNotification={setShowAddItemCont} />}</AnimatePresence>
+				<EditNotification
+					notification={editNotification}
+					loadData={loadData}
+					setEditNotification={setEditNotification}
+				/>
+				<AnimatePresence>
+					{showAddItemCont && (
+						<NewNotification
+							loadData={loadData}
+							setShowCreateNotification={setShowAddItemCont}
+						/>
+					)}
+				</AnimatePresence>
 			</section>
 			<PlusButton onClick={showCreateNotification} />
 		</div>

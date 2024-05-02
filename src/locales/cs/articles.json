@@ -24,5 +24,7 @@
 	"buttonCreate": "Vytvořit",
 	"buttonSave": "Uložit",
 	"buttonDelete": "Smazat",
-	"buttonPreview": "Náhled článku"
+	"buttonPreview": "Náhled článku",
+
+	"noDataFound": "Nebyly nalezeny žádné články"
 }

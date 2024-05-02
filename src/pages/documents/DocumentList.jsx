@@ -7,6 +7,7 @@ import Document from "./Document";
 import documentCss from "./css/Document.module.css";
 import css from "./css/Documents.module.css";
 import { useTranslation } from "react-i18next";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 export default function DocumentList({
 	documents,
@@ -22,7 +23,11 @@ export default function DocumentList({
 	const { setAlert } = useInteraction();
 
 	function deleteDocument(e) {
-		setAlert({ id: e.target.parentNode.id, question: t("alertDeleteDocument"), positiveHandler: deleteDocumentHandler });
+		setAlert({
+			id: e.target.parentNode.id,
+			question: t("alertDeleteDocument"),
+			positiveHandler: deleteDocumentHandler,
+		});
 	}
 
 	return (
@@ -30,7 +35,11 @@ export default function DocumentList({
 			<section className={`no-section`}>
 				{documents && (
 					<SortableList
-						key={selectedCategory ? `sortableList-${selectedCategory}` : "unSortableList"}
+						key={
+							selectedCategory
+								? `sortableList-${selectedCategory}`
+								: "unSortableList"
+						}
 						items={documents}
 						overlayElement={OverlayDocument}
 						setState={setDocuments}
@@ -41,7 +50,11 @@ export default function DocumentList({
 								<ul className={css.document_list} role="application">
 									{documents.map((document) => (
 										<SortableItem
-											key={selectedCategory ? `sortable-document-${document.id}` : `document-${document.id}`}
+											key={
+												selectedCategory
+													? `sortable-document-${document.id}`
+													: `document-${document.id}`
+											}
 											item={document}
 											className={documentCss.document_wrapper}
 										>
@@ -58,7 +71,7 @@ export default function DocumentList({
 									))}
 								</ul>
 							) : (
-								<h3 style={{ textAlign: "center" }}>{t("noDataFound")}</h3>
+								<NoDataFound text={t("noDataFound")} />
 							)}
 						</AnimatePresence>
 					</SortableList>
@@ -69,5 +82,13 @@ export default function DocumentList({
 }
 
 function OverlayDocument(active) {
-	return <Document info={active} deleteDocument={() => {}} multiSelection={false} selectedDocuments={() => {}} editDocument={() => {}} />;
+	return (
+		<Document
+			info={active}
+			deleteDocument={() => {}}
+			multiSelection={false}
+			selectedDocuments={() => {}}
+			editDocument={() => {}}
+		/>
+	);
 }

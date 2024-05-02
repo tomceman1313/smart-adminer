@@ -5,6 +5,7 @@
 	"placeholderSearchInput": "Jméno zaměstnance",
 	"allEmployeesFilterText": "Všichni zaměstnanci",
 	"noDataFound": "Nejsou vloženy žádné profily zaměstnanců",
+	"noDepartmentsFound": "Nejsou vloženy žádná oddělení",
 
 	"headerDepartments": "Oddělení",
 	"headerAddNewDepartment": "Přidat oddělení:",

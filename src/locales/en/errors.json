@@ -1,0 +1,17 @@
+{
+	"title404": "Oops!",
+	"message404": "We can't seem to find the page you are looking for.",
+	"title503": "Oh no!",
+	"message503": "It looks like our servers are down.",
+	"errorCode": "Error code:",
+	"buttonRedirect404": "Go to dashboard",
+	"buttonRedirect503": "Reload",
+
+	"error401": "Unauthenticated user",
+	"error403": "Your role has no access to this operation",
+
+	"errorFetchCategories": "Failed to fetch categories",
+	"errorFetchOrder": "Failed to load order",
+	"errorFetchPage": "Failed to load page",
+	"errorFetchPages": "Failed to load pages"
+}

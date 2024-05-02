@@ -9,10 +9,26 @@ import ManufacturersSelector from "./filters/ManufacturersSelector";
 import CategoriesSelector from "./filters/CategoriesSelector";
 import ProductNameSearchBar from "./filters/ProductNameSearchBar";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-export default function Filter({ setProducts, setVisible, manufacturers, categories }) {
+export default function Filter({
+	setProducts,
+	setVisible,
+	manufacturers,
+	categories,
+}) {
 	const { t } = useTranslation("products");
-	const { selectedManufacturers, selectedCategories, selectedPriceRange, selectedInStock } = useProductFilterValues();
+	const {
+		selectedManufacturers,
+		selectedCategories,
+		selectedPriceRange,
+		selectedInStock,
+	} = useProductFilterValues();
+
+	const [searchParams] = useSearchParams();
+	const navigate = useNavigate();
+
+	console.log(searchParams.get("categories"));
 
 	async function loadFilteredData() {
 		const filterValues = {
@@ -22,6 +38,13 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 			in_stock: selectedInStock.current,
 		};
 		const filterData = await filterProducts(filterValues);
+		navigate(
+			`/products/?categories=${encodeURIComponent(
+				JSON.stringify(selectedCategories.current)
+			)}&manufacturers=${encodeURIComponent(
+				JSON.stringify(selectedManufacturers.current)
+			)}`
+		);
 		setProducts(filterData);
 	}
 
@@ -37,7 +60,13 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 	}
 
 	return (
-		<motion.div className={css.filter} initial={{ x: "110%" }} animate={{ x: 0 }} exit={{ x: "110%" }} transition={{ type: "spring", duration: 1.5 }}>
+		<motion.div
+			className={css.filter}
+			initial={{ x: "110%" }}
+			animate={{ x: 0 }}
+			exit={{ x: "110%" }}
+			transition={{ type: "spring", duration: 1.5 }}
+		>
 			<FontAwesomeIcon
 				id={css.close}
 				icon={faXmark}
@@ -53,19 +82,29 @@ export default function Filter({ setProducts, setVisible, manufacturers, categor
 					<ProductNameSearchBar setProducts={setProducts} />
 				</div>
 
-				<h3>{t("headerManufacturer")}</h3>
-				<div className={`${css.status_selector} ${css.filter_param}`}>
-					<ManufacturersSelector loadedManufacturers={manufacturers} />
-				</div>
+				{manufacturers?.length > 0 && (
+					<>
+						<h3>{t("headerManufacturer")}</h3>
+						<div className={`${css.status_selector} ${css.filter_param}`}>
+							<ManufacturersSelector loadedManufacturers={manufacturers} />
+						</div>
+					</>
+				)}
 
-				<h3>{t("headerCategory")}</h3>
-				<div className={`${css.status_selector} ${css.filter_param}`}>
-					<CategoriesSelector loadedCategories={categories} />
-				</div>
+				{categories?.length > 0 && (
+					<>
+						<h3>{t("headerCategory")}</h3>
+						<div className={`${css.status_selector} ${css.filter_param}`}>
+							<CategoriesSelector loadedCategories={categories} />
+						</div>
+					</>
+				)}
 			</div>
 
 			<div className={css.buttons_section}>
-				<button onClick={loadFilteredData}>{t("buttonFilter")}</button>
+				<button className="blue_button" onClick={loadFilteredData}>
+					{t("buttonFilter")}
+				</button>
 				<button onClick={resetFilter}>{t("buttonReset")}</button>
 			</div>
 		</motion.div>

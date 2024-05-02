@@ -12,5 +12,6 @@
 	"placeholderTitle": "Title",
 	"placeholderDescription": "Description",
 	"placeholderTextArea": "Body of the page",
-	"buttonSave": "Save"
+	"buttonSave": "Save",
+	"positiveTextPageUpdated": "Page has been updated"
 }

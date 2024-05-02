@@ -9,7 +9,6 @@
 	"headerEventBody": "Event body",
 	"headerAdditionalImages": "Additional images:",
 	"headerAddImages": "Add images:",
-	"headerFilter": "Filter:",
 
 	"positiveTextEventCreated": "Event has been created",
 	"positiveTextEventUpdated": "Event has been updated",
@@ -27,5 +26,7 @@
 	"buttonSave": "Save",
 	"buttonDelete": "Delete",
 	"buttonPreview": "Event preview",
-	"buttonReset": "Reset"
+	"buttonReset": "Reset",
+
+	"noDataFound": "No events have been found"
 }

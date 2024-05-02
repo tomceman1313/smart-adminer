@@ -12,5 +12,6 @@
 	"placeholderTitle": "Název",
 	"placeholderDescription": "Popisek",
 	"placeholderTextArea": "Text stránky",
-	"buttonSave": "Uložit"
+	"buttonSave": "Uložit",
+	"positiveTextPageUpdated": "Stránka byla upravena"
 }

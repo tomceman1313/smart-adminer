@@ -1,7 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { filterOrders, getShippingTypes, getStatusCodes } from "../../modules/ApiOrders";
+import {
+	filterOrders,
+	getShippingTypes,
+	getStatusCodes,
+} from "../../modules/ApiOrders";
 import Order from "./Order";
 import OrderDetail from "./OrderDetail";
 import { Helmet } from "react-helmet-async";
@@ -9,6 +13,7 @@ import Filter from "./Filter";
 import css from "./Orders.module.css";
 import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
 import { useTranslation } from "react-i18next";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 export default function Orders() {
 	const { t } = useTranslation("orders");
@@ -39,7 +44,10 @@ export default function Orders() {
 			</Helmet>
 			<section>
 				<ul className={css.orders_list}>
-					<li className={css.table_head} onClick={() => setIsFilterVisible(true)}>
+					<li
+						className={css.table_head}
+						onClick={() => setIsFilterVisible(true)}
+					>
 						<div key="searchId" className={css.head_column}>
 							<p style={{ cursor: "pointer" }}>{t("tableHeadOrderNumber")}</p>
 						</div>
@@ -61,10 +69,12 @@ export default function Orders() {
 						</div>
 					</li>
 
-					{orders && orders.length !== 0 ? (
-						orders.map((el) => <Order el={el} key={`order-${el.id}`} setOrderId={setOrderId} />)
+					{orders?.length > 0 ? (
+						orders.map((el) => (
+							<Order el={el} key={`order-${el.id}`} setOrderId={setOrderId} />
+						))
 					) : (
-						<p>{t("noDataFound")}</p>
+						<NoDataFound text={t("noDataFound")} />
 					)}
 				</ul>
 			</section>
@@ -81,7 +91,14 @@ export default function Orders() {
 							reloadData={loadData}
 						/>
 					)}
-					{isFilterVisible && <Filter key="filter" setOrders={setOrders} setVisible={setIsFilterVisible} shippingTypes={shippingTypes} />}
+					{isFilterVisible && (
+						<Filter
+							key="filter"
+							setOrders={setOrders}
+							setVisible={setIsFilterVisible}
+							shippingTypes={shippingTypes}
+						/>
+					)}
 				</AnimatePresence>
 			</OrdersFilterValuesProvider>
 		</div>

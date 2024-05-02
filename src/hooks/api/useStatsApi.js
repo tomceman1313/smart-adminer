@@ -20,7 +20,7 @@ export default function useStatsApi() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}

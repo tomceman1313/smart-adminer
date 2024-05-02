@@ -171,7 +171,7 @@ export const ROUTES = [
 	{
 		name: "article",
 		class: "articles",
-		path: "article/:id",
+		path: "articles/:id",
 		element: <Article />,
 		menuSection: "articles-section",
 	},
@@ -192,7 +192,7 @@ export const ROUTES = [
 	{
 		name: "event",
 		class: "events",
-		path: "event/:id",
+		path: "events/:id",
 		element: <Event />,
 		menuSection: "events-section",
 	},

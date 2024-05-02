@@ -12,6 +12,7 @@ import Departments from "./Departments";
 import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 export default function Employees() {
 	const auth = useAuth();
@@ -104,7 +105,7 @@ export default function Employees() {
 							/>
 						))
 					) : (
-						<section>{t("noDataFound")}</section>
+						<NoDataFound text={t("noDataFound")} />
 					)}
 				</ul>
 				<Employee

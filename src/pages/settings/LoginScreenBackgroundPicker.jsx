@@ -11,15 +11,19 @@ export default function LoginScreenBackgroundPicker() {
 
 	async function onChangeHandler(e) {
 		const base64 = await convertBase64(e.target.files[0]);
-		await create("settings/login_image", { image: base64 }, "Obrázek upraven");
+		await create(
+			"settings/login_image",
+			{ image: base64 },
+			t("positiveTextImageChanged")
+		);
 	}
 
 	return (
 		<>
-			<h3>{t("headerLoginBackground")}</h3>
+			<h3>{t("headerLoginBackgroundImage")}</h3>
 			<div
 				className={`${cssBasic.input_box} ${cssBasic.half}`}
-				title="Pozadí přihlašovací stránky"
+				title={t("headerLoginBackgroundImage")}
 			>
 				<input type="file" accept=".jpg, .jpeg" onChange={onChangeHandler} />
 				<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />

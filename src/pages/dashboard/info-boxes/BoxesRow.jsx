@@ -1,60 +1,68 @@
 import { AnimatePresence } from "framer-motion";
 import InfoBox from "./InfoBox";
 import css from "./InfoBoxes.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function BoxesRow({ stats }) {
+	const { t } = useTranslation("dashboard");
+
 	return (
 		<section className={`${css.boxes} no-section`}>
 			<AnimatePresence>
 				<InfoBox
-					title="Články"
-					leftLabel="Celkem:"
+					key={"box-articles"}
+					title={t("boxTitleArticles")}
+					leftLabel={t("labelTotal")}
 					leftCounter={stats?.articles ? stats.articles.total_count : 0}
-					rightLabel="Aktivní:"
+					rightLabel={t("labelActive")}
 					rightCounter={stats?.articles ? stats.articles.active_count : 0}
-					linkText="Přejít na články"
+					linkText={t("linkArticles")}
 					linkLocation="/articles"
 					delay={0}
 				/>
 				<InfoBox
-					title="Zaměstnanci"
-					leftLabel="Celkem:"
+					key={"box-employees"}
+					title={t("boxTitleEmployees")}
+					leftLabel={t("labelTotal")}
 					leftCounter={stats?.employees ? stats.employees.total_count : 0}
-					rightLabel="Oddělení:"
+					rightLabel={t("labelDepartments")}
 					rightCounter={
 						stats?.employees ? stats?.employees.departments_count : 0
 					}
-					linkText="Přejít na zaměstnance"
+					linkText={t("linkEmployees")}
 					linkLocation="/employees"
 					delay={0.2}
 				/>
 				<InfoBox
-					title="Dokumenty"
-					leftLabel="Celkem:"
+					key={"box-documents"}
+					title={t("boxTitleDocuments")}
+					leftLabel={t("labelTotal")}
 					leftCounter={stats?.documents ? stats.documents.total_count : 0}
-					rightLabel="Celkem kategorií:"
+					rightLabel={t("labelTotalCategories")}
 					rightCounter={stats?.documents ? stats.documents.categories_count : 0}
-					linkText="Přejít na dokumenty"
+					linkText={t("linkDocuments")}
 					linkLocation="/documents"
 					delay={0.4}
 				/>
 				<InfoBox
-					title="Galerie"
-					leftLabel="Obrázků:"
+					key={"box-gallery"}
+					title={t("boxTitleGallery")}
+					leftLabel={t("labelImages")}
 					leftCounter={stats?.gallery ? stats.gallery.total_count : 0}
-					rightLabel="Celkem kategorií:"
+					rightLabel={t("labelTotalCategories")}
 					rightCounter={stats?.gallery ? stats.gallery.categories_count : 0}
-					linkText="Přejít do galerie"
+					linkText={t("linkGallery")}
 					linkLocation="/gallery"
 					delay={0.6}
 				/>
 				<InfoBox
-					title="Objednávky"
-					leftLabel="Počet:"
+					key={"box-orders"}
+					title={t("boxTitleOrders")}
+					leftLabel={t("labelTotal")}
 					leftCounter={stats?.orders ? stats.orders.total_count : 0}
-					rightLabel="Nevyřízené:"
+					rightLabel={t("labelPending")}
 					rightCounter={stats?.orders ? stats.orders.pending_count : 0}
-					linkText="Přejít na objednávky"
+					linkText={t("linkOrders")}
 					linkLocation="/orders"
 					delay={0.8}
 				/>

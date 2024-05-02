@@ -1,0 +1,26 @@
+{
+	"htmlTitle": "Dashboard | SmartAdminer",
+
+	"boxTitleArticles": "Articles",
+	"boxTitleEmployees": "Employees",
+	"boxTitleDocuments": "Documents",
+	"boxTitleGallery": "Gallery",
+	"boxTitleOrders": "Orders",
+
+	"labelTotal": "Total:",
+	"labelActive": "Active:",
+	"labelDepartments": "Departments:",
+	"labelTotalCategories": "Total categories:",
+	"labelImages": "Images:",
+	"labelPending": "Pending:",
+
+	"linkArticles": "Go to articles",
+	"linkEmployees": "Go to employees",
+	"linkDocuments": "Go to documents",
+	"linkGallery": "Go to gallery",
+	"linkOrders": "Go to orders",
+
+	"yAxisLabel": "Orders count",
+	"graphLineReceivedOrders": "Received orders",
+	"graphLineCompletedOrders": "Completed orders"
+}

@@ -1,57 +1,59 @@
-import { React, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { React, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
-import { checkNameAvailability, create, edit, getAllWithAuth, remove, getAll } from "../../modules/ApiFunctions";
+import { useTranslation } from "react-i18next";
+import warningToast from "../../components/common/warning-toast/WarningToast";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Profiles.module.css";
 import UserList from "./UserList";
-import { useTranslation } from "react-i18next";
 
 export default function Profiles() {
-	const auth = useAuth();
-	const { setMessage } = useInteraction();
 	const { t } = useTranslation("profiles");
-
-	const [users, setUsers] = useState(null);
+	const {
+		checkNameAvailability,
+		create,
+		edit,
+		getAllWithAuth,
+		remove,
+		getAll,
+	} = useBasicApiFunctions();
 	const [roles, setRoles] = useState(null);
 
-	useEffect(() => {
-		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	async function loadData() {
-		const data = await getAllWithAuth("users", auth);
-		const _privileges = await getAll("users/roles");
-		setRoles(_privileges);
-		setUsers(data);
-	}
+	const { data: users, refetch } = useQuery({
+		queryKey: ["users"],
+		queryFn: async () => {
+			const data = await getAllWithAuth("users");
+			const _privileges = await getAll("users/roles");
+			setRoles(_privileges);
+			return data;
+		},
+	});
 
 	async function deleteHandler(id) {
-		await remove("users", id, setMessage, t("deletePositiveText"), auth);
-		loadData();
+		await remove("users", id, t("deletePositiveText"));
+		refetch();
 	}
 
 	async function submitHandler(data, previousUserName) {
 		const isAvailable = await checkNameAvailability("users", data.username);
 		if (previousUserName !== data.username && !isAvailable) {
-			setMessage({ action: "alert", text: t("messageUsernameIsTaken") });
+			warningToast(t("messageUsernameIsTaken"));
 			return false;
 		}
 
 		data.username = data.username.replaceAll(" ", "_");
 
 		if (previousUserName) {
-			await edit("users", data, setMessage, t("editPositiveText"), auth);
+			await edit("users", data, t("editPositiveText"));
 		} else {
 			if (data.password_check !== data.password) {
-				setMessage({ action: "alert", text: t("messagePasswordsNotEqual") });
+				warningToast(t("messagePasswordsNotEqual"));
 				return false;
 			}
-			create("users", data, setMessage, t("createPositiveText"), auth);
+			create("users", data, t("createPositiveText"));
 		}
 
-		loadData();
+		refetch();
 		return true;
 	}
 
@@ -60,7 +62,16 @@ export default function Profiles() {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<div className={css.users}>{users && <UserList users={users} roles={roles} submitHandler={submitHandler} deleteHandler={deleteHandler} />}</div>
+			<div className={css.users}>
+				{users && (
+					<UserList
+						users={users}
+						roles={roles}
+						submitHandler={submitHandler}
+						deleteHandler={deleteHandler}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }

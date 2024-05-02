@@ -1,0 +1,26 @@
+{
+	"htmlTitle": "Přehled | SmartAdminer",
+
+	"boxTitleArticles": "Články",
+	"boxTitleEmployees": "Zaměstnanci",
+	"boxTitleDocuments": "Dokumenty",
+	"boxTitleGallery": "Galerie",
+	"boxTitleOrders": "Objednávky",
+
+	"labelTotal": "Celkem:",
+	"labelActive": "Aktivní:",
+	"labelDepartments": "Oddělení:",
+	"labelTotalCategories": "Celkem kategorií:",
+	"labelImages": "Obrázků:",
+	"labelPending": "Nevyřízené:",
+
+	"linkArticles": "Přejít na články",
+	"linkEmployees": "Přejít na zaměstnance",
+	"linkDocuments": "Přejít na dokumenty",
+	"linkGallery": "Přejít do galerie",
+	"linkOrders": "Přejít na objednávky",
+
+	"yAxisLabel": "Počet objednávek",
+	"graphLineReceivedOrders": "Přijaté objednávky",
+	"graphLineCompletedOrders": "Dokončené objednávky"
+}

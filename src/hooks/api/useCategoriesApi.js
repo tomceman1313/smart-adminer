@@ -1,10 +1,9 @@
-import { BASE_URL } from "../../modules/ApiFunctions";
+import toast from "react-hot-toast";
+import { BASE_URL, responseHandler } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
-import useInteraction from "../useInteraction";
 
-export default function useApiCategories() {
+export default function useCategoriesApi() {
 	const auth = useAuth();
-	const { setMessage } = useInteraction();
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
 	async function getCategories(apiClass) {
@@ -16,12 +15,7 @@ export default function useApiCategories() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
-			return null;
-		}
-
-		const data = await response.json();
-		return data;
+		return await responseHandler(response, auth);
 	}
 
 	async function createCategory(apiClass, data, positiveText) {
@@ -35,7 +29,7 @@ export default function useApiCategories() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -43,7 +37,7 @@ export default function useApiCategories() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	async function updateCategory(apiClass, data, positiveText) {
@@ -60,7 +54,7 @@ export default function useApiCategories() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -68,7 +62,7 @@ export default function useApiCategories() {
 		const rdata = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	async function deleteCategory(apiClass, id, positiveText) {
@@ -84,7 +78,7 @@ export default function useApiCategories() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -92,7 +86,7 @@ export default function useApiCategories() {
 		const data = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 	}
 
 	return { getCategories, createCategory, updateCategory, deleteCategory };

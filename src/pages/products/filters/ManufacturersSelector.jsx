@@ -15,7 +15,9 @@ export default function ManufacturersSelector({ loadedManufacturers }) {
 		if (!manufacturers) {
 			return;
 		}
-		const selectedIds = manufacturers.filter((manufacturer) => manufacturer.value).map((manufacturer) => manufacturer.id);
+		const selectedIds = manufacturers
+			.filter((manufacturer) => manufacturer.value)
+			.map((manufacturer) => manufacturer.id);
 		selectedManufacturers.current = selectedIds;
 	}, [manufacturers, selectedManufacturers]);
 
@@ -27,7 +29,9 @@ export default function ManufacturersSelector({ loadedManufacturers }) {
 			});
 		} else {
 			manufacturerWithValues = await loadedManufacturers.map((manufacturer) => {
-				if (selectedManufacturers.current.find((item) => item === manufacturer.id)) {
+				if (
+					selectedManufacturers.current.find((item) => item === manufacturer.id)
+				) {
 					return { ...manufacturer, value: true };
 				}
 				return { ...manufacturer, value: false };
@@ -46,10 +50,14 @@ export default function ManufacturersSelector({ loadedManufacturers }) {
 
 	return (
 		<>
-			{manufacturers &&
-				manufacturers.map((manufacturer, index) => (
-					<CheckBox key={manufacturer.name} name={manufacturer.name} checked={manufacturer.value} onChange={() => onChange(index)} />
-				))}
+			{manufacturers.map((manufacturer, index) => (
+				<CheckBox
+					key={manufacturer.name}
+					name={manufacturer.name}
+					checked={manufacturer.value}
+					onChange={() => onChange(index)}
+				/>
+			))}
 		</>
 	);
 }

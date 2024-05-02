@@ -1,5 +1,9 @@
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-import { faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCircleCheck,
+	faPenToSquare,
+	faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -7,7 +11,13 @@ import { publicPath } from "../../modules/BasicFunctions";
 
 import css from "./css/Images.module.css";
 
-const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImages }) => {
+const Image = ({
+	el,
+	deleteImage,
+	setShowEditCont,
+	multiSelection,
+	selectedImages,
+}) => {
 	const [selected, setSelected] = useState(false);
 	const [clicked, setClicked] = useState(false);
 
@@ -44,19 +54,39 @@ const Image = ({ el, deleteImage, setShowEditCont, multiSelection, selectedImage
 				duration: 0.3,
 				ease: "easeInOut",
 			}}
+			className={css.image}
 		>
 			<img src={`${publicPath}/images/gallery/${el.name}`} alt={el.title} />
 			<AnimatePresence>
 				{clicked && (
-					<motion.article id={el.id} key={255 + el.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+					<motion.article
+						id={el.id}
+						key={255 + el.id}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+					>
 						<h3>{el.title}</h3>
 						<p>{el.description}</p>
-						<FontAwesomeIcon className={css.icon} onClick={deleteImage} icon={faTrashCan} />
-						<FontAwesomeIcon className={css.icon} icon={faPenToSquare} onClick={() => setShowEditCont(el)} />
+						<FontAwesomeIcon
+							className={css.icon}
+							onClick={deleteImage}
+							icon={faTrashCan}
+						/>
+						<FontAwesomeIcon
+							className={css.icon}
+							icon={faPenToSquare}
+							onClick={() => setShowEditCont(el)}
+						/>
 					</motion.article>
 				)}
 			</AnimatePresence>
-			{multiSelection && <FontAwesomeIcon className={css.multiselection} icon={selected ? faCircleCheck : faCircle} />}
+			{multiSelection && (
+				<FontAwesomeIcon
+					className={css.multiselection}
+					icon={selected ? faCircleCheck : faCircle}
+				/>
+			)}
 		</motion.div>
 	);
 };

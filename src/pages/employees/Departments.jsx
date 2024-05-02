@@ -1,7 +1,12 @@
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useInteraction from "../../hooks/useInteraction";
-import { createDepartment, getDepartments, removeDepartment, updateDepartment } from "../../modules/ApiEmployees";
+import {
+	createDepartment,
+	getDepartments,
+	removeDepartment,
+	updateDepartment,
+} from "../../modules/ApiEmployees";
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import InputBox from "../../components/basic/InputBox";
@@ -10,7 +15,12 @@ import Item from "../../components/common/controlled-item/Item";
 import css from "./Departments.module.css";
 import { useTranslation } from "react-i18next";
 
-export default function Departments({ departments, setDepartments, refreshAllData, filterEmployeesByDepartment }) {
+export default function Departments({
+	departments,
+	setDepartments,
+	refreshAllData,
+	filterEmployeesByDepartment,
+}) {
 	const auth = useAuth();
 	const { t } = useTranslation("employees");
 	const { setMessage } = useInteraction();
@@ -31,19 +41,34 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 			setMessage({ action: "alert", text: t("messageNameIsTaken") });
 			return;
 		}
-		await createDepartment(data, auth, setMessage, t("positiveTextCreateDepartment"));
+		await createDepartment(
+			data,
+			auth,
+			setMessage,
+			t("positiveTextCreateDepartment")
+		);
 		setValue("name", "");
 		loadData();
 	};
 
 	const update = async (data) => {
 		data.name = data.name.trim();
-		await updateDepartment(data, auth, setMessage, t("positiveTextUpdateDepartment"));
+		await updateDepartment(
+			data,
+			auth,
+			setMessage,
+			t("positiveTextUpdateDepartment")
+		);
 		refreshAllData();
 	};
 
 	const remove = async (id) => {
-		await removeDepartment(id, auth, setMessage, t("positiveTextDeleteDepartment"));
+		await removeDepartment(
+			id,
+			auth,
+			setMessage,
+			t("positiveTextDeleteDepartment")
+		);
 		loadData();
 		refreshAllData();
 	};
@@ -52,7 +77,7 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 		<section className={css.departments}>
 			<h2>{t("headerDepartments")}</h2>
 			<ul className={css.departments_list}>
-				{departments &&
+				{departments?.length > 0 ? (
 					departments.map((el) => (
 						<Item
 							key={el.id}
@@ -62,7 +87,10 @@ export default function Departments({ departments, setDepartments, refreshAllDat
 							show={() => filterEmployeesByDepartment(el.id, el.name)}
 							deleteQuestion={t("alertDeleteDepartment", { name: el.name })}
 						/>
-					))}
+					))
+				) : (
+					<p>{t("noDepartmentsFound")}</p>
+				)}
 			</ul>
 			<div className={css.blur}></div>
 			<h3>{t("headerAddNewDepartment")}</h3>

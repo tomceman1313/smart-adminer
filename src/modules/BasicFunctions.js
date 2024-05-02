@@ -1,6 +1,10 @@
-import { faCircleCheck, faClockRotateLeft, faMinus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCircleCheck,
+	faClockRotateLeft,
+	faMinus,
+	faCircleXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 //dev
 //export const publicPath = "/admin";
 //production
@@ -46,11 +50,21 @@ export function makeDateFormat(date, direction) {
 	let dateFormatted;
 
 	if (direction === "str") {
-		dateFormatted = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
+		dateFormatted =
+			dateStr.slice(0, 4) +
+			"-" +
+			dateStr.slice(4, 6) +
+			"-" +
+			dateStr.slice(6, 8);
 		//dateFormatted = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
 	} else if (direction === "text") {
 		//dateFormatted = dateStr.slice(0, 4) + "-" + dateStr.slice(4, 6) + "-" + dateStr.slice(6, 8);
-		dateFormatted = dateStr.slice(6, 8) + "." + dateStr.slice(4, 6) + "." + dateStr.slice(0, 4);
+		dateFormatted =
+			dateStr.slice(6, 8) +
+			"." +
+			dateStr.slice(4, 6) +
+			"." +
+			dateStr.slice(0, 4);
 	} else {
 		let dateArray = dateStr.split("-");
 		dateFormatted = Number(dateArray[0] + dateArray[1] + dateArray[2]);
@@ -86,16 +100,39 @@ export function createEventsArray(data) {
  */
 export function isActive(start, end, css) {
 	const date = new Date();
-	const dateNow = Number(makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate()));
+	const dateNow = Number(
+		makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
+	);
 	if (start === 0 || end === 0) {
-		return <FontAwesomeIcon id={css.status_icon} icon={faMinus} style={{ color: "gray" }} title="Nedostupné" />;
+		return (
+			<FontAwesomeIcon
+				id={css.status_icon}
+				icon={faMinus}
+				style={{ color: "gray" }}
+				title="Nedostupné"
+			/>
+		);
 	}
 
 	if (dateNow >= start && dateNow <= end) {
-		return <FontAwesomeIcon id={css.status_icon} icon={faCircleCheck} style={{ color: "var(--green)" }} title="Aktivní" />;
+		return (
+			<FontAwesomeIcon
+				id={css.status_icon}
+				icon={faCircleCheck}
+				style={{ color: "var(--green)" }}
+				title="Aktivní"
+			/>
+		);
 	}
 
-	return <FontAwesomeIcon id={css.status_icon} icon={faClockRotateLeft} style={{ color: "orange" }} title="Neaktivní" />;
+	return (
+		<FontAwesomeIcon
+			id={css.status_icon}
+			icon={faClockRotateLeft}
+			style={{ color: "orange" }}
+			title="Neaktivní"
+		/>
+	);
 }
 
 /**
@@ -107,9 +144,23 @@ export function isActive(start, end, css) {
 
 export function isPermitted(permission, onClick) {
 	if (permission === 1) {
-		return <FontAwesomeIcon icon={faCircleCheck} onClick={onClick ? onClick : () => {}} style={{ color: "var(--green)" }} title="Povoleno" />;
+		return (
+			<FontAwesomeIcon
+				icon={faCircleCheck}
+				onClick={onClick ? onClick : () => {}}
+				style={{ color: "var(--green)" }}
+				title="Povoleno"
+			/>
+		);
 	} else {
-		return <FontAwesomeIcon icon={faCircleXmark} onClick={onClick ? onClick : () => {}} style={{ color: "var(--red)" }} title="Zakázáno" />;
+		return (
+			<FontAwesomeIcon
+				icon={faCircleXmark}
+				onClick={onClick ? onClick : () => {}}
+				style={{ color: "var(--red)" }}
+				title="Zakázáno"
+			/>
+		);
 	}
 }
 
@@ -146,11 +197,27 @@ export function convertBase64(file) {
  * @param {number} page - current page number
  * @param {React.setState} setState - setState for set sliced array
  */
-export function sliceDataBasedOnPageNumber(data, numberOfItemsPerPage, page, setState) {
+export function sliceDataBasedOnPageNumber(
+	data,
+	numberOfItemsPerPage,
+	page,
+	setState
+) {
 	const multiplier = page ? page - 1 : 0;
 	const start = numberOfItemsPerPage * multiplier;
 	const end = start + numberOfItemsPerPage;
 
 	const slicedData = data.slice(start, end);
 	setState(slicedData);
+}
+
+export function getMonthName(monthNumber, localShortcut) {
+	let objDate = new Date();
+	objDate.setDate(1);
+	objDate.setMonth(monthNumber - 1);
+
+	let locale = localShortcut;
+	let month = objDate.toLocaleString(locale, { month: "long" });
+	month = month.charAt(0).toUpperCase() + month.slice(1);
+	return month;
 }

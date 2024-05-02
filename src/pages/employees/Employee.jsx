@@ -15,19 +15,24 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
-import useInteraction from "../../hooks/useInteraction";
-import { create, edit } from "../../modules/ApiFunctions";
-import { convertBase64 } from "../../modules/BasicFunctions";
 import Switch from "../../components/basic/switch/Switch";
+import { convertBase64 } from "../../modules/BasicFunctions";
 
+import { useTranslation } from "react-i18next";
 import ImageInput from "../../components/basic/image-input/ImageInput";
 import cssBasic from "../../components/styles/Basic.module.css";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Employees.module.css";
-import { useTranslation } from "react-i18next";
 
-export default function Employee({ employee, setEmployee, getData, departments, auth }) {
-	const { setMessage } = useInteraction();
+export default function Employee({
+	employee,
+	setEmployee,
+	getData,
+	departments,
+	auth,
+}) {
 	const { t } = useTranslation("employees");
+	const { edit, create } = useBasicApiFunctions();
 
 	const { register, handleSubmit, reset, setValue } = useForm();
 	const [pickedDepartments, setPickedDepartments] = useState([]);
@@ -54,14 +59,16 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 			}
 			delete data.image;
 		}
-		data.departments = pickedDepartments.filter((el) => !originalDepartments.current.find((dep) => dep.name === el.name));
+		data.departments = pickedDepartments.filter(
+			(el) => !originalDepartments.current.find((dep) => dep.name === el.name)
+		);
 		if (employee?.id) {
 			data.departments_deleted = deletedDepartments.current;
-			await edit("employees", data, setMessage, t("positiveTextEditEmployee"), auth);
+			await edit("employees", data, t("positiveTextEditEmployee"));
 		} else {
 			delete data.id;
 			delete data.department_id;
-			await create("employees", data, setMessage, t("positiveTextCreateEmployee"), auth);
+			await create("employees", data, t("positiveTextCreateEmployee"));
 		}
 		getData();
 		resetForm();
@@ -69,7 +76,17 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	}
 
 	function resetForm() {
-		reset({ degree_before: "", fname: "", lname: "", degree_after: "", phone: "", email: "", position: "", notes: "", id: "" });
+		reset({
+			degree_before: "",
+			fname: "",
+			lname: "",
+			degree_after: "",
+			phone: "",
+			email: "",
+			position: "",
+			notes: "",
+			id: "",
+		});
 		setPickedDepartments([]);
 		originalDepartments.current = [];
 		deletedDepartments.current = [];
@@ -94,19 +111,28 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	}
 
 	const chooseCategory = (e) => {
-		const selectedDepartment = departments.find((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedDepartments.find((item) => item.department_id === selectedDepartment.id);
+		const selectedDepartment = departments.find(
+			(item) => item.id === parseInt(e.target.value)
+		);
+		const alreadyIn = pickedDepartments.find(
+			(item) => item.department_id === selectedDepartment.id
+		);
 		setValue("department_id", "");
 		if (alreadyIn) {
 			return;
 		}
 		if (selectedDepartment) {
-			setPickedDepartments((prev) => [...prev, { department_id: selectedDepartment.id, name: selectedDepartment.name }]);
+			setPickedDepartments((prev) => [
+				...prev,
+				{ department_id: selectedDepartment.id, name: selectedDepartment.name },
+			]);
 		}
 	};
 
 	const removeFromPicked = (e) => {
-		const removed = pickedDepartments.filter((item) => item.department_id !== parseInt(e.target.id));
+		const removed = pickedDepartments.filter(
+			(item) => item.department_id !== parseInt(e.target.id)
+		);
 		deletedDepartments.current.push(parseInt(e.target.id));
 		setPickedDepartments(removed);
 	};
@@ -114,7 +140,13 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 	return (
 		<AnimatePresence>
 			{employee && (
-				<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1 }}>
+				<motion.section
+					className={css.edit}
+					initial={{ x: -600 }}
+					animate={{ x: 0 }}
+					exit={{ x: -600 }}
+					transition={{ type: "spring", duration: 1 }}
+				>
 					<h2>{t("headerEmployee")}</h2>
 					<FontAwesomeIcon
 						id={css.close}
@@ -125,12 +157,44 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 						}}
 					/>
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<InputBox placeholder={t("placeholderDegreeBefore")} register={register} type="text" name="degree_before" icon={faUserGraduate} />
-						<InputBox placeholder={t("placeholderFirstName")} register={register} type="text" name="fname" icon={faImagePortrait} isRequired={true} />
-						<InputBox placeholder={t("placeholderLastName")} register={register} type="text" name="lname" icon={faIdBadge} isRequired={true} />
-						<InputBox placeholder={t("placeholderDegreeAfter")} register={register} type="text" name="degree_after" icon={faUserGraduate} />
+						<InputBox
+							placeholder={t("placeholderDegreeBefore")}
+							register={register}
+							type="text"
+							name="degree_before"
+							icon={faUserGraduate}
+						/>
+						<InputBox
+							placeholder={t("placeholderFirstName")}
+							register={register}
+							type="text"
+							name="fname"
+							icon={faImagePortrait}
+							isRequired={true}
+						/>
+						<InputBox
+							placeholder={t("placeholderLastName")}
+							register={register}
+							type="text"
+							name="lname"
+							icon={faIdBadge}
+							isRequired={true}
+						/>
+						<InputBox
+							placeholder={t("placeholderDegreeAfter")}
+							register={register}
+							type="text"
+							name="degree_after"
+							icon={faUserGraduate}
+						/>
 
-						<InputBox placeholder={t("placeholderPhone")} register={register} type="tel" name="phone" icon={faMobileScreen} />
+						<InputBox
+							placeholder={t("placeholderPhone")}
+							register={register}
+							type="tel"
+							name="phone"
+							icon={faMobileScreen}
+						/>
 						<InputBox
 							placeholder={t("placeholderSecondaryPhone")}
 							register={register}
@@ -138,10 +202,20 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 							name="phone_secondary"
 							icon={faMobileScreenButton}
 						/>
-						<InputBox placeholder={t("placeholderEmail")} register={register} type="email" name="email" icon={faAt} />
+						<InputBox
+							placeholder={t("placeholderEmail")}
+							register={register}
+							type="email"
+							name="email"
+							icon={faAt}
+						/>
 
 						<div className={cssBasic.input_box}>
-							<select defaultValue={""} {...register("department_id")} onChange={chooseCategory}>
+							<select
+								defaultValue={""}
+								{...register("department_id")}
+								onChange={chooseCategory}
+							>
 								<option value="" disabled>
 									{t("placeholderDepartmentSelect")}
 								</option>
@@ -152,29 +226,63 @@ export default function Employee({ employee, setEmployee, getData, departments, 
 										</option>
 									))}
 							</select>
-							<FontAwesomeIcon className={cssBasic.icon} icon={faBuildingUser} />
+							<FontAwesomeIcon
+								className={cssBasic.icon}
+								icon={faBuildingUser}
+							/>
 						</div>
 
 						<ul className={css.picked_categories}>
 							{pickedDepartments &&
 								pickedDepartments.map((el) => (
-									<li key={`pickedDep-${el.department_id}`} id={el.department_id} onClick={removeFromPicked}>
+									<li
+										key={`pickedDep-${el.department_id}`}
+										id={el.department_id}
+										onClick={removeFromPicked}
+									>
 										{el.name}
 									</li>
 								))}
 						</ul>
 
-						<InputBox placeholder={t("placeholderPosition")} register={register} type="text" name="position" icon={faUserTag} isRequired={true} />
+						<InputBox
+							placeholder={t("placeholderPosition")}
+							register={register}
+							type="text"
+							name="position"
+							icon={faUserTag}
+							isRequired={true}
+						/>
 
-						<InputBox placeholder={t("placeholderNotes")} register={register} type="text" name="notes" icon={faCommentDots} />
+						<InputBox
+							placeholder={t("placeholderNotes")}
+							register={register}
+							type="text"
+							name="notes"
+							icon={faCommentDots}
+						/>
 
-						<ImageInput name="image" image={employee.image} path="employees" register={register} required={false} />
+						<ImageInput
+							name="image"
+							image={employee.image}
+							path="employees"
+							register={register}
+							required={false}
+						/>
 
-						<Switch name="active" label={t("placeholderIsVisible")} register={register} />
+						<Switch
+							name="active"
+							label={t("placeholderIsVisible")}
+							register={register}
+						/>
 
 						<input type="hidden" {...register("id")} />
 
-						<button style={{ marginTop: "20px" }}>{employee?.id ? t("buttonUpdateEmployee") : t("buttonCreateEmployee")}</button>
+						<button style={{ marginTop: "20px" }}>
+							{employee?.id
+								? t("buttonUpdateEmployee")
+								: t("buttonCreateEmployee")}
+						</button>
 					</form>
 				</motion.section>
 			)}

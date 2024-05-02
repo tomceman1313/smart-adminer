@@ -4,18 +4,21 @@ import { Route, Routes } from "react-router-dom";
 import Alert from "../../components/admin/Alert";
 import Message from "../../components/admin/Message";
 import RequireAuth from "../../components/admin/RequireAuth";
-import useAuth from "../../hooks/useAuth";
-import useViewport from "../../hooks/useViewport";
 import Banner from "../../components/banner/Banner";
 import DesktopMenu from "../../components/menu/desktop-menu/DesktopMenu";
 import MobileMenu from "../../components/menu/mobile-menu/MobileMenu";
 import { ROUTES } from "../../components/menu/routes";
+import useAuth from "../../hooks/useAuth";
+import useViewport from "../../hooks/useViewport";
 
+import { useTranslation } from "react-i18next";
 import ImageEditor from "../../components/common/image-editor/ImageEditor";
 import useAuthApi from "../../hooks/api/useAuthApi";
+import ErrorPage from "../error/ErrorPage";
 import css from "./Dashboard.module.css";
 
 export default function Dashboard() {
+	const { t } = useTranslation("dashboard");
 	const auth = useAuth();
 	const { refreshAccessToken, logOut } = useAuthApi();
 	const { width } = useViewport();
@@ -49,7 +52,7 @@ export default function Dashboard() {
 			{auth?.userInfo?.permissions && (
 				<>
 					<Helmet>
-						<title>SmartAdminer</title>
+						<title>{t("htmlTitle")}</title>
 					</Helmet>
 
 					{width > 1600 ? (
@@ -80,6 +83,7 @@ export default function Dashboard() {
 									<Route path={route.path} element={route.element} />
 								</Route>
 							))}
+							<Route path="/*" element={<ErrorPage errorCode={404} />} />
 						</Routes>
 						<Alert />
 						<Message />

@@ -9,7 +9,6 @@
 	"headerEventBody": "Text události",
 	"headerAdditionalImages": "Obrázky k události:",
 	"headerAddImages": "Přidat obrázky:",
-	"headerFilter": "Filtrovat:",
 
 	"positiveTextEventCreated": "Událost byla vytvořen",
 	"positiveTextEventUpdated": "Událost byla upraven",
@@ -27,5 +26,7 @@
 	"buttonSave": "Uložit",
 	"buttonDelete": "Smazat",
 	"buttonPreview": "Náhled události",
-	"buttonReset": "Resetovat"
+	"buttonReset": "Resetovat",
+
+	"noDataFound": "Nebyly nalezeny žádné události"
 }

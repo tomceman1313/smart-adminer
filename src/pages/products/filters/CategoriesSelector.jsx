@@ -15,7 +15,9 @@ export default function CategoriesSelector({ loadedCategories }) {
 		if (!categories) {
 			return;
 		}
-		const selectedIds = categories.filter((category) => category.value).map((category) => category.id);
+		const selectedIds = categories
+			.filter((category) => category.value)
+			.map((category) => category.id);
 		selectedCategories.current = selectedIds;
 	}, [categories, selectedCategories]);
 
@@ -27,7 +29,9 @@ export default function CategoriesSelector({ loadedCategories }) {
 			});
 		} else {
 			categoriesWithValues = await loadedCategories.map((manufacturer) => {
-				if (selectedCategories.current.find((item) => item === manufacturer.id)) {
+				if (
+					selectedCategories.current.find((item) => item === manufacturer.id)
+				) {
 					return { ...manufacturer, value: true };
 				}
 				return { ...manufacturer, value: false };
@@ -46,10 +50,14 @@ export default function CategoriesSelector({ loadedCategories }) {
 
 	return (
 		<>
-			{categories &&
-				categories.map((category, index) => (
-					<CheckBox key={category.name} name={category.name} checked={category.value} onChange={() => onChange(index)} />
-				))}
+			{categories.map((category, index) => (
+				<CheckBox
+					key={category.name}
+					name={category.name}
+					checked={category.value}
+					onChange={() => onChange(index)}
+				/>
+			))}
 		</>
 	);
 }

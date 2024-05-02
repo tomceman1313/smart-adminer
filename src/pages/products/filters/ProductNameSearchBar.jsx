@@ -1,13 +1,14 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
-import { getAll } from "../../../modules/ApiFunctions";
+import { useQueryClient } from "@tanstack/react-query";
 import { getByName } from "../../../modules/ApiProducts";
 import { useDebounce } from "../../../hooks/useDebounce";
 
 export default function ProductNameSearchBar({ setProducts }) {
 	const [productName, setProductName] = useState("");
 	const debounceName = useDebounce(productName);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		searchProductName(debounceName);
@@ -18,8 +19,7 @@ export default function ProductNameSearchBar({ setProducts }) {
 		setProductName(newName);
 
 		if (newName === "") {
-			const _products = await getAll("products");
-			setProducts(_products);
+			queryClient.invalidateQueries({ queryKey: ["products"] });
 			return;
 		}
 
@@ -30,7 +30,11 @@ export default function ProductNameSearchBar({ setProducts }) {
 	return (
 		<>
 			<FontAwesomeIcon icon={faMagnifyingGlass} />
-			<input value={productName} placeholder="Název produktu" onChange={(e) => setProductName(e.target.value)} />
+			<input
+				value={productName}
+				placeholder="Název produktu"
+				onChange={(e) => setProductName(e.target.value)}
+			/>
 		</>
 	);
 }

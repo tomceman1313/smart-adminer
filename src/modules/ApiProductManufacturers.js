@@ -5,7 +5,7 @@ export async function getManufacturers(setState) {
 		method: "GET",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		return null;
 	}
 
@@ -19,12 +19,15 @@ export async function createManufacturer(data, auth, setMessage) {
 
 	const response = await fetch(`${BASE_URL}/api/products/manufacturers`, {
 		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			Authorization: bearer,
+		},
 		body: JSON.stringify({ data: data }),
 		credentials: "include",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}
@@ -38,14 +41,20 @@ export async function createManufacturer(data, auth, setMessage) {
 export async function updateManufacturer(data, auth, setMessage) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/products/manufacturers/${data.id}`, {
-		method: "PUT",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
-		body: JSON.stringify({ data: data }),
-		credentials: "include",
-	});
+	const response = await fetch(
+		`${BASE_URL}/api/products/manufacturers/${data.id}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Authorization: bearer,
+			},
+			body: JSON.stringify({ data: data }),
+			credentials: "include",
+		}
+	);
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}
@@ -61,11 +70,14 @@ export async function deleteManufacturer(id, auth, setMessage) {
 
 	const response = await fetch(`${BASE_URL}/api/products/manufacturers/${id}`, {
 		method: "DELETE",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			Authorization: bearer,
+		},
 		credentials: "include",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}

@@ -1,27 +1,40 @@
-import { faBarsProgress, faBuildingUser, faCommentDots, faReceipt, faSquareCheck, faTruckFast, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faBarsProgress,
+	faBuildingUser,
+	faCommentDots,
+	faReceipt,
+	faSquareCheck,
+	faTruckFast,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
-import InputBox from "../../components/basic/InputBox";
-import useInteraction from "../../hooks/useInteraction";
-import { edit, get, remove } from "../../modules/ApiFunctions";
-import css from "./css/OrderDetail.module.css";
-
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import DatePicker from "../../components/basic/DatePicker";
+import InputBox from "../../components/basic/InputBox";
 import Select from "../../components/basic/select/Select";
-import useAuth from "../../hooks/useAuth";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import useInteraction from "../../hooks/useInteraction";
 import { makeDateFormat } from "../../modules/BasicFunctions";
+import css from "./css/OrderDetail.module.css";
 import CompanyCredentialsForm from "./detail/CompanyCredentialsForm";
 import DeliveryCredentialsForm from "./detail/DeliveryCredentialsForm";
 import InvoiceCredentialsForm from "./detail/InvoiceCredentialsForm";
 import OrderedProducts from "./detail/OrderedProducts";
-import { useTranslation } from "react-i18next";
 
-export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes, reloadData }) {
+export default function OrderDetail({
+	id,
+	setVisible,
+	shippingTypes,
+	statusCodes,
+	reloadData,
+}) {
 	const { t } = useTranslation("orders");
-	const { setMessage, setAlert } = useInteraction();
-	const auth = useAuth();
+	const { get, edit, remove } = useBasicApiFunctions();
+	const { setAlert } = useInteraction();
 
 	const PAYMENT_METHODS = useRef([
 		{ value: "cash", name: t("cash") },
@@ -30,29 +43,29 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 	]);
 
 	const { register, handleSubmit, setValue } = useForm();
-	const [order, setOrder] = useState(null);
 	const [products, setProducts] = useState(null);
 
-	useEffect(() => {
-		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	const { data: order } = useQuery({
+		queryKey: ["order", id],
+		queryFn: async () => {
+			const _order = await get("orders", id);
+			_order.deleted_products = [];
+			setProducts(_order.ordered_products);
 
-	async function loadData() {
-		const _order = await get("orders", id);
-		_order.deleted_products = [];
-		setOrder(_order);
-		setProducts(_order.ordered_products);
+			setValue("order_date", makeDateFormat(_order.order_date, "str"));
+			setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
+			setValue("completed_date", makeDateFormat(_order.completed_date, "str"));
+			setValue("comments", _order.comments);
 
-		setValue("order_date", makeDateFormat(_order.order_date, "str"));
-		setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
-		setValue("completed_date", makeDateFormat(_order.completed_date, "str"));
-		setValue("comments", _order.comments);
-
-		setValue("status_code", _order.status_code);
-		setValue("payment_method", _order.payment_method);
-		setValue("shipping_type_id", _order.shipping_type_id);
-	}
+			setValue("status_code", _order.status_code);
+			setValue("payment_method", _order.payment_method);
+			setValue("shipping_type_id", _order.shipping_type_id);
+			return _order;
+		},
+		meta: {
+			errorMessage: t("errorFetchOrder"),
+		},
+	});
 
 	async function onSubmit(data) {
 		data.id = order.id;
@@ -69,24 +82,33 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 			data.completed_date = makeDateFormat(data.completed_date);
 		}
 		data.customer_id = order.customer.id;
-		console.log(data);
-		await edit("orders", data, setMessage, t("positiveTextOrderUpdated"), auth);
+		await edit("orders", data, t("positiveTextOrderUpdated"));
 		reloadData();
 		setVisible(false);
 	}
 
 	function deleteOrder() {
-		setAlert({ id: order.id, question: t("alertDeleteOrder"), positiveHandler: deleteOrderHandler });
+		setAlert({
+			id: order.id,
+			question: t("alertDeleteOrder"),
+			positiveHandler: deleteOrderHandler,
+		});
 	}
 
 	async function deleteOrderHandler(id) {
-		await remove("orders", id, setMessage, t("positiveTextOrderDeleted"), auth);
+		await remove("orders", id, t("positiveTextOrderDeleted"));
 		await reloadData();
 		setVisible(false);
 	}
 
 	return (
-		<motion.section className={css.edit} initial={{ x: -600 }} animate={{ x: 0 }} exit={{ x: -600 }} transition={{ type: "spring", duration: 1.5 }}>
+		<motion.section
+			className={css.edit}
+			initial={{ x: -600 }}
+			animate={{ x: 0 }}
+			exit={{ x: -600 }}
+			transition={{ type: "spring", duration: 1.5 }}
+		>
 			<h2>{t("headerOrderNumber", { id: order?.id })}</h2>
 			<FontAwesomeIcon
 				id={css.close}
@@ -96,7 +118,11 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 				}}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<OrderedProducts order={order} products={products} setOrder={setOrder} setProducts={setProducts} />
+				<OrderedProducts
+					order={order}
+					products={products}
+					setProducts={setProducts}
+				/>
 
 				<h3>{t("headerOrderInfo")}</h3>
 
@@ -108,8 +134,18 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 						return { id: status.id, name: t(status.name) };
 					})}
 				/>
-				<Select name="payment_method" register={register} icon={faBuildingUser} options={PAYMENT_METHODS.current} />
-				<Select name="shipping_type_id" register={register} icon={faBuildingUser} options={shippingTypes} />
+				<Select
+					name="payment_method"
+					register={register}
+					icon={faBuildingUser}
+					options={PAYMENT_METHODS.current}
+				/>
+				<Select
+					name="shipping_type_id"
+					register={register}
+					icon={faBuildingUser}
+					options={shippingTypes}
+				/>
 
 				<DatePicker
 					placeholder={t("placeholderOrderedDate")}
@@ -139,14 +175,29 @@ export default function OrderDetail({ id, setVisible, shippingTypes, statusCodes
 					additionalClasses="gray half"
 				/>
 
-				<InputBox placeholder={t("placeholderNotes")} register={register} type="text" name="comments" icon={faCommentDots} />
+				<InputBox
+					placeholder={t("placeholderNotes")}
+					register={register}
+					type="text"
+					name="comments"
+					icon={faCommentDots}
+				/>
 
-				<InvoiceCredentialsForm register={register} customer={order?.customer} />
+				<InvoiceCredentialsForm
+					register={register}
+					customer={order?.customer}
+				/>
 
 				{order && (
 					<>
-						<DeliveryCredentialsForm register={register} customer={order?.customer} />
-						<CompanyCredentialsForm register={register} customer={order?.customer} />
+						<DeliveryCredentialsForm
+							register={register}
+							customer={order?.customer}
+						/>
+						<CompanyCredentialsForm
+							register={register}
+							customer={order?.customer}
+						/>
 					</>
 				)}
 

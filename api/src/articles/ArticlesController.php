@@ -63,15 +63,20 @@ class ArticlesController
                 return;
 
             case ($method == "GET" && $uri == "/api/articles/categories"):
-                $result = $this->gateway->getCategories();
-                echo json_encode($result);
+                try {
+                    $result = $this->gateway->getCategories();
+                    echo json_encode($result);
+                } catch (Exception $e) {
+                    http_response_code(500);
+                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                }
                 return;
         }
 
         if (!$authAction) {
-            http_response_code(403);
+            http_response_code(401);
             echo json_encode([
-                "message" => "Access denied"
+                "message" => "Unauthenticated"
             ]);
             return;
         }

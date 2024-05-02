@@ -1,4 +1,9 @@
-import { faCopyright, faHashtag, faInfo, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCopyright,
+	faHashtag,
+	faInfo,
+	faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -9,26 +14,31 @@ import InputBox from "../../components/basic/InputBox";
 import Select from "../../components/basic/select/Select";
 import Switch from "../../components/basic/switch/Switch";
 import cssBasic from "../../components/styles/Basic.module.css";
-import useAuth from "../../hooks/useAuth";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
 import { getCategories } from "../../modules/ApiCategories";
-import { checkNameAvailability, create, edit, get, remove } from "../../modules/ApiFunctions";
 import { getManufacturers } from "../../modules/ApiProductManufacturers";
 import { convertBase64 } from "../../modules/BasicFunctions";
-import { checkInnerImage, findDeletedImages, formatBody } from "../../modules/TextEditorFunctions";
+import {
+	checkInnerImage,
+	findDeletedImages,
+	formatBody,
+} from "../../modules/TextEditorFunctions";
 import DetailText from "./DetailText";
 import Images from "./Images";
 import Parameters from "./Parameters";
 import Variants from "./Variants";
 import css from "./styles/Product.module.css";
+import warningToast from "../../components/common/warning-toast/WarningToast";
 
 export default function Product() {
-	const auth = useAuth();
 	const { t } = useTranslation("products");
 	const { id } = useParams();
 	let location = useLocation();
 	const navigate = useNavigate();
-	const { setMessage, setAlert } = useInteraction();
+	const { get, create, edit, remove, checkNameAvailability } =
+		useBasicApiFunctions();
+	const { setAlert } = useInteraction();
 
 	const [categories, setCategories] = useState(null);
 	const [manufacturers, setManufacturers] = useState(null);
@@ -79,12 +89,12 @@ export default function Product() {
 		const isAvailable = await checkNameAvailability("products", data.name);
 
 		if (variants.length === 0) {
-			setMessage({ action: "alert", text: t("messageNoVariant") });
+			warningToast(t("messageNoVariant"));
 			return;
 		}
 
 		if ((images?.length === 0 || images === null) && data.images.length === 0) {
-			setMessage({ action: "alert", text: t("messageNoImage") });
+			warningToast(t("messageNoImage"));
 			return;
 		}
 
@@ -111,21 +121,21 @@ export default function Product() {
 		data.categories = pickedCategories;
 		if (id) {
 			if (product.name !== data.name && !isAvailable) {
-				setMessage({ action: "alert", text: t("messageProductExists") });
+				warningToast(t("messageProductExists"));
 				return;
 			}
 			data.id = id;
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
-			await edit("products", data, setMessage, t("positiveTextProductUpdated"), auth);
+			await edit("products", data, t("positiveTextProductUpdated"));
 			reset();
 			setData();
 		} else {
 			if (!isAvailable) {
-				setMessage({ action: "alert", text: t("messageProductExists") });
+				warningToast(t("messageProductExists"));
 				return;
 			}
-			await create("products", data, setMessage, t("positiveTextProductCreated"), auth);
+			await create("products", data, t("positiveTextProductCreated"));
 			navigate(`/products`);
 		}
 	}
@@ -138,8 +148,12 @@ export default function Product() {
 	 */
 	function chooseCategory(e) {
 		//gets name from categories via id
-		const name = categories.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
+		const name = categories.filter(
+			(item) => item.id === parseInt(e.target.value)
+		);
+		const alreadyIn = pickedCategories.find(
+			(item) => item.id === parseInt(e.target.value)
+		);
 		setValue("categories", "default");
 		if (alreadyIn) {
 			return;
@@ -151,30 +165,52 @@ export default function Product() {
 	}
 
 	function removeFromPicked(e) {
-		const removed = pickedCategories.filter((item) => item.id !== parseInt(e.target.id));
+		const removed = pickedCategories.filter(
+			(item) => item.id !== parseInt(e.target.id)
+		);
 		setPickedCategories(removed);
 	}
 
 	async function deleteHandler() {
-		await remove("products", id, setMessage, t("positiveTextProductDeleted"), auth);
+		await remove("products", id, t("positiveTextProductDeleted"));
 		navigate(`/products`);
 	}
 
 	function deleteProduct() {
-		setAlert({ id: id, question: t("alertDelete"), positiveHandler: deleteHandler });
+		setAlert({
+			id: id,
+			question: t("alertDelete"),
+			positiveHandler: deleteHandler,
+		});
 	}
 
 	return (
 		<>
 			<Helmet>
-				<title>{product?.name ? product.name : t("htmlTitleProduct")} | SmartAdminer</title>
+				<title>
+					{product?.name ? product.name : t("htmlTitleProduct")} | SmartAdminer
+				</title>
 			</Helmet>
 			{manufacturers ? (
 				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
 					<section className={css.basic_info}>
 						<h2>{t("headerBasicInfo")}</h2>
-						<InputBox placeholder={t("placeholderTitle")} register={register} type="text" name="name" icon={faShoppingCart} isRequired />
-						<InputBox placeholder={t("placeholderDescription")} register={register} type="text" name="description" icon={faInfo} isRequired />
+						<InputBox
+							placeholder={t("placeholderTitle")}
+							register={register}
+							type="text"
+							name="name"
+							icon={faShoppingCart}
+							isRequired
+						/>
+						<InputBox
+							placeholder={t("placeholderDescription")}
+							register={register}
+							type="text"
+							name="description"
+							icon={faInfo}
+							isRequired
+						/>
 						<Select
 							name="manufacturer_id"
 							options={manufacturers}
@@ -184,7 +220,11 @@ export default function Product() {
 						/>
 
 						<div className={cssBasic.input_box}>
-							<select defaultValue={"default"} {...register("categories")} onChange={chooseCategory}>
+							<select
+								defaultValue={"default"}
+								{...register("categories")}
+								onChange={chooseCategory}
+							>
 								<option value="default" disabled>
 									{t("placeholderCategory")}
 								</option>
@@ -206,16 +246,35 @@ export default function Product() {
 									</li>
 								))}
 						</ul>
-						<Switch name="active" register={register} label={t("placeholderIsVisible")} />
+						<Switch
+							name="active"
+							register={register}
+							label={t("placeholderIsVisible")}
+						/>
 					</section>
 
-					<Variants variants={variants} setVariants={setVariants} parameters={parameters} setParameters={setParameters} />
-					{variants.length > 0 && <Parameters parameters={parameters} setParameters={setParameters} variants={variants} />}
+					<Variants
+						variants={variants}
+						setVariants={setVariants}
+						parameters={parameters}
+						setParameters={setParameters}
+					/>
+					{variants.length > 0 && (
+						<Parameters
+							parameters={parameters}
+							setParameters={setParameters}
+							variants={variants}
+						/>
+					)}
 
-					<DetailText detailText={detailText} setDetailText={setDetailText} key={detailText ? "filled" : "empty"} />
+					<DetailText
+						detailText={detailText}
+						setDetailText={setDetailText}
+						key={detailText ? "filled" : "empty"}
+					/>
 
 					<section className={css.images}>
-						<Images images={images} auth={auth} setImages={setImages} register={register} setMessage={setMessage} />
+						<Images images={images} setImages={setImages} register={register} />
 						<div className={css.control_box}>
 							<button>{id ? t("buttonSave") : t("buttonCreate")}</button>
 							{/* <button type="button" className="blue_button">
@@ -223,7 +282,11 @@ export default function Product() {
 					Náhled produktu
 				</button> */}
 							{id && (
-								<button type="button" className="red_button" onClick={deleteProduct}>
+								<button
+									type="button"
+									className="red_button"
+									onClick={deleteProduct}
+								>
 									{t("buttonDelete")}
 								</button>
 							)}

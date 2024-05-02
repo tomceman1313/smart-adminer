@@ -16,11 +16,14 @@ import profile from "./en/profile.json";
 import privileges from "./en/privileges.json";
 import settings from "./en/settings.json";
 import login from "./en/login.json";
+import dashboard from "./en/dashboard.json";
+import errors from "./en/errors.json";
 
 import common from "./en/common.json";
 
 import categoriesComponent from "./en/components/categories.json";
 import itemsControllerComponent from "./en/components/items-controller.json";
+import imageInputComponent from "./en/components/image-input.json";
 
 export const EN = {
 	menu: menu,
@@ -41,7 +44,10 @@ export const EN = {
 	privileges: privileges,
 	settings: settings,
 	login: login,
+	dashboard: dashboard,
+	errors: errors,
 	common: common,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
+	imageInputC: imageInputComponent,
 };

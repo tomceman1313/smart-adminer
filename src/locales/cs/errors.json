@@ -1,0 +1,13 @@
+{
+	"title404": "Jejda!",
+	"message404": "Vypadá to, že nemůžeme najít stránku, kterou hledáte.",
+	"title503": "Ale ne!",
+	"message503": "Vypadá to, že naše servery mají výpadek.",
+	"errorCode": "Kód chyby:",
+	"buttonRedirect404": "Přejít na přehled",
+	"buttonRedirect503": "Znovu načíst",
+
+	"errorFetchCategories": "Kategorie se nepodařilo načíst",
+	"error401": "Neověřený uživatel",
+	"error403": "Vaše role nemá potřebná práva k vykonání této operace"
+}

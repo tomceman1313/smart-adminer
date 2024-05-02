@@ -1,5 +1,6 @@
 {
     "headerSettings": "Nastavení sytému",
     "headerSystemLanguage": "Jazyk systému",
-    "headerLoginBackground": "Pozadí přihlašovací stránky"
+    "headerLoginBackgroundImage": "Pozadí přihlašovací stránky",
+    "positiveTextImageChanged": "Obrázek upraven"
 }

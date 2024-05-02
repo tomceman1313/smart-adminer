@@ -18,7 +18,7 @@ import Select from "../../components/basic/select/Select";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import Switch from "../../components/basic/switch/Switch";
 import ArticlePreview from "../../components/common/article-preview/ArticlePreview";
-import useApiCategories from "../../hooks/api/useApiCategories";
+import useCategoriesApi from "../../hooks/api/useCategoriesApi";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
 import { makeDateFormat } from "../../modules/BasicFunctions";
@@ -37,7 +37,7 @@ export default function Article() {
 	const { t } = useTranslation("events");
 	const { id } = useParams();
 	const { create, edit, get, remove } = useBasicApiFunctions();
-	const { getCategories } = useApiCategories();
+	const { getCategories } = useCategoriesApi();
 	const { setMessage, setAlert } = useInteraction();
 	const { register, handleSubmit, getValues, reset } = useForm();
 

@@ -44,6 +44,19 @@ class EventsController
                 echo json_encode($data);
                 return;
 
+            case ($method == "GET" && preg_match('/\/api\/events\/\?name=[\w%]+$/', $uri) && isset($_GET["name"])):
+                $event_title = $_GET["name"];
+                $result = $this->gateway->getByTitle($event_title);
+                echo json_encode($result);
+                return;
+
+            case ($method == "GET" && preg_match('/\/api\/events\/\?name=[\w%]+&categoryId=[\w%]+$/', $uri) && isset($_GET["name"]) && isset($_GET["categoryId"])):
+                $event_title = $_GET["name"];
+                $category_id = $_GET["categoryId"];
+                $result = $this->gateway->getByTitle($event_title, $category_id);
+                echo json_encode($result);
+                return;
+
             case ($method == "GET" && $uri == "/api/events/categories"):
                 $result = $this->gateway->getCategories();
                 echo json_encode($result);
@@ -51,9 +64,9 @@ class EventsController
         }
 
         if (!$authAction) {
-            http_response_code(403);
+            http_response_code(401);
             echo json_encode([
-                "message" => "Access denied"
+                "message" => "Unauthenticated"
             ]);
             return;
         }

@@ -70,7 +70,8 @@ select {
 }
 
 input[type="submit"],
-button {
+button,
+.button {
 	background-color: var(--green);
 	font-size: 14px;
 	font-weight: 400;

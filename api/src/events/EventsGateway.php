@@ -83,6 +83,26 @@ class EventsGateway
         return $data;
     }
 
+    public function getByTitle(string $title, int $category_id = NULL): array
+    {
+        $sql_values = [
+            'title' => "%" . $title . "%"
+        ];
+
+        if ($category_id) {
+            $sql = "SELECT * FROM events WHERE category_id = :category_id AND title LIKE :title";
+            $sql_values["category_id"] = $category_id;
+        } else {
+            $sql = "SELECT * FROM events WHERE title LIKE :title";
+        }
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($sql_values);
+
+        $data = $stmt->fetchAll();
+
+        return $data;
+    }
+
     public function create(array $data, int $userId)
     {
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/events");

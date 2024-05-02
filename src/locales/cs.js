@@ -16,11 +16,14 @@ import profile from "./cs/profile.json";
 import privileges from "./cs/privileges.json";
 import settings from "./cs/settings.json";
 import login from "./cs/login.json";
+import dashboard from "./cs/dashboard.json";
+import errors from "./cs/errors.json";
 
 import common from "./cs/common.json";
 
 import categoriesComponent from "./cs/components/categories.json";
 import itemsControllerComponent from "./cs/components/items-controller.json";
+import imageInputComponent from "./cs/components/image-input.json";
 
 export const CS = {
 	menu: menu,
@@ -41,7 +44,10 @@ export const CS = {
 	privileges: privileges,
 	settings: settings,
 	login: login,
+	dashboard: dashboard,
+	errors: errors,
 	common: common,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
+	imageInputC: imageInputComponent,
 };

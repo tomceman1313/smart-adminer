@@ -5,6 +5,7 @@
 	"placeholderSearchInput": "Employee's name",
 	"allEmployeesFilterText": "All Employees",
 	"noDataFound": "No employees have been found",
+	"noDepartmentsFound": "No departments have been found",
 
 	"headerDepartments": "Departments",
 	"headerAddNewDepartment": "Create department:",

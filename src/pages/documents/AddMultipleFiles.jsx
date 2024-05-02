@@ -1,47 +1,49 @@
 import { faHashtag, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories } from "../../modules/ApiCategories";
-import { convertBase64, makeDate } from "../../modules/BasicFunctions";
-
 import { useTranslation } from "react-i18next";
+import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import cssBasic from "../../components/styles/Basic.module.css";
 import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
+import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import css from "./css/Documents.module.css";
 
-const AddMultipleFiles = ({ close, refreshFiles }) => {
+const AddMultipleFiles = ({ close, categories }) => {
 	const { t } = useTranslation("documents");
 	const { multipleCreate } = useItemsControllerApiFunctions();
-	const [category, setCategory] = useState(null);
 	const { register, handleSubmit, reset } = useForm();
+	const queryClient = useQueryClient();
 
-	useEffect(() => {
-		getCategories(setCategory, "documents");
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const { mutateAsync: createDocuments, status } = useMutation({
+		mutationFn: async (data) => {
+			let filesArray = [];
+			for (const file of data.files) {
+				const fileName = file.name.split(".");
+				const base64 = await convertBase64(file);
+				filesArray.push({ filename: fileName[0], file: base64 });
+			}
+			data.files = filesArray;
+			const date = new Date();
+			data.date = makeDate(
+				date.getFullYear(),
+				date.getMonth() + 1,
+				date.getDate()
+			);
 
-	const onSubmit = async (data) => {
-		let filesArray = [];
-		for (const file of data.files) {
-			const fileName = file.name.split(".");
-			const base64 = await convertBase64(file);
-			filesArray.push({ filename: fileName[0], file: base64 });
-		}
-		data.files = filesArray;
-		const date = new Date();
-		data.date = makeDate(
-			date.getFullYear(),
-			date.getMonth() + 1,
-			date.getDate()
-		);
-
-		await multipleCreate("documents", data, t("positiveTextDocumentsCreated"));
-		reset();
-		refreshFiles();
-		close();
-	};
+			return multipleCreate(
+				"documents",
+				data,
+				t("positiveTextDocumentsCreated")
+			);
+		},
+		onSuccess: () => {
+			reset();
+			close();
+			queryClient.invalidateQueries({ queryKey: ["documents"] });
+		},
+	});
 
 	return (
 		<motion.section
@@ -57,7 +59,7 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 				onClick={close}
 			/>
 			<h2>{t("headerCreateMultipleDocuments")}</h2>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(createDocuments)}>
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
 					<select
 						defaultValue={"default"}
@@ -67,8 +69,8 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 						<option value="default" disabled>
 							{t("placeholderCategorySelect")}
 						</option>
-						{category &&
-							category.map((el) => (
+						{categories &&
+							categories.map((el) => (
 								<option key={el.id} value={el.id}>
 									{el.name}
 								</option>
@@ -82,7 +84,11 @@ const AddMultipleFiles = ({ close, refreshFiles }) => {
 					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
 				</div>
 
-				<button>{t("buttonCreate")}</button>
+				<SubmitButton
+					status={status}
+					value={t("buttonCreate")}
+					additionalCss={"blue_button"}
+				/>
 			</form>
 		</motion.section>
 	);

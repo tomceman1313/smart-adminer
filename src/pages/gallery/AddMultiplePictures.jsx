@@ -1,48 +1,49 @@
 import { faHashtag, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import cssBasic from "../../components/styles/Basic.module.css";
 import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
-import { getCategories } from "../../modules/ApiCategories";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
+
+import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import css from "./css/Gallery.module.css";
 
-const AddMultiplePictures = ({ close, refreshImages }) => {
+const AddMultiplePictures = ({ close, categories }) => {
 	const { t } = useTranslation("gallery");
 	const { multipleCreate } = useItemsControllerApiFunctions();
-	const [categories, setCategories] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
+	const queryClient = useQueryClient();
 
-	useEffect(() => {
-		getCategories(setCategories, "gallery");
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const { mutateAsync: createImages, status } = useMutation({
+		mutationFn: async (data) => {
+			let imagesArray = [];
+			for (const file of data.images) {
+				const base64 = await convertBase64(file);
+				imagesArray.push(base64);
+			}
+			data.images = imagesArray;
+			const date = new Date();
+			data.date = makeDate(
+				date.getFullYear(),
+				date.getMonth() + 1,
+				date.getDate()
+			);
+			data.category_id = pickedCategories;
 
-	const onSubmit = async (data) => {
-		let imagesArray = [];
-		for (const file of data.images) {
-			const base64 = await convertBase64(file);
-			imagesArray.push(base64);
-		}
-		data.images = imagesArray;
-		const date = new Date();
-		data.date = makeDate(
-			date.getFullYear(),
-			date.getMonth() + 1,
-			date.getDate()
-		);
-		data.category_id = pickedCategories;
-
-		await multipleCreate("gallery", data, t("positiveTextImagesCreated"));
-		reset();
-		setPickedCategories([]);
-		refreshImages();
-		close();
-	};
+			return multipleCreate("gallery", data, t("positiveTextImagesCreated"));
+		},
+		onSuccess: () => {
+			reset();
+			setPickedCategories([]);
+			close();
+			queryClient.invalidateQueries({ queryKey: ["images"] });
+		},
+	});
 
 	const chooseCategory = (e) => {
 		const name = categories.filter(
@@ -82,7 +83,7 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 				onClick={close}
 			/>
 			<h2>{t("headerCreateMultipleImages")}</h2>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(createImages)}>
 				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
 					<select
 						defaultValue={"default"}
@@ -122,7 +123,11 @@ const AddMultiplePictures = ({ close, refreshImages }) => {
 						))}
 				</ul>
 
-				<button className="blue_button">{t("buttonCreate")}</button>
+				<SubmitButton
+					status={status}
+					value={t("buttonCreate")}
+					additionalCss={"blue_button"}
+				/>
 			</form>
 		</motion.section>
 	);

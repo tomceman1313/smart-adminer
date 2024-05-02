@@ -124,7 +124,7 @@ class StatsGateway
                 $month += 1;
             }
 
-            $monthly_results[] = array("month" => $this->utils->getMonthName(intval($month)), "pending_orders" => 0, "shipped_orders" => 0, "completed_orders" => 0, "cancelled_orders" => 0);
+            $monthly_results[] = array("month" => intval($month), "pending_orders" => 0, "shipped_orders" => 0, "completed_orders" => 0, "cancelled_orders" => 0);
             foreach ($data as $order) {
                 switch ($order["name"]) {
                     case "pending":

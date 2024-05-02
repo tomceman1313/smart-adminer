@@ -1,45 +1,50 @@
-import { useEffect, useState, useRef } from "react";
+import {
+	faHeading,
+	faMagnifyingGlass,
+	faTableColumns,
+} from "@fortawesome/free-solid-svg-icons";
+import { useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import TextEditor from "../../components/admin/TextEditor";
 import InputBox from "../../components/basic/InputBox";
 import ImageInput from "../../components/basic/image-input/ImageInput";
-import TextEditor from "../../components/admin/TextEditor";
-import { faHeading, faMagnifyingGlass, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { useForm } from "react-hook-form";
-import { getByName, edit } from "../../modules/ApiFunctions";
 import { convertBase64 } from "../../modules/BasicFunctions";
-import { formatBody, findDeletedImages, checkInnerImage } from "../../modules/TextEditorFunctions";
-import useInteraction from "../../hooks/useInteraction";
-import useAuth from "../../hooks/useAuth";
-import { Helmet } from "react-helmet-async";
-
-import css from "./Page.module.css";
-import TextArea from "../../components/basic/textarea/TextArea";
+import {
+	checkInnerImage,
+	findDeletedImages,
+	formatBody,
+} from "../../modules/TextEditorFunctions";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import TextArea from "../../components/basic/textarea/TextArea";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import css from "./Page.module.css";
 
 export default function Page() {
-	const { t } = useTranslation("pages");
+	const { t } = useTranslation("pages", "errors");
 	const { name } = useParams();
-	const auth = useAuth();
-	const { setMessage } = useInteraction();
+	const { getByName, edit } = useBasicApiFunctions();
 	const { register, handleSubmit } = useForm();
 
-	const [page, setPage] = useState();
 	const [body, setBody] = useState("");
 	const originalImages = useRef([]);
 
-	useEffect(() => {
-		loadPage();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [name]);
-
-	async function loadPage() {
-		const _page = await getByName("pages", name);
-		if (!!_page.config.rich_editor) {
-			setBody(_page.body);
-			originalImages.current = checkInnerImage(_page.body);
-		}
-		setPage(_page);
-	}
+	const { data: page } = useQuery({
+		queryKey: ["pages", name],
+		queryFn: async () => {
+			const _page = await getByName("pages", name);
+			if (!!_page.config.rich_editor) {
+				setBody(_page.body);
+				originalImages.current = checkInnerImage(_page.body);
+			}
+			return _page;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchPage"),
+		},
+	});
 
 	async function onSubmit(data) {
 		if (data.image?.[0]) {
@@ -58,7 +63,7 @@ export default function Page() {
 		}
 
 		data.id = page.id;
-		await edit("pages", data, setMessage, "Stránka byla upravena", auth);
+		await edit("pages", data, t("positiveTextPageUpdated"));
 	}
 
 	return (
@@ -92,11 +97,30 @@ export default function Page() {
 								isRequired={true}
 							/>
 						)}
-						{!!page.config.image && <ImageInput image={page.image} name="image" path="pages" register={register} additionalClasses="half" />}
+						{!!page.config.image && (
+							<ImageInput
+								image={page.image}
+								name="image"
+								path="pages"
+								register={register}
+								additionalClasses="half"
+							/>
+						)}
 						{!!page.config.rich_editor ? (
-							<TextEditor value={body} setValue={setBody} isLiteVersion={false} headers={[1, 2, 3, 4, 5]} />
+							<TextEditor
+								value={body}
+								setValue={setBody}
+								isLiteVersion={false}
+								headers={[1, 2, 3, 4, 5]}
+							/>
 						) : (
-							<TextArea name="body" icon={faTableColumns} register={register} placeholder={t("placeholderTextArea")} defaultValue={page.body} />
+							<TextArea
+								name="body"
+								icon={faTableColumns}
+								register={register}
+								placeholder={t("placeholderTextArea")}
+								defaultValue={page.body}
+							/>
 						)}
 						<div className={css.control_box}>
 							<button>{t("buttonSave")}</button>

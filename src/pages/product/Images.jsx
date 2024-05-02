@@ -1,34 +1,28 @@
-import { useEffect, useState } from "react";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
-import { deleteImage } from "../../modules/ApiFunctions";
 import { useParams } from "react-router-dom";
 import ProductImage from "./inner-components/ProductImage";
 
-import cssBasic from "../../components/styles/Basic.module.css";
-import css from "./styles/Images.module.css";
 import { useTranslation } from "react-i18next";
+import cssBasic from "../../components/styles/Basic.module.css";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import useViewport from "../../hooks/useViewport";
+import css from "./styles/Images.module.css";
 
-export default function Images({ images, auth, setMessage, setImages, register }) {
+export default function Images({ images, setImages, register }) {
 	const { id } = useParams();
 	const { t } = useTranslation("products");
-	const [width, setWidth] = useState(window.screen.width);
-	useEffect(() => {
-		window.addEventListener("resize", resize);
-
-		function resize() {
-			setWidth(window.innerWidth);
-		}
-
-		return document.removeEventListener("resize", resize);
-	}, []);
+	const { deleteImage } = useBasicApiFunctions();
+	const { width } = useViewport();
 
 	function changeOrder(movedImage, direction) {
 		let updatedImages = structuredClone(images);
 		if (direction === "left") {
 			if (movedImage.i_order !== 0) {
-				const indexOfMovedImage = updatedImages.findIndex((obj) => obj.id === movedImage.id);
+				const indexOfMovedImage = updatedImages.findIndex(
+					(obj) => obj.id === movedImage.id
+				);
 				const imageOnTargetPosition = updatedImages[indexOfMovedImage - 1];
 				--movedImage.i_order;
 				++imageOnTargetPosition.i_order;
@@ -40,7 +34,9 @@ export default function Images({ images, auth, setMessage, setImages, register }
 
 		if (direction === "right") {
 			if (movedImage.i_order !== updatedImages.length - 1) {
-				const indexOfMovedImage = updatedImages.findIndex((obj) => obj.id === movedImage.id);
+				const indexOfMovedImage = updatedImages.findIndex(
+					(obj) => obj.id === movedImage.id
+				);
 				const imageOnTargetPosition = updatedImages[indexOfMovedImage + 1];
 				++movedImage.i_order;
 				--imageOnTargetPosition.i_order;
@@ -51,8 +47,8 @@ export default function Images({ images, auth, setMessage, setImages, register }
 		}
 	}
 
-	const remove = (el) => {
-		deleteImage("products", id, el.id, auth, setMessage);
+	async function remove(el) {
+		await deleteImage("products", id, el.id);
 
 		const index = images.indexOf(el);
 		if (images.length === 1) {
@@ -69,7 +65,7 @@ export default function Images({ images, auth, setMessage, setImages, register }
 			});
 			setImages(sortedImages);
 		}
-	};
+	}
 
 	return (
 		<div className={css.images}>
@@ -92,7 +88,11 @@ export default function Images({ images, auth, setMessage, setImages, register }
 					>
 						{images.map((img) => (
 							<SplideSlide key={img.id} className={css.slide}>
-								<ProductImage el={img} deleteImage={remove} changeOrder={changeOrder} />
+								<ProductImage
+									el={img}
+									deleteImage={remove}
+									changeOrder={changeOrder}
+								/>
 							</SplideSlide>
 						))}
 					</Splide>

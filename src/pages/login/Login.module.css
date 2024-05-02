@@ -9,9 +9,83 @@
 
 .login section {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	max-width: 500px;
-	width: 500px;
+	left: 0;
+	width: 350px;
+	height: calc(100% - 50px);
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	padding: 25px 50px;
+}
+
+.login form {
+	width: 100%;
+}
+
+.logo {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	padding: 10px;
+	border-radius: 8px;
+	background-color: white;
+	box-shadow: var(--section-shadow);
+}
+
+.logo img:nth-child(1) {
+	max-height: 35px;
+	margin-right: 10px;
+}
+
+.logo img:nth-of-type(2) {
+	max-width: 120px;
+}
+
+.languages {
+	position: absolute;
+	left: 50px;
+	bottom: 25px;
+	width: 200px;
+}
+
+@media (max-width: 900px) {
+	.login section {
+		width: calc(80% - 100px);
+		height: 300px;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.languages {
+		left: 20px;
+		bottom: 20px;
+		background-color: white;
+		padding-right: 2px;
+		border-radius: 8px;
+	}
+
+	.languages div {
+		margin-bottom: 0;
+	}
+}
+
+@media (max-width: 500px) {
+	.login section {
+		width: calc(100% - 70px);
+		padding: 25px;
+	}
+
+	.logo {
+		left: 20px;
+		right: auto;
+	}
+
+	.languages {
+		left: 20px;
+		bottom: 90px;
+	}
 }

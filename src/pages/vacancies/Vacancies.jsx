@@ -1,43 +1,46 @@
 import { faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PlusButton from "../../components/basic/PlusButton";
-import { Helmet } from "react-helmet-async";
-import useAuth from "../../hooks/useAuth";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import useInteraction from "../../hooks/useInteraction";
-import { getAll, remove } from "../../modules/ApiFunctions";
 import { makeDateFormat, publicPath } from "../../modules/BasicFunctions";
 import css from "./Vacancies.module.css";
-import { useTranslation } from "react-i18next";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 export default function Vacancies() {
 	const { t } = useTranslation("vacancies");
-	const auth = useAuth();
 	const navigate = useNavigate();
-	const { setMessage, setAlert } = useInteraction();
-	const [vacancies, setVacancies] = useState(null);
+	const { getAll, remove } = useBasicApiFunctions();
 
-	useEffect(() => {
-		getData();
-	}, []);
+	const { setAlert } = useInteraction();
 
-	async function getData() {
-		const data = await getAll("vacancies");
-		setVacancies(data);
-	}
+	const { data: vacancies, refetch } = useQuery({
+		queryKey: ["vacancies"],
+		queryFn: async () => {
+			const data = await getAll("vacancies");
+			return data;
+		},
+	});
 
 	function openVacancy(id) {
 		navigate(`/vacancy/${id}`);
 	}
 
 	async function deleteHandler(id) {
-		await remove("vacancies", id, setMessage, t("positiveTextAdDeleted"), auth);
-		getData();
+		await remove("vacancies", id, t("positiveTextAdDeleted"));
+		refetch();
 	}
 
 	function deleteVacancy(id) {
-		setAlert({ id: id, question: t("alertDeleteAd"), positiveHandler: deleteHandler });
+		setAlert({
+			id: id,
+			question: t("alertDeleteAd"),
+			positiveHandler: deleteHandler,
+		});
 	}
 
 	return (
@@ -48,20 +51,29 @@ export default function Vacancies() {
 			<section>
 				<h2>{t("headerPositions")}</h2>
 				<ul className={css.vacancies}>
-					{vacancies ? (
+					{vacancies?.length > 0 ? (
 						vacancies.map((el) => (
 							<li key={`vac-${el.id}`}>
-								<img src={`${publicPath}/images/vacancies/${el.image}`} alt="" />
+								<img
+									src={`${publicPath}/images/vacancies/${el.image}`}
+									alt=""
+								/>
 								<div>
 									<b>{el.title}</b>
 									<label>{makeDateFormat(el.date, "text")}</label>
 								</div>
-								<FontAwesomeIcon icon={faPen} onClick={() => openVacancy(el.id)} />
-								<FontAwesomeIcon icon={faTrashCan} onClick={() => deleteVacancy(el.id)} />
+								<FontAwesomeIcon
+									icon={faPen}
+									onClick={() => openVacancy(el.id)}
+								/>
+								<FontAwesomeIcon
+									icon={faTrashCan}
+									onClick={() => deleteVacancy(el.id)}
+								/>
 							</li>
 						))
 					) : (
-						<p>{t("noDataFound")}</p>
+						<NoDataFound text={t("noDataFound")} />
 					)}
 				</ul>
 			</section>

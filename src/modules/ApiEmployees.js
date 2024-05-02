@@ -5,7 +5,7 @@ export async function getDepartments() {
 		method: "GET",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		return null;
 	}
 
@@ -26,7 +26,7 @@ export async function createDepartment(data, auth, setMessage, positiveText) {
 		credentials: "include",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}
@@ -40,17 +40,20 @@ export async function createDepartment(data, auth, setMessage, positiveText) {
 export async function updateDepartment(data, auth, setMessage, positiveText) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
-	const response = await fetch(`${BASE_URL}/api/employees/departments/${data.id}`, {
-		method: "PUT",
-		headers: {
-			Authorization: bearer,
-			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-		},
-		body: JSON.stringify(data),
-		credentials: "include",
-	});
+	const response = await fetch(
+		`${BASE_URL}/api/employees/departments/${data.id}`,
+		{
+			method: "PUT",
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			},
+			body: JSON.stringify(data),
+			credentials: "include",
+		}
+	);
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}
@@ -66,11 +69,14 @@ export async function removeDepartment(id, auth, setMessage, positiveText) {
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments/${id}`, {
 		method: "DELETE",
-		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Authorization: bearer },
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			Authorization: bearer,
+		},
 		credentials: "include",
 	});
 
-	if (response.status === 403) {
+	if (response.status === 401) {
 		auth.setUserInfo(null);
 		return null;
 	}

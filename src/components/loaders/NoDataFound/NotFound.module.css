@@ -1,0 +1,13 @@
+.not_found {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.5rem;
+	color: var(--gray);
+	margin-top: 50px;
+}
+
+.not_found b {
+	margin-left: 10px;
+}

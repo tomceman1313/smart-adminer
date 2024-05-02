@@ -24,6 +24,7 @@
 	"positiveTextOrderUpdated": "Order has been updated",
 	"positiveTextOrderDeleted": "Order has been deleted",
 	"alertDeleteOrder": "Do you really wish to delete the order?",
+	"alertDeleteProduct": "Do you really wish to remove this product from order?",
 	"messageInvalidDatesInterval": "The start date cannot be later than the end date",
 
 	"placeholderOrderedDate": "Ordered",

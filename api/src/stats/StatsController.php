@@ -21,9 +21,9 @@ class StatsController
         $url_parts = $this->utils->getUrlParts()["url_parts"];
 
         if (!$authAction) {
-            http_response_code(403);
+            http_response_code(401);
             echo json_encode([
-                "message" => "Access denied"
+                "message" => "Unauthenticated"
             ]);
             return;
         }

@@ -21,10 +21,12 @@
 	width: 100%;
 	margin: 0;
 	margin-bottom: 10px;
+	font-size: 1rem;
 	color: white;
 }
 
 .scrollable {
+	width: 100%;
 	height: calc(100% - 150px);
 	overflow-y: auto;
 }

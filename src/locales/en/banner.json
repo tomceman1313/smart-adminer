@@ -104,5 +104,9 @@
 	"profile": {
 		"title": "Your Profile",
 		"description": "Manage your profile"
+	},
+	"settings": {
+		"title": "Settings",
+		"description": "Manage system settings"
 	}
 }

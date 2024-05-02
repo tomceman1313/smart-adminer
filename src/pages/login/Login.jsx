@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import Message from "../../components/admin/Message";
 import InputBox from "../../components/basic/InputBox";
 import useAuthApi from "../../hooks/api/useAuthApi";
+import { publicPath } from "../../modules/BasicFunctions";
+import LanguageSelector from "../settings/LanguageSelector";
 import css from "./Login.module.css";
 
 export default function Login() {
@@ -22,13 +24,9 @@ export default function Login() {
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<div className={css.login}>
-				<section
-					initial={{ opacity: 0.5 }}
-					animate={{ opacity: 1 }}
-					transition={{ type: "spring", duration: 0.8 }}
-				>
-					<h2>{t("headerLogin")}</h2>
+				<section>
 					<form onSubmit={handleSubmit(onSubmit)}>
+						<h2>{t("headerLogin")}</h2>
 						<InputBox
 							type="text"
 							name="username"
@@ -45,9 +43,17 @@ export default function Login() {
 							icon={faLock}
 							isRequired
 						/>
-						<input type="submit" value={t("common:buttonLogin")} />
+						<button className="blue_button">{t("common:buttonLogin")}</button>
 					</form>
 				</section>
+				<div className={css.logo}>
+					<img src={`${publicPath}/favicon.svg`} alt="SmartAdminer icon" />
+					<img src={`${publicPath}/logo.png`} alt="SmartAdminer icon" />
+				</div>
+
+				<div className={css.languages}>
+					<LanguageSelector showHeader={false} />
+				</div>
 
 				<Message />
 			</div>

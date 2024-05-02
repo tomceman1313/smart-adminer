@@ -246,7 +246,6 @@ class ProductsGateway
             $query .= ' WHERE' . implode(' AND ', $sql);
         }
 
-        //$query .= " ORDER BY o.order_date";
 
         $stmt = $this->conn->prepare($query);
 

@@ -1,4 +1,6 @@
 {
     "headerSettings": "Settings",
-    "headerSystemLanguage": "System localization"
+    "headerSystemLanguage": "System localization",
+    "headerLoginBackgroundImage": "Login background image",
+    "positiveTextImageChanged": "Image has been changed"
 }

@@ -40,7 +40,7 @@ export default function useAuthApi() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -65,22 +65,27 @@ export default function useAuthApi() {
 		if (from) {
 			fromPath = from;
 		}
-		const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-			},
-			credentials: "include",
-		});
+		try {
+			const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				},
+				credentials: "include",
+			});
+			if (response.status === 401) {
+				auth.setUserInfo(null);
+				navigate("/login", { state: { from: fromPath } });
+				return;
+			}
 
-		if (response.status === 401) {
+			const data = await response.json();
+			auth.setUserInfo(data.data);
+		} catch (e) {
+			navigate("/503", { state: { from: fromPath } });
 			auth.setUserInfo(null);
-			navigate("/login", { state: { from: fromPath } });
 			return;
 		}
-
-		const data = await response.json();
-		auth.setUserInfo(data.data);
 	}
 
 	async function changePassword(postData) {
@@ -97,7 +102,7 @@ export default function useAuthApi() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return false;
 		}

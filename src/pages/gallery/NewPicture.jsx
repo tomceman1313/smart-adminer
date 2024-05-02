@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import AddMultiplePictures from "./AddMultiplePictures";
 
 import css from "./css/Gallery.module.css";
+import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 
 export default function NewPicture({ reloadData, categories }) {
 	const { t } = useTranslation("gallery");
@@ -24,27 +26,32 @@ export default function NewPicture({ reloadData, categories }) {
 
 	const [pickedCategories, setPickedCategories] = useState([]);
 	const { register, handleSubmit, reset, setValue } = useForm();
+	const queryClient = useQueryClient();
 
-	const createNew = async (data) => {
-		if (data.image[0]) {
-			const base64 = await convertBase64(data.image[0]);
-			data.image = base64;
-		} else {
-			data.image = "no-change";
-		}
-		const date = new Date();
-		data.date = makeDate(
-			date.getFullYear(),
-			date.getMonth() + 1,
-			date.getDate()
-		);
+	const { mutateAsync: createImage, status } = useMutation({
+		mutationFn: async (data) => {
+			if (data.image[0]) {
+				const base64 = await convertBase64(data.image[0]);
+				data.image = base64;
+			} else {
+				data.image = "no-change";
+			}
+			const date = new Date();
+			data.date = makeDate(
+				date.getFullYear(),
+				date.getMonth() + 1,
+				date.getDate()
+			);
 
-		data.category_id = pickedCategories;
-		await create("gallery", data, t("positiveTextImageCreated"));
-		reset();
-		setPickedCategories([]);
-		reloadData();
-	};
+			data.category_id = pickedCategories;
+			return create("gallery", data, t("positiveTextImageCreated"));
+		},
+		onSuccess: () => {
+			reset();
+			setPickedCategories([]);
+			queryClient.invalidateQueries({ queryKey: ["images"] });
+		},
+	});
 
 	const chooseCategory = (e) => {
 		const name = categories.filter(
@@ -78,7 +85,7 @@ export default function NewPicture({ reloadData, categories }) {
 		<>
 			<section className="half-section">
 				<h2>{t("headerCreateImage")}</h2>
-				<form onSubmit={handleSubmit(createNew)}>
+				<form onSubmit={handleSubmit(createImage)}>
 					<InputBox
 						placeholder={t("placeholderImageTitle")}
 						register={register}
@@ -132,14 +139,16 @@ export default function NewPicture({ reloadData, categories }) {
 							))}
 					</ul>
 
-					<button>{t("buttonCreate")}</button>
-					<button
-						type="button"
-						className="blue_button"
-						onClick={showAddMultiplePictures}
-					>
-						{t("buttonCreateMultiple")}
-					</button>
+					<div style={{ display: "flex" }}>
+						<SubmitButton status={status} value={t("buttonCreate")} />
+						<button
+							type="button"
+							className="blue_button"
+							onClick={showAddMultiplePictures}
+						>
+							{t("buttonCreateMultiple")}
+						</button>
+					</div>
 				</form>
 			</section>
 
@@ -147,7 +156,7 @@ export default function NewPicture({ reloadData, categories }) {
 				{addMultiplePictures && (
 					<AddMultiplePictures
 						close={() => setAddMultiplePictures(false)}
-						refreshImages={reloadData}
+						categories={categories}
 					/>
 				)}
 			</AnimatePresence>

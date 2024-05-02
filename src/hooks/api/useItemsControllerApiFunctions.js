@@ -1,12 +1,11 @@
+import toast from "react-hot-toast";
 import { BASE_URL } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
 import useBasicApiFunctions from "./useBasicApiFunctions";
-import useInteraction from "../useInteraction";
 
 export default function useItemsControllerApiFunctions() {
 	const auth = useAuth();
 	const { getByCategory, getAll, getByName } = useBasicApiFunctions();
-	const { setMessage } = useInteraction();
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
 	async function searchByName(apiClass, searchedTerm, selectedCategory) {
@@ -38,14 +37,14 @@ export default function useItemsControllerApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
 
 		const rdata = await response.json();
 		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 		return;
 	}
 
@@ -64,7 +63,7 @@ export default function useItemsControllerApiFunctions() {
 			}
 		);
 
-		if (response.status === 403) {
+		if (response.status === 401) {
 			auth.setUserInfo(null);
 			return null;
 		}
@@ -72,7 +71,7 @@ export default function useItemsControllerApiFunctions() {
 		const data = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		setMessage({ action: "success", text: positiveText });
+		toast.success(positiveText);
 		return;
 	}
 

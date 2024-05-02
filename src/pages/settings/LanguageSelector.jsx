@@ -9,9 +9,11 @@ const LANGUAGES = [
 	{ localName: "English", code: "en" },
 ];
 
-export default function LanguageSelector() {
+export default function LanguageSelector({ showHeader = true }) {
 	const { i18n, t } = useTranslation("settings");
-	const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem("language") ? localStorage.getItem("language") : "cs");
+	const [selectedLanguage, setSelectedLanguage] = useState(
+		localStorage.getItem("language") ? localStorage.getItem("language") : "cs"
+	);
 
 	const onChangeHandler = (e) => {
 		i18n.changeLanguage(e.target.value);
@@ -20,8 +22,8 @@ export default function LanguageSelector() {
 	};
 
 	return (
-		<div>
-			<h3>{t("headerSystemLanguage")}</h3>
+		<div style={{ width: "100%" }}>
+			{showHeader && <h3>{t("headerSystemLanguage")}</h3>}
 			<div className={`${cssBasic.input_box} ${cssBasic.half}`}>
 				<select value={selectedLanguage} onChange={onChangeHandler}>
 					{LANGUAGES.map((lang) => (

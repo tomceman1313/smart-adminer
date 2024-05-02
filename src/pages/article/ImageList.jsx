@@ -1,22 +1,20 @@
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
 import { useParams } from "react-router-dom";
-import { deleteImage } from "../../modules/ApiFunctions";
-import css from "./Article.module.css";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import ArticleImage from "./ArticleImage";
 
+import css from "./Article.module.css";
+
 const ImageList = ({ images, setImages, location }) => {
-	const auth = useAuth();
 	const { id } = useParams();
-	const { setMessage } = useInteraction();
+	const { deleteImage } = useBasicApiFunctions();
 
 	const remove = (el) => {
 		if (!id) {
 			throw Error("Source id is missing");
 		}
-		deleteImage(location, id, el.id, auth, setMessage);
+		deleteImage(location, id, el.id);
 		const index = images.indexOf(el);
 		if (images.length === 1) {
 			setImages(null);

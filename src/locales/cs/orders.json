@@ -24,6 +24,7 @@
 	"positiveTextOrderUpdated": "Objednávka byla upravena",
 	"positiveTextOrderDeleted": "Objednávka byla smazána",
 	"alertDeleteOrder": "Opravdu si přejete smazat objednávku?",
+	"alertDeleteProduct": "Opravdu si přejete odebrat produkt z objednávky?",
 	"messageInvalidDatesInterval": "Počáteční datum nemůže být později než konečné!",
 
 	"placeholderOrderedDate": "Datum objednání",

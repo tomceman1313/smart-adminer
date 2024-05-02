@@ -1,23 +1,36 @@
-import { useEffect } from "react";
-import { edit, remove } from "../../modules/ApiFunctions";
-import { faXmark, faHeading, faGlobe, faQuoteRight } from "@fortawesome/free-solid-svg-icons";
+import {
+	faGlobe,
+	faHeading,
+	faQuoteRight,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import useAuth from "../../hooks/useAuth";
-import useInteraction from "../../hooks/useInteraction";
 import { useTranslation } from "react-i18next";
-import { makeDateFormat } from "../../modules/BasicFunctions";
-import InputBox from "../../components/basic/InputBox";
 import DatePicker from "../../components/basic/DatePicker";
+import InputBox from "../../components/basic/InputBox";
+import useInteraction from "../../hooks/useInteraction";
+import { makeDateFormat } from "../../modules/BasicFunctions";
 
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Notifications.module.css";
 
-export default function EditNotification({ notification, loadData, setEditNotification }) {
-	const auth = useAuth();
+export default function EditNotification({
+	notification,
+	loadData,
+	setEditNotification,
+}) {
+	const { edit, remove } = useBasicApiFunctions();
 	const { t } = useTranslation("notifications");
 
-	const { register: registerUpdate, handleSubmit: handleSubmitUpdate, reset, setValue } = useForm();
+	const {
+		register: registerUpdate,
+		handleSubmit: handleSubmitUpdate,
+		reset,
+		setValue,
+	} = useForm();
 	const { setAlert, setMessage } = useInteraction();
 
 	useEffect(() => {
@@ -39,31 +52,49 @@ export default function EditNotification({ notification, loadData, setEditNotifi
 		data.path = data.path.replaceAll(" ", "");
 
 		if (data.start > data.end) {
-			setMessage({ action: "alert", text: t("messageInvalidDates"), timeout: 6000 });
+			setMessage({
+				action: "alert",
+				text: t("messageInvalidDates"),
+				timeout: 6000,
+			});
 			return;
 		}
 
-		await edit("notifications", data, setMessage, t("positiveTextNotificationUpdated"), auth);
+		await edit("notifications", data, t("positiveTextNotificationUpdated"));
 		setEditNotification(false);
 		loadData();
 	}
 
 	async function deleteHandler(id) {
-		await remove("notifications", id, setMessage, t("positiveTextNotificationDeleted"), auth);
+		await remove("notifications", id, t("positiveTextNotificationDeleted"));
 		reset();
 		setEditNotification(false);
 		loadData();
 	}
 
 	const deleteNotification = () => {
-		setAlert({ id: notification.id, question: t("alertDeleteNotification"), positiveHandler: deleteHandler });
+		setAlert({
+			id: notification.id,
+			question: t("alertDeleteNotification"),
+			positiveHandler: deleteHandler,
+		});
 	};
 
 	return (
 		<AnimatePresence>
 			{notification && (
-				<motion.div className={css.edit_notification} initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ duration: 0.7 }}>
-					<FontAwesomeIcon id={css.close} icon={faXmark} onClick={() => setEditNotification(false)} />
+				<motion.div
+					className={css.edit_notification}
+					initial={{ y: "100%" }}
+					animate={{ y: 0 }}
+					exit={{ y: "100%" }}
+					transition={{ duration: 0.7 }}
+				>
+					<FontAwesomeIcon
+						id={css.close}
+						icon={faXmark}
+						onClick={() => setEditNotification(false)}
+					/>
 					<form onSubmit={handleSubmitUpdate(onSubmit)}>
 						<h2>{t("headerEditNotification")}</h2>
 						<InputBox
@@ -116,7 +147,11 @@ export default function EditNotification({ notification, loadData, setEditNotifi
 						<input type="hidden" {...registerUpdate("id")} />
 						<button>{t("buttonSave")}</button>
 
-						<button type="button" className="red_button" onClick={deleteNotification}>
+						<button
+							type="button"
+							className="red_button"
+							onClick={deleteNotification}
+						>
 							{t("buttonDelete")}
 						</button>
 					</form>

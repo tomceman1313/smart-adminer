@@ -24,5 +24,7 @@
 	"buttonCreate": "Create",
 	"buttonSave": "Save",
 	"buttonDelete": "Delete",
-	"buttonPreview": "Article preview"
+	"buttonPreview": "Article preview",
+
+	"noDataFound": "No articles have been found"
 }

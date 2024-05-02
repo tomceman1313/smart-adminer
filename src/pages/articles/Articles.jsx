@@ -15,6 +15,7 @@ import {
 import css from "./Articles.module.css";
 import { useTranslation } from "react-i18next";
 import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 const Articles = () => {
 	const { t } = useTranslation("articles");
@@ -49,12 +50,18 @@ const Articles = () => {
 
 	const openArticleDetails = (e) => {
 		const id = e.currentTarget.id;
-		navigate(`/article/${id}`);
+		navigate(`/articles/${id}`);
 	};
 
 	async function filterByCategory(id) {
 		const category = categories.find((el) => el.id === id);
 		setSelectedCategory(category);
+	}
+
+	function resetFilter() {
+		refetchArticles();
+		setSelectedCategory(null);
+		setSearchedName("");
 	}
 
 	return (
@@ -64,9 +71,8 @@ const Articles = () => {
 			</Helmet>
 			<div className={css.articles}>
 				<CategoriesController
-					categories={categories}
-					setCategories={setCategories}
 					apiClass="articles"
+					setCategories={setCategories}
 					filterByCategory={filterByCategory}
 					reloadData={refetchArticles}
 					fullSize
@@ -75,7 +81,7 @@ const Articles = () => {
 				<ItemsController
 					setSearchedName={setSearchedName}
 					selectedCategory={selectedCategory}
-					resetFilter={refetchArticles}
+					resetFilter={resetFilter}
 					settingsConfig={{
 						searchInput: t("searchArticleTitle"),
 						multiSelection: false,
@@ -86,7 +92,7 @@ const Articles = () => {
 					<ArticleCardLoader />
 				) : (
 					<section className={`${css.articles_list} no-section`}>
-						{articles &&
+						{articles?.length > 0 ? (
 							articles.map((article) => (
 								<article
 									key={article.id}
@@ -108,7 +114,10 @@ const Articles = () => {
 
 									<div>{isPermitted(article.active)}</div>
 								</article>
-							))}
+							))
+						) : (
+							<NoDataFound text={t("noDataFound")} />
+						)}
 					</section>
 				)}
 

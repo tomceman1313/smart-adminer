@@ -10,11 +10,14 @@ import {
 	ResponsiveContainer,
 } from "recharts";
 import css from "./OrdersInfo.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function OrdersInfo({ orders }) {
+	const { t } = useTranslation("dashboard");
+
 	return (
 		<section className={css.orders}>
-			<h4>Objednávky</h4>
+			<h4>{t("boxTitleOrders")}</h4>
 			<ResponsiveContainer width="100%" height="100%">
 				<LineChart
 					width={0}
@@ -31,7 +34,7 @@ export default function OrdersInfo({ orders }) {
 					<XAxis dataKey="month" />
 					<YAxis
 						label={{
-							value: "Počet objednávek",
+							value: t("yAxisLabel"),
 							angle: -90,
 						}}
 						allowDecimals={false}
@@ -40,7 +43,7 @@ export default function OrdersInfo({ orders }) {
 					<Legend />
 					<Line
 						type="monotone"
-						name="Přijaté objednávky"
+						name={t("graphLineReceivedOrders")}
 						dataKey="pending_orders"
 						stroke="#2874a6"
 						activeDot={{ r: 8 }}
@@ -49,7 +52,7 @@ export default function OrdersInfo({ orders }) {
 					/>
 					<Line
 						type="monotone"
-						name="Dokončené objednávky"
+						name={t("graphLineCompletedOrders")}
 						dataKey="completed_orders"
 						stroke="#17a589"
 						activeDot={{ r: 8 }}

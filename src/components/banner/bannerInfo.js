@@ -114,4 +114,9 @@ export const PAGES_BANNER_INFO = [
 		title: "profile.title",
 		description: "profile.description",
 	},
+	{
+		path: "/settings",
+		title: "settings.title",
+		description: "settings.description",
+	},
 ];
