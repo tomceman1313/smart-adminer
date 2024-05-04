@@ -2,18 +2,12 @@ import { useTranslation } from "react-i18next";
 import useInteraction from "../../../hooks/useInteraction";
 import { publicPath } from "../../../modules/BasicFunctions";
 
-export default function OrderedProducts({
-	products,
-	order,
-	setOrder,
-	setProducts,
-}) {
+export default function OrderedProducts({ products, setProducts }) {
 	const { t } = useTranslation("orders");
 	const { setAlert } = useInteraction();
 
 	function productQuantityChanged(e, index) {
 		const newQuantity = Number(e.target.value);
-		const updatedOrder = JSON.parse(JSON.stringify(order));
 		if (newQuantity === 0) {
 			e.target.value = 1;
 			setAlert({
@@ -22,44 +16,55 @@ export default function OrderedProducts({
 				positiveHandler: deleteProductFromOrdered,
 			});
 		} else {
-			updatedOrder.ordered_products[index].quantity = newQuantity;
+			setProducts((prev) => {
+				const orderedProducts = prev.orderedProducts.map((product, i) => {
+					if (i === index) {
+						return { ...product, quantity: newQuantity };
+					}
+					return product;
+				});
+
+				return { ...prev, orderedProducts: orderedProducts };
+			});
 		}
-		//FIXME:opravit ze state na query
 	}
 
 	function deleteProductFromOrdered(index) {
-		const updatedOrder = JSON.parse(JSON.stringify(order));
-		const updatedProducts = JSON.parse(JSON.stringify(products));
+		const orderedProducts = JSON.parse(
+			JSON.stringify(products.orderedProducts)
+		);
+		const deletedProducts = JSON.parse(
+			JSON.stringify(products.deletedProducts)
+		);
 
-		const deletedProduct = updatedOrder.ordered_products.splice(index, 1);
-		updatedProducts.splice(index, 1);
+		const deletedProduct = orderedProducts.splice(index, 1);
+		orderedProducts.splice(index, 1);
 
-		updatedOrder.deleted_products.push(deletedProduct);
-		setProducts(updatedProducts);
+		setProducts({
+			orderedProducts: orderedProducts,
+			deletedProducts: deletedProducts.push(deletedProduct),
+		});
 	}
 
 	return (
 		<ul>
 			{products &&
-				products.map((el, index) => (
-					<li key={`ordered-product-${el.variant_id}`}>
+				products?.orderedProducts.map((product, index) => (
+					<li key={`ordered-product-${product.variant_id}`}>
 						<img
-							src={`${publicPath}/images/products/${el.image}`}
-							alt={el.name}
+							src={`${publicPath}/images/products/${product.image}`}
+							alt={product.name}
 						/>
-						<b>{`${el.product_name} - ${el.variant_name}`}</b>
+						<b>{`${product.product_name} - ${product.variant_name}`}</b>
 						<span>
 							<input
-								defaultValue={order.ordered_products[index]?.quantity}
+								defaultValue={product.quantity}
 								type="number"
 								onChange={(e) => productQuantityChanged(e, index)}
 							/>
 							<label> ks</label>
 						</span>
-						<label>{`${
-							order.ordered_products[index]?.price_piece *
-							order.ordered_products[index]?.quantity
-						} Kč`}</label>
+						<label>{`${product.price_piece * product.quantity} Kč`}</label>
 					</li>
 				))}
 		</ul>

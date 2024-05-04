@@ -18,7 +18,7 @@ import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerAp
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 const Articles = () => {
-	const { t } = useTranslation("articles");
+	const { t } = useTranslation("articles", "errors");
 	const navigate = useNavigate();
 	const { getAll, getByCategory } = useBasicApiFunctions();
 	const { searchByName } = useItemsControllerApiFunctions();
@@ -45,6 +45,9 @@ const Articles = () => {
 			}
 
 			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchArticles"),
 		},
 	});
 

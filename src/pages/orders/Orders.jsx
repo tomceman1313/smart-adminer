@@ -10,19 +10,23 @@ import Order from "./Order";
 import OrderDetail from "./OrderDetail";
 import { Helmet } from "react-helmet-async";
 import Filter from "./Filter";
-import css from "./Orders.module.css";
 import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
 import { useTranslation } from "react-i18next";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
+import { useGetAll } from "../../hooks/api/useCRUD";
+
+import css from "./Orders.module.css";
 
 export default function Orders() {
-	const { t } = useTranslation("orders");
+	const { t } = useTranslation("orders", "errors");
 	const [orders, setOrders] = useState(null);
 	const [isFilterVisible, setIsFilterVisible] = useState(null);
 
 	const [orderId, setOrderId] = useState(null);
 	const [shippingTypes, setShippingTypes] = useState(null);
 	const [statusCodes, setStatusCodes] = useState(null);
+
+	//const {data: orders} = useGetAll("orders/filter", null, ["orders"], t("errors:"))
 
 	useEffect(() => {
 		loadData();

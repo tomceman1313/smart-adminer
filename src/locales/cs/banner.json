@@ -107,5 +107,9 @@
 	},
 	"logout": {
 		"name": "Odhlásit"
+	},
+	"settings": {
+		"title": "Nastavení",
+		"description": "Spravujte nastavení systému"
 	}
 }

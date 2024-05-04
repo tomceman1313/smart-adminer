@@ -1,13 +1,25 @@
 import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
-import { findDeletedImages, formatBody, removeEmptyParagraphs } from "../../modules/TextEditorFunctions";
+import {
+	findDeletedImages,
+	formatBody,
+	removeEmptyParagraphs,
+} from "../../modules/TextEditorFunctions";
+import i18next from "i18next";
+import warningToast from "../../components/common/warning-toast/WarningToast";
 
-export async function formatSubmittedData(data, article, body, originalImages, setMessage) {
+export async function formatSubmittedData(
+	data,
+	article,
+	body,
+	originalImages,
+	apiClass
+) {
 	let arrayInsideImages = [];
 	data.date = makeDateFormat(data.date);
-	data.body = await formatBody(body, arrayInsideImages, "articles");
+	data.body = await formatBody(body, arrayInsideImages, apiClass);
 
 	if (data.body === "") {
-		setMessage({ action: "alert", text: "Vyplňte text článku" });
+		warningToast(i18next.t(`${apiClass}:messageEmptyArticleBody`));
 		return null;
 	}
 

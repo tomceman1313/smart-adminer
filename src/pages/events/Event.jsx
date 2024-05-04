@@ -32,13 +32,13 @@ import {
 } from "../article/helperFunctions";
 import { useTranslation } from "react-i18next";
 
-export default function Article() {
+export default function Event() {
 	const navigation = useNavigate();
-	const { t } = useTranslation("events");
+	const { t } = useTranslation("events", "errors");
 	const { id } = useParams();
 	const { create, edit, get, remove } = useBasicApiFunctions();
 	const { getCategories } = useCategoriesApi();
-	const { setMessage, setAlert } = useInteraction();
+	const { setAlert } = useInteraction();
 	const { register, handleSubmit, getValues, reset } = useForm();
 
 	const [eventPreview, setEventPreview] = useState(null);
@@ -63,6 +63,7 @@ export default function Article() {
 			setUnderEventImages(data.images.length === 0 ? null : data.images);
 			return data;
 		},
+		meta: { errorMessage: t("errors:errorFetchEvent") },
 	});
 
 	const { data: categories } = useQuery({
@@ -91,7 +92,7 @@ export default function Article() {
 			event,
 			body,
 			originalImages,
-			setMessage
+			"events"
 		);
 
 		if (!formattedData) {
@@ -104,7 +105,7 @@ export default function Article() {
 			refetch();
 		} else {
 			await createEvent(formattedData);
-			navigation("/articles");
+			navigation("/events");
 		}
 	}
 

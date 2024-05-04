@@ -36,6 +36,7 @@
 	"alertDelete": "Delete product?",
 	"alertDeleteManufacturer": "Delete manufacturer {{name}}?",
 
+	"placeholderProductName": "Product name",
 	"placeholderManufacturerName": "Manufacturer name",
 	"placeholderTitle": "Title",
 	"placeholderDescription": "Description",

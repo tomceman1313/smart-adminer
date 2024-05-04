@@ -13,7 +13,7 @@ import NewDocument from "./NewDocument";
 import css from "./css/Documents.module.css";
 
 export default function DocumentsPage() {
-	const { t } = useTranslation("documents");
+	const { t } = useTranslation("documents", "errors");
 	const { getAll, getByCategory, remove, updateOrder } = useBasicApiFunctions();
 	const { multipleDelete, searchByName } = useItemsControllerApiFunctions();
 	const [categories, setCategories] = useState(null);
@@ -38,6 +38,9 @@ export default function DocumentsPage() {
 			}
 			setDocuments(data);
 			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchDocuments"),
 		},
 	});
 

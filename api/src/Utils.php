@@ -73,6 +73,7 @@ class Utils
 
             return $image_name . "." . $imageExtension;
         } catch (Exception $e) {
+            echo $e;
             return "";
         }
     }

@@ -26,5 +26,6 @@
 	"buttonDelete": "Smazat",
 	"buttonPreview": "Náhled článku",
 
+	"messageEmptyArticleBody": "Vyplňte text článku",
 	"noDataFound": "Nebyly nalezeny žádné články"
 }

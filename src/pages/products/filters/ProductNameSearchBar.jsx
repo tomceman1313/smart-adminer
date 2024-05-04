@@ -1,14 +1,16 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { getByName } from "../../../modules/ApiProducts";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { useTranslation } from "react-i18next";
 
-export default function ProductNameSearchBar({ setProducts }) {
+export default function ProductNameSearchBar() {
+	const { t } = useTranslation("products");
 	const [productName, setProductName] = useState("");
 	const debounceName = useDebounce(productName);
-	const queryClient = useQueryClient();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	useEffect(() => {
 		searchProductName(debounceName);
@@ -17,14 +19,14 @@ export default function ProductNameSearchBar({ setProducts }) {
 
 	async function searchProductName(newName) {
 		setProductName(newName);
-
-		if (newName === "") {
-			queryClient.invalidateQueries({ queryKey: ["products"] });
+		if (newName === "" && location.search !== "") {
+			navigate("/products");
 			return;
 		}
 
-		const products = await getByName(newName);
-		setProducts(products);
+		if (newName !== "") {
+			navigate(`/products/?name=${newName}`);
+		}
 	}
 
 	return (
@@ -32,7 +34,7 @@ export default function ProductNameSearchBar({ setProducts }) {
 			<FontAwesomeIcon icon={faMagnifyingGlass} />
 			<input
 				value={productName}
-				placeholder="Název produktu"
+				placeholder={t("placeholderProductName")}
 				onChange={(e) => setProductName(e.target.value)}
 			/>
 		</>

@@ -19,7 +19,7 @@ import css from "./css/Events.module.css";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 const Events = () => {
-	const { t } = useTranslation("events");
+	const { t } = useTranslation("events", "errors");
 	const navigate = useNavigate();
 	const { getAll, getByCategory } = useBasicApiFunctions();
 	const { searchByName } = useItemsControllerApiFunctions();
@@ -47,6 +47,7 @@ const Events = () => {
 
 			return data;
 		},
+		meta: { errorMessage: t("errors:errorFetchEvents") },
 	});
 
 	const openArticleDetails = (e) => {

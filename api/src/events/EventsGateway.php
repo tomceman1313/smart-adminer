@@ -315,7 +315,7 @@ class EventsGateway
 
     private function deleteInnerImage($image_name)
     {
-        $sql = "DELETE FROM events_images WHERE name = :name";
+        $sql = "DELETE FROM event_images WHERE name = :name";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([

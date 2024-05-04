@@ -17,6 +17,7 @@ import Item from "../../components/common/controlled-item/Item";
 import css from "../../components/common/categories-controller/Category.module.css";
 import { useTranslation } from "react-i18next";
 
+//TODO: loading error
 export default function Manufacturers({ manufacturers, setManufacturers }) {
 	const auth = useAuth();
 	const { t } = useTranslation("products");

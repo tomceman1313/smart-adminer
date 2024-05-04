@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { React, useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import css from "./Profiles.module.css";
 import UserList from "./UserList";
 
+import css from "./Profiles.module.css";
+
 export default function Profiles() {
-	const { t } = useTranslation("profiles");
+	const { t } = useTranslation("profiles", "errors");
+
 	const {
 		checkNameAvailability,
 		create,
@@ -27,6 +29,9 @@ export default function Profiles() {
 			setRoles(_privileges);
 			return data;
 		},
+		meta: {
+			errorMessage: t("errors:errorFetchUsers"),
+		},
 	});
 
 	async function deleteHandler(id) {
@@ -38,7 +43,7 @@ export default function Profiles() {
 		const isAvailable = await checkNameAvailability("users", data.username);
 		if (previousUserName !== data.username && !isAvailable) {
 			warningToast(t("messageUsernameIsTaken"));
-			return false;
+			return;
 		}
 
 		data.username = data.username.replaceAll(" ", "_");
@@ -48,13 +53,12 @@ export default function Profiles() {
 		} else {
 			if (data.password_check !== data.password) {
 				warningToast(t("messagePasswordsNotEqual"));
-				return false;
+				return;
 			}
-			create("users", data, t("createPositiveText"));
+			await create("users", data, t("createPositiveText"));
 		}
 
 		refetch();
-		return true;
 	}
 
 	return (
@@ -63,7 +67,7 @@ export default function Profiles() {
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<div className={css.users}>
-				{users && (
+				{users && roles && (
 					<UserList
 						users={users}
 						roles={roles}

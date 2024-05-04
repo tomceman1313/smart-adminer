@@ -7,7 +7,7 @@ import PageHeader from "./PageHeader";
 import css from "./Pages.module.css";
 
 export default function Pages() {
-	const { t } = useTranslation("pages");
+	const { t } = useTranslation("pages", "errors");
 	const { getAll } = useBasicApiFunctions();
 
 	const { data: pages } = useQuery({
@@ -15,6 +15,9 @@ export default function Pages() {
 		queryFn: async () => {
 			const _pages = await getAll("pages");
 			return sortByPageName(_pages);
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchPages"),
 		},
 	});
 

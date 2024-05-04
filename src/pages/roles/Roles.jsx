@@ -18,7 +18,7 @@ function assignPermissionsToRole(roles, permissions) {
 }
 
 export default function Roles() {
-	const { t } = useTranslation("profiles");
+	const { t } = useTranslation("profiles", "errors");
 	const { togglePermission } = useAuthApi();
 	const { getAll, getAllWithAuth } = useBasicApiFunctions();
 
@@ -28,6 +28,9 @@ export default function Roles() {
 			const _roles = await getAll("users/roles");
 			const _permissions = await getAllWithAuth("users/permissions");
 			return assignPermissionsToRole(_roles, _permissions);
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchRoles"),
 		},
 	});
 

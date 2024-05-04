@@ -44,8 +44,11 @@ class ProductsController
                 echo json_encode($data);
                 return;
 
-            case ($method == "POST" && $uri == "/api/products/filter"):
-                $response = $this->gateway->filterProducts($data);
+            case ($method == "GET" && preg_match('/\/api\/products\/\?categories=[\w%]+&manufacturers=[\w%]+$/', $uri) && isset($_GET["categories"]) && isset($_GET["manufacturers"])):
+                $categories = json_decode(urldecode($_GET["categories"]), true);
+                $manufacturers = json_decode(urldecode($_GET["manufacturers"]), true);
+
+                $response = $this->gateway->filterProducts($categories, $manufacturers);
                 echo json_encode($response);
                 return;
 

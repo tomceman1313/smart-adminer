@@ -36,6 +36,7 @@
 	"alertDelete": "Smazat produkt?",
 	"alertDeleteProduct": "Opravdu si přejete smazat produkt {{name}}?",
 
+	"placeholderProductName": "Název produktu",
 	"placeholderManufacturerName": "Jméno výrobce",
 	"placeholderTitle": "Název",
 	"placeholderDescription": "Popisek",

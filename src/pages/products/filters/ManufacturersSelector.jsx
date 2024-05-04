@@ -21,14 +21,16 @@ export default function ManufacturersSelector({ loadedManufacturers }) {
 		selectedManufacturers.current = selectedIds;
 	}, [manufacturers, selectedManufacturers]);
 
-	async function loadData() {
+	function loadData() {
 		let manufacturerWithValues = [];
 		if (selectedManufacturers.current.length === 0) {
-			manufacturerWithValues = await loadedManufacturers.map((manufacturer) => {
+			//if no manufacturer is selected then all manufacturers have value false
+			manufacturerWithValues = loadedManufacturers.map((manufacturer) => {
 				return { ...manufacturer, value: false };
 			});
 		} else {
-			manufacturerWithValues = await loadedManufacturers.map((manufacturer) => {
+			manufacturerWithValues = loadedManufacturers.map((manufacturer) => {
+				// checks if manufacturer is in selected
 				if (
 					selectedManufacturers.current.find((item) => item === manufacturer.id)
 				) {
@@ -50,14 +52,15 @@ export default function ManufacturersSelector({ loadedManufacturers }) {
 
 	return (
 		<>
-			{manufacturers.map((manufacturer, index) => (
-				<CheckBox
-					key={manufacturer.name}
-					name={manufacturer.name}
-					checked={manufacturer.value}
-					onChange={() => onChange(index)}
-				/>
-			))}
+			{manufacturers &&
+				manufacturers.map((manufacturer, index) => (
+					<CheckBox
+						key={manufacturer.name}
+						name={manufacturer.name}
+						checked={manufacturer.value}
+						onChange={() => onChange(index)}
+					/>
+				))}
 		</>
 	);
 }

@@ -73,31 +73,34 @@ class PagesGateway
 
     public function update(array $data, $id)
     {
-        $new_image_name = "";
-        if (isset($data["prev_image"])) {
-            if (file_exists("{$this->path}/images/pages/{$data["prev_image"]}")) {
-                unlink("{$this->path}/images/pages/{$data["prev_image"]}");
-            }
-            $image_name = $this->utils->createImage($data["image"], 1200, "/images/pages");
-            $new_image_name = $image_name;
-        }
-
-        $sql = "UPDATE pages SET title = :title, description = :description, body = :body, image = :image WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute([
+        $sql = "UPDATE pages SET title = :title, description = :description, body = :body";
+        $sql_values = [
             'title' => isset($data["title"]) ? $data["title"] : "",
             'description' => isset($data["description"]) ? $data["description"] : "",
             'body' => $data["body"],
-            'image' => isset($data["prev_image"]) ? $new_image_name : $data["image"],
-            'id' => $id
-        ]);
+            'id' => $id,
+        ];
 
-        if (isset($data["inner_images"])) {
-            $innerImages = $data["inner_images"];
-            foreach ($innerImages as $image) {
-                $this->createImage($image["name"], $image["file"], $id, "inner");
+        if (!empty($data["prev_image"])) {
+            if (file_exists("{$this->path}/images/pages/{$data["prev_image"]}")) {
+                unlink("{$this->path}/images/pages/{$data["prev_image"]}");
             }
+        }
+
+        if (!empty($data["image"])) {
+            $image_name = $this->utils->createImage($data["image"], 1200, "/images/pages");
+            $sql .= ", image = :image";
+            $sql_values['image'] = $image_name;
+        }
+
+        $sql .= " WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute($sql_values);
+
+        $innerImages = $data["inner_images"];
+        foreach ($innerImages as $image) {
+            $this->createImage($image["name"], $image["file"], $id);
         }
 
         if (isset($data["deleted_images"])) {

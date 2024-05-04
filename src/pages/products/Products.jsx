@@ -1,41 +1,41 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PlusButton from "../../components/basic/PlusButton";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 import { ProductsFilterValuesProvider } from "../../context/ProductsFilterValuesContext";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { useGetAll } from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
 import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 import Filter from "./Filter";
 import FilterBasicController from "./FilterBasicController";
 import Manufacturers from "./Manufacturers";
+
 import css from "./Products.module.css";
 
 export default function Products() {
-	const { t } = useTranslation("products");
+	const { t } = useTranslation("products", "errors");
 	const navigate = useNavigate();
-	const { getAll, remove } = useBasicApiFunctions();
+
+	const location = useLocation();
+	const { remove } = useBasicApiFunctions();
 	const { setAlert } = useInteraction();
 
-	const [products, setProducts] = useState();
 	const [categories, setCategories] = useState(null);
 	const [manufacturers, setManufacturers] = useState(null);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-	const { refetch } = useQuery({
-		queryKey: ["products"],
-		queryFn: async () => {
-			const data = await getAll("products");
-			setProducts(data);
-			return data;
-		},
-	});
+	const { data: products, refetch } = useGetAll(
+		`${location.pathname.slice(1)}${location.search}`,
+		null,
+		["products", location],
+		t("errors:errorFetchProducts")
+	);
 
 	function deleteProductHandler(id, name) {
 		setAlert({
@@ -68,7 +68,7 @@ export default function Products() {
 				/>
 				<FilterBasicController
 					showFilter={() => setIsFilterVisible(true)}
-					setState={setProducts}
+					refetch={refetch}
 				/>
 				<section className={`${css.products_list} no-section`}>
 					{products?.length > 0 ? (
@@ -97,7 +97,6 @@ export default function Products() {
 				<AnimatePresence>
 					{isFilterVisible && manufacturers && (
 						<Filter
-							setProducts={setProducts}
 							setVisible={setIsFilterVisible}
 							manufacturers={manufacturers}
 							categories={categories}
@@ -105,7 +104,6 @@ export default function Products() {
 					)}
 				</AnimatePresence>
 			</ProductsFilterValuesProvider>
-
 			<PlusButton onClick={() => navigate(`/new-product/`)} />
 		</div>
 	);

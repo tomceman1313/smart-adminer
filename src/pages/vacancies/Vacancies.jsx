@@ -12,7 +12,7 @@ import css from "./Vacancies.module.css";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 
 export default function Vacancies() {
-	const { t } = useTranslation("vacancies");
+	const { t } = useTranslation("vacancies", "errors");
 	const navigate = useNavigate();
 	const { getAll, remove } = useBasicApiFunctions();
 
@@ -24,6 +24,7 @@ export default function Vacancies() {
 			const data = await getAll("vacancies");
 			return data;
 		},
+		meta: { errorMessage: t("errors:errorFetchVacancies") },
 	});
 
 	function openVacancy(id) {

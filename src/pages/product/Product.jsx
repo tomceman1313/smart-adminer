@@ -31,6 +31,7 @@ import Variants from "./Variants";
 import css from "./styles/Product.module.css";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 
+//TODO: usequery refactor
 export default function Product() {
 	const { t } = useTranslation("products");
 	const { id } = useParams();

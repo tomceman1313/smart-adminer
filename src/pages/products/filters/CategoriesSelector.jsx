@@ -50,14 +50,15 @@ export default function CategoriesSelector({ loadedCategories }) {
 
 	return (
 		<>
-			{categories.map((category, index) => (
-				<CheckBox
-					key={category.name}
-					name={category.name}
-					checked={category.value}
-					onChange={() => onChange(index)}
-				/>
-			))}
+			{categories &&
+				categories.map((category, index) => (
+					<CheckBox
+						key={category.name}
+						name={category.name}
+						checked={category.value}
+						onChange={() => onChange(index)}
+					/>
+				))}
 		</>
 	);
 }

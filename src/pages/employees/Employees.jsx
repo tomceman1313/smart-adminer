@@ -13,18 +13,18 @@ import Employee from "./Employee";
 import EmployeeBasicInfo from "./EmployeeBasicInfo";
 import css from "./Employees.module.css";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
+import { getDepartments } from "../../modules/ApiEmployees";
 
 export default function Employees() {
 	const auth = useAuth();
 	const { getAll, remove, getByCategory } = useBasicApiFunctions();
 	const { searchByName } = useItemsControllerApiFunctions();
 	const { setAlert } = useInteraction();
-	const { t } = useTranslation("employees");
+	const { t } = useTranslation("employees", "errors");
 
 	const allEmployees = useRef([]);
 
 	const [employee, setEmployee] = useState(null);
-	const [departments, setDepartments] = useState(null);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 
 	const [searchedName, setSearchedName] = useState("");
@@ -45,6 +45,20 @@ export default function Employees() {
 				allEmployees.current = data;
 			}
 			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchEmployees"),
+		},
+	});
+
+	const { data: departments } = useQuery({
+		queryKey: ["departments"],
+		queryFn: async () => {
+			const data = await getDepartments();
+			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchDepartments"),
 		},
 	});
 
@@ -77,8 +91,6 @@ export default function Employees() {
 			</Helmet>
 			<Departments
 				departments={departments}
-				setDepartments={setDepartments}
-				refreshAllData={refetch}
 				filterEmployeesByDepartment={filterEmployeesByDepartment}
 			/>
 

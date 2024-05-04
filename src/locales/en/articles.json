@@ -26,5 +26,6 @@
 	"buttonDelete": "Delete",
 	"buttonPreview": "Article preview",
 
+	"messageEmptyArticleBody": "Article body is empty",
 	"noDataFound": "No articles have been found"
 }

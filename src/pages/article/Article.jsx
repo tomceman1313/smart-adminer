@@ -33,11 +33,11 @@ import { useTranslation } from "react-i18next";
 
 export default function Article() {
 	const navigation = useNavigate();
-	const { t } = useTranslation("articles");
+	const { t } = useTranslation("articles", "errors");
 	const { id } = useParams();
 	const { create, edit, get, remove } = useBasicApiFunctions();
 	const { getCategories } = useCategoriesApi();
-	const { setMessage, setAlert } = useInteraction();
+	const { setAlert } = useInteraction();
 	const { register, handleSubmit, getValues, reset } = useForm();
 	const queryClient = useQueryClient();
 
@@ -61,6 +61,9 @@ export default function Article() {
 			originalImages.current = checkInnerImage(data.body);
 			setUnderArticleImages(data.images.length === 0 ? null : data.images);
 			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchArticle"),
 		},
 	});
 
@@ -93,7 +96,7 @@ export default function Article() {
 			article,
 			body,
 			originalImages,
-			setMessage
+			"articles"
 		);
 		if (!formattedData) {
 			return;

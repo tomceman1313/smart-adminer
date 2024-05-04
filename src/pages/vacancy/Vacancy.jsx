@@ -25,7 +25,7 @@ import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Vacancy.module.css";
 
 export default function Vacancy() {
-	const { t } = useTranslation("vacancies");
+	const { t } = useTranslation("vacancies", "errors");
 	const { get, create, edit, remove } = useBasicApiFunctions();
 	const { id } = useParams();
 	const location = useLocation();
@@ -53,6 +53,9 @@ export default function Vacancy() {
 				reset();
 				setDetailText("");
 			}
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchVacancy"),
 		},
 	});
 

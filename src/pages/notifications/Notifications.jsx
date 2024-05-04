@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
@@ -7,25 +8,26 @@ import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { isActive } from "../../modules/BasicFunctions";
 import EditNotification from "./EditNotification";
 import NewNotification from "./NewNotification";
+
 import css from "./Notifications.module.css";
 
 const Notifications = () => {
-	const { t } = useTranslation("notifications");
+	const { t } = useTranslation("notifications", "errors");
 	const { getAll } = useBasicApiFunctions();
 
-	const [notifications, setNotifications] = useState(null);
 	const [editNotification, setEditNotification] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
-	useEffect(() => {
-		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	async function loadData() {
-		const data = await getAll("notifications");
-		setNotifications(data);
-	}
+	const { data: notifications, refetch } = useQuery({
+		queryKey: ["notifications"],
+		queryFn: async () => {
+			const data = await getAll("notifications");
+			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchNotifications"),
+		},
+	});
 
 	const showCreateNotification = () => {
 		setShowAddItemCont(true);
@@ -70,13 +72,13 @@ const Notifications = () => {
 
 				<EditNotification
 					notification={editNotification}
-					loadData={loadData}
+					loadData={refetch}
 					setEditNotification={setEditNotification}
 				/>
 				<AnimatePresence>
 					{showAddItemCont && (
 						<NewNotification
-							loadData={loadData}
+							loadData={refetch}
 							setShowCreateNotification={setShowAddItemCont}
 						/>
 					)}

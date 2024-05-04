@@ -12,7 +12,7 @@ import NewPriceListItem from "./NewPriceListItem";
 import css from "./Pricelist.module.css";
 
 export default function Pricelist() {
-	const { t } = useTranslation("priceList");
+	const { t } = useTranslation("priceList", "errors");
 	const { getAll } = useBasicApiFunctions();
 
 	const [events, setEvents] = useState([]);
@@ -28,7 +28,7 @@ export default function Pricelist() {
 			return data;
 		},
 		meta: {
-			errorMessage: t("errorFetchPages"),
+			errorMessage: t("errors:errorFetchPriceList"),
 		},
 	});
 

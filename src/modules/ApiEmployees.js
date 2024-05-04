@@ -1,4 +1,5 @@
 import { BASE_URL } from "./ApiFunctions";
+import toast from "react-hot-toast";
 
 export async function getDepartments() {
 	const response = await fetch(`${BASE_URL}/api/employees/departments`, {
@@ -13,7 +14,7 @@ export async function getDepartments() {
 	return data;
 }
 
-export async function createDepartment(data, auth, setMessage, positiveText) {
+export async function createDepartment(data, auth, positiveText) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments`, {
@@ -34,10 +35,10 @@ export async function createDepartment(data, auth, setMessage, positiveText) {
 	const responseData = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: positiveText });
+	toast.success(positiveText);
 }
 
-export async function updateDepartment(data, auth, setMessage, positiveText) {
+export async function updateDepartment(data, auth, positiveText) {
 	const bearer = `Bearer ` + auth.userInfo.token;
 
 	const response = await fetch(
@@ -61,10 +62,10 @@ export async function updateDepartment(data, auth, setMessage, positiveText) {
 	const responseData = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: responseData.token });
-	setMessage({ action: "success", text: positiveText });
+	toast.success(positiveText);
 }
 
-export async function removeDepartment(id, auth, setMessage, positiveText) {
+export async function removeDepartment(id, auth, positiveText) {
 	const bearer = `Bearer ${auth.userInfo.token}`;
 
 	const response = await fetch(`${BASE_URL}/api/employees/departments/${id}`, {
@@ -84,5 +85,5 @@ export async function removeDepartment(id, auth, setMessage, positiveText) {
 	const data = await response.json();
 
 	auth.setUserInfo({ ...auth.userInfo, token: data.token });
-	setMessage({ action: "success", text: positiveText });
+	toast.success(positiveText);
 }

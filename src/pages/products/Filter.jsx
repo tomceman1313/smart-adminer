@@ -1,22 +1,16 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
-import { filterProducts } from "../../modules/ApiProducts";
 
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import useProductFilterValues from "../../hooks/useProductFilterValues";
 import css from "./Filter.module.css";
-import ManufacturersSelector from "./filters/ManufacturersSelector";
 import CategoriesSelector from "./filters/CategoriesSelector";
+import ManufacturersSelector from "./filters/ManufacturersSelector";
 import ProductNameSearchBar from "./filters/ProductNameSearchBar";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
-export default function Filter({
-	setProducts,
-	setVisible,
-	manufacturers,
-	categories,
-}) {
+export default function Filter({ setVisible, manufacturers, categories }) {
 	const { t } = useTranslation("products");
 	const {
 		selectedManufacturers,
@@ -25,19 +19,9 @@ export default function Filter({
 		selectedInStock,
 	} = useProductFilterValues();
 
-	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 
-	console.log(searchParams.get("categories"));
-
-	async function loadFilteredData() {
-		const filterValues = {
-			manufacturers: selectedManufacturers.current,
-			categories: selectedCategories.current,
-			price_range: selectedPriceRange.current,
-			in_stock: selectedInStock.current,
-		};
-		const filterData = await filterProducts(filterValues);
+	async function filterProductsHandler() {
 		navigate(
 			`/products/?categories=${encodeURIComponent(
 				JSON.stringify(selectedCategories.current)
@@ -45,7 +29,6 @@ export default function Filter({
 				JSON.stringify(selectedManufacturers.current)
 			)}`
 		);
-		setProducts(filterData);
 	}
 
 	async function resetFilter() {
@@ -53,10 +36,7 @@ export default function Filter({
 		selectedCategories.current = [];
 		selectedPriceRange.current = [];
 		selectedInStock.current = [];
-
-		const filterData = await filterProducts([]);
-		setProducts(filterData);
-		setVisible();
+		navigate(`/products`);
 	}
 
 	return (
@@ -79,7 +59,7 @@ export default function Filter({
 			<div className={css.scrollable}>
 				<h3>{t("headerSearchByName")}</h3>
 				<div className={`${css.search_bar} ${css.filter_param}`}>
-					<ProductNameSearchBar setProducts={setProducts} />
+					<ProductNameSearchBar />
 				</div>
 
 				{manufacturers?.length > 0 && (
@@ -102,7 +82,7 @@ export default function Filter({
 			</div>
 
 			<div className={css.buttons_section}>
-				<button className="blue_button" onClick={loadFilteredData}>
+				<button className="blue_button" onClick={filterProductsHandler}>
 					{t("buttonFilter")}
 				</button>
 				<button onClick={resetFilter}>{t("buttonReset")}</button>

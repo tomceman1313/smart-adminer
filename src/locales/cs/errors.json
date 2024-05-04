@@ -7,7 +7,29 @@
 	"buttonRedirect404": "Přejít na přehled",
 	"buttonRedirect503": "Znovu načíst",
 
-	"errorFetchCategories": "Kategorie se nepodařilo načíst",
 	"error401": "Neověřený uživatel",
-	"error403": "Vaše role nemá potřebná práva k vykonání této operace"
+	"error403": "Vaše role nemá potřebná práva k vykonání této operace",
+
+	"errorFetchCategories": "Kategorie se nepodařilo načíst",
+	"errorFetchPage": "Stránku se nepodařilo načíst",
+	"errorFetchPages": "Stránky se nepodařilo načíst",
+	"errorFetchUsers": "Uživatelské účty se nepodařilo načíst",
+	"errorFetchRoles": "Role se nepodařilo načíst",
+	"errorFetchEmployees": "Zaměstnance se nepodařilo načíst",
+	"errorFetchDepartments": "Oddělení se nepodařilo načíst",
+	"errorFetchVacancies": "Inzeráty se nepodařilo načíst",
+	"errorFetchVacancy": "Inzerát se nepodařilo načíst",
+	"errorFetchGallery": "Obrázky se nepodařilo načíst",
+	"errorFetchDocuments": "Dokumenty se nepodařilo načíst",
+	"errorFetchPriceList": "Ceník se nepodařilo načíst",
+	"errorFetchNotifications": "Upozornění se nepodařilo načíst",
+	"errorFetchArticles": "Články se nepodařilo načíst",
+	"errorFetchArticle": "Článek se nepodařilo načíst",
+	"errorFetchEvents": "Události se nepodařilo načíst",
+	"errorFetchEvent": "Událost se nepodařilo načíst",
+	"errorFetchProducts": "Produkty se nepodařilo načíst",
+	"errorFetchManufacturers": "Výrobce se nepodařilo načíst",
+	"errorFetchProduct": "Produkt se nepodařilo načíst",
+	"errorFetchOrder": "Objednávku se nepodařilo načíst",
+	"errorFetchOrders": "Objednávky se nepodařilo načíst"
 }

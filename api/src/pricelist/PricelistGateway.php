@@ -9,7 +9,7 @@ class PriceListGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM pricelist";
+        $sql = "SELECT * FROM pricelist ORDER BY name";
         $stmt = $this->conn->query($sql);
 
         $data = [];

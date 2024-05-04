@@ -3,7 +3,7 @@ import {
 	faMagnifyingGlass,
 	faTableColumns,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -27,18 +27,14 @@ export default function Page() {
 	const { name } = useParams();
 	const { getByName, edit } = useBasicApiFunctions();
 	const { register, handleSubmit } = useForm();
-
-	const [body, setBody] = useState("");
 	const originalImages = useRef([]);
 
-	const { data: page } = useQuery({
+	const [body, setBody] = useState("");
+
+	const { data: page, refetch } = useQuery({
 		queryKey: ["pages", name],
 		queryFn: async () => {
 			const _page = await getByName("pages", name);
-			if (!!_page.config.rich_editor) {
-				setBody(_page.body);
-				originalImages.current = checkInnerImage(_page.body);
-			}
 			return _page;
 		},
 		meta: {
@@ -46,13 +42,19 @@ export default function Page() {
 		},
 	});
 
+	useEffect(() => {
+		if (page?.body) {
+			originalImages.current = checkInnerImage(page.body);
+		}
+	}, [page]);
+
 	async function onSubmit(data) {
 		if (data.image?.[0]) {
 			const base64 = await convertBase64(data.image[0]);
 			data.image = base64;
-			data.prev_image = page.image;
+			data.prev_image = page.image ? page.image : "";
 		} else {
-			data.image = page.image;
+			data.image = "";
 		}
 
 		if (!data.body) {
@@ -61,9 +63,10 @@ export default function Page() {
 			data.inner_images = arrayInsideImages;
 			data.deleted_images = findDeletedImages(body, originalImages);
 		}
-
 		data.id = page.id;
+		console.log(data);
 		await edit("pages", data, t("positiveTextPageUpdated"));
+		refetch();
 	}
 
 	return (
@@ -74,8 +77,8 @@ export default function Page() {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				{page ? (
 					<section className={css.page}>
-						<h2>{page.page_name}</h2>
-						<p>{page.info}</p>
+						<h2 className={css.title}>{page.page_name}</h2>
+						<p className={css.info}>{page.info}</p>
 						{!!page.config.title && (
 							<InputBox
 								placeholder={t("placeholderTitle")}
@@ -108,7 +111,7 @@ export default function Page() {
 						)}
 						{!!page.config.rich_editor ? (
 							<TextEditor
-								value={body}
+								value={page.body}
 								setValue={setBody}
 								isLiteVersion={false}
 								headers={[1, 2, 3, 4, 5]}

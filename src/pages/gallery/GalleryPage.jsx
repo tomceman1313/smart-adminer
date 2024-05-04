@@ -12,7 +12,7 @@ import NewPicture from "./NewPicture";
 import css from "./css/Gallery.module.css";
 
 export default function GalleryPage() {
-	const { t } = useTranslation("gallery");
+	const { t } = useTranslation("gallery", "errors");
 	const { edit, getAll, getByCategory, remove } = useBasicApiFunctions();
 	const { multipleDelete } = useItemsControllerApiFunctions();
 	const { page } = useParams();
@@ -40,6 +40,9 @@ export default function GalleryPage() {
 			}
 
 			return data;
+		},
+		meta: {
+			errorMessage: t("errors:errorFetchGallery"),
 		},
 	});
 

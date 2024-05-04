@@ -11,7 +11,25 @@
 	"error403": "Your role has no access to this operation",
 
 	"errorFetchCategories": "Failed to fetch categories",
-	"errorFetchOrder": "Failed to load order",
 	"errorFetchPage": "Failed to load page",
-	"errorFetchPages": "Failed to load pages"
+	"errorFetchPages": "Failed to load pages",
+	"errorFetchUsers": "Failed to load users",
+	"errorFetchRoles": "Failed to load roles",
+	"errorFetchEmployees": "Failed to load employees",
+	"errorFetchDepartments": "Failed to load departments",
+	"errorFetchVacancies": "Failed to load vacancies",
+	"errorFetchVacancy": "Failed to load job advertisement",
+	"errorFetchGallery": "Failed to load images",
+	"errorFetchDocuments": "Failed to load documents",
+	"errorFetchPriceList": "Failed to load price list",
+	"errorFetchNotifications": "Failed to load notifications",
+	"errorFetchArticles": "Failed to load articles",
+	"errorFetchArticle": "Failed to load article",
+	"errorFetchEvents": "Failed to load events",
+	"errorFetchEvent": "Failed to load event",
+	"errorFetchProducts": "Failed to load products",
+	"errorFetchManufacturers": "Failed to load manufacturers",
+	"errorFetchProduct": "Failed to load product",
+	"errorFetchOrder": "Failed to load order",
+	"errorFetchOrders": "Failed to load orders"
 }

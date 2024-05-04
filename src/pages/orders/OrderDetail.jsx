@@ -32,7 +32,7 @@ export default function OrderDetail({
 	statusCodes,
 	reloadData,
 }) {
-	const { t } = useTranslation("orders");
+	const { t } = useTranslation("orders", "errors");
 	const { get, edit, remove } = useBasicApiFunctions();
 	const { setAlert } = useInteraction();
 
@@ -50,7 +50,10 @@ export default function OrderDetail({
 		queryFn: async () => {
 			const _order = await get("orders", id);
 			_order.deleted_products = [];
-			setProducts(_order.ordered_products);
+			setProducts({
+				orderedProducts: _order.ordered_products,
+				deletedProducts: [],
+			});
 
 			setValue("order_date", makeDateFormat(_order.order_date, "str"));
 			setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
@@ -63,14 +66,14 @@ export default function OrderDetail({
 			return _order;
 		},
 		meta: {
-			errorMessage: t("errorFetchOrder"),
+			errorMessage: t("errors:errorFetchOrder"),
 		},
 	});
 
 	async function onSubmit(data) {
 		data.id = order.id;
-		data.ordered_products = order.ordered_products;
-		data.deleted_products = order.deleted_products;
+		data.ordered_products = products.orderedProducts;
+		data.deleted_products = products.deletedProducts;
 
 		data.order_date = makeDateFormat(data.order_date);
 

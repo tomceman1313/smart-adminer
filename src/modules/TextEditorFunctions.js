@@ -12,7 +12,10 @@ export async function formatBody(body, arrayInsideImages, location) {
 			const fileFormat = await getImageFormat(replacedPart[0]);
 			const id = parseInt(Date.now() + Math.random() * 1000);
 			let imgSrc = `${publicPath}/images/${location}/innerimage${id}.${fileFormat}`;
-			arrayInsideImages.push({ name: `innerimage${id}`, file: replacedPart[0] });
+			arrayInsideImages.push({
+				name: `innerimage${id}`,
+				file: replacedPart[0],
+			});
 			newBody = newBody.replace(replacedPart[0], imgSrc);
 		} else {
 			return newBody;
@@ -32,6 +35,7 @@ export function checkInnerImage(sourceString) {
 
 export function findDeletedImages(body, originalImages) {
 	const bodyImages = checkInnerImage(body);
+	console.log(originalImages);
 	if (originalImages.current.length !== bodyImages.length) {
 		// eslint-disable-next-line array-callback-return
 		return originalImages.current.filter((el) => {

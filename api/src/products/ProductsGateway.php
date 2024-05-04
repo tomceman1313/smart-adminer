@@ -223,23 +223,23 @@ class ProductsGateway
         return $data;
     }
 
-    public function filterProducts($filterData): array
+    public function filterProducts($categories, $manufacturers): array
     {
         $query = "SELECT products.* FROM products INNER JOIN product_categories ON product_categories.product_id = products.id";
 
         $sql = [];
         $values = [];
 
-        if (isset($filterData["manufacturers"]) && count($filterData["manufacturers"]) > 0) {
-            $in = join(',', array_fill(0, count($filterData["manufacturers"]), '?'));
+        if (count($manufacturers) > 0) {
+            $in = join(',', array_fill(0, count($manufacturers), '?'));
             $sql[] = " manufacturer_id IN ( $in )";
-            array_push($values, ...$filterData["manufacturers"]);
+            array_push($values, ...$manufacturers);
         }
 
-        if (isset($filterData["categories"]) && count($filterData["categories"]) > 0) {
-            $in = join(',', array_fill(0, count($filterData["categories"]), '?'));
+        if (count($categories) > 0) {
+            $in = join(',', array_fill(0, count($categories), '?'));
             $sql[] = " product_categories.category_id IN ( $in )";
-            array_push($values, ...$filterData["categories"]);
+            array_push($values, ...$categories);
         }
 
         if ($sql) {
@@ -395,16 +395,24 @@ class ProductsGateway
 
         $variants = $data["variants"];
         foreach ($variants as $var) {
-            $sqlVariant = "INSERT INTO product_variant (product_id, name, price, in_stock, v_order) VALUES (:product_id, :name, :price, :in_stock, :v_order)";
-            $stmt = $this->conn->prepare($sqlVariant);
-
-            $stmt->execute([
+            $sql_values = [
                 'product_id' => $data["id"],
                 'name' => $var["name"],
                 'price' => $var["price"],
                 'in_stock' => $var["in_stock"],
                 'v_order' => $var["v_order"],
-            ]);
+            ];
+
+            if (isset($var["id"])) {
+                $sql_values["id"] = $var["id"];
+                $sqlVariant = "INSERT INTO product_variant (id, product_id, name, price, in_stock, v_order) VALUES (:id, :product_id, :name, :price, :in_stock, :v_order)";
+            } else {
+                $sqlVariant = "INSERT INTO product_variant (product_id, name, price, in_stock, v_order) VALUES (:product_id, :name, :price, :in_stock, :v_order)";
+            }
+
+            $stmt = $this->conn->prepare($sqlVariant);
+
+            $stmt->execute($sql_values);
             $variant_id = $this->conn->lastInsertId();
 
             foreach ($var["parameters"]["params"] as $param) {
