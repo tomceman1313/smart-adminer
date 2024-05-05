@@ -1,31 +1,28 @@
 import {
-	faHashtag,
 	faHeading,
 	faImage,
 	faQuoteRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import InputBox from "../../components/basic/InputBox";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { convertBase64, makeDate } from "../../modules/BasicFunctions";
-import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import cssBasic from "../../components/styles/Basic.module.css";
+import InputBox from "../../components/basic/InputBox";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import AddMultiplePictures from "./AddMultiplePictures";
 
-import css from "./css/Gallery.module.css";
+import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 
-export default function NewPicture({ reloadData, categories }) {
+export default function NewPicture({ categories }) {
 	const { t } = useTranslation("gallery");
 	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
 	const [pickedCategories, setPickedCategories] = useState([]);
-	const { register, handleSubmit, reset, setValue } = useForm();
+	const { register, handleSubmit, reset } = useForm();
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createImage, status } = useMutation({
@@ -53,30 +50,6 @@ export default function NewPicture({ reloadData, categories }) {
 		},
 	});
 
-	const chooseCategory = (e) => {
-		const name = categories.filter(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		const alreadyIn = pickedCategories.find(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		setValue("category_id", "default");
-		if (alreadyIn) {
-			return;
-		}
-
-		if (name.length !== 0) {
-			setPickedCategories((prev) => [...prev, name[0]]);
-		}
-	};
-
-	const removeFromPicked = (e) => {
-		const removed = pickedCategories.filter(
-			(item) => item.id !== parseInt(e.target.id)
-		);
-		setPickedCategories(removed);
-	};
-
 	const showAddMultiplePictures = () => {
 		setAddMultiplePictures(true);
 	};
@@ -101,25 +74,12 @@ export default function NewPicture({ reloadData, categories }) {
 						icon={faQuoteRight}
 					/>
 
-					<div className={cssBasic.input_box}>
-						<select
-							defaultValue={"default"}
-							{...register("category_id")}
-							onChange={chooseCategory}
-							required
-						>
-							<option value="default" disabled>
-								{t("placeholderCategorySelect")}
-							</option>
-							{categories &&
-								categories.map((el) => (
-									<option key={el.id} value={el.id}>
-										{el.name}
-									</option>
-								))}
-						</select>
-						<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-					</div>
+					<CategorySelector
+						categories={categories}
+						selectedCategories={pickedCategories}
+						setSelectedCategories={setPickedCategories}
+						placeholder={t("placeholderCategory")}
+					/>
 
 					<InputBox
 						register={register}
@@ -129,15 +89,6 @@ export default function NewPicture({ reloadData, categories }) {
 						isRequired={true}
 						accept="image/*"
 					/>
-
-					<ul className={css.picked_categories}>
-						{pickedCategories &&
-							pickedCategories.map((el) => (
-								<li key={el.id} id={el.id} onClick={removeFromPicked}>
-									{el.name}
-								</li>
-							))}
-					</ul>
 
 					<div style={{ display: "flex" }}>
 						<SubmitButton status={status} value={t("buttonCreate")} />

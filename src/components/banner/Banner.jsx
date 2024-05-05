@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import useViewport from "../../hooks/useViewport";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import useViewport from "../../hooks/useViewport";
 import { PAGES_BANNER_INFO } from "./bannerInfo";
 
-import css from "./Banner.module.css";
 import { useTranslation } from "react-i18next";
+import css from "./Banner.module.css";
 
 export default function Banner() {
 	const location = useLocation();

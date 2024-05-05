@@ -1,23 +1,28 @@
 import {
 	faCopyright,
-	faHashtag,
 	faInfo,
 	faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InputBox from "../../components/basic/InputBox";
+import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import Select from "../../components/basic/select/Select";
+import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import Switch from "../../components/basic/switch/Switch";
-import cssBasic from "../../components/styles/Basic.module.css";
+import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import {
+	useCreate,
+	useDelete,
+	useGet,
+	useGetAll,
+	useUpdate,
+} from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
-import { getCategories } from "../../modules/ApiCategories";
-import { getManufacturers } from "../../modules/ApiProductManufacturers";
 import { convertBase64 } from "../../modules/BasicFunctions";
 import {
 	checkInnerImage,
@@ -29,61 +34,94 @@ import Images from "./Images";
 import Parameters from "./Parameters";
 import Variants from "./Variants";
 import css from "./styles/Product.module.css";
-import warningToast from "../../components/common/warning-toast/WarningToast";
 
-//TODO: usequery refactor
 export default function Product() {
-	const { t } = useTranslation("products");
+	const { t } = useTranslation("products", "errors");
 	const { id } = useParams();
-	let location = useLocation();
 	const navigate = useNavigate();
-	const { get, create, edit, remove, checkNameAvailability } =
-		useBasicApiFunctions();
+
+	const { checkNameAvailability } = useBasicApiFunctions();
 	const { setAlert } = useInteraction();
 
-	const [categories, setCategories] = useState(null);
-	const [manufacturers, setManufacturers] = useState(null);
-	const [pickedCategories, setPickedCategories] = useState([]);
+	const [selectedCategories, setSelectedCategories] = useState([]);
 	const [variants, setVariants] = useState([]);
 	const [parameters, setParameters] = useState([]);
 	const [detailText, setDetailText] = useState("");
-	const [product, setProduct] = useState(null);
+	//const [product, setProduct] = useState(null);
 	const originalImages = useRef([]);
 	const [images, setImages] = useState(null);
 	const { register, handleSubmit, setValue, reset } = useForm();
 
-	useEffect(() => {
-		getCategories(setCategories, "products");
-		getManufacturers(setManufacturers);
+	const { data: product } = useGet(
+		"products",
+		id,
+		["product"],
+		t("errors:errorFetchProduct"),
+		!!id
+	);
 
-		if (id) {
+	const { data: categories } = useGetAll(
+		"products/categories",
+		null,
+		["categories"],
+		t("errors:errorFetchCategories")
+	);
+
+	const { data: manufacturers } = useGetAll(
+		"products/manufacturers",
+		null,
+		["manufacturers"],
+		t("errors:errorFetchManufacturers")
+	);
+
+	const { mutateAsync: create } = useCreate(
+		"products",
+		t("positiveTextProductUpdated"),
+		t("errors:errorCRUDOperation"),
+		["product"]
+	);
+
+	const { mutateAsync: update, status } = useUpdate(
+		"products",
+		t("positiveTextProductUpdated"),
+		t("errors:errorCRUDOperation"),
+		["product"]
+	);
+
+	const { mutateAsync: remove } = useDelete(
+		"products",
+		t("positiveTextProductUpdated"),
+		t("errors:errorCRUDOperation"),
+		null
+	);
+
+	useEffect(() => {
+		if (id && product) {
 			setData();
 		} else {
 			reset();
 			setVariants([]);
 			setParameters([]);
 			setDetailText("");
-			setPickedCategories([]);
+			setSelectedCategories([]);
 			setImages(null);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [location]);
+	}, [id, product]);
 
 	async function setData() {
-		const productData = await get("products", id);
-		setProduct(productData);
-		setValue("manufacturer_id", productData.manufacturer_id);
-		setValue("name", productData.name);
-		setValue("description", productData.description);
-		setValue("active", productData.active);
+		setValue("manufacturer_id", product.manufacturer_id);
+		setValue("name", product.name);
+		setValue("description", product.description);
+		setValue("active", product.active);
 
-		setDetailText(productData.detail);
-		setPickedCategories(productData.categories);
-		setVariants(productData.variants);
-		setParameters(productData.parameters);
+		setDetailText(product.detail);
+		setSelectedCategories(product.categories);
+		setVariants(product.variants);
+		setParameters(product.parameters);
 
-		originalImages.current = checkInnerImage(productData.detail);
-		setImages(productData.images.filter((img) => img.i_order >= 0));
+		originalImages.current = checkInnerImage(product.detail);
+		setImages(product.images.filter((img) => img.i_order >= 0));
 	}
 
 	async function onSubmit(data) {
@@ -119,7 +157,7 @@ export default function Product() {
 		}
 		data.new_images = imagesArray;
 
-		data.categories = pickedCategories;
+		data.categories = selectedCategories;
 		if (id) {
 			if (product.name !== data.name && !isAvailable) {
 				warningToast(t("messageProductExists"));
@@ -128,7 +166,7 @@ export default function Product() {
 			data.id = id;
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
-			await edit("products", data, t("positiveTextProductUpdated"));
+			await update(data);
 			reset();
 			setData();
 		} else {
@@ -136,44 +174,13 @@ export default function Product() {
 				warningToast(t("messageProductExists"));
 				return;
 			}
-			await create("products", data, t("positiveTextProductCreated"));
+			await create(data);
 			navigate(`/products`);
 		}
 	}
 
-	/**
-	 * * Adds selected category to array of picked
-	 * ? Triggered when user choose category from <select>
-	 * @param {event} e
-	 * @returns
-	 */
-	function chooseCategory(e) {
-		//gets name from categories via id
-		const name = categories.filter(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		const alreadyIn = pickedCategories.find(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		setValue("categories", "default");
-		if (alreadyIn) {
-			return;
-		}
-
-		if (name.length !== 0) {
-			setPickedCategories((prev) => [...prev, name[0]]);
-		}
-	}
-
-	function removeFromPicked(e) {
-		const removed = pickedCategories.filter(
-			(item) => item.id !== parseInt(e.target.id)
-		);
-		setPickedCategories(removed);
-	}
-
 	async function deleteHandler() {
-		await remove("products", id, t("positiveTextProductDeleted"));
+		await remove(id);
 		navigate(`/products`);
 	}
 
@@ -194,7 +201,7 @@ export default function Product() {
 			</Helmet>
 			{manufacturers ? (
 				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
-					<section className={css.basic_info}>
+					<section className={`${css.basic_info} half-section`}>
 						<h2>{t("headerBasicInfo")}</h2>
 						<InputBox
 							placeholder={t("placeholderTitle")}
@@ -220,33 +227,12 @@ export default function Product() {
 							placeholderValue={t("placeholderManufacturer")}
 						/>
 
-						<div className={cssBasic.input_box}>
-							<select
-								defaultValue={"default"}
-								{...register("categories")}
-								onChange={chooseCategory}
-							>
-								<option value="default" disabled>
-									{t("placeholderCategory")}
-								</option>
-								{categories &&
-									categories.map((el) => (
-										<option key={el.id} value={el.id}>
-											{el.name}
-										</option>
-									))}
-							</select>
-							<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-						</div>
-
-						<ul className={css.picked_categories}>
-							{pickedCategories &&
-								pickedCategories.map((el) => (
-									<li key={el.id} id={el.id} onClick={removeFromPicked}>
-										{el.name}
-									</li>
-								))}
-						</ul>
+						<CategorySelector
+							categories={categories}
+							selectedCategories={selectedCategories}
+							setSelectedCategories={setSelectedCategories}
+							placeholder={t("placeholderCategory")}
+						/>
 						<Switch
 							name="active"
 							register={register}
@@ -277,7 +263,10 @@ export default function Product() {
 					<section className={css.images}>
 						<Images images={images} setImages={setImages} register={register} />
 						<div className={css.control_box}>
-							<button>{id ? t("buttonSave") : t("buttonCreate")}</button>
+							<SubmitButton
+								status={status}
+								value={id ? t("buttonSave") : t("buttonCreate")}
+							/>
 							{/* <button type="button" className="blue_button">
 					<FontAwesomeIcon className={css.btn_icon} icon={faEye} />
 					Náhled produktu

@@ -5,7 +5,7 @@ import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import ArticleImage from "./ArticleImage";
 
 import css from "./Article.module.css";
-
+//TODO: Kontrola toastu při smazání obrázku
 const ImageList = ({ images, setImages, location }) => {
 	const { id } = useParams();
 	const { deleteImage } = useBasicApiFunctions();

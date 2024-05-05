@@ -7,6 +7,7 @@ class ManufacturerGateway
         $this->conn = $database->getConnection();
         include(dirname(__FILE__) . '/../publicFolderPath.php');
         $this->path = $path;
+        $this->products = new ProductsGateway($database);
     }
 
     public function get(string $id): array
@@ -70,7 +71,7 @@ class ManufacturerGateway
         ]);
 
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
-            $this->delete($row["id"]);
+            $this->products->delete($row["id"]);
         }
     }
 }

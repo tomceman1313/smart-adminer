@@ -1,11 +1,10 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
-import useInteraction from "../useInteraction";
+import i18next from "i18next";
 
 export default function useBasicApiFunctions() {
 	const auth = useAuth();
-	const { setMessage } = useInteraction();
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
 	async function getAll(apiClass, page) {
@@ -180,15 +179,7 @@ export default function useBasicApiFunctions() {
 		const data = await response.json();
 
 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		if (response.status === 200) {
-			setMessage({ action: "success", text: "Obrázek byl smazán" });
-		} else {
-			setMessage({
-				action: "failure",
-				text: "Smazání položky nebylo provedeno",
-				timeout: 6000,
-			});
-		}
+		toast.success(i18next.t("gallery:positiveTextImageDeleted"));
 	}
 
 	async function getAllWithAuth(apiClass) {

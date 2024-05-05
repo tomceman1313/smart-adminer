@@ -15,7 +15,7 @@ export function useGetAll(apiClass, page, key, errorMessage) {
 	});
 }
 
-export async function useGet(apiClass, id, key, errorMessage) {
+export function useGet(apiClass, id, key, errorMessage, enabled = true) {
 	const { get } = useBasicApiFunctions();
 
 	return useQuery({
@@ -27,15 +27,11 @@ export async function useGet(apiClass, id, key, errorMessage) {
 		meta: {
 			errorMessage: errorMessage,
 		},
+		enabled: enabled,
 	});
 }
 
-export async function useCreate(
-	apiClass,
-	positiveText,
-	errorMessage,
-	invalidateKey
-) {
+export function useCreate(apiClass, positiveText, errorMessage, invalidateKey) {
 	const { create } = useBasicApiFunctions();
 	const queryClient = useQueryClient();
 
@@ -44,7 +40,17 @@ export async function useCreate(
 			return create(apiClass, data, positiveText);
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: invalidateKey });
+			if (!invalidateKey) {
+				return;
+			}
+
+			if (Array.isArray(invalidateKey[0])) {
+				invalidateKey.forEach((key) =>
+					queryClient.invalidateQueries({ queryKey: key })
+				);
+			} else {
+				queryClient.invalidateQueries({ queryKey: invalidateKey });
+			}
 		},
 		meta: {
 			errorMessage: errorMessage,
@@ -52,12 +58,7 @@ export async function useCreate(
 	});
 }
 
-export async function useUpdate(
-	apiClass,
-	positiveText,
-	errorMessage,
-	invalidateKey
-) {
+export function useUpdate(apiClass, positiveText, errorMessage, invalidateKey) {
 	const { edit } = useBasicApiFunctions();
 	const queryClient = useQueryClient();
 
@@ -66,7 +67,44 @@ export async function useUpdate(
 			return edit(apiClass, data, positiveText);
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: invalidateKey });
+			if (!invalidateKey) {
+				return;
+			}
+
+			if (Array.isArray(invalidateKey[0])) {
+				invalidateKey.forEach((key) =>
+					queryClient.invalidateQueries({ queryKey: key })
+				);
+			} else {
+				queryClient.invalidateQueries({ queryKey: invalidateKey });
+			}
+		},
+		meta: {
+			errorMessage: errorMessage,
+		},
+	});
+}
+
+export function useDelete(apiClass, positiveText, errorMessage, invalidateKey) {
+	const { remove } = useBasicApiFunctions();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id) => {
+			return remove(apiClass, id, positiveText);
+		},
+		onSuccess: () => {
+			if (!invalidateKey) {
+				return;
+			}
+
+			if (Array.isArray(invalidateKey[0])) {
+				invalidateKey.forEach((key) =>
+					queryClient.invalidateQueries({ queryKey: key })
+				);
+			} else {
+				queryClient.invalidateQueries({ queryKey: invalidateKey });
+			}
 		},
 		meta: {
 			errorMessage: errorMessage,

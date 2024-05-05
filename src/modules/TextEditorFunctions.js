@@ -35,7 +35,6 @@ export function checkInnerImage(sourceString) {
 
 export function findDeletedImages(body, originalImages) {
 	const bodyImages = checkInnerImage(body);
-	console.log(originalImages);
 	if (originalImages.current.length !== bodyImages.length) {
 		// eslint-disable-next-line array-callback-return
 		return originalImages.current.filter((el) => {

@@ -31,5 +31,6 @@
 	"errorFetchManufacturers": "Failed to load manufacturers",
 	"errorFetchProduct": "Failed to load product",
 	"errorFetchOrder": "Failed to load order",
-	"errorFetchOrders": "Failed to load orders"
+	"errorFetchOrders": "Failed to load orders",
+	"errorCRUDOperation": "Requested operation failed"
 }

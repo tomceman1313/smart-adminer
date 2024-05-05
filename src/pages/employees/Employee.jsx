@@ -1,6 +1,5 @@
 import {
 	faAt,
-	faBuildingUser,
 	faCommentDots,
 	faIdBadge,
 	faImagePortrait,
@@ -19,8 +18,8 @@ import Switch from "../../components/basic/switch/Switch";
 import { convertBase64 } from "../../modules/BasicFunctions";
 
 import { useTranslation } from "react-i18next";
+import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import ImageInput from "../../components/basic/image-input/ImageInput";
-import cssBasic from "../../components/styles/Basic.module.css";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Employees.module.css";
 
@@ -110,33 +109,6 @@ export default function Employee({
 		originalDepartments.current = employee.departments;
 	}
 
-	const chooseCategory = (e) => {
-		const selectedDepartment = departments.find(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		const alreadyIn = pickedDepartments.find(
-			(item) => item.department_id === selectedDepartment.id
-		);
-		setValue("department_id", "");
-		if (alreadyIn) {
-			return;
-		}
-		if (selectedDepartment) {
-			setPickedDepartments((prev) => [
-				...prev,
-				{ department_id: selectedDepartment.id, name: selectedDepartment.name },
-			]);
-		}
-	};
-
-	const removeFromPicked = (e) => {
-		const removed = pickedDepartments.filter(
-			(item) => item.department_id !== parseInt(e.target.id)
-		);
-		deletedDepartments.current.push(parseInt(e.target.id));
-		setPickedDepartments(removed);
-	};
-
 	return (
 		<AnimatePresence>
 			{employee && (
@@ -210,40 +182,12 @@ export default function Employee({
 							icon={faAt}
 						/>
 
-						<div className={cssBasic.input_box}>
-							<select
-								defaultValue={""}
-								{...register("department_id")}
-								onChange={chooseCategory}
-							>
-								<option value="" disabled>
-									{t("placeholderDepartmentSelect")}
-								</option>
-								{departments &&
-									departments.map((el) => (
-										<option key={el.id} value={el.id}>
-											{el.name}
-										</option>
-									))}
-							</select>
-							<FontAwesomeIcon
-								className={cssBasic.icon}
-								icon={faBuildingUser}
-							/>
-						</div>
-
-						<ul className={css.picked_categories}>
-							{pickedDepartments &&
-								pickedDepartments.map((el) => (
-									<li
-										key={`pickedDep-${el.department_id}`}
-										id={el.department_id}
-										onClick={removeFromPicked}
-									>
-										{el.name}
-									</li>
-								))}
-						</ul>
+						<CategorySelector
+							categories={departments}
+							selectedCategories={pickedDepartments}
+							setSelectedCategories={setPickedDepartments}
+							placeholder={t("placeholderDepartmentSelect")}
+						/>
 
 						<InputBox
 							placeholder={t("placeholderPosition")}

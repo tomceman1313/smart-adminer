@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextEditor from "../../components/admin/TextEditor";
 import DatePicker from "../../components/basic/DatePicker";
 import InputBox from "../../components/basic/InputBox";
@@ -28,7 +28,6 @@ export default function Vacancy() {
 	const { t } = useTranslation("vacancies", "errors");
 	const { get, create, edit, remove } = useBasicApiFunctions();
 	const { id } = useParams();
-	const location = useLocation();
 	const navigation = useNavigate();
 	const { setAlert } = useInteraction();
 	const { register, setValue, getValues, handleSubmit, reset } = useForm();
@@ -36,30 +35,27 @@ export default function Vacancy() {
 	const [vacancyPreview, setVacancyPreview] = useState(null);
 	const [detailText, setDetailText] = useState(null);
 
-	const { data: vacancy } = useQuery({
-		queryKey: ["vacancy", location],
+	const { data: vacancy, refetch } = useQuery({
+		queryKey: ["vacancy", id],
 		queryFn: async () => {
 			if (id) {
 				const data = await get("vacancies", id);
-
 				setValue("title", data.title);
 				setValue("description", data.description);
 				setValue("date", makeDateFormat(data.date, "str"));
 				setValue("active", data.active);
 				setDetailText(data.detail);
-
 				return data;
 			} else {
 				reset();
 				setDetailText("");
+				return [];
 			}
 		},
 		meta: {
 			errorMessage: t("errors:errorFetchVacancy"),
 		},
 	});
-
-	async function setData() {}
 
 	async function onSubmit(data) {
 		data.date = makeDateFormat(data.date);
@@ -84,7 +80,7 @@ export default function Vacancy() {
 		if (id) {
 			data.id = id;
 			await edit("vacancies", data, t("positiveTextAdUpdated"));
-			setData();
+			refetch();
 		} else {
 			await create("vacancies", data, t("positiveTextAdCreated"));
 			navigation("/vacancies", { replace: true });

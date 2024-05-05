@@ -11,7 +11,7 @@
 	"headerCreateImage": "New Image",
 	"headerCreateMultipleImages": "New Images",
 	"headerEditImage": "Image details",
-	"placeholderCategorySelect": "-- Select category --",
+	"placeholderCategory": "-- Select category --",
 	"placeholderImageTitle": "Image title",
 	"placeholderImageDescription": "Description",
 	"buttonSave": "Save",

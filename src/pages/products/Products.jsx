@@ -8,8 +8,7 @@ import PlusButton from "../../components/basic/PlusButton";
 import CategoriesController from "../../components/common/categories-controller/CategoriesController";
 import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 import { ProductsFilterValuesProvider } from "../../context/ProductsFilterValuesContext";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import { useGetAll } from "../../hooks/api/useCRUD";
+import { useDelete, useGetAll } from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
 import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 import Filter from "./Filter";
@@ -21,13 +20,11 @@ import css from "./Products.module.css";
 export default function Products() {
 	const { t } = useTranslation("products", "errors");
 	const navigate = useNavigate();
-
 	const location = useLocation();
-	const { remove } = useBasicApiFunctions();
+
 	const { setAlert } = useInteraction();
 
 	const [categories, setCategories] = useState(null);
-	const [manufacturers, setManufacturers] = useState(null);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
 
 	const { data: products, refetch } = useGetAll(
@@ -37,17 +34,26 @@ export default function Products() {
 		t("errors:errorFetchProducts")
 	);
 
+	const { data: manufacturers } = useGetAll(
+		"products/manufacturers",
+		null,
+		["manufacturers"],
+		t("errors:errorFetchManufacturers")
+	);
+
+	const { mutateAsync: deleteProduct } = useDelete(
+		"products",
+		t("positiveTextProductDeleted"),
+		t("errors:errorCRUDOperation"),
+		["products"]
+	);
+
 	function deleteProductHandler(id, name) {
 		setAlert({
 			id: id,
 			question: t("alertDeleteProduct", { name: name }),
-			positiveHandler: deleteHandler,
+			positiveHandler: deleteProduct,
 		});
-	}
-
-	async function deleteHandler(id) {
-		await remove("products", id, t("positiveTextProductDeleted"));
-		refetch();
 	}
 
 	return (
@@ -62,10 +68,7 @@ export default function Products() {
 					apiClass="products"
 					reloadData={refetch}
 				/>
-				<Manufacturers
-					manufacturers={manufacturers}
-					setManufacturers={setManufacturers}
-				/>
+				<Manufacturers manufacturers={manufacturers} />
 				<FilterBasicController
 					showFilter={() => setIsFilterVisible(true)}
 					refetch={refetch}

@@ -1,53 +1,35 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import useInteraction from "../../hooks/useInteraction";
-import useAuth from "../../hooks/useAuth";
-import {
-	getManufacturers,
-	createManufacturer,
-	updateManufacturer,
-	deleteManufacturer,
-} from "../../modules/ApiProductManufacturers";
-
 import { faFont } from "@fortawesome/free-solid-svg-icons";
-
+import { useTranslation } from "react-i18next";
 import InputBox from "../../components/basic/InputBox";
 import Item from "../../components/common/controlled-item/Item";
-
+import { useCreate, useDelete, useUpdate } from "../../hooks/api/useCRUD";
 import css from "../../components/common/categories-controller/Category.module.css";
-import { useTranslation } from "react-i18next";
 
-//TODO: loading error
-export default function Manufacturers({ manufacturers, setManufacturers }) {
-	const auth = useAuth();
-	const { t } = useTranslation("products");
-	const { setMessage } = useInteraction();
-	const { register, handleSubmit, setValue } = useForm();
+export default function Manufacturers({ manufacturers }) {
+	const { t } = useTranslation("products", "errors");
+	const { register, handleSubmit } = useForm();
 
-	useEffect(() => {
-		get();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const { mutateAsync: createManufacturer } = useCreate(
+		"products/manufacturers",
+		t("positiveTextManufacturerCreated"),
+		t("errors:errorCRUDOperation"),
+		["manufacturers"]
+	);
 
-	const get = () => {
-		getManufacturers(setManufacturers);
-	};
+	const { mutateAsync: updateManufacturer } = useUpdate(
+		"products/manufacturers",
+		t("positiveTextManufacturerUpdated"),
+		t("errors:errorCRUDOperation"),
+		["manufacturers"]
+	);
 
-	const create = async (data) => {
-		await createManufacturer(data, auth, setMessage);
-		setValue("name", "");
-		get();
-	};
-
-	const update = async (data) => {
-		await updateManufacturer(data, auth, setMessage);
-		get();
-	};
-
-	const remove = async (id) => {
-		await deleteManufacturer(id, auth, setMessage);
-		get();
-	};
+	const { mutateAsync: deleteManufacturer } = useDelete(
+		"products/manufacturers",
+		t("positiveTextManufacturerDeleted"),
+		t("errors:errorCRUDOperation"),
+		[["manufacturers"], ["products"]]
+	);
 
 	return (
 		<section className={`${css.category} half-section`}>
@@ -58,8 +40,8 @@ export default function Manufacturers({ manufacturers, setManufacturers }) {
 						<Item
 							key={el.id}
 							el={el}
-							remove={remove}
-							edit={update}
+							edit={updateManufacturer}
+							remove={deleteManufacturer}
 							deleteQuestion={t("alertDeleteManufacturer", { name: el.name })}
 						/>
 					))
@@ -74,7 +56,7 @@ export default function Manufacturers({ manufacturers, setManufacturers }) {
 				<div></div>
 			</div>
 			<h3>{t("headerAddManufacturer")}</h3>
-			<form onSubmit={handleSubmit(create)}>
+			<form onSubmit={handleSubmit(createManufacturer)}>
 				<InputBox
 					placeholder={t("placeholderManufacturerName")}
 					name={"name"}

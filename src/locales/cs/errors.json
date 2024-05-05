@@ -31,5 +31,6 @@
 	"errorFetchManufacturers": "Výrobce se nepodařilo načíst",
 	"errorFetchProduct": "Produkt se nepodařilo načíst",
 	"errorFetchOrder": "Objednávku se nepodařilo načíst",
-	"errorFetchOrders": "Objednávky se nepodařilo načíst"
+	"errorFetchOrders": "Objednávky se nepodařilo načíst",
+	"errorCRUDOperation": "Nepodařilo se provést požadovanou operaci"
 }

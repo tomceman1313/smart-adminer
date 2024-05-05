@@ -26,7 +26,7 @@ class StatsGateway
                     $data["documents"] = $this->getDocumentsStats();
 
                 case "employees":
-                    $data["orders"] = $this->getEmployeesStats();
+                    $data["employees"] = $this->getEmployeesStats();
 
                 case "orders":
                     $data["orders"] = $this->getOrdersStats();

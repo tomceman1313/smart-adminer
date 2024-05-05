@@ -554,6 +554,9 @@ class ProductsGateway
         $order = 0;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $i_order = $row["i_order"];
+            if ($i_order == -1) {
+                continue;
+            }
             if ($i_order != 0) {
                 --$i_order;
             }

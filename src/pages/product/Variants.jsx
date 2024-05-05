@@ -62,7 +62,7 @@ export default function Variants({
 	};
 
 	return (
-		<section className={css.variants}>
+		<section className={`${css.variants} half-section`}>
 			<h2>{t("headerVariants")}</h2>
 			<ul>
 				{variants.length > 0 && (

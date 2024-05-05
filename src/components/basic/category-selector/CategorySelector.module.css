@@ -1,0 +1,18 @@
+.picked_categories {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.picked_categories li {
+	cursor: pointer;
+	background-color: var(--main-dark);
+	color: white;
+	padding: 5px 15px;
+	border-radius: 8px;
+	margin: 2px;
+	transition: all 0.5s;
+}
+
+.picked_categories li:hover {
+	background-color: var(--red);
+}

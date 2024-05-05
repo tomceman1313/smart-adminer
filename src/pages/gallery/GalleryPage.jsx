@@ -86,7 +86,7 @@ export default function GalleryPage() {
 				apiClass="gallery"
 				reloadData={refetch}
 			/>
-			<NewPicture reloadData={refetch} categories={categories} />
+			<NewPicture categories={categories} />
 			<ItemsController
 				selectedCategory={selectedCategory}
 				isMultiSelection={isMultiSelectionActive}
