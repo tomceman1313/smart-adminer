@@ -17,7 +17,7 @@ Here are some of the available content fields:
 - Orders 💸
 - Email service ✉
 
-Need more info? 👉 [Documentation](smartadminer.smart-studio.cz/docs)
+Need more info? 👉 [Documentation](https://smart-adminer-docs.vercel.app/)
 
 ## Who's it for?
 
