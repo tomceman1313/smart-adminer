@@ -42,12 +42,13 @@ export default function OrderDetail({
 		{ value: "bank_account", name: t("bank_account") },
 	]);
 
-	const { register, handleSubmit, setValue } = useForm();
+	const { register, handleSubmit, setValue, reset } = useForm();
 	const [products, setProducts] = useState(null);
 
 	const { data: order } = useQuery({
 		queryKey: ["order", id],
 		queryFn: async () => {
+			reset();
 			const _order = await get("orders", id);
 			_order.deleted_products = [];
 			setProducts({
@@ -87,6 +88,7 @@ export default function OrderDetail({
 		data.customer_id = order.customer.id;
 		await edit("orders", data, t("positiveTextOrderUpdated"));
 		reloadData();
+		reset();
 		setVisible(false);
 	}
 
@@ -117,7 +119,8 @@ export default function OrderDetail({
 				id={css.close}
 				icon={faXmark}
 				onClick={() => {
-					setVisible((prev) => !prev);
+					reset();
+					setVisible(false);
 				}}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -191,18 +194,16 @@ export default function OrderDetail({
 					customer={order?.customer}
 				/>
 
-				{order && (
-					<>
-						<DeliveryCredentialsForm
-							register={register}
-							customer={order?.customer}
-						/>
-						<CompanyCredentialsForm
-							register={register}
-							customer={order?.customer}
-						/>
-					</>
-				)}
+				<DeliveryCredentialsForm
+					key={`delivery-${order?.customer.delivery_address}`}
+					register={register}
+					customer={order?.customer}
+				/>
+				<CompanyCredentialsForm
+					key={`company-${order?.customer.company_name}`}
+					register={register}
+					customer={order?.customer}
+				/>
 
 				<div className={css.buttons_box}>
 					<button>{t("buttonSave")}</button>

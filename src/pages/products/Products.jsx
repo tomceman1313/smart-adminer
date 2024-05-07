@@ -10,12 +10,12 @@ import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
 import { ProductsFilterValuesProvider } from "../../context/ProductsFilterValuesContext";
 import { useDelete, useGetAll } from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
-import { isPermitted, publicPath } from "../../modules/BasicFunctions";
 import Filter from "./Filter";
 import FilterBasicController from "./FilterBasicController";
 import Manufacturers from "./Manufacturers";
+import Product from "./Product";
 
-import css from "./Products.module.css";
+import css from "./styles/Products.module.css";
 
 export default function Products() {
 	const { t } = useTranslation("products", "errors");
@@ -74,28 +74,19 @@ export default function Products() {
 					refetch={refetch}
 				/>
 				<section className={`${css.products_list} no-section`}>
-					{products?.length > 0 ? (
-						products.map((item) => (
-							<div key={item.id} className={css.product}>
-								<img src={`${publicPath}/images/products/${item.image}`} />
-								<p>{item.name}</p>
-								{isPermitted(item.active)}
-								<div>
-									<button onClick={() => navigate(`/product/${item.id}`)}>
-										{t("buttonDetail")}
-									</button>
-									<button
-										className="red_button"
-										onClick={() => deleteProductHandler(item.id, item.name)}
-									>
-										{t("buttonDelete")}
-									</button>
-								</div>
-							</div>
-						))
-					) : (
-						<NoDataFound text={t("noDataFound")} />
-					)}
+					<AnimatePresence>
+						{products?.length > 0 ? (
+							products.map((item) => (
+								<Product
+									key={`product-${item.id}`}
+									product={item}
+									deleteProduct={deleteProductHandler}
+								/>
+							))
+						) : (
+							<NoDataFound text={t("noDataFound")} />
+						)}
+					</AnimatePresence>
 				</section>
 				<AnimatePresence>
 					{isFilterVisible && manufacturers && (

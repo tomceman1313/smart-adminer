@@ -1,0 +1,21 @@
+.products {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+	flex-wrap: wrap;
+}
+
+.products_list {
+	width: 100%;
+	display: flex;
+	justify-content: left;
+	align-items: stretch;
+	flex-wrap: wrap;
+}
+
+@media (max-width: 1000px) {
+	.products {
+		justify-content: center;
+	}
+}

@@ -33,7 +33,7 @@ export default function GalleryPage() {
 		queryFn: async () => {
 			let data;
 			if (selectedCategory) {
-				data = await getByCategory("gallery", selectedCategory.id);
+				data = await getByCategory("gallery", selectedCategory.id, page);
 			} else {
 				data = await getAll("gallery", page);
 				setSelectedCategory(null);
@@ -70,6 +70,7 @@ export default function GalleryPage() {
 	}
 
 	function resetFilter() {
+		navigate("/gallery/");
 		setSelectedCategory(null);
 		refetch();
 	}

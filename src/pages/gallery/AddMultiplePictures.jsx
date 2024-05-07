@@ -92,7 +92,7 @@ const AddMultiplePictures = ({ close, categories }) => {
 						required
 					>
 						<option value="default" disabled>
-							{t("placeholderCategorySelect")}
+							{t("placeholderCategory")}
 						</option>
 						{categories &&
 							categories.map((el) => (

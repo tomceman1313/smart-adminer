@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import useProductFilterValues from "../../hooks/useProductFilterValues";
-import css from "./Filter.module.css";
 import CategoriesSelector from "./filters/CategoriesSelector";
 import ManufacturersSelector from "./filters/ManufacturersSelector";
 import ProductNameSearchBar from "./filters/ProductNameSearchBar";
+import css from "./styles/Filter.module.css";
 
 export default function Filter({ setVisible, manufacturers, categories }) {
 	const { t } = useTranslation("products");
@@ -37,6 +37,7 @@ export default function Filter({ setVisible, manufacturers, categories }) {
 		selectedPriceRange.current = [];
 		selectedInStock.current = [];
 		navigate(`/products`);
+		setVisible(false);
 	}
 
 	return (

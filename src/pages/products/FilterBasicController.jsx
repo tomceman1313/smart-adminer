@@ -2,11 +2,13 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import ImageButton from "../../components/basic/image-button/ImageButton";
 import useProductFilterValues from "../../hooks/useProductFilterValues";
+import { useNavigate } from "react-router-dom";
 
-import css from "./FilterBasicController.module.css";
+import css from "./styles/FilterBasicController.module.css";
 
-export default function FilterBasicController({ showFilter, refetch }) {
+export default function FilterBasicController({ showFilter }) {
 	const { t } = useTranslation("products");
+	const navigate = useNavigate();
 	const {
 		selectedManufacturers,
 		selectedCategories,
@@ -19,7 +21,7 @@ export default function FilterBasicController({ showFilter, refetch }) {
 		selectedCategories.current = [];
 		selectedPriceRange.current = [];
 		selectedInStock.current = [];
-		refetch();
+		navigate("/products");
 	}
 
 	return (

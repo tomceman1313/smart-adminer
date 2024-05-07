@@ -1,6 +1,6 @@
 <?php
 $ENV = parse_ini_file('.env');
-ini_set('display_errors', $ENV["DEV_MODE"]);
+ini_set('display_errors', $ENV["SHOW_ERRORS"]);
 
 $DIRECTORIES = array(
     "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images", "Settings", "Stats"

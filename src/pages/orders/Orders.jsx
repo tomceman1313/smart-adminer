@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
+import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
 import {
 	filterOrders,
 	getShippingTypes,
 	getStatusCodes,
 } from "../../modules/ApiOrders";
+import Filter from "./Filter";
 import Order from "./Order";
 import OrderDetail from "./OrderDetail";
-import { Helmet } from "react-helmet-async";
-import Filter from "./Filter";
-import { OrdersFilterValuesProvider } from "../../context/OrdersFilterValuesContext";
-import { useTranslation } from "react-i18next";
-import NoDataFound from "../../components/loaders/NoDataFound/NoDataFound";
-import { useGetAll } from "../../hooks/api/useCRUD";
 
 import css from "./Orders.module.css";
 
@@ -26,7 +25,8 @@ export default function Orders() {
 	const [shippingTypes, setShippingTypes] = useState(null);
 	const [statusCodes, setStatusCodes] = useState(null);
 
-	//const {data: orders} = useGetAll("orders/filter", null, ["orders"], t("errors:"))
+	// const { data } = useGetAll("orders/filter", null, ["orders"], t("errors:"));
+	// console.log(data);
 
 	useEffect(() => {
 		loadData();
@@ -87,7 +87,6 @@ export default function Orders() {
 				<AnimatePresence>
 					{orderId && (
 						<OrderDetail
-							key="orderDetail"
 							id={orderId}
 							setVisible={setOrderId}
 							shippingTypes={shippingTypes}

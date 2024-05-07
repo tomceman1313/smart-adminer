@@ -246,7 +246,9 @@ class OrdersGateway
 
     public function update(array $data)
     {
-        $sql = "UPDATE customers SET fname = :fname, lname = :lname, address = :address, city = :city, postal_code = :postal_code, phone = :phone, email = :email";
+        $sql = "UPDATE customers SET fname = :fname, lname = :lname, address = :address, city = :city, postal_code = :postal_code, phone = :phone, email = :email, 
+        delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address = :delivery_address, delivery_city = :delivery_city, 
+        delivery_postal_code = :delivery_postal_code, company_name = :company_name, ic = :ic, dic = :dic WHERE id = :id";
 
         $sql_values = [
             'id' => $data["customer_id"],
@@ -257,28 +259,15 @@ class OrdersGateway
             'postal_code' => $data["postal_code"],
             'phone' => $data["phone"],
             'email' => $data["email"],
+            'delivery_fname' => isset($data["delivery_fname"]) ? $data["delivery_fname"] : "",
+            'delivery_lname' => isset($data["delivery_lname"]) ? $data["delivery_lname"] : "",
+            'delivery_address' => isset($data["delivery_address"]) ? $data["delivery_address"] : "",
+            'delivery_city' => isset($data["delivery_city"]) ? $data["delivery_city"] : "",
+            'delivery_postal_code' => isset($data["delivery_postal_code"]) ? $data["delivery_postal_code"] : "",
+            'company_name' => isset($data["company_name"]) ? $data["company_name"] : "",
+            'ic' => isset($data["ic"]) ? $data["ic"] : "",
+            'dic' => isset($data["dic"]) ? $data["dic"] : "",
         ];
-
-        if (isset($data["delivery_address"])) {
-            $sql_values["delivery_fname"] = $data["delivery_fname"];
-            $sql_values["delivery_lname"] = $data["delivery_lname"];
-            $sql_values["delivery_address"] = $data["delivery_address"];
-            $sql_values["delivery_city"] = $data["delivery_city"];
-            $sql_values["delivery_postal_code"] = $data["delivery_postal_code"];
-
-            $sql .= ", delivery_fname = :delivery_fname, delivery_lname = :delivery_lname, delivery_address = :delivery_address, delivery_city = :delivery_city, 
-            delivery_postal_code = :delivery_postal_code";
-        }
-
-        if (isset($data["company_name"])) {
-            $sql_values["company_name"] = $data["company_name"];
-            $sql_values["ic"] = $data["ic"];
-            $sql_values["dic"] = $data["dic"];
-
-            $sql .= ", company_name = :company_name, ic = :ic, dic = :dic";
-        }
-
-        $sql .= " WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
 

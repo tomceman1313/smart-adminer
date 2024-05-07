@@ -1,4 +1,4 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -49,9 +49,19 @@ export default function Banner() {
 			<h1 id="banner-title">{t(bannerInfo.title)}</h1>
 			<p id="banner-desc">{t(bannerInfo.description)}</p>
 			{width > 900 ? (
-				<Link to="profile">
-					<FontAwesomeIcon icon={faUser} />
-				</Link>
+				<>
+					<Link to="profile" className={css.user}>
+						<FontAwesomeIcon icon={faUser} />
+					</Link>
+					<Link
+						className={css.docs}
+						to="https://smart-adminer-docs.vercel.app/cs/users/introduction"
+						target="_blank"
+					>
+						<FontAwesomeIcon icon={faBook} />
+						<label>{t("manual")}</label>
+					</Link>
+				</>
 			) : (
 				<></>
 			)}

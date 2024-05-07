@@ -37,7 +37,8 @@ input[type="submit"] {
 	cursor: pointer;
 }
 
-button {
+button,
+.button {
 	border: none;
 	outline: none;
 	font-family: "Quicksand", sans-serif;
@@ -88,7 +89,8 @@ button,
 }
 
 input[type="submit"]:hover,
-button:hover {
+button:hover,
+.button:hover {
 	background-color: var(--green-dark);
 	color: white;
 	text-decoration: underline white;

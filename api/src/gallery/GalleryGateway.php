@@ -66,7 +66,7 @@ class GalleryGateway
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $length = $stmt->fetch(PDO::FETCH_ASSOC);
-        $data["total_length"] = $data["total_length"] = $this->utils->getTotalPages($length["COUNT(*)"], $this->limit);
+        $data["total_length"] = $this->utils->getTotalPages($length["COUNT(*)"], $this->limit);
 
         return $data;
     }

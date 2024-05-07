@@ -2,9 +2,15 @@
 	position: relative;
 	width: 100%;
 	height: 100vh;
-	background-image: url("/public/login_background.jpeg");
-	background-size: cover;
-	background-repeat: no-repeat;
+}
+
+.background {
+	position: absolute;
+	width: calc(100% - 300px);
+	height: 100vh;
+	top: 0;
+	left: 300px;
+	object-fit: cover;
 }
 
 .login section {
@@ -58,6 +64,14 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.background {
+		position: absolute;
+		width: 100%;
+		height: 100vh;
+		top: 0;
+		left: 0;
 	}
 
 	.languages {

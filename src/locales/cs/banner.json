@@ -111,5 +111,6 @@
 	"settings": {
 		"title": "Nastavení",
 		"description": "Spravujte nastavení systému"
-	}
+	},
+	"manual": "Příručka"
 }

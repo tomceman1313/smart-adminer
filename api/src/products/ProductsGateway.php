@@ -225,7 +225,7 @@ class ProductsGateway
 
     public function filterProducts($categories, $manufacturers): array
     {
-        $query = "SELECT products.* FROM products INNER JOIN product_categories ON product_categories.product_id = products.id";
+        $query = "SELECT DISTINCT products.* FROM products";
 
         $sql = [];
         $values = [];
@@ -240,12 +240,12 @@ class ProductsGateway
             $in = join(',', array_fill(0, count($categories), '?'));
             $sql[] = " product_categories.category_id IN ( $in )";
             array_push($values, ...$categories);
+            $query .= " INNER JOIN product_categories ON product_categories.product_id = products.id";
         }
 
         if ($sql) {
             $query .= ' WHERE' . implode(' AND ', $sql);
         }
-
 
         $stmt = $this->conn->prepare($query);
 

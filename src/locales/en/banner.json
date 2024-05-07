@@ -108,5 +108,6 @@
 	"settings": {
 		"title": "Settings",
 		"description": "Manage system settings"
-	}
+	},
+	"manual": "Manual"
 }

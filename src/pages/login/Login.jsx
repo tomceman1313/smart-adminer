@@ -24,6 +24,11 @@ export default function Login() {
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<div className={css.login}>
+				<img
+					className={css.background}
+					src={`${publicPath}/login_background.jpeg`}
+					alt="background"
+				/>
 				<section>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<h2>{t("headerLogin")}</h2>

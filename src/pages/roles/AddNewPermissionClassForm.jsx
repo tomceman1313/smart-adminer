@@ -1,23 +1,24 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import InputBox from "../../components/basic/InputBox";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { faFont } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import InputBox from "../../components/basic/InputBox";
 
 import css from "../../components/common/categories-controller/Category.module.css";
+import { useCreate } from "../../hooks/api/useCRUD";
 
 export default function AddNewPermissionClassForm() {
-	const { t } = useTranslation("profiles");
+	const { t } = useTranslation("profiles", "errors");
 	const { register, handleSubmit, setValue } = useForm();
-	const { create } = useBasicApiFunctions();
+	const { mutateAsync: create } = useCreate(
+		"users/permissions",
+		t("positiveTextPermissionClassCreated"),
+		t("errors:errorCRUDOperation"),
+		["roles"]
+	);
 
 	async function createHandler(data) {
-		await create(
-			"users/permissions",
-			data,
-			t("positiveTextPermissionClassCreated")
-		);
+		await create(data);
 		setValue("class", "");
 	}
 
