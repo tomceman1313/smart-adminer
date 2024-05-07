@@ -276,7 +276,7 @@ class EmployeesGateway
             $stmt = $this->conn->prepare($sql_new_dep);
             $stmt->execute([
                 'employee_id' => $id,
-                'department_id' => $item["department_id"]
+                'department_id' => $item["id"]
             ]);
         }
     }
