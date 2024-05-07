@@ -28,8 +28,8 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 	}, [userData, reset]);
 
 	async function onSubmit(data) {
-		await submitHandler(data, userData.username);
-		close();
+		const result = await submitHandler(data, userData.username);
+		if (result) close();
 	}
 
 	return (

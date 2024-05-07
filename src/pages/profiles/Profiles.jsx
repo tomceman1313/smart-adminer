@@ -43,7 +43,7 @@ export default function Profiles() {
 		const isAvailable = await checkNameAvailability("users", data.username);
 		if (previousUserName !== data.username && !isAvailable) {
 			warningToast(t("messageUsernameIsTaken"));
-			return;
+			return false;
 		}
 
 		data.username = data.username.replaceAll(" ", "_");
@@ -53,12 +53,13 @@ export default function Profiles() {
 		} else {
 			if (data.password_check !== data.password) {
 				warningToast(t("messagePasswordsNotEqual"));
-				return;
+				return false;
 			}
 			await create("users", data, t("createPositiveText"));
 		}
 
 		refetch();
+		return true;
 	}
 
 	return (

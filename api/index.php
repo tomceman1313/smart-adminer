@@ -3,7 +3,7 @@ $ENV = parse_ini_file('.env');
 ini_set('display_errors', $ENV["SHOW_ERRORS"]);
 
 $DIRECTORIES = array(
-    "Auth", "Users", "Pricelist", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images", "Settings", "Stats"
+    "Auth", "Users", "PriceList", "Notifications", "Articles", "Gallery", "Events", "Documents", "Products", "Vacancies", "Employees", "Orders", "Emails", "Pages", "Images", "Settings", "Stats"
 );
 
 $FILES = array(

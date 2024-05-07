@@ -1,22 +1,20 @@
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import useInteraction from "../../hooks/useInteraction";
-import InputBox from "../../components/basic/InputBox";
-import Item from "../../components/common/controlled-item/Item";
-
 import { useTranslation } from "react-i18next";
+import InputBox from "../../components/basic/InputBox";
 import css from "../../components/common/categories-controller/Category.module.css";
+import Item from "../../components/common/controlled-item/Item";
+import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 
 export default function RolesController({ roles, reload }) {
 	const { t } = useTranslation("profiles");
 	const { create, edit, remove } = useBasicApiFunctions();
-	const { setMessage } = useInteraction();
 	const { register, handleSubmit, setValue } = useForm();
 
 	const createHandler = async (data) => {
 		if (roles.find((role) => role.name === data.name)) {
-			setMessage({ action: "alert", text: t("messageNameIsTaken") });
+			warningToast(t("messageNameIsTaken"));
 			return;
 		}
 		await create("users/roles", data, t("positiveTextCreatedRole"));
@@ -26,7 +24,6 @@ export default function RolesController({ roles, reload }) {
 
 	const updateHandler = async (data) => {
 		await edit("users/roles", data, t("positiveTextUpdatedRole"));
-		console.log(data);
 		reload();
 	};
 

@@ -7,6 +7,8 @@ import useAuthApi from "../../hooks/api/useAuthApi";
 import { useTranslation } from "react-i18next";
 import css from "./NewPassword.module.css";
 import useInteraction from "../../hooks/useInteraction";
+import warningToast from "../../components/common/warning-toast/WarningToast";
+import toast from "react-hot-toast";
 
 const NewPassword = ({ isVisible, close }) => {
 	const { t } = useTranslation("profile");
@@ -16,7 +18,7 @@ const NewPassword = ({ isVisible, close }) => {
 
 	const onSubmit = async (data) => {
 		if (data.password !== data.passwordCheck) {
-			setMessage({ action: "alert", text: t("messagePasswordsNotEquals") });
+			warningToast(t("messagePasswordsNotEquals"));
 			return;
 		}
 
@@ -25,7 +27,7 @@ const NewPassword = ({ isVisible, close }) => {
 			setMessage({ action: "failure", text: t("messagePasswordNotChanged") });
 			return;
 		}
-		setMessage({ action: "success", text: t("positiveTextPasswordChanged") });
+		toast.success(t("positiveTextPasswordChanged"));
 		close();
 	};
 

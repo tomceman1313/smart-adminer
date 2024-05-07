@@ -66,7 +66,7 @@ export default function CategoriesController({
 				{categories?.length ? (
 					categories.map((el) => (
 						<Item
-							key={el.id}
+							key={`${el.name}-${el.id}`}
 							el={el}
 							remove={remove}
 							edit={update}
