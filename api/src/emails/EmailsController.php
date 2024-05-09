@@ -5,6 +5,7 @@ class EmailsController
     public function __construct(Database $database)
     {
         $this->gateway = new EmailsGateway($database);
+        $this->utils = new Utils($database);
     }
 
     public function processRequest(): void
