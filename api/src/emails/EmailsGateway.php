@@ -11,11 +11,7 @@ class EmailsGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
-        $this->name = "Info";
-        $this->username = 'info@domov-sulicka.cz';
-        $this->password = 'Duben2020';
-        // $this->username = 'info@smart-studio.cz';
-        // $this->password = 'Nissan.350z';
+        $this->env = parse_ini_file('.env');;
     }
 
     public function sendEmail(array $data): bool
@@ -27,12 +23,12 @@ class EmailsGateway
         $mail->SMTPDebug = 0;
         $mail->Host = 'smtp.office365.com';
         $mail->SMTPAuth = true;
-        $mail->Username = $this->username;
-        $mail->Password = $this->password;
+        $mail->Username = $this->env["EMAIL_USERNAME"];
+        $mail->Password = $this->env["EMAIL_PASSWORD"];
         $mail->SMTPSecure = "STARTTLS";
         $mail->Port = 587;
-        $mail->setFrom($this->username,  $this->name);
-        $mail->addReplyTo($this->username,  $this->name);
+        $mail->setFrom($this->env["EMAIL_USERNAME"],  $this->env["EMAIL_NAME"]);
+        $mail->addReplyTo($this->env["EMAIL_USERNAME"],  $this->env["EMAIL_NAME"]);
         $mail->addAddress($data["to"], $data["name"]);
         $mail->Subject = $data["subject"];
         //$mail->msgHTML(file_get_contents('email.html'), __DIR__);
@@ -54,10 +50,10 @@ class EmailsGateway
         // $mail->Host = 'smtp.hostinger.com';
         // $mail->Port = 587;
         // $mail->SMTPAuth = true;
-        // $mail->Username = $this->username;
-        // $mail->Password = $this->password;
-        // $mail->setFrom($this->username,  $this->name);
-        // $mail->addReplyTo($this->username,  $this->name);
+        // $mail->Username = $this->env["EMAIL_USERNAME"];
+        // $mail->Password = $this->env["EMAIL_PASSWORD"];
+        // $mail->setFrom($this->env["EMAIL_USERNAME"],  $this->name);
+        // $mail->addReplyTo($this->env["EMAIL_USERNAME"],  $this->name);
         // $mail->addAddress($data["to"], $data["name"]);
         // $mail->Subject = $data["subject"];
         // //$mail->msgHTML(file_get_contents('message.html'), __DIR__);
@@ -73,8 +69,8 @@ class EmailsGateway
 
     public function subscribe(string $email)
     {
-        $list_id = 17;
-        $API_KEY = "60ee87accc21d60ee87accc21e";
+        $list_id = $this->env["SUBSCRIPTION_LIST_ID"];
+        $API_KEY = $this->env["SUBSCRIPTION_API_KEY"];
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://api2.ecomailapp.cz/lists/$list_id/subscribe");
