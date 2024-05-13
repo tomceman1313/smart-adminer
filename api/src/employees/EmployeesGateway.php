@@ -15,11 +15,9 @@ class EmployeesGateway
         $sql = "SELECT * FROM employees ORDER BY lname";
         $stmt = $this->conn->query($sql);
 
-        $departments = $this->getDepartments();
-
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
+            $row["departments"] = $this->getEmployeeDepartments($row["id"]);
             $data[] = $row;
         }
 
@@ -40,8 +38,7 @@ class EmployeesGateway
             return null;
         }
 
-        $departments = $this->getDepartments();
-        $data["departments"] = $this->getEmployeeDepartments($id, $departments);
+        $data["departments"] = $this->getEmployeeDepartments($id);
         return $data;
     }
 
@@ -54,11 +51,9 @@ class EmployeesGateway
             'department_id' => $department_id
         ]);
 
-        $departments = $this->getDepartments();
-
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
+            $row["departments"] = $this->getEmployeeDepartments($row["id"]);
             $data[] = $row;
         }
 
@@ -86,7 +81,7 @@ class EmployeesGateway
 
         $data = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row["departments"] = $this->getEmployeeDepartments($row["id"], $departments);
+            $row["departments"] = $this->getEmployeeDepartments($row["id"]);
             $data[] = $row;
         }
 
@@ -247,30 +242,19 @@ class EmployeesGateway
         ]);
     }
 
-    private function getEmployeeDepartments($id, $departments): array
+    private function getEmployeeDepartments($id): array
     {
-        $sql_categories = "SELECT department_id FROM employee_department WHERE employee_id = :id";
-        $stmt = $this->conn->prepare($sql_categories);
+        $sql_departments = "SELECT deps.* FROM employee_department AS employee_dep INNER JOIN employees_departments as deps ON employee_dep.department_id = deps.id WHERE employee_dep.employee_id = :id";
+        $stmt = $this->conn->prepare($sql_departments);
         $stmt->execute([
             'id' => $id
         ]);
 
-        $data = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            foreach ($departments as $value) {
-                if ($row["department_id"] == $value["id"]) {
-                    $row["name"] = $value["name"];
-                }
-            }
-            $data[] = $row;
-        }
-
-        return $data;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function addEmployeeDepartments($id, $departments): void
     {
-        $departments = $departments;
         $sql_new_dep = "INSERT INTO employee_department (employee_id, department_id) VALUES (:employee_id, :department_id)";
         foreach ($departments as $item) {
             $stmt = $this->conn->prepare($sql_new_dep);
@@ -289,7 +273,7 @@ class EmployeesGateway
 
             $stmt->execute([
                 'employee_id' => $id,
-                'department_id' => $item,
+                'department_id' => $item["id"],
             ]);
         }
     }

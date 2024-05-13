@@ -58,11 +58,15 @@ export default function Employee({
 			}
 			delete data.image;
 		}
+		//find newly added departments by compering selected and original
 		data.departments = pickedDepartments.filter(
 			(el) => !originalDepartments.current.find((dep) => dep.name === el.name)
 		);
 		if (employee?.id) {
-			data.departments_deleted = deletedDepartments.current;
+			//find deleted departments by compering selected and original
+			data.departments_deleted = originalDepartments.current.filter(
+				(el) => !pickedDepartments.find((dep) => dep.name === el.name)
+			);
 			await edit("employees", data, t("positiveTextEditEmployee"));
 		} else {
 			delete data.id;

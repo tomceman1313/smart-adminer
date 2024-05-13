@@ -44,7 +44,7 @@ export default function CategorySelector({
 					</option>
 					{categories &&
 						categories.map((el) => (
-							<option key={el.id} value={el.id}>
+							<option key={`${el.name}-${el.id}`} value={el.id}>
 								{el.name}
 							</option>
 						))}
@@ -55,7 +55,7 @@ export default function CategorySelector({
 			<ul className={css.picked_categories}>
 				{selectedCategories &&
 					selectedCategories.map((el) => (
-						<li key={el.id} id={el.id} onClick={removeFromPicked}>
+						<li key={`selected-${el.id}`} id={el.id} onClick={removeFromPicked}>
 							{el.name}
 						</li>
 					))}

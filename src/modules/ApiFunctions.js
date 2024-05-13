@@ -10,15 +10,19 @@ export async function responseHandler(response, auth, positiveText) {
 		return null;
 	}
 
+	if (response.status === 403) {
+		toast.error(i18next.t("errors:error403"));
+		return null;
+	}
+
 	if (response.status === 401) {
 		auth.setUserInfo(null);
 		toast.error(i18next.t("errors:error401"));
 		return null;
 	}
 
-	if (response.status === 403) {
-		toast.error(i18next.t("errors:error403"));
-		return null;
+	if (!isValidJSON(await response.clone().text())) {
+		return;
 	}
 
 	if (positiveText) {
@@ -27,4 +31,14 @@ export async function responseHandler(response, auth, positiveText) {
 
 	const data = await response.json();
 	return data;
+}
+
+function isValidJSON(str) {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		console.log(str);
+		return false;
+	}
+	return true;
 }
