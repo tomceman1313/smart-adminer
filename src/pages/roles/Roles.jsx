@@ -9,7 +9,11 @@ import AddNewPermissionClassForm from "./AddNewPermissionClassForm";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 
 function assignPermissionsToRole(roles, permissions) {
-	return roles.map((role) => {
+	const rolesWithoutAdminUser = roles.filter(
+		(role) => role.name.toLowerCase() !== "admin"
+	);
+	console.log(rolesWithoutAdminUser);
+	return rolesWithoutAdminUser.map((role) => {
 		role.permissions = permissions.filter(
 			(permission) => permission.role_id === role.id
 		);

@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { HelmetProvider } from "react-helmet-async";
 import {
 	QueryCache,
+	MutationCache,
 	QueryClient,
 	QueryClientProvider,
 } from "@tanstack/react-query";
@@ -22,9 +23,18 @@ const queryClient = new QueryClient({
 	},
 	queryCache: new QueryCache({
 		onError: (error, query) => {
-			//console.log("Error description", error);
+			console.log("Error description", error);
 			if (query.meta?.errorMessage) {
 				toast.error(query.meta.errorMessage);
+			}
+		},
+	}),
+
+	mutationCache: new MutationCache({
+		onError: (error, variables, context, mutation) => {
+			if (mutation.meta?.errorMessage) {
+				toast.error(mutation.meta.errorMessage);
+				toast.error(error.message.slice(0, 100));
 			}
 		},
 	}),

@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { useDelete } from "../../hooks/api/useCRUD";
 import UserList from "./UserList";
 
 import css from "./Profiles.module.css";
@@ -11,14 +12,8 @@ import css from "./Profiles.module.css";
 export default function Profiles() {
 	const { t } = useTranslation("profiles", "errors");
 
-	const {
-		checkNameAvailability,
-		create,
-		edit,
-		getAllWithAuth,
-		remove,
-		getAll,
-	} = useBasicApiFunctions();
+	const { checkNameAvailability, create, edit, getAllWithAuth, getAll } =
+		useBasicApiFunctions();
 	const [roles, setRoles] = useState(null);
 
 	const { data: users, refetch } = useQuery({
@@ -34,9 +29,15 @@ export default function Profiles() {
 		},
 	});
 
+	const { mutateAsync: deleteUser } = useDelete(
+		"users",
+		t("deletePositiveText"),
+		t("errors:errorCRUDOperation"),
+		["users"]
+	);
+
 	async function deleteHandler(id) {
-		await remove("users", id, t("deletePositiveText"));
-		refetch();
+		await deleteUser(id);
 	}
 
 	async function submitHandler(data, previousUserName) {

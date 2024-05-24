@@ -1,0 +1,18 @@
+.article {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	align-items: baseline;
+}
+
+.control_box {
+	display: flex;
+	justify-content: center;
+	align-items: start;
+	padding-top: 10px;
+	text-align: start;
+}
+
+.btn_icon {
+	margin-right: 5px;
+}

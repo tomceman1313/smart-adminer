@@ -1,24 +1,24 @@
 {
-	"htmlTitleEvents": "Events | SmartAdminer",
-	"searchEventTitle": "Event title",
-	"searchAllEvents": "All events",
+	"htmlTitle": "Events | SmartAdminer",
+	"searchTitle": "Event title",
+	"searchAll": "All events",
 
-	"htmlTitleNewEvent": "New Event",
+	"htmlTitleNew": "New Event",
 	"headerBasicInfo": "Basic information",
 	"headerAdditionalInfo": "Additional information",
-	"headerEventBody": "Event body",
+	"headerBody": "Event body",
 	"headerAdditionalImages": "Additional images:",
 	"headerAddImages": "Add images:",
 
-	"positiveTextEventCreated": "Event has been created",
-	"positiveTextEventUpdated": "Event has been updated",
-	"positiveTextEventDeleted": "Event has been deleted",
-	"alertDeleteEvent": "Delete event?",
+	"positiveTextCreated": "Event has been created",
+	"positiveTextUpdated": "Event has been updated",
+	"positiveTextDeleted": "Event has been deleted",
+	"alertDelete": "Delete event?",
 
 	"placeholderTitle": "Title",
 	"placeholderDescription": "Description",
 	"placeholderIsVisible": "Event is visible:",
-	"placeholderDate": "Publication date",
+	"placeholderDate": "Date of event",
 	"placeholderCategory": "-- Select category --",
 	"placeholderImage": "",
 	"placeholderImages": "",
@@ -28,5 +28,6 @@
 	"buttonPreview": "Event preview",
 	"buttonReset": "Reset",
 
+	"messageEmptyBody": "Event body is empty",
 	"noDataFound": "No events have been found"
 }

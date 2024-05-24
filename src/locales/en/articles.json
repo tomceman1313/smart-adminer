@@ -1,18 +1,18 @@
 {
-	"htmlTitleArticles": "Articles | SmartAdminer",
-	"searchArticleTitle": "Article title",
-	"searchAllArticles": "All articles",
+	"htmlTitle": "Articles | SmartAdminer",
+	"searchTitle": "Article title",
+	"searchAll": "All articles",
 
-	"htmlTitleNewArticle": "New Article",
+	"htmlTitleNew": "New Article",
 	"headerBasicInfo": "Basic information",
 	"headerAdditionalInfo": "Additional information",
-	"headerArticleBody": "Article body",
+	"headerBody": "Article body",
 	"headerAdditionalImages": "Additional images:",
 	"headerAddImages": "Add images:",
-	"positiveTextArticleCreated": "Article has been created",
-	"positiveTextArticleUpdated": "Article has been updated",
-	"positiveTextArticleDeleted": "Article has been deleted",
-	"alertDeleteArticle": "Delete article?",
+	"positiveTextCreated": "Article has been created",
+	"positiveTextUpdated": "Article has been updated",
+	"positiveTextDeleted": "Article has been deleted",
+	"alertDelete": "Delete article?",
 
 	"placeholderTitle": "Title",
 	"placeholderDescription": "Description",
@@ -26,6 +26,6 @@
 	"buttonDelete": "Delete",
 	"buttonPreview": "Article preview",
 
-	"messageEmptyArticleBody": "Article body is empty",
+	"messageEmptyBody": "Article body is empty",
 	"noDataFound": "No articles have been found"
 }

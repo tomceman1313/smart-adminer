@@ -11,7 +11,11 @@ class UsersController
 
     public function processRequest($authAction): void
     {
-        $this->controller($authAction);
+        try {
+            $this->controller($authAction);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     private function controller($authAction): void

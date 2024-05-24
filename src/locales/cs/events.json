@@ -1,24 +1,24 @@
 {
-	"htmlTitleEvents": "Události | SmartAdminer",
-	"searchEventTitle": "Nadpis události",
-	"searchAllEvents": "Veškeré události",
+	"htmlTitle": "Události | SmartAdminer",
+	"searchTitle": "Nadpis události",
+	"searchAll": "Veškeré události",
 
-	"htmlTitleNewEvent": "Nová událost",
+	"htmlTitleNew": "Nová událost",
 	"headerBasicInfo": "Základní informace",
 	"headerAdditionalInfo": "Doplňující informace",
-	"headerEventBody": "Text události",
+	"headerBody": "Text události",
 	"headerAdditionalImages": "Obrázky k události:",
 	"headerAddImages": "Přidat obrázky:",
 
-	"positiveTextEventCreated": "Událost byla vytvořen",
-	"positiveTextEventUpdated": "Událost byla upraven",
-	"positiveTextEventDeleted": "Událost byla odstraněn",
-	"alertDeleteEvent": "Odstranit událost?",
+	"positiveTextCreated": "Událost byla vytvořen",
+	"positiveTextUpdated": "Událost byla upraven",
+	"positiveTextDeleted": "Událost byla odstraněn",
+	"alertDelete": "Odstranit událost?",
 
 	"placeholderTitle": "Titulek",
 	"placeholderDescription": "Popisek",
 	"placeholderIsVisible": "Událost je viditelná:",
-	"placeholderDate": "Datum zveřejnění",
+	"placeholderDate": "Datum konání",
 	"placeholderCategory": "-- Zvolte kategorii --",
 	"placeholderImage": "",
 	"placeholderImages": "",
@@ -28,5 +28,7 @@
 	"buttonPreview": "Náhled události",
 	"buttonReset": "Resetovat",
 
-	"noDataFound": "Nebyly nalezeny žádné události"
+	"messageEmptyBody": "Vyplňte text události",
+	"noDataFound": "Nebyly nalezeny žádné události",
+	"errorFetch": "Událost se nepodařilo načíst"
 }

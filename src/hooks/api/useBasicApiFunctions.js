@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../modules/ApiFunctions";
+import { BASE_URL, responseHandler } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
 import i18next from "i18next";
 
@@ -124,15 +124,7 @@ export default function useBasicApiFunctions() {
 			credentials: "include",
 		});
 
-		if (response.status === 401) {
-			auth.setUserInfo(null);
-			return null;
-		}
-
-		const rdata = await response.json();
-
-		auth.setUserInfo({ ...auth.userInfo, token: rdata.token });
-		toast.success(positiveText);
+		await responseHandler(response, auth, positiveText);
 	}
 
 	async function updateOrder(apiClass, data, positiveText) {

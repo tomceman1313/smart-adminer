@@ -69,7 +69,7 @@ const Events = () => {
 	return (
 		<div className={css.articles}>
 			<Helmet>
-				<title>{t("htmlTitleEvents")}</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<CategoriesController
 				categories={categories}
@@ -84,9 +84,9 @@ const Events = () => {
 				selectedCategory={selectedCategory}
 				resetFilter={resetFilter}
 				settingsConfig={{
-					searchInput: t("searchEventTitle"),
+					searchInput: t("searchTitle"),
 					multiSelection: false,
-					allItemsText: t("searchAllEvents"),
+					allItemsText: t("searchAll"),
 				}}
 			/>
 

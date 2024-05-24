@@ -19,7 +19,7 @@ export async function formatSubmittedData(
 	data.body = await formatBody(body, arrayInsideImages, apiClass);
 
 	if (data.body === "") {
-		warningToast(i18next.t(`${apiClass}:messageEmptyArticleBody`));
+		warningToast(i18next.t(`${apiClass}:messageEmptyBody`));
 		return null;
 	}
 

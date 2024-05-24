@@ -75,7 +75,7 @@ class ArticlesGateway
 
     public function getByCategory(string $category_id): array
     {
-        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles.category_id = :id ORDER BY articles.id DESC";
+        $sql = "SELECT articles.*, articles_categories.private FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles.category_id = :id ORDER BY articles.date DESC";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -92,7 +92,7 @@ class ArticlesGateway
 
     public function getByCategoryName(string $category_name): array
     {
-        $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles_categories.name = :category_name";
+        $sql = "SELECT articles.* FROM articles INNER JOIN articles_categories ON articles.category_id = articles_categories.id WHERE articles_categories.name = :category_name ORDER BY articles.date DESC";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([

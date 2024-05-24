@@ -16,12 +16,26 @@ export default function ImagesUnderContent({ images, path }) {
 		<>
 			{images?.length > 0 && (
 				<div className={css.under_images} onClick={openImages}>
-					<img src={images.includes("base64") ? images[0] : `${publicPath}/images/articles/${images[0].name}`} alt="" />
+					<img
+						src={
+							images[0].includes("base64")
+								? images[0]
+								: `${publicPath}/images/articles/${images[0].name}`
+						}
+						alt=""
+					/>
 					<span>{`Další ${images.length} fotek`}</span>
 				</div>
 			)}
 			<AnimatePresence>
-				{showFullScreenImages && <FullScreenImage photos={images} close={() => setShowFullScreenImages(false)} start={0} path={path} />}
+				{showFullScreenImages && (
+					<FullScreenImage
+						photos={images}
+						close={() => setShowFullScreenImages(false)}
+						start={0}
+						path={path}
+					/>
+				)}
 			</AnimatePresence>
 		</>
 	);

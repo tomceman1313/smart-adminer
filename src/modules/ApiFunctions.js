@@ -30,6 +30,11 @@ export async function responseHandler(response, auth, positiveText) {
 	}
 
 	const data = await response.json();
+
+	if (data?.token) {
+		auth.setUserInfo({ ...auth.userInfo, token: data.token });
+	}
+
 	return data;
 }
 
@@ -37,8 +42,8 @@ function isValidJSON(str) {
 	try {
 		JSON.parse(str);
 	} catch (e) {
-		console.log(str);
-		return false;
+		console.log("ErrorMessage: ", str);
+		throw new Error(str);
 	}
 	return true;
 }

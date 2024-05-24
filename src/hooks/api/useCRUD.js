@@ -97,7 +97,6 @@ export function useDelete(apiClass, positiveText, errorMessage, invalidateKey) {
 			if (!invalidateKey) {
 				return;
 			}
-
 			if (Array.isArray(invalidateKey[0])) {
 				invalidateKey.forEach((key) =>
 					queryClient.invalidateQueries({ queryKey: key })

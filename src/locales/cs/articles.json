@@ -1,18 +1,18 @@
 {
-	"htmlTitleArticles": "Články | SmartAdminer",
-	"searchArticleTitle": "Nadpis článku",
-	"searchAllArticles": "Veškeré články",
+	"htmlTitle": "Články | SmartAdminer",
+	"searchTitle": "Nadpis článku",
+	"searchAll": "Veškeré články",
 
-	"htmlTitleNewArticle": "Nový článek",
+	"htmlTitleNew": "Nový článek",
 	"headerBasicInfo": "Základní informace",
 	"headerAdditionalInfo": "Doplňující informace",
-	"headerArticleBody": "Text článku",
+	"headerBody": "Text článku",
 	"headerAdditionalImages": "Obrázky pod článkem:",
 	"headerAddImages": "Přidat obrázky:",
-	"positiveTextArticleCreated": "Článek byl vytvořen",
-	"positiveTextArticleUpdated": "Článek byl upraven",
-	"positiveTextArticleDeleted": "Článek byl odstraněn",
-	"alertDeleteArticle": "Odstranit článek?",
+	"positiveTextCreated": "Článek byl vytvořen",
+	"positiveTextUpdated": "Článek byl upraven",
+	"positiveTextDeleted": "Článek byl odstraněn",
+	"alertDelete": "Odstranit článek?",
 
 	"placeholderTitle": "Titulek",
 	"placeholderDescription": "Popisek",
@@ -26,6 +26,7 @@
 	"buttonDelete": "Smazat",
 	"buttonPreview": "Náhled článku",
 
-	"messageEmptyArticleBody": "Vyplňte text článku",
-	"noDataFound": "Nebyly nalezeny žádné články"
+	"messageEmptyBody": "Vyplňte text článku",
+	"noDataFound": "Nebyly nalezeny žádné články",
+	"errorFetch": "Článek se nepodařilo načíst"
 }

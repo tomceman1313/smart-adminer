@@ -70,7 +70,7 @@ const Articles = () => {
 	return (
 		<>
 			<Helmet>
-				<title>{t("htmlTitleArticles")}</title>
+				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<div className={css.articles}>
 				<CategoriesController
@@ -86,9 +86,9 @@ const Articles = () => {
 					selectedCategory={selectedCategory}
 					resetFilter={resetFilter}
 					settingsConfig={{
-						searchInput: t("searchArticleTitle"),
+						searchInput: t("searchTitle"),
 						multiSelection: false,
-						allItemsText: t("searchAllArticles"),
+						allItemsText: t("searchAll"),
 					}}
 				/>
 				{isLoading ? (

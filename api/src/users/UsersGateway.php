@@ -79,6 +79,11 @@ class UsersGateway
 
     public function delete(string $id)
     {
+        $user = $this->get($id);
+        if ($user["username"] == "admin") {
+            throw new Exception("Admin user can not be deleted!");
+        }
+
         $sql = "DELETE FROM users WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
 
