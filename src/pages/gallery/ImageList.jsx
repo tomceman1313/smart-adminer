@@ -15,6 +15,7 @@ export default function ImageList({
 	selectedImages,
 	isMultiSelectionActive,
 	editImageHandler,
+	categories,
 }) {
 	const { t } = useTranslation("gallery");
 	const { setAlert } = useInteraction();
@@ -55,7 +56,8 @@ export default function ImageList({
 				{showEditCont && (
 					<EditPicture
 						image={showEditCont}
-						edit={editImageHandler}
+						categories={categories}
+						editImage={editImageHandler}
 						close={() => setShowEditCont(null)}
 					/>
 				)}

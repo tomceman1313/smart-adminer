@@ -55,15 +55,11 @@ export default function OrderDetail({
 				orderedProducts: _order.ordered_products,
 				deletedProducts: [],
 			});
-
+			console.log(_order);
 			setValue("order_date", makeDateFormat(_order.order_date, "str"));
 			setValue("shipped_date", makeDateFormat(_order.shipped_date, "str"));
 			setValue("completed_date", makeDateFormat(_order.completed_date, "str"));
 			setValue("comments", _order.comments);
-
-			setValue("status_code", _order.status_code);
-			setValue("payment_method", _order.payment_method);
-			setValue("shipping_type_id", _order.shipping_type_id);
 			return _order;
 		},
 		meta: {
@@ -107,111 +103,125 @@ export default function OrderDetail({
 	}
 
 	return (
-		<motion.section
-			className={css.edit}
-			initial={{ x: -600 }}
-			animate={{ x: 0 }}
-			exit={{ x: -600 }}
-			transition={{ type: "spring", duration: 1.5 }}
-		>
-			<h2>{t("headerOrderNumber", { id: order?.id })}</h2>
-			<FontAwesomeIcon
-				id={css.close}
-				icon={faXmark}
-				onClick={() => {
-					reset();
-					setVisible(false);
-				}}
-			/>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<OrderedProducts
-					order={order}
-					products={products}
-					setProducts={setProducts}
-				/>
+		<>
+			{order && (
+				<motion.section
+					className={css.edit}
+					initial={{ x: -600 }}
+					animate={{ x: 0 }}
+					exit={{ x: -600 }}
+					transition={{ type: "spring", duration: 1.5 }}
+				>
+					<h2>{t("headerOrderNumber", { id: order?.id })}</h2>
+					<FontAwesomeIcon
+						id={css.close}
+						icon={faXmark}
+						onClick={() => {
+							reset();
+							setVisible(false);
+						}}
+					/>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<OrderedProducts
+							order={order}
+							products={products}
+							setProducts={setProducts}
+						/>
 
-				<h3>{t("headerOrderInfo")}</h3>
+						<h3>{t("headerOrderInfo")}</h3>
 
-				<Select
-					name="status_code"
-					register={register}
-					icon={faBarsProgress}
-					options={statusCodes.map((status) => {
-						return { id: status.id, name: t(status.name) };
-					})}
-				/>
-				<Select
-					name="payment_method"
-					register={register}
-					icon={faBuildingUser}
-					options={PAYMENT_METHODS.current}
-				/>
-				<Select
-					name="shipping_type_id"
-					register={register}
-					icon={faBuildingUser}
-					options={shippingTypes}
-				/>
+						<Select
+							name="status_code"
+							register={register}
+							icon={faBarsProgress}
+							options={statusCodes.map((status) => {
+								return { id: status.id, name: t(status.name) };
+							})}
+							defaultValue={order.status_code}
+							setValue={setValue}
+						/>
+						<Select
+							name="payment_method"
+							register={register}
+							icon={faBuildingUser}
+							options={PAYMENT_METHODS.current}
+							defaultValue={order.payment_method}
+							setValue={setValue}
+						/>
+						<Select
+							name="shipping_type_id"
+							register={register}
+							icon={faBuildingUser}
+							options={shippingTypes}
+							defaultValue={order.shipping_type_id}
+							setValue={setValue}
+						/>
 
-				<DatePicker
-					placeholder={t("placeholderOrderedDate")}
-					register={register}
-					type="date"
-					name="order_date"
-					icon={faReceipt}
-					isRequired={true}
-					additionalClasses="gray half"
-				/>
+						<DatePicker
+							placeholder={t("placeholderOrderedDate")}
+							register={register}
+							type="date"
+							name="order_date"
+							icon={faReceipt}
+							isRequired={true}
+							additionalClasses="gray half"
+						/>
 
-				<DatePicker
-					placeholder={t("placeholderShippedDate")}
-					register={register}
-					type="date"
-					name="shipped_date"
-					icon={faTruckFast}
-					additionalClasses="gray half"
-				/>
+						<DatePicker
+							placeholder={t("placeholderShippedDate")}
+							register={register}
+							type="date"
+							name="shipped_date"
+							icon={faTruckFast}
+							additionalClasses="gray half"
+						/>
 
-				<DatePicker
-					placeholder={t("placeholderCompletedDate")}
-					register={register}
-					type="date"
-					name="completed_date"
-					icon={faSquareCheck}
-					additionalClasses="gray half"
-				/>
+						<DatePicker
+							placeholder={t("placeholderCompletedDate")}
+							register={register}
+							type="date"
+							name="completed_date"
+							icon={faSquareCheck}
+							additionalClasses="gray half"
+						/>
 
-				<InputBox
-					placeholder={t("placeholderNotes")}
-					register={register}
-					type="text"
-					name="comments"
-					icon={faCommentDots}
-				/>
+						<InputBox
+							placeholder={t("placeholderNotes")}
+							register={register}
+							type="text"
+							name="comments"
+							icon={faCommentDots}
+						/>
 
-				<InvoiceCredentialsForm
-					register={register}
-					customer={order?.customer}
-				/>
+						<InvoiceCredentialsForm
+							register={register}
+							customer={order?.customer}
+						/>
 
-				<DeliveryCredentialsForm
-					key={`delivery-${order?.customer.delivery_address}`}
-					register={register}
-					customer={order?.customer}
-				/>
-				<CompanyCredentialsForm
-					key={`company-${order?.customer.company_name}`}
-					register={register}
-					customer={order?.customer}
-				/>
+						<DeliveryCredentialsForm
+							key={`delivery-${order?.customer.delivery_address}`}
+							register={register}
+							customer={order?.customer}
+						/>
+						<CompanyCredentialsForm
+							key={`company-${order?.customer.company_name}`}
+							register={register}
+							customer={order?.customer}
+						/>
 
-				<div className={css.buttons_box}>
-					<button>{t("buttonSave")}</button>
-					<button type="button" className="red_button" onClick={deleteOrder}>
-						{t("buttonDelete")}
-					</button>
-				</div>
-			</form>
-		</motion.section>
+						<div className={css.buttons_box}>
+							<button>{t("buttonSave")}</button>
+							<button
+								type="button"
+								className="red_button"
+								onClick={deleteOrder}
+							>
+								{t("buttonDelete")}
+							</button>
+						</div>
+					</form>
+				</motion.section>
+			)}
+		</>
 	);
 }

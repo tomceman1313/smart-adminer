@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import useInteraction from "../../../hooks/useInteraction";
 import { publicPath } from "../../../modules/BasicFunctions";
 
+import css from "../css/OrderDetail.module.css";
+
 export default function OrderedProducts({ products, setProducts }) {
 	const { t } = useTranslation("orders");
 	const { setAlert } = useInteraction();
@@ -47,7 +49,7 @@ export default function OrderedProducts({ products, setProducts }) {
 	}
 
 	return (
-		<ul>
+		<ul className={css.products_list}>
 			{products &&
 				products?.orderedProducts.map((product, index) => (
 					<li key={`ordered-product-${product.variant_id}`}>

@@ -7,8 +7,6 @@ import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { useDelete } from "../../hooks/api/useCRUD";
 import UserList from "./UserList";
 
-import css from "./Profiles.module.css";
-
 export default function Profiles() {
 	const { t } = useTranslation("profiles", "errors");
 
@@ -68,7 +66,7 @@ export default function Profiles() {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<div className={css.users}>
+			<div>
 				{users && roles && (
 					<UserList
 						users={users}

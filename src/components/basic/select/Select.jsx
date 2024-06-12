@@ -1,25 +1,54 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFormContext } from "react-hook-form";
+import css from "./Select.module.css";
+import SelectWithoutFormRef from "./SelectWithoutFormRef";
 
-import cssBasic from "../../styles/Basic.module.css";
+export default function Select({
+	name,
+	icon,
+	options,
+	defaultValue,
+	placeholderValue,
+	halfSize,
+	whiteMode,
+}) {
+	const {
+		register,
+		setValue,
+		formState: { errors, isSubmitSuccessful },
+	} = useFormContext();
 
-export default function Select({ register, name, icon, options, defaultValue, placeholderValue }) {
 	return (
-		<div className={cssBasic.input_box}>
-			<select {...register(name)} defaultValue={defaultValue ? defaultValue : ""} required>
-				{placeholderValue && (
-					<option value="" disabled>
-						{placeholderValue}
-					</option>
-				)}
+		<SelectWithoutFormRef
+			defaultValue={defaultValue}
+			halfSize={halfSize}
+			icon={icon}
+			name={name}
+			setValue={setValue}
+			placeholderValue={placeholderValue}
+			options={options}
+			whiteMode={whiteMode}
+			isSubmitted={isSubmitSuccessful}
+		>
+			<select
+				{...register(name)}
+				defaultValue={defaultValue ? defaultValue : ""}
+				style={{ display: "none" }}
+			>
+				<option value="">{placeholderValue}</option>
 				{options &&
 					options.map((el) => (
-						<option key={`${name}-${el.name}`} value={el.id ? el.id : el.value}>
+						<option
+							key={`${name}-${el.name}-hidden`}
+							value={el.id ? el.id : el.value}
+						>
 							{el.name}
 						</option>
 					))}
 			</select>
-			<FontAwesomeIcon className={cssBasic.icon} icon={icon} />
-		</div>
+
+			{errors[name] && (
+				<p className={css.error_message}>{`* ${errors[name].message}`}</p>
+			)}
+		</SelectWithoutFormRef>
 	);
 }

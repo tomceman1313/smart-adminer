@@ -1,39 +1,47 @@
-import { useState } from "react";
-import cssBasic from "../../components/styles/Basic.module.css";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import SelectWithoutFormRef from "../../components/basic/select/SelectWithoutFormRef";
 
 const LANGUAGES = [
-	{ localName: "Čeština", code: "cs" },
-	{ localName: "English", code: "en" },
+	{ name: "Čeština", code: "cs" },
+	{ name: "English", code: "en" },
 ];
 
 export default function LanguageSelector({ showHeader = true }) {
 	const { i18n, t } = useTranslation("settings");
 	const [selectedLanguage, setSelectedLanguage] = useState(
-		localStorage.getItem("language") ? localStorage.getItem("language") : "cs"
+		getCurrentLanguageName()
 	);
 
-	const onChangeHandler = (e) => {
-		i18n.changeLanguage(e.target.value);
-		localStorage.setItem("language", e.target.value);
-		setSelectedLanguage(e.target.value);
-	};
+	useEffect(() => {
+		const language = LANGUAGES.find((lang) => lang.name === selectedLanguage);
+
+		i18n.changeLanguage(language.code);
+		localStorage.setItem("language", language.code);
+		setSelectedLanguage(language.name);
+	}, [selectedLanguage, i18n]);
 
 	return (
 		<div style={{ width: "100%" }}>
 			{showHeader && <h3>{t("headerSystemLanguage")}</h3>}
-			<div className={`${cssBasic.input_box} ${cssBasic.half}`}>
-				<select value={selectedLanguage} onChange={onChangeHandler}>
-					{LANGUAGES.map((lang) => (
-						<option key={lang.code} value={lang.code}>
-							{lang.localName}
-						</option>
-					))}
-				</select>
-				<FontAwesomeIcon className={cssBasic.icon} icon={faGlobe} />
-			</div>
+			<SelectWithoutFormRef
+				name="language"
+				icon={faGlobe}
+				defaultValue={selectedLanguage}
+				setState={setSelectedLanguage}
+				options={LANGUAGES.map((lang) => lang.name)}
+				halfSize
+			/>
 		</div>
 	);
+}
+
+function getCurrentLanguageName() {
+	const languageCode = localStorage.getItem("language")
+		? localStorage.getItem("language")
+		: "cs";
+	const currentLang = LANGUAGES.find((lang) => lang.code === languageCode);
+
+	return currentLang.name;
 }

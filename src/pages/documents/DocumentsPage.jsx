@@ -90,7 +90,7 @@ export default function DocumentsPage() {
 				filterByCategory={filterByCategory}
 				reloadData={refetch}
 			/>
-			<NewDocument refreshData={refetch} categories={categories} />
+			<NewDocument categories={categories} />
 			<ItemsController
 				setSearchedName={setSearchedName}
 				selectedCategory={selectedCategory}

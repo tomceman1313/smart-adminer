@@ -98,3 +98,11 @@
 .half {
 	width: calc(50% - 20px);
 }
+
+.error_message {
+	width: 100%;
+	margin: 0;
+	margin-top: -15px;
+	margin-bottom: 15px;
+	color: var(--red);
+}

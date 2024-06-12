@@ -65,6 +65,14 @@
 	color: black;
 }
 
+.error_message {
+	width: 100%;
+	margin: 0;
+	margin-top: -15px;
+	margin-bottom: 15px;
+	color: var(--red);
+}
+
 .white_color svg {
 	color: white;
 }
@@ -83,25 +91,6 @@
 
 .white_color select option {
 	background-color: #333 !important;
-}
-
-.input_box select {
-	position: absolute;
-	left: 60px;
-	top: 50%;
-	transform: translateY(-50%);
-	width: calc(100% - 80px);
-	height: 35px;
-	background-color: transparent;
-	padding: 5px 0;
-	color: #333;
-	font-size: 16px;
-	transition: all 0.5s;
-}
-
-.input_box select option {
-	background-color: white;
-	line-height: 22px;
 }
 
 .image_box {
@@ -147,98 +136,4 @@
 	.half {
 		width: 100%;
 	}
-}
-
-/*-------------------------------------- With floating placeholder and without icon*/
-.input_box_comment {
-	position: relative;
-	background: linear-gradient(to left, #333 50%, rgb(255, 255, 255, 0.9) 50%);
-	background-size: 200% 1px;
-	background-repeat: no-repeat;
-	background-position: 100% 100%;
-	margin-bottom: 20px;
-	height: 50px;
-	width: 100%;
-}
-
-.input_box_comment input {
-	position: absolute;
-	left: 25px;
-	top: 50%;
-	transform: translateY(-50%);
-	width: calc(100% - 10px);
-	height: 35px;
-	background-color: transparent;
-	padding: 15px 0 5px 0;
-	color: white;
-	font-size: 16px;
-	transition: all 0.5s;
-}
-
-.input_box_comment input:focus,
-.input_box_comment input:valid {
-	left: 0;
-}
-
-.input_box_comment input:focus ~ div,
-.input_box_comment input:valid ~ div {
-	transform: translateY(0);
-	top: 0;
-	font-size: 14px;
-	color: black;
-}
-
-.input_box_comment div {
-	position: absolute;
-	left: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	transition: all 0.5s;
-	pointer-events: none;
-}
-
-.input_box_comment select {
-	position: absolute;
-	left: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 100%;
-	height: 35px;
-	background-color: transparent;
-	padding: 15px 0 0 0;
-	color: white;
-	font-size: 16px;
-	transition: all 0.5s;
-}
-
-.input_box_comment select option {
-	background-color: #333;
-	line-height: 22px;
-}
-
-.input_box_comment span {
-	position: absolute;
-	left: 0;
-	top: 0;
-	color: black;
-	font-size: 14px;
-}
-
-.datepicker {
-	max-width: calc(50% - 10px);
-}
-
-.icon_comment {
-	color: var(--main-dark);
-	margin-right: 3px;
-}
-
-.delete_button {
-	background-color: var(--red);
-	text-decoration: underline var(--red);
-	opacity: 0;
-}
-
-.delete_button:hover {
-	background-color: var(--red-dark);
 }

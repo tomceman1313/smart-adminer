@@ -12,17 +12,18 @@ import InputBox from "../../components/basic/InputBox";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
 import AddMultiplePictures from "./AddMultiplePictures";
-
+import { photoSchema } from "../../schemas/zodSchemas";
 import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
+import Form from "../../components/basic/form/Form";
 
 export default function NewPicture({ categories }) {
 	const { t } = useTranslation("gallery");
+	const formMethods = useForm();
 	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
 	const [pickedCategories, setPickedCategories] = useState([]);
-	const { register, handleSubmit, reset } = useForm();
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createImage, status } = useMutation({
@@ -44,7 +45,7 @@ export default function NewPicture({ categories }) {
 			return create("gallery", data, t("positiveTextImageCreated"));
 		},
 		onSuccess: () => {
-			reset();
+			formMethods.reset();
 			setPickedCategories([]);
 			queryClient.invalidateQueries({ queryKey: ["images"] });
 		},
@@ -58,17 +59,19 @@ export default function NewPicture({ categories }) {
 		<>
 			<section className="half-section">
 				<h2>{t("headerCreateImage")}</h2>
-				<form onSubmit={handleSubmit(createImage)}>
+				<Form
+					onSubmit={createImage}
+					validationSchema={photoSchema}
+					formContext={formMethods}
+				>
 					<InputBox
 						placeholder={t("placeholderImageTitle")}
-						register={register}
 						type="text"
 						name="title"
 						icon={faHeading}
 					/>
 					<InputBox
 						placeholder={t("placeholderImageDescription")}
-						register={register}
 						type="text"
 						name="description"
 						icon={faQuoteRight}
@@ -82,7 +85,6 @@ export default function NewPicture({ categories }) {
 					/>
 
 					<InputBox
-						register={register}
 						type="file"
 						name="image"
 						icon={faImage}
@@ -100,7 +102,7 @@ export default function NewPicture({ categories }) {
 							{t("buttonCreateMultiple")}
 						</button>
 					</div>
-				</form>
+				</Form>
 			</section>
 
 			<AnimatePresence>

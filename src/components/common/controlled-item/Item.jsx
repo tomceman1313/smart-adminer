@@ -52,9 +52,7 @@ export default function Item({ el, remove, edit, show, deleteQuestion }) {
 					icon={faEye}
 					onClick={filterByItemId}
 				/>
-			) : (
-				<></>
-			)}
+			) : null}
 			<FontAwesomeIcon
 				className={css.edit_button}
 				icon={disabled ? faPencil : faFloppyDisk}

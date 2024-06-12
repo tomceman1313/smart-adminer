@@ -22,12 +22,15 @@ import {
 import AddMultipleFiles from "./AddMultipleFiles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
+import Form from "../../components/basic/form/Form";
+import { documentSchema } from "../../schemas/zodSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const NewDocument = ({ refreshData, categories }) => {
-	const { t } = useTranslation("documents");
+const NewDocument = ({ categories }) => {
+	const { t } = useTranslation("documents", "validationErrors");
 	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
-	const { register, handleSubmit, reset } = useForm();
+	const formMethods = useForm({ resolver: zodResolver(documentSchema(t)) });
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createDocument, status } = useMutation({
@@ -62,7 +65,7 @@ const NewDocument = ({ refreshData, categories }) => {
 			return create("documents", data, t("positiveTextDocumentCreated"));
 		},
 		onSuccess: () => {
-			reset();
+			formMethods.reset();
 			queryClient.invalidateQueries({ queryKey: ["documents"] });
 		},
 	});
@@ -75,50 +78,40 @@ const NewDocument = ({ refreshData, categories }) => {
 		<>
 			<section className="half-section">
 				<h2>{t("headerCreateDocument")}</h2>
-				<form onSubmit={handleSubmit(createDocument)}>
+				<Form onSubmit={createDocument} formContext={formMethods}>
 					<InputBox
 						placeholder={t("placeholderDocumentTitle")}
-						register={register}
 						type="text"
 						name="title"
 						icon={faHeading}
-						isRequired={true}
 					/>
 					<InputBox
 						placeholder={t("placeholderDocumentDescription")}
-						register={register}
 						type="text"
 						name="description"
 						icon={faInfo}
-						isRequired={false}
 					/>
 					<Select
 						name="category_id"
 						options={categories}
-						register={register}
 						placeholderValue={t("placeholderCategorySelect")}
 						icon={faHashtag}
 					/>
 					<InputBox
 						placeholder="Soubor"
-						register={register}
 						type="file"
 						name="image"
 						icon={faImage}
-						isRequired={false}
 						accept="image/*"
 					/>
 					<InputBox
 						placeholder="Soubor"
-						register={register}
 						type="file"
 						name="file"
 						icon={faFile}
-						isRequired={true}
 						accept="*"
 					/>
 					<DatePicker
-						register={register}
 						name="date"
 						title={t("placeholderDocumentDate")}
 						icon={faCalendarDays}
@@ -133,7 +126,7 @@ const NewDocument = ({ refreshData, categories }) => {
 							{t("buttonCreateMultiple")}
 						</button>
 					</div>
-				</form>
+				</Form>
 			</section>
 
 			<AnimatePresence>

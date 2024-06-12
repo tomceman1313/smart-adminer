@@ -114,6 +114,7 @@ export default function GalleryPage() {
 				<ImageList
 					key={`images-c${selectedCategory?.name}`}
 					images={images?.data}
+					categories={categories}
 					totalPages={images?.total_length}
 					deleteImageHandler={deleteImageHandler}
 					editImageHandler={editImageHandler}

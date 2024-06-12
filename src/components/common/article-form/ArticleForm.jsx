@@ -38,7 +38,7 @@ export default function ArticleForm({ type }) {
 	const { create, edit, get, remove } = useBasicApiFunctions();
 	const { getCategories } = useCategoriesApi();
 	const { setAlert } = useInteraction();
-	const { register, handleSubmit, getValues, reset } = useForm();
+	const { register, handleSubmit, getValues, reset, setValue } = useForm();
 
 	const [eventPreview, setEventPreview] = useState(null);
 	const [body, setBody] = useState(null);
@@ -187,6 +187,7 @@ export default function ArticleForm({ type }) {
 							icon={faHashtag}
 							placeholderValue={t("placeholderCategory")}
 							defaultValue={data?.category_id}
+							setValue={setValue}
 						/>
 						<ImageInput
 							image={data?.image}

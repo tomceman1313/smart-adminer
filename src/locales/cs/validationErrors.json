@@ -1,0 +1,6 @@
+{
+	"required": "Pole musí být vyplněno",
+	"maxLength": "Text může mít maximálně {{number}} znaků",
+	"whiteSpaces": "Text nesmí obsahovat mezery",
+	"unrealDates": "Počáteční datum musí být dříve než konečné"
+}

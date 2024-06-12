@@ -21,12 +21,12 @@ import { useTranslation } from "react-i18next";
 import TextArea from "../../components/basic/textarea/TextArea";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Page.module.css";
+import Form from "../../components/basic/form/Form";
 
 export default function Page() {
 	const { t } = useTranslation("pages", "errors");
 	const { name } = useParams();
 	const { getByName, edit } = useBasicApiFunctions();
-	const { register, handleSubmit } = useForm();
 	const originalImages = useRef([]);
 
 	const [body, setBody] = useState("");
@@ -74,7 +74,7 @@ export default function Page() {
 			<Helmet>
 				<title>{t("htmlTitlePage")}</title>
 			</Helmet>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<Form onSubmit={onSubmit}>
 				{page ? (
 					<section className={css.page}>
 						<h2 className={css.title}>{page.page_name}</h2>
@@ -82,7 +82,6 @@ export default function Page() {
 						{!!page.config.title && (
 							<InputBox
 								placeholder={t("placeholderTitle")}
-								register={register}
 								type="text"
 								name="title"
 								icon={faHeading}
@@ -95,7 +94,6 @@ export default function Page() {
 								name="description"
 								placeholder={t("placeholderDescription")}
 								icon={faMagnifyingGlass}
-								register={register}
 								defaultValue={page.description}
 								isRequired={true}
 							/>
@@ -105,7 +103,6 @@ export default function Page() {
 								image={page.image}
 								name="image"
 								path="pages"
-								register={register}
 								additionalClasses="half"
 							/>
 						)}
@@ -120,7 +117,6 @@ export default function Page() {
 							<TextArea
 								name="body"
 								icon={faTableColumns}
-								register={register}
 								placeholder={t("placeholderTextArea")}
 								defaultValue={page.body}
 							/>
@@ -132,7 +128,7 @@ export default function Page() {
 				) : (
 					<h3>Načítání stránky</h3>
 				)}
-			</form>
+			</Form>
 		</>
 	);
 }

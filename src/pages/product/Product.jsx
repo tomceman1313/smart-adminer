@@ -110,7 +110,6 @@ export default function Product() {
 	}, [id, product]);
 
 	async function setData() {
-		setValue("manufacturer_id", product.manufacturer_id);
 		setValue("name", product.name);
 		setValue("description", product.description);
 		setValue("active", product.active);
@@ -199,7 +198,7 @@ export default function Product() {
 					{product?.name ? product.name : t("htmlTitleProduct")} | SmartAdminer
 				</title>
 			</Helmet>
-			{manufacturers ? (
+			{manufacturers && product ? (
 				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
 					<section className={`${css.basic_info} half-section`}>
 						<h2>{t("headerBasicInfo")}</h2>
@@ -225,6 +224,8 @@ export default function Product() {
 							icon={faCopyright}
 							register={register}
 							placeholderValue={t("placeholderManufacturer")}
+							defaultValue={product.manufacturer_id}
+							setValue={setValue}
 						/>
 
 						<CategorySelector

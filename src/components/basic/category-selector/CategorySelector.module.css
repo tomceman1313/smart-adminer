@@ -1,18 +1,124 @@
+.select_cont {
+	position: relative;
+	width: 100%;
+	position: relative;
+	border: 1px solid #d6dde1;
+	border-radius: 8px;
+	margin-bottom: 20px;
+	min-height: 50px;
+}
+
+.select {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	min-height: 35px;
+	background-color: transparent;
+	padding: 5px 0;
+	color: #333;
+	font-size: 16px;
+	transition: all 0.5s;
+	cursor: pointer;
+}
+
+.select p {
+	cursor: pointer;
+	user-select: none;
+	margin: 0;
+}
+
 .picked_categories {
+	width: calc(100% - 120px);
 	display: flex;
 	flex-wrap: wrap;
+	margin: 0;
 }
 
 .picked_categories li {
-	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin: 2px;
+	height: 30px;
+	padding-left: 10px;
+	border-radius: 8px;
 	background-color: var(--main-dark);
 	color: white;
-	padding: 5px 15px;
-	border-radius: 8px;
-	margin: 2px;
+	transition: all 0.5s;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.picked_categories span {
+	font-size: 0.8rem;
+	line-height: 0.8rem;
+}
+
+.picked_categories svg {
+	font-size: 0.8rem;
+	padding: 9px 10px;
+	border-radius: 0 8px 8px 0;
 	transition: all 0.5s;
 }
 
-.picked_categories li:hover {
+.picked_categories svg:hover {
 	background-color: var(--red);
+}
+
+.white .icon,
+.white .arrow,
+.white .select p {
+	color: white;
+}
+
+/* FIRST ICON*/
+.icon {
+	font-size: 16px;
+	transition: all 0.5s;
+	color: var(--main-dark);
+	background-color: transparent;
+	padding: 12px;
+}
+
+/* SECOND ICON*/
+.arrow {
+	margin-right: 20px;
+	color: var(--main-dark);
+	border-left: solid 1px var(--gray);
+	padding: 5px 0px 5px 15px;
+	cursor: pointer;
+}
+
+/*----------------------------- Categories list*/
+
+.categories_list {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	margin: 0;
+	background-color: white;
+	box-shadow: var(--section-shadow);
+	z-index: 5;
+	overflow: hidden;
+}
+
+.categories_list ul {
+	margin: 0;
+	max-height: 150px;
+	overflow-y: auto;
+	scrollbar-color: var(--main) white;
+}
+
+.categories_list li {
+	user-select: none;
+	padding: 7px 15px;
+	transition: all 0.5s;
+	font-size: 0.9rem;
+	cursor: pointer;
+}
+
+.categories_list li:hover {
+	background: var(--gray);
 }

@@ -4,3 +4,8 @@
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule (.+) index.php?p=$1 [QSA,L]
 </IfModule>
+
+# Set Access-Control-Allow-Origin header for all image requests
+<FilesMatch "\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)$">
+   Header set Access-Control-Allow-Origin "*"
+</FilesMatch>

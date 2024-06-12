@@ -10,9 +10,9 @@
 	"headerAdditionalImages": "Obrázky k události:",
 	"headerAddImages": "Přidat obrázky:",
 
-	"positiveTextCreated": "Událost byla vytvořen",
-	"positiveTextUpdated": "Událost byla upraven",
-	"positiveTextDeleted": "Událost byla odstraněn",
+	"positiveTextCreated": "Událost byla vytvořena",
+	"positiveTextUpdated": "Událost byla upravena",
+	"positiveTextDeleted": "Událost byla odstraněna",
 	"alertDelete": "Odstranit událost?",
 
 	"placeholderTitle": "Titulek",

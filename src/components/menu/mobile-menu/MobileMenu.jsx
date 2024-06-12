@@ -1,10 +1,8 @@
 import { AnimatePresence, motion, useCycle } from "framer-motion";
-import { publicPath } from "../../../modules/BasicFunctions";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Menu from "../menu-components/Menu";
 import { MenuToggle } from "./MenuToggle";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import css from "./MobileMenu.module.css";
 
 const MobileMenu = ({ permissions, logOut }) => {
@@ -24,13 +22,9 @@ const MobileMenu = ({ permissions, logOut }) => {
 		>
 			<Link to="/">
 				<div className={css.logo_title}>
+					<img src={`/admin/favicon.svg`} className={css.logo} alt="logo" />
 					<img
-						src={`${publicPath}/favicon.svg`}
-						className={css.logo}
-						alt="logo"
-					/>
-					<img
-						src={`${publicPath}/logo-white.svg`}
+						src={`/admin/logo-white.svg`}
 						className={css.logo_text}
 						alt="logo"
 					/>

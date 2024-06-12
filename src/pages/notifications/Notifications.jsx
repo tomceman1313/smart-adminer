@@ -1,33 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { isActive } from "../../modules/BasicFunctions";
 import EditNotification from "./EditNotification";
 import NewNotification from "./NewNotification";
 
+import { useGetAll } from "../../hooks/api/useCRUD";
 import css from "./Notifications.module.css";
 
 const Notifications = () => {
 	const { t } = useTranslation("notifications", "errors");
-	const { getAll } = useBasicApiFunctions();
+	const { data: notifications } = useGetAll(
+		"notifications",
+		null,
+		["notifications"],
+		t("errors:errorFetchNotifications")
+	);
 
 	const [editNotification, setEditNotification] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
-
-	const { data: notifications, refetch } = useQuery({
-		queryKey: ["notifications"],
-		queryFn: async () => {
-			const data = await getAll("notifications");
-			return data;
-		},
-		meta: {
-			errorMessage: t("errors:errorFetchNotifications"),
-		},
-	});
 
 	const showCreateNotification = () => {
 		setShowAddItemCont(true);
@@ -43,7 +36,7 @@ const Notifications = () => {
 			<Helmet>
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
-			<section>
+			<section style={{ overflow: "hidden" }}>
 				<h2>{t("headerNotificationsList")}</h2>
 				{notifications?.length > 0 ? (
 					<table>
@@ -72,15 +65,11 @@ const Notifications = () => {
 
 				<EditNotification
 					notification={editNotification}
-					loadData={refetch}
 					setEditNotification={setEditNotification}
 				/>
 				<AnimatePresence>
 					{showAddItemCont && (
-						<NewNotification
-							loadData={refetch}
-							setShowCreateNotification={setShowAddItemCont}
-						/>
+						<NewNotification setShowCreateNotification={setShowAddItemCont} />
 					)}
 				</AnimatePresence>
 			</section>

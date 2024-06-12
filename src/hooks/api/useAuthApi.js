@@ -1,9 +1,9 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
+import warningToast from "../../components/common/warning-toast/WarningToast";
 import { BASE_URL } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
 import useInteraction from "../useInteraction";
-import { useTranslation } from "react-i18next";
-
 export default function useAuthApi() {
 	const { t } = useTranslation("login");
 	const auth = useAuth();
@@ -130,8 +130,7 @@ export default function useAuthApi() {
 			navigate(from, { state: { from: location }, replace: true });
 			return;
 		}
-
-		setMessage({ action: "alert", text: t("messageWrongCredentials") });
+		warningToast(t("messageWrongCredentials"));
 	}
 
 	async function logOut() {

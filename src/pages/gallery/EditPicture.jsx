@@ -1,26 +1,28 @@
-import { faHashtag, faHeading, faQuoteRight, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faHeading,
+	faQuoteRight,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
 import { getImageCategories } from "../../modules/ApiGallery";
-import { getCategories } from "../../modules/ApiCategories";
-import { motion } from "framer-motion";
-
-import cssBasic from "../../components/styles/Basic.module.css";
-import css from "./css/Gallery.module.css";
+import { photoSchema } from "../../schemas/zodSchemas";
 import { useTranslation } from "react-i18next";
+import CategorySelector from "../../components/basic/category-selector/CategorySelector";
+import css from "./css/Gallery.module.css";
+import Form from "../../components/basic/form/Form";
 
-const EditPicture = ({ image, edit, close }) => {
+const EditPicture = ({ image, categories, editImage, close }) => {
 	const { t } = useTranslation("gallery");
-	const [category, setCategory] = useState(null);
 	const [pickedCategories, setPickedCategories] = useState([]);
-	const { register, handleSubmit, reset, setValue } = useForm();
+	const formMethods = useForm();
 
 	useEffect(() => {
-		getCategories(setCategory, "gallery");
-		setValue("title", image.title);
-		setValue("description", image.description);
+		formMethods.setValue("title", image.title);
+		formMethods.setValue("description", image.description);
 		getImageCategories(image.id, setPickedCategories);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -28,28 +30,10 @@ const EditPicture = ({ image, edit, close }) => {
 	const updateImage = (data) => {
 		data.id = image.id;
 		data.category_id = pickedCategories;
-		edit(data);
-		reset();
+		editImage(data);
+		formMethods.reset();
 		setPickedCategories([]);
 		close();
-	};
-
-	const chooseCategory = (e) => {
-		const name = category.filter((item) => item.id === parseInt(e.target.value));
-		const alreadyIn = pickedCategories.find((item) => item.id === parseInt(e.target.value));
-		setValue("category_id", "default");
-		if (alreadyIn) {
-			return;
-		}
-
-		if (name.length !== 0) {
-			setPickedCategories((prev) => [...prev, name[0]]);
-		}
-	};
-
-	const removeFromPicked = (e) => {
-		const removed = pickedCategories.filter((item) => item.id !== parseInt(e.target.id));
-		setPickedCategories(removed);
 	};
 
 	return (
@@ -60,45 +44,42 @@ const EditPicture = ({ image, edit, close }) => {
 			exit={{ y: "-250%" }}
 			transition={{ type: "spring", duration: 1 }}
 		>
-			<FontAwesomeIcon className={css.close_btn} icon={faXmark} onClick={close} />
+			<FontAwesomeIcon
+				className={css.close_btn}
+				icon={faXmark}
+				onClick={close}
+			/>
 			<h2>{t("headerEditImage")}</h2>
-			<form onSubmit={handleSubmit(updateImage)}>
-				<InputBox placeholder={t("placeholderImageTitle")} register={register} type="text" name="title" icon={faHeading} white={true} />
+			<Form
+				onSubmit={updateImage}
+				formContext={formMethods}
+				validationSchema={photoSchema}
+			>
+				<InputBox
+					placeholder={t("placeholderImageTitle")}
+					type="text"
+					name="title"
+					icon={faHeading}
+					white={true}
+				/>
 				<InputBox
 					placeholder={t("placeholderImageDescription")}
-					register={register}
 					type="text"
 					name="description"
 					icon={faQuoteRight}
 					white={true}
 				/>
 
-				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<select defaultValue={"default"} {...register("category_id")} onChange={chooseCategory} required>
-						<option value="default" disabled>
-							{t("placeholderSelectCategory")}
-						</option>
-						{category &&
-							category.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
-								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-				</div>
-
-				<ul className={css.picked_categories}>
-					{pickedCategories &&
-						pickedCategories.map((el) => (
-							<li key={el.id} id={el.id} onClick={removeFromPicked}>
-								{el.name}
-							</li>
-						))}
-				</ul>
+				<CategorySelector
+					categories={categories}
+					placeholder={t("placeholderCategory")}
+					selectedCategories={pickedCategories}
+					setSelectedCategories={setPickedCategories}
+					whiteMode
+				/>
 
 				<button className="blue_button">{t("buttonSave")}</button>
-			</form>
+			</Form>
 		</motion.section>
 	);
 };

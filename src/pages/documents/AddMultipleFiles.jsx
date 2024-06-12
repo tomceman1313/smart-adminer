@@ -1,19 +1,25 @@
-import { faHashtag, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faHashtag, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
+import Select from "../../components/basic/select/Select";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
-import cssBasic from "../../components/styles/Basic.module.css";
 import useItemsControllerApiFunctions from "../../hooks/api/useItemsControllerApiFunctions";
 import { convertBase64, makeDate } from "../../modules/BasicFunctions";
+import { multipleDocumentSchema } from "../../schemas/zodSchemas";
 import css from "./css/Documents.module.css";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const AddMultipleFiles = ({ close, categories }) => {
-	const { t } = useTranslation("documents");
+	const { t } = useTranslation("documents", "validationErrors");
 	const { multipleCreate } = useItemsControllerApiFunctions();
-	const { register, handleSubmit, reset } = useForm();
+	const formMethods = useForm({
+		resolver: zodResolver(multipleDocumentSchema(t)),
+	});
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createDocuments, status } = useMutation({
@@ -39,7 +45,7 @@ const AddMultipleFiles = ({ close, categories }) => {
 			);
 		},
 		onSuccess: () => {
-			reset();
+			formMethods.reset();
 			close();
 			queryClient.invalidateQueries({ queryKey: ["documents"] });
 		},
@@ -59,37 +65,30 @@ const AddMultipleFiles = ({ close, categories }) => {
 				onClick={close}
 			/>
 			<h2>{t("headerCreateMultipleDocuments")}</h2>
-			<form onSubmit={handleSubmit(createDocuments)}>
-				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<select
-						defaultValue={"default"}
-						{...register("category_id")}
-						required
-					>
-						<option value="default" disabled>
-							{t("placeholderCategorySelect")}
-						</option>
-						{categories &&
-							categories.map((el) => (
-								<option key={el.id} value={el.id}>
-									{el.name}
-								</option>
-							))}
-					</select>
-					<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-				</div>
+			<Form onSubmit={createDocuments} formContext={formMethods}>
+				<Select
+					icon={faHashtag}
+					name="category_id"
+					options={categories}
+					placeholderValue={t("placeholderCategorySelect")}
+					whiteMode
+				/>
 
-				<div className={`${cssBasic.input_box} ${cssBasic.white_color}`}>
-					<input type="file" accept="*" {...register("files")} multiple />
-					<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
-				</div>
+				<InputBox
+					type="file"
+					name="files"
+					icon={faFile}
+					accept="*"
+					multiple
+					white
+				/>
 
 				<SubmitButton
 					status={status}
 					value={t("buttonCreate")}
 					additionalCss={"blue_button"}
 				/>
-			</form>
+			</Form>
 		</motion.section>
 	);
 };

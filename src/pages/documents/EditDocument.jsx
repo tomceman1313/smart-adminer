@@ -15,8 +15,15 @@ import FileInput from "../../components/basic/file-input/FIleInput";
 import ImageInput from "../../components/basic/image-input/ImageInput";
 import Select from "../../components/basic/select/Select";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import { convertBase64, makeDateFormat } from "../../modules/BasicFunctions";
+import {
+	convertBase64,
+	makeDateFormat,
+	makeDate,
+} from "../../modules/BasicFunctions";
 import css from "./css/EditDocument.module.css";
+import Form from "../../components/basic/form/Form";
+import { documentSchema } from "../../schemas/zodSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function EditDocument({
 	editedDocument,
@@ -24,9 +31,9 @@ export default function EditDocument({
 	categories,
 	setVisible,
 }) {
-	const { t } = useTranslation("documents");
+	const { t } = useTranslation("documents", "validationErrors");
 	const { edit } = useBasicApiFunctions();
-	const { register, handleSubmit, reset } = useForm();
+	const formMethods = useForm({ resolver: zodResolver(documentSchema(t)) });
 
 	const onSubmit = async (data) => {
 		if (data?.file?.[0]) {
@@ -46,11 +53,20 @@ export default function EditDocument({
 			data.image = "";
 		}
 
-		data.date = makeDateFormat(data.date);
+		if (data.date) {
+			data.date = makeDateFormat(data.date);
+		} else {
+			const date = new Date();
+			data.date = makeDate(
+				date.getFullYear(),
+				date.getMonth() + 1,
+				date.getDate()
+			);
+		}
 		data.id = editedDocument.id;
 
 		await edit("documents", data, t("positiveTextDocumentUpdated"));
-		reset();
+		formMethods.reset();
 		refreshData();
 		setVisible(false);
 	};
@@ -71,19 +87,16 @@ export default function EditDocument({
 					setVisible((prev) => !prev);
 				}}
 			/>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<Form onSubmit={onSubmit} formContext={formMethods}>
 				<InputBox
 					placeholder={t("placeholderDocumentTitle")}
-					register={register}
 					type="text"
 					name="title"
 					icon={faHeading}
-					isRequired={true}
 					defaultValue={editedDocument.title}
 				/>
 				<InputBox
 					placeholder={t("placeholderDocumentDescription")}
-					register={register}
 					type="text"
 					name="description"
 					icon={faInfo}
@@ -92,7 +105,6 @@ export default function EditDocument({
 				<Select
 					name="category_id"
 					options={categories}
-					register={register}
 					placeholderValue={t("placeholderCategorySelect")}
 					icon={faHashtag}
 					defaultValue={editedDocument.category_id}
@@ -101,25 +113,22 @@ export default function EditDocument({
 					image={editedDocument.image}
 					name="image"
 					path="documents"
-					register={register}
 					title="Náhledový obrázek"
 					required={false}
 				/>
 				<FileInput
 					fileName={editedDocument.name}
 					name="file"
-					register={register}
 					title="Uložený dokument"
 				/>
 				<DatePicker
-					register={register}
 					name="date"
 					title={t("placeholderDocumentDate")}
 					icon={faCalendarDays}
 					defaultValue={makeDateFormat(editedDocument.date, "str")}
 				/>
 				<button>{t("buttonSave")}</button>
-			</form>
+			</Form>
 		</motion.section>
 	);
 }

@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import warningToast from "../warning-toast/WarningToast";
 import css from "./Category.module.css";
+import Form from "../../basic/form/Form";
 
 export default function CategoriesController({
 	apiClass,
@@ -19,7 +20,7 @@ export default function CategoriesController({
 	const { t } = useTranslation("categoriesC");
 	const { getCategories, createCategory, updateCategory, deleteCategory } =
 		useCategoriesApi();
-	const { register, handleSubmit, setValue } = useForm();
+	const formMethods = useForm();
 
 	const { data: categories, refetch } = useQuery({
 		queryKey: ["categories"],
@@ -39,7 +40,7 @@ export default function CategoriesController({
 			return;
 		}
 		await createCategory(apiClass, data, t("positiveTextCreatedCategory"));
-		setValue("name", "");
+		formMethods.setValue("name", "");
 		refetch();
 	};
 
@@ -85,18 +86,16 @@ export default function CategoriesController({
 				<div></div>
 			</div>
 			<h3>{t("headerAddCategory")}</h3>
-			<form onSubmit={handleSubmit(create)}>
+			<Form onSubmit={create} formContext={formMethods}>
 				<InputBox
 					placeholder={t("placeholderName")}
 					name="name"
-					register={register}
 					type="text"
 					icon={faFont}
-					white={false}
 					isRequired
 				/>
 				<button>{t("buttonCreateCategory")}</button>
-			</form>
+			</Form>
 		</section>
 	);
 }

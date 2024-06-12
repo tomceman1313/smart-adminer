@@ -19,6 +19,7 @@ const queryClient = new QueryClient({
 		queries: {
 			refetchOnWindowFocus: false,
 			retry: false,
+			gcTime: 0,
 		},
 	},
 	queryCache: new QueryCache({

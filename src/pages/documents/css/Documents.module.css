@@ -12,6 +12,7 @@
 	width: 100%;
 	max-width: 400px;
 	z-index: 3;
+	overflow: hidden;
 }
 
 .add_files_cont button {

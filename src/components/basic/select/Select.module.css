@@ -1,0 +1,102 @@
+.select_cont {
+	position: relative;
+}
+
+.select {
+	display: flex;
+	align-items: center;
+}
+
+.select div {
+	width: 100%;
+	margin-left: 60px;
+	height: 35px;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+	padding: 5px 0;
+	color: #333;
+	font-size: 16px;
+	transition: all 0.5s;
+	cursor: pointer;
+}
+
+.select p {
+	cursor: pointer;
+	user-select: none;
+}
+
+.white p {
+	color: white;
+}
+
+.xmark {
+	color: var(--red);
+	padding: 0px 15px;
+	cursor: pointer;
+}
+
+.arrow {
+	color: var(--main-dark);
+	border-left: solid 1px var(--gray);
+	padding: 5px 15px 5px 15px;
+	cursor: pointer;
+}
+
+.select_cont ul {
+	position: absolute;
+	top: 0;
+	left: 0;
+	max-height: 150px;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	margin: 0;
+	padding: 10px 0;
+	background-color: white;
+	box-shadow: var(--section-shadow);
+	z-index: 5;
+	overflow-y: auto;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-out;
+}
+
+.select_cont li {
+	background-color: white;
+	user-select: none;
+	padding: 7px 15px;
+	transition: all 0.3s;
+	font-size: 0.9rem;
+	cursor: pointer;
+}
+
+.select_cont li:hover {
+	background: var(--gray);
+}
+
+.error_message {
+	width: 100%;
+	margin: 0;
+	margin-top: -15px;
+	margin-bottom: 15px;
+	color: var(--red);
+}
+
+@keyframes popFromBottom {
+	from {
+		margin-top: 10px;
+	}
+
+	to {
+		margin-top: 0px;
+	}
+}
+
+@keyframes popFromTop {
+	from {
+		margin-top: -10px;
+	}
+
+	to {
+		margin-top: 0px;
+	}
+}

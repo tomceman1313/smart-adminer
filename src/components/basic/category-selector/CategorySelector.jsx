@@ -1,65 +1,121 @@
-import { faHashtag } from "@fortawesome/free-solid-svg-icons";
+import { useState, useRef } from "react";
+import { faHashtag, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import cssBasic from "../../styles/Basic.module.css";
+import { AnimatePresence, motion } from "framer-motion";
+import Category from "./Category";
+
 import css from "./CategorySelector.module.css";
+
 export default function CategorySelector({
 	categories,
 	selectedCategories,
 	setSelectedCategories,
 	placeholder,
+	whiteMode,
 }) {
-	const [value, setValue] = useState("default");
+	const optionsListRef = useRef(null);
+	const selectRef = useRef(null);
 
-	function chooseCategory(e) {
-		const name = categories.filter(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		const alreadyIn = selectedCategories.find(
-			(item) => item.id === parseInt(e.target.value)
-		);
-		setValue("default");
-		if (alreadyIn) {
-			return;
-		}
+	const [isOpened, setIsOpened] = useState(false);
 
-		if (name.length !== 0) {
-			setSelectedCategories((prev) => [...prev, name[0]]);
+	let y = 0;
+	if (selectRef.current) {
+		const coordinates = selectRef.current.getBoundingClientRect();
+		if (coordinates !== null) {
+			y = coordinates.height + 5;
+			if (window.screen.height - coordinates.bottom < 160) {
+				// It doesn't fit above, so place below.
+				y = -155;
+			}
 		}
 	}
 
-	function removeFromPicked(e) {
-		const removed = selectedCategories.filter(
-			(item) => item.id !== parseInt(e.target.id)
+	// Add clicked category to the selected list
+	function chooseCategory(category) {
+		const alreadyIn = selectedCategories.find(
+			(item) => item.id === parseInt(category.id)
 		);
-		setSelectedCategories(removed);
+
+		if (!alreadyIn) {
+			setSelectedCategories((prev) => [...prev, category]);
+		}
+		setIsOpened(false);
+	}
+
+	// show or hide categories list
+	function toggleCategoriesList(e) {
+		setIsOpened((prev) => !prev);
+	}
+
+	// Remove clicked category from selected
+	function removeFromPicked(e, category) {
+		e.stopPropagation();
+		const elementClassList = Array.from(e.currentTarget.classList);
+		if (elementClassList.includes("categoryItem")) {
+			const removed = selectedCategories.filter(
+				(item) => item.id !== category.id
+			);
+			setSelectedCategories(removed);
+		}
 	}
 
 	return (
 		<>
-			<div className={cssBasic.input_box}>
-				<select value={value} onChange={chooseCategory}>
-					<option value="default" disabled>
-						{placeholder}
-					</option>
-					{categories &&
-						categories.map((el) => (
-							<option key={`${el.name}-${el.id}`} value={el.id}>
-								{el.name}
-							</option>
-						))}
-				</select>
-				<FontAwesomeIcon className={cssBasic.icon} icon={faHashtag} />
-			</div>
+			<div
+				className={
+					whiteMode ? `${css.select_cont} ${css.white}` : css.select_cont
+				}
+			>
+				<div
+					ref={selectRef}
+					className={`${css.select}`}
+					onClick={toggleCategoriesList}
+				>
+					<FontAwesomeIcon className={css.icon} icon={faHashtag} />
 
-			<ul className={css.picked_categories}>
-				{selectedCategories &&
-					selectedCategories.map((el) => (
-						<li key={`selected-${el.id}`} id={el.id} onClick={removeFromPicked}>
-							{el.name}
-						</li>
-					))}
-			</ul>
+					<ul className={css.picked_categories}>
+						{selectedCategories.length > 0 ? (
+							selectedCategories.map((category) => (
+								<Category
+									key={`selected-${category.id}`}
+									category={category}
+									removeFromSelected={removeFromPicked}
+								/>
+							))
+						) : (
+							<p>{placeholder}</p>
+						)}
+					</ul>
+
+					<FontAwesomeIcon icon={faChevronDown} className={css.arrow} />
+				</div>
+
+				<AnimatePresence>
+					{isOpened && (
+						<motion.div
+							ref={optionsListRef}
+							className={css.categories_list}
+							initial={{ y: y - 10 }}
+							animate={{ y: y }}
+							style={{
+								width: `${selectRef.current.getBoundingClientRect().width}px`,
+							}}
+						>
+							<ul>
+								{categories &&
+									categories.map((el) => (
+										<li
+											key={`category-${el.name}`}
+											onClick={() => chooseCategory(el)}
+										>
+											{el.name}
+										</li>
+									))}
+							</ul>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</div>
 		</>
 	);
 }

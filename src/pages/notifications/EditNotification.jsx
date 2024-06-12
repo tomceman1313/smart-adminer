@@ -5,80 +5,58 @@ import {
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DatePicker from "../../components/basic/DatePicker";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
+import { useDelete, useUpdate } from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
 import { makeDateFormat } from "../../modules/BasicFunctions";
-
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { notificationSchema } from "../../schemas/zodSchemas";
 import css from "./Notifications.module.css";
 
 export default function EditNotification({
 	notification,
-	loadData,
 	setEditNotification,
 }) {
-	const { edit, remove } = useBasicApiFunctions();
-	const { t } = useTranslation("notifications");
+	const { t } = useTranslation("notifications", "errors", "validationErrors");
+	const { setAlert } = useInteraction();
 
-	const {
-		register: registerUpdate,
-		handleSubmit: handleSubmitUpdate,
-		reset,
-		setValue,
-	} = useForm();
-	const { setAlert, setMessage } = useInteraction();
+	const formMethods = useForm({
+		resolver: zodResolver(notificationSchema(t)),
+	});
 
-	useEffect(() => {
-		if (!notification) {
-			return;
-		}
-		setValue("id", notification.id);
-		setValue("title", notification.title);
-		setValue("path", notification.path);
-		setValue("text", notification.text);
-		setValue("start", makeDateFormat(notification.start, "str"));
-		setValue("end", makeDateFormat(notification.end, "str"));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [notification]);
+	const { mutateAsync: edit } = useUpdate(
+		"notifications",
+		t("positiveTextNotificationUpdated"),
+		t("errors:errorCRUDOperation"),
+		["notifications"]
+	);
+
+	const { mutateAsync: remove } = useDelete(
+		"notifications",
+		t("positiveTextNotificationDeleted"),
+		t("errors:errorCRUDOperation"),
+		["notifications"]
+	);
 
 	async function onSubmit(data) {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
 		data.path = data.path.replaceAll(" ", "");
 
-		if (data.start > data.end) {
-			setMessage({
-				action: "alert",
-				text: t("messageInvalidDates"),
-				timeout: 6000,
-			});
-			return;
-		}
-
-		await edit("notifications", data, t("positiveTextNotificationUpdated"));
+		await edit(data);
 		setEditNotification(false);
-		loadData();
 	}
 
 	async function deleteHandler(id) {
-		await remove("notifications", id, t("positiveTextNotificationDeleted"));
-		reset();
+		await remove(id);
+		formMethods.reset();
 		setEditNotification(false);
-		loadData();
 	}
-
-	const deleteNotification = () => {
-		setAlert({
-			id: notification.id,
-			question: t("alertDeleteNotification"),
-			positiveHandler: deleteHandler,
-		});
-	};
 
 	return (
 		<AnimatePresence>
@@ -95,14 +73,14 @@ export default function EditNotification({
 						icon={faXmark}
 						onClick={() => setEditNotification(false)}
 					/>
-					<form onSubmit={handleSubmitUpdate(onSubmit)}>
+					<Form onSubmit={onSubmit} formContext={formMethods}>
 						<h2>{t("headerEditNotification")}</h2>
 						<InputBox
 							type="text"
 							name="title"
 							icon={faHeading}
+							defaultValue={notification.title}
 							placeholder={t("placeholderTitle")}
-							register={registerUpdate}
 							white={true}
 							isRequired={true}
 						/>
@@ -111,8 +89,8 @@ export default function EditNotification({
 							type="text"
 							name="path"
 							icon={faGlobe}
+							defaultValue={notification.path}
 							placeholder={t("placeholderUrl")}
-							register={registerUpdate}
 							white={true}
 							isRequired={true}
 						/>
@@ -121,40 +99,51 @@ export default function EditNotification({
 							type="text"
 							name="text"
 							icon={faQuoteRight}
+							defaultValue={notification.text}
 							placeholder={t("placeholderText")}
-							register={registerUpdate}
 							white={true}
 							isRequired={true}
 						/>
 
 						<DatePicker
 							name="start"
-							register={registerUpdate}
 							white={true}
 							isRequired={true}
+							defaultValue={makeDateFormat(notification.start, "str")}
 							placeholder={t("placeholderDateStart")}
 							additionalClasses="half blue"
 						/>
 						<DatePicker
 							name="end"
-							register={registerUpdate}
 							white={true}
 							isRequired={true}
+							defaultValue={makeDateFormat(notification.end, "str")}
 							placeholder={t("placeholderDateEnd")}
 							additionalClasses="half blue"
 						/>
 
-						<input type="hidden" {...registerUpdate("id")} />
+						<input
+							type="hidden"
+							defaultValue={notification.id}
+							{...formMethods.register("id")}
+						/>
+
 						<button>{t("buttonSave")}</button>
 
 						<button
 							type="button"
 							className="red_button"
-							onClick={deleteNotification}
+							onClick={() =>
+								setAlert({
+									id: notification.id,
+									question: t("alertDeleteNotification"),
+									positiveHandler: deleteHandler,
+								})
+							}
 						>
 							{t("buttonDelete")}
 						</button>
-					</form>
+					</Form>
 				</motion.div>
 			)}
 		</AnimatePresence>

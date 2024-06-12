@@ -20,6 +20,7 @@ import dashboard from "./cs/dashboard.json";
 import errors from "./cs/errors.json";
 
 import common from "./cs/common.json";
+import validationErrors from "./cs/validationErrors.json";
 
 import categoriesComponent from "./cs/components/categories.json";
 import itemsControllerComponent from "./cs/components/items-controller.json";
@@ -46,6 +47,7 @@ export const CS = {
 	login: login,
 	dashboard: dashboard,
 	errors: errors,
+	validationErrors: validationErrors,
 	common: common,
 	categoriesC: categoriesComponent,
 	itemsControllerC: itemsControllerComponent,
