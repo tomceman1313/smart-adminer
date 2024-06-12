@@ -20,7 +20,11 @@ export default function DatePicker({
 
 	let divClassName = `${css.input_box}`;
 	if (white) {
-		divClassName = `${css.input_box} ${css.white_color}`;
+		divClassName += ` ${css.white_color}`;
+	}
+
+	if (errors[name]) {
+		divClassName += ` ${css.validationError}`;
 	}
 
 	if (additionalClasses) {
@@ -42,23 +46,21 @@ export default function DatePicker({
 	}
 
 	return (
-		<>
-			<div className={divClassName} title={title ? title : ""}>
-				<input
-					type="date"
-					defaultValue={defaultValue ? defaultValue : ""}
-					{...register(name)}
-					required={isRequired && true}
-				/>
-				<label>{placeholder}</label>
-				<FontAwesomeIcon
-					className={`${css.icon}`}
-					icon={icon ? icon : faCalendarWeek}
-				/>
-			</div>
+		<div className={divClassName} title={title ? title : ""}>
+			<input
+				type="date"
+				defaultValue={defaultValue ? defaultValue : ""}
+				{...register(name)}
+				required={isRequired && true}
+			/>
+			<label>{placeholder}</label>
+			<FontAwesomeIcon
+				className={`${css.icon}`}
+				icon={icon ? icon : faCalendarWeek}
+			/>
 			{errors[name] && (
 				<p className={css.error_message}>{`* ${errors[name].message}`}</p>
 			)}
-		</>
+		</div>
 	);
 }

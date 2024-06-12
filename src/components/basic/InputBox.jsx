@@ -23,7 +23,11 @@ const InputBox = ({
 
 	let divClassName = `${cssBasic.input_box}`;
 	if (white) {
-		divClassName = `${cssBasic.input_box} ${cssBasic.white_color}`;
+		divClassName += ` ${cssBasic.white_color}`;
+	}
+
+	if (errors[name]) {
+		divClassName += ` ${cssBasic.validationError}`;
 	}
 
 	if (additionalClasses) {
@@ -33,27 +37,23 @@ const InputBox = ({
 	}
 
 	return (
-		<>
-			<div className={divClassName} title={title ? title : null}>
-				<input
-					type={type ? type : "text"}
-					defaultValue={defaultValue}
-					placeholder={placeholder}
-					{...register(name)}
-					required={isRequired && true}
-					accept={accept}
-					readOnly={readOnly}
-					multiple={multiple}
-					pattern="\S(.*\S)?"
-				/>
-				<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
-			</div>
+		<div className={divClassName} title={title ? title : null}>
+			<input
+				type={type ? type : "text"}
+				defaultValue={defaultValue}
+				placeholder={placeholder}
+				{...register(name)}
+				required={isRequired && true}
+				accept={accept}
+				readOnly={readOnly}
+				multiple={multiple}
+				pattern="\S(.*\S)?"
+			/>
+			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 			{errors[name] && (
-				<p
-					style={{ color: "var(--red)", marginTop: "-15px" }}
-				>{`* ${errors[name].message}`}</p>
+				<p className={cssBasic.error_message}>{`* ${errors[name].message}`}</p>
 			)}
-		</>
+		</div>
 	);
 };
 

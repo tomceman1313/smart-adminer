@@ -17,6 +17,7 @@ export default function SelectWithoutFormRef({
 	setState,
 	halfSize,
 	whiteMode,
+	errors,
 }) {
 	const selectRef = useRef(null);
 	const [selectedOption, setSelectedOption] = useState(
@@ -78,8 +79,10 @@ export default function SelectWithoutFormRef({
 			<div
 				ref={selectRef}
 				className={`${cssBasic.input_box} ${css.select} ${
-					halfSize ? cssBasic.half : null
-				} ${whiteMode ? `${css.white} ${cssBasic.white_color}` : null}`}
+					halfSize ? cssBasic.half : ""
+				} ${whiteMode ? `${css.white} ${cssBasic.white_color}` : ""} ${
+					errors[name] ? css.validationError : ""
+				}`}
 				onClick={toggleOptions}
 			>
 				<FontAwesomeIcon className={cssBasic.icon} icon={icon} />

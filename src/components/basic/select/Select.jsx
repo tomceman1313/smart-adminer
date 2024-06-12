@@ -28,6 +28,7 @@ export default function Select({
 			options={options}
 			whiteMode={whiteMode}
 			isSubmitted={isSubmitSuccessful}
+			errors={errors}
 		>
 			<select
 				{...register(name)}

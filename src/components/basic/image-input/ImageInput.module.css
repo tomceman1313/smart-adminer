@@ -99,10 +99,13 @@
 	width: calc(50% - 20px);
 }
 
+.validationError {
+	margin-bottom: 35px;
+}
+
 .error_message {
-	width: 100%;
+	position: absolute;
+	bottom: -25px;
 	margin: 0;
-	margin-top: -15px;
-	margin-bottom: 15px;
-	color: var(--red);
+	color: var(--red-dark);
 }
