@@ -16,10 +16,11 @@ import { photoSchema } from "../../schemas/zodSchemas";
 import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import Form from "../../components/basic/form/Form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function NewPicture({ categories }) {
-	const { t } = useTranslation("gallery");
-	const formMethods = useForm();
+	const { t } = useTranslation("gallery", "validationErrors");
+	const formMethods = useForm({ resolver: zodResolver(photoSchema(t)) });
 	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 
@@ -59,11 +60,7 @@ export default function NewPicture({ categories }) {
 		<>
 			<section className="half-section">
 				<h2>{t("headerCreateImage")}</h2>
-				<Form
-					onSubmit={createImage}
-					validationSchema={photoSchema}
-					formContext={formMethods}
-				>
+				<Form onSubmit={createImage} formContext={formMethods}>
 					<InputBox
 						placeholder={t("placeholderImageTitle")}
 						type="text"

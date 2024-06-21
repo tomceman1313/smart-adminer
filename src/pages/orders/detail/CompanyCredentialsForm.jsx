@@ -7,7 +7,7 @@ import { useState } from "react";
 import InputBox from "../../../components/basic/InputBox";
 import { useTranslation } from "react-i18next";
 
-export default function CompanyCredentialsForm({ register, customer }) {
+export default function CompanyCredentialsForm({ customer }) {
 	const { t } = useTranslation("orders");
 	const [isVisible, setIsVisible] = useState(
 		customer?.company_name ? true : false
@@ -32,21 +32,18 @@ export default function CompanyCredentialsForm({ register, customer }) {
 						<>
 							<InputBox
 								placeholder={t("placeholderCompanyName")}
-								register={register}
 								name="company_name"
 								defaultValue={customer.company_name}
 								icon={faCopyright}
 							/>
 							<InputBox
 								placeholder={t("placeholderCIN")}
-								register={register}
 								name="ic"
 								defaultValue={customer.ic}
 								icon={faBuilding}
 							/>
 							<InputBox
 								placeholder={t("placeholderVAT_ID")}
-								register={register}
 								name="dic"
 								defaultValue={customer.dic}
 								icon={faHandHoldingDollar}

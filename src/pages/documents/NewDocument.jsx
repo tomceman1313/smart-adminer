@@ -16,7 +16,7 @@ import Select from "../../components/basic/select/Select";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import {
 	convertBase64,
-	makeDate,
+	getTodayDate,
 	makeDateFormat,
 } from "../../modules/BasicFunctions";
 import AddMultipleFiles from "./AddMultipleFiles";
@@ -52,16 +52,9 @@ const NewDocument = ({ categories }) => {
 			} else {
 				delete data.image;
 			}
-			if (data.date) {
-				data.date = makeDateFormat(data.date);
-			} else {
-				const date = new Date();
-				data.date = makeDate(
-					date.getFullYear(),
-					date.getMonth() + 1,
-					date.getDate()
-				);
-			}
+
+			data.date = makeDateFormat(data.date);
+
 			return create("documents", data, t("positiveTextDocumentCreated"));
 		},
 		onSuccess: () => {
@@ -115,6 +108,7 @@ const NewDocument = ({ categories }) => {
 						name="date"
 						title={t("placeholderDocumentDate")}
 						icon={faCalendarDays}
+						defaultValue={getTodayDate()}
 					/>
 					<div style={{ display: "flex" }}>
 						<SubmitButton status={status} value={t("buttonCreate")} />

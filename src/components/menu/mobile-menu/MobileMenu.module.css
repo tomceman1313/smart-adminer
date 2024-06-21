@@ -54,12 +54,14 @@
 	position: absolute;
 	top: 80px;
 	left: 0;
-	background-color: var(--main-dark);
-	width: 100%;
+	width: 350px;
 	height: calc(100vh - 80px);
 	margin: 0;
+	box-shadow: var(--section-shadow);
+	background-color: var(--main-dark);
 	list-style: none;
 	overflow-y: auto;
+	scrollbar-color: var(--main) #333;
 }
 
 @media (max-width: 700px) {

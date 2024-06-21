@@ -34,9 +34,12 @@ import Images from "./Images";
 import Parameters from "./Parameters";
 import Variants from "./Variants";
 import css from "./styles/Product.module.css";
+import Form from "../../components/basic/form/Form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { productSchema } from "../../schemas/zodSchemas";
 
 export default function Product() {
-	const { t } = useTranslation("products", "errors");
+	const { t } = useTranslation("products", "errors", "validationErrors");
 	const { id } = useParams();
 	const navigate = useNavigate();
 
@@ -50,7 +53,7 @@ export default function Product() {
 	//const [product, setProduct] = useState(null);
 	const originalImages = useRef([]);
 	const [images, setImages] = useState(null);
-	const { register, handleSubmit, setValue, reset } = useForm();
+	const formMethods = useForm({ resolver: zodResolver(productSchema(t)) });
 
 	const { data: product } = useGet(
 		"products",
@@ -99,7 +102,7 @@ export default function Product() {
 		if (id && product) {
 			setData();
 		} else {
-			reset();
+			formMethods.reset();
 			setVariants([]);
 			setParameters([]);
 			setDetailText("");
@@ -110,9 +113,9 @@ export default function Product() {
 	}, [id, product]);
 
 	async function setData() {
-		setValue("name", product.name);
-		setValue("description", product.description);
-		setValue("active", product.active);
+		formMethods.setValue("name", product.name);
+		formMethods.setValue("description", product.description);
+		formMethods.setValue("active", !!product.active);
 
 		setDetailText(product.detail);
 		setSelectedCategories(product.categories);
@@ -166,7 +169,7 @@ export default function Product() {
 			data.images = images;
 			data.deletedImages = findDeletedImages(detailText, originalImages);
 			await update(data);
-			reset();
+			formMethods.reset();
 			setData();
 		} else {
 			if (!isAvailable) {
@@ -198,34 +201,33 @@ export default function Product() {
 					{product?.name ? product.name : t("htmlTitleProduct")} | SmartAdminer
 				</title>
 			</Helmet>
-			{manufacturers && product ? (
-				<form className={css.product} onSubmit={handleSubmit(onSubmit)}>
+			{manufacturers && (id ? product : true) ? (
+				<Form
+					className={css.product}
+					onSubmit={onSubmit}
+					formContext={formMethods}
+				>
 					<section className={`${css.basic_info} half-section`}>
 						<h2>{t("headerBasicInfo")}</h2>
 						<InputBox
 							placeholder={t("placeholderTitle")}
-							register={register}
 							type="text"
 							name="name"
 							icon={faShoppingCart}
-							isRequired
 						/>
 						<InputBox
 							placeholder={t("placeholderDescription")}
-							register={register}
 							type="text"
 							name="description"
 							icon={faInfo}
-							isRequired
 						/>
 						<Select
 							name="manufacturer_id"
 							options={manufacturers}
 							icon={faCopyright}
-							register={register}
 							placeholderValue={t("placeholderManufacturer")}
-							defaultValue={product.manufacturer_id}
-							setValue={setValue}
+							defaultValue={product?.manufacturer_id}
+							setValue={formMethods.setValue}
 						/>
 
 						<CategorySelector
@@ -234,11 +236,7 @@ export default function Product() {
 							setSelectedCategories={setSelectedCategories}
 							placeholder={t("placeholderCategory")}
 						/>
-						<Switch
-							name="active"
-							register={register}
-							label={t("placeholderIsVisible")}
-						/>
+						<Switch name="active" label={t("placeholderIsVisible")} />
 					</section>
 
 					<Variants
@@ -262,7 +260,11 @@ export default function Product() {
 					/>
 
 					<section className={css.images}>
-						<Images images={images} setImages={setImages} register={register} />
+						<Images
+							images={images}
+							setImages={setImages}
+							register={formMethods.register}
+						/>
 						<div className={css.control_box}>
 							<SubmitButton
 								status={status}
@@ -283,7 +285,7 @@ export default function Product() {
 							)}
 						</div>
 					</section>
-				</form>
+				</Form>
 			) : (
 				<h3>Načítání produktu</h3>
 			)}

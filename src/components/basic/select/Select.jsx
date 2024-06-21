@@ -48,7 +48,10 @@ export default function Select({
 			</select>
 
 			{errors[name] && (
-				<p className={css.error_message}>{`* ${errors[name].message}`}</p>
+				<p
+					className={css.error_message}
+					title={`* ${errors[name].message}`}
+				>{`* ${errors[name].message}`}</p>
 			)}
 		</SelectWithoutFormRef>
 	);

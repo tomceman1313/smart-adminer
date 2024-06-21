@@ -5,78 +5,83 @@ import {
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import DatePicker from "../../components/basic/DatePicker";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
+import { useDelete, useUpdate } from "../../hooks/api/useCRUD";
 import useInteraction from "../../hooks/useInteraction";
 import { makeDateFormat } from "../../modules/BasicFunctions";
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import warningToast from "../../components/common/warning-toast/WarningToast";
+import { priceListItemSchema } from "../../schemas/zodSchemas";
 import css from "./Pricelist.module.css";
 
-export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
-	const { t } = useTranslation("priceList");
-	const { edit, remove } = useBasicApiFunctions();
+export default function EditPriceItem({ priceItem, setPriceItem }) {
+	const { t } = useTranslation("priceList", "validationErrors");
 	const { setAlert } = useInteraction();
-	const { register, handleSubmit, setValue, reset } = useForm();
+	const formMethods = useForm({
+		resolver: zodResolver(priceListItemSchema(t)),
+	});
+
+	const { mutateAsync: edit } = useUpdate(
+		"pricelist",
+		t("positiveTextItemUpdated"),
+		null,
+		["priceList"]
+	);
+
+	const { mutateAsync: remove } = useDelete(
+		"pricelist",
+		t("positiveTextItemDeleted"),
+		null,
+		["priceList"]
+	);
 
 	useEffect(() => {
 		if (priceItem) {
-			setValue("id", priceItem.id);
-			setValue("name", priceItem.name);
-			setValue("price", priceItem.price);
-			setValue(
-				"special_price",
-				priceItem.special_price !== 0 ? priceItem.special_price : ""
+			formMethods.setValue("id", priceItem.id);
+			formMethods.setValue("name", priceItem.name);
+			formMethods.setValue("price", priceItem.price.toString());
+			if (priceItem.special_price) {
+				formMethods.setValue(
+					"special_price",
+					priceItem.special_price.toString()
+				);
+			}
+			formMethods.setValue(
+				"start",
+				makeDateFormat(priceItem.special_price_start, "str")
 			);
-			setValue("start", makeDateFormat(priceItem.special_price_start, "str"));
-			setValue("end", makeDateFormat(priceItem.special_price_end, "str"));
+			formMethods.setValue(
+				"end",
+				makeDateFormat(priceItem.special_price_end, "str")
+			);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [priceItem]);
+	}, [priceItem, formMethods]);
 
 	async function onSubmit(data) {
 		data.start = makeDateFormat(data.start);
 		data.end = makeDateFormat(data.end);
-		if (data.special_price !== "" && (data.start === "0" || data.end === "0")) {
-			warningToast(t("alertMissingSpecialPriceDate"));
-			return;
-		}
 
 		if (data.special_price === "") {
 			data.start = "";
 			data.end = "";
 		}
 
-		if (Number(data.start) > Number(data.end)) {
-			warningToast(t("alertInvalidSpecialPriceDate"));
-			return;
-		}
-		await edit("pricelist", data, t("positiveTextItemUpdated"));
+		await edit(data);
 		close();
-		loadData();
+	}
+
+	async function deleteHandler(id) {
+		await remove(id);
+		close();
 	}
 
 	function close() {
 		setPriceItem(false);
-		reset();
-	}
-
-	async function deleteHandler(id) {
-		await remove("pricelist", id, t("positiveTextItemDeleted"));
-		close();
-		loadData();
-	}
-
-	function deleteItem() {
-		setAlert({
-			id: priceItem.id,
-			question: t("alertDeleteItem", { name: priceItem.name }),
-			positiveHandler: deleteHandler,
-		});
 	}
 
 	return (
@@ -88,17 +93,14 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 			transition={{ duration: 0.7 }}
 		>
 			<FontAwesomeIcon id={css.close} icon={faXmark} onClick={close} />
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<Form onSubmit={onSubmit} formContext={formMethods}>
 				<h2>{t("headerEditItem")}</h2>
-
 				<InputBox
 					type="text"
 					name="name"
 					icon={faHeading}
 					placeholder={t("placeholderName")}
-					register={register}
 					white={true}
-					isRequired={true}
 				/>
 
 				<InputBox
@@ -106,9 +108,7 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 					name="price"
 					icon={faTag}
 					placeholder={t("placeholderPrice")}
-					register={register}
 					white={true}
-					isRequired={true}
 					additionalClasses="half"
 				/>
 
@@ -117,32 +117,39 @@ export default function EditPriceItem({ priceItem, setPriceItem, loadData }) {
 					name="special_price"
 					icon={faTags}
 					placeholder={t("placeholderSpecialPrice")}
-					register={register}
 					white={true}
 					additionalClasses="half"
 				/>
 
 				<DatePicker
 					name="start"
-					register={register}
 					white={true}
 					placeholder={t("placeholderStartDate")}
 					additionalClasses="half blue"
 				/>
 				<DatePicker
 					name="end"
-					register={register}
 					white={true}
 					placeholder={t("placeholderEndDate")}
 					additionalClasses="half blue"
 				/>
 
-				<input type="hidden" {...register("id")} />
+				<input type="hidden" {...formMethods.register("id")} />
 				<button>{t("buttonSave")}</button>
-				<button type="button" className="red_button" onClick={deleteItem}>
+				<button
+					type="button"
+					className="red_button"
+					onClick={() =>
+						setAlert({
+							id: priceItem.id,
+							question: t("alertDeleteItem", { name: priceItem.name }),
+							positiveHandler: deleteHandler,
+						})
+					}
+				>
 					{t("buttonDelete")}
 				</button>
-			</form>
+			</Form>
 		</motion.div>
 	);
 }

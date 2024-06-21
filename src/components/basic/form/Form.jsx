@@ -6,15 +6,17 @@ export default function Form({
 	onSubmit,
 	validationSchema,
 	formContext,
+	className,
 }) {
 	const methods = useForm(
 		validationSchema ? { resolver: zodResolver(validationSchema) } : {}
 	);
-
 	const formMethods = formContext ? formContext : methods;
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={formMethods.handleSubmit(onSubmit)}>{children}</form>
+			<form onSubmit={formMethods.handleSubmit(onSubmit)} className={className}>
+				{children}
+			</form>
 		</FormProvider>
 	);
 }

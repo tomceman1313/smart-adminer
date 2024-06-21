@@ -1,14 +1,13 @@
-import { useForm } from "react-hook-form";
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
+import css from "../../components/common/categories-controller/Category.module.css";
 import Item from "../../components/common/controlled-item/Item";
 import { useCreate, useDelete, useUpdate } from "../../hooks/api/useCRUD";
-import css from "../../components/common/categories-controller/Category.module.css";
 
 export default function Manufacturers({ manufacturers }) {
 	const { t } = useTranslation("products", "errors");
-	const { register, handleSubmit } = useForm();
 
 	const { mutateAsync: createManufacturer } = useCreate(
 		"products/manufacturers",
@@ -56,18 +55,17 @@ export default function Manufacturers({ manufacturers }) {
 				<div></div>
 			</div>
 			<h3>{t("headerAddManufacturer")}</h3>
-			<form onSubmit={handleSubmit(createManufacturer)}>
+			<Form onSubmit={createManufacturer}>
 				<InputBox
 					placeholder={t("placeholderManufacturerName")}
 					name={"name"}
-					register={register}
 					type={"text"}
 					icon={faFont}
 					white={false}
 					isRequired
 				/>
 				<button>{t("buttonCreate")}</button>
-			</form>
+			</Form>
 		</section>
 	);
 }

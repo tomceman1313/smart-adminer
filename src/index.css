@@ -49,8 +49,8 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-	-webkit-box-shadow: 0 0 0 120px white inset !important;
-	-webkit-text-fill-color: black;
+	transition: background-color 5000s ease-in-out 0s;
+	-webkit-text-fill-color: #333;
 }
 
 ul {
@@ -195,13 +195,6 @@ html::-webkit-scrollbar-thumb:hover {
 	background-color: var(--green-dark);
 	border-radius: 12px;
 }
-
-/* @media (min-width: 1600px) {
-	section {
-		animation-name: fadeIn;
-		animation-duration: 1s;
-	}
-} */
 
 @media (max-width: 1200px) {
 	.half-section {

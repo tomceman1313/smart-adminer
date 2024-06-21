@@ -1,6 +1,9 @@
+import { useFormContext } from "react-hook-form";
 import css from "./Switch.module.css";
 
-export default function Switch({ register, label, name, defaultValue }) {
+export default function Switch({ label, name, defaultValue }) {
+	const { register } = useFormContext();
+
 	return (
 		<div>
 			<p>{label}</p>

@@ -3,30 +3,31 @@ import {
 	faMagnifyingGlass,
 	faTableColumns,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import TextEditor from "../../components/admin/TextEditor";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
 import ImageInput from "../../components/basic/image-input/ImageInput";
+import TextArea from "../../components/basic/textarea/TextArea";
+import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import { convertBase64 } from "../../modules/BasicFunctions";
 import {
 	checkInnerImage,
 	findDeletedImages,
 	formatBody,
 } from "../../modules/TextEditorFunctions";
-import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import TextArea from "../../components/basic/textarea/TextArea";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { pageSchema } from "../../schemas/zodSchemas";
 import css from "./Page.module.css";
-import Form from "../../components/basic/form/Form";
+import { useUpdate } from "../../hooks/api/useCRUD";
 
 export default function Page() {
-	const { t } = useTranslation("pages", "errors");
+	const { t } = useTranslation("pages", "errors", "validationErrors");
 	const { name } = useParams();
-	const { getByName, edit } = useBasicApiFunctions();
+	const { getByName } = useBasicApiFunctions();
 	const originalImages = useRef([]);
 
 	const [body, setBody] = useState("");
@@ -41,6 +42,13 @@ export default function Page() {
 			errorMessage: t("errors:errorFetchPage"),
 		},
 	});
+
+	const { mutateAsync: edit } = useUpdate(
+		"pages",
+		t("positiveTextPageUpdated"),
+		t("errors:errorCRUDOperation"),
+		["pages", name]
+	);
 
 	useEffect(() => {
 		if (page?.body) {
@@ -64,8 +72,7 @@ export default function Page() {
 			data.deleted_images = findDeletedImages(body, originalImages);
 		}
 		data.id = page.id;
-		console.log(data);
-		await edit("pages", data, t("positiveTextPageUpdated"));
+		await edit(data);
 		refetch();
 	}
 
@@ -74,7 +81,7 @@ export default function Page() {
 			<Helmet>
 				<title>{t("htmlTitlePage")}</title>
 			</Helmet>
-			<Form onSubmit={onSubmit}>
+			<Form onSubmit={onSubmit} validationSchema={pageSchema(t)}>
 				{page ? (
 					<section className={css.page}>
 						<h2 className={css.title}>{page.page_name}</h2>
@@ -86,7 +93,6 @@ export default function Page() {
 								name="title"
 								icon={faHeading}
 								defaultValue={page.title}
-								isRequired={true}
 							/>
 						)}
 						{!!page.config.description && (
@@ -95,7 +101,6 @@ export default function Page() {
 								placeholder={t("placeholderDescription")}
 								icon={faMagnifyingGlass}
 								defaultValue={page.description}
-								isRequired={true}
 							/>
 						)}
 						{!!page.config.image && (

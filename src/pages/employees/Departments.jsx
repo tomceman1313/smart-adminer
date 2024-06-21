@@ -12,6 +12,7 @@ import {
 	updateDepartment,
 } from "../../modules/ApiEmployees";
 import css from "./Departments.module.css";
+import Form from "../../components/basic/form/Form";
 
 export default function Departments({
 	departments,
@@ -20,7 +21,7 @@ export default function Departments({
 	const queryClient = useQueryClient();
 	const auth = useAuth();
 	const { t } = useTranslation("employees");
-	const { register, handleSubmit, setValue } = useForm();
+	const formMethods = useForm();
 
 	const create = async (data) => {
 		if (departments.find((dep) => dep.name === data.name)) {
@@ -28,7 +29,7 @@ export default function Departments({
 			return;
 		}
 		await createDepartment(data, auth, t("positiveTextCreateDepartment"));
-		setValue("name", "");
+		formMethods.setValue("name", "");
 		queryClient.invalidateQueries({ queryKey: ["departments"] });
 	};
 
@@ -66,18 +67,17 @@ export default function Departments({
 			</ul>
 			<div className={css.blur}></div>
 			<h3>{t("headerAddNewDepartment")}</h3>
-			<form onSubmit={handleSubmit(create)}>
+			<Form onSubmit={create} formContext={formMethods}>
 				<InputBox
 					placeholder={t("placeholderNewDepartment")}
 					name={"name"}
-					register={register}
 					type={"text"}
 					icon={faFont}
 					white={false}
 					isRequired
 				/>
 				<button>{t("buttonCreateDepartment")}</button>
-			</form>
+			</Form>
 		</section>
 	);
 }

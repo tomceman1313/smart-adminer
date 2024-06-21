@@ -1,15 +1,15 @@
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 import { BASE_URL } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
-import useInteraction from "../useInteraction";
+
 export default function useAuthApi() {
-	const { t } = useTranslation("login");
+	const { t } = useTranslation("login", "errors");
 	const auth = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { setMessage } = useInteraction();
 	const bearer = `Bearer ` + auth?.userInfo?.token;
 
 	async function getRoles() {
@@ -49,13 +49,9 @@ export default function useAuthApi() {
 
 		auth.setUserInfo({ ...auth.userInfo, token: data.token });
 		if (response.status === 200) {
-			setMessage({ action: "success", text: positiveText });
+			toast.success(positiveText);
 		} else {
-			setMessage({
-				action: "failure",
-				text: "Operace se nezdařila",
-				timeout: 6000,
-			});
+			toast.error(t("errors:errorCRUDOperation"));
 		}
 	}
 

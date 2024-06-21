@@ -34,7 +34,7 @@ export default function EditDocument({
 	const { t } = useTranslation("documents", "validationErrors");
 	const { edit } = useBasicApiFunctions();
 	const formMethods = useForm({ resolver: zodResolver(documentSchema(t)) });
-
+	console.log(editedDocument);
 	const onSubmit = async (data) => {
 		if (data?.file?.[0]) {
 			let fileName = data.file[0].name.split(".");

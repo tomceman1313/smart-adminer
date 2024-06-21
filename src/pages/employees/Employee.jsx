@@ -22,6 +22,7 @@ import CategorySelector from "../../components/basic/category-selector/CategoryS
 import ImageInput from "../../components/basic/image-input/ImageInput";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
 import css from "./Employees.module.css";
+import Form from "../../components/basic/form/Form";
 
 export default function Employee({
 	employee,
@@ -33,7 +34,7 @@ export default function Employee({
 	const { t } = useTranslation("employees");
 	const { edit, create } = useBasicApiFunctions();
 
-	const { register, handleSubmit, reset, setValue } = useForm();
+	const formMethods = useForm();
 	const [pickedDepartments, setPickedDepartments] = useState([]);
 	const deletedDepartments = useRef([]);
 	const originalDepartments = useRef([]);
@@ -79,7 +80,7 @@ export default function Employee({
 	}
 
 	function resetForm() {
-		reset({
+		formMethods.reset({
 			degree_before: "",
 			fname: "",
 			lname: "",
@@ -97,17 +98,17 @@ export default function Employee({
 	}
 
 	function setData() {
-		setValue("degree_before", employee.degree_before);
-		setValue("fname", employee.fname);
-		setValue("lname", employee.lname);
-		setValue("degree_after", employee.degree_after);
-		setValue("phone", employee.phone);
-		setValue("phone_secondary", employee.phone_secondary);
-		setValue("email", employee.email);
-		setValue("position", employee.position);
-		setValue("notes", employee.notes);
-		setValue("active", employee.active);
-		setValue("id", employee.id);
+		formMethods.setValue("degree_before", employee.degree_before);
+		formMethods.setValue("fname", employee.fname);
+		formMethods.setValue("lname", employee.lname);
+		formMethods.setValue("degree_after", employee.degree_after);
+		formMethods.setValue("phone", employee.phone);
+		formMethods.setValue("phone_secondary", employee.phone_secondary);
+		formMethods.setValue("email", employee.email);
+		formMethods.setValue("position", employee.position);
+		formMethods.setValue("notes", employee.notes);
+		formMethods.setValue("active", employee.active);
+		formMethods.setValue("id", employee.id);
 
 		setPickedDepartments(employee.departments);
 		originalDepartments.current = employee.departments;
@@ -132,17 +133,15 @@ export default function Employee({
 							resetForm();
 						}}
 					/>
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<Form onSubmit={onSubmit} formContext={formMethods}>
 						<InputBox
 							placeholder={t("placeholderDegreeBefore")}
-							register={register}
 							type="text"
 							name="degree_before"
 							icon={faUserGraduate}
 						/>
 						<InputBox
 							placeholder={t("placeholderFirstName")}
-							register={register}
 							type="text"
 							name="fname"
 							icon={faImagePortrait}
@@ -150,7 +149,6 @@ export default function Employee({
 						/>
 						<InputBox
 							placeholder={t("placeholderLastName")}
-							register={register}
 							type="text"
 							name="lname"
 							icon={faIdBadge}
@@ -158,7 +156,6 @@ export default function Employee({
 						/>
 						<InputBox
 							placeholder={t("placeholderDegreeAfter")}
-							register={register}
 							type="text"
 							name="degree_after"
 							icon={faUserGraduate}
@@ -166,21 +163,18 @@ export default function Employee({
 
 						<InputBox
 							placeholder={t("placeholderPhone")}
-							register={register}
 							type="tel"
 							name="phone"
 							icon={faMobileScreen}
 						/>
 						<InputBox
 							placeholder={t("placeholderSecondaryPhone")}
-							register={register}
 							type="tel"
 							name="phone_secondary"
 							icon={faMobileScreenButton}
 						/>
 						<InputBox
 							placeholder={t("placeholderEmail")}
-							register={register}
 							type="email"
 							name="email"
 							icon={faAt}
@@ -195,7 +189,6 @@ export default function Employee({
 
 						<InputBox
 							placeholder={t("placeholderPosition")}
-							register={register}
 							type="text"
 							name="position"
 							icon={faUserTag}
@@ -204,7 +197,6 @@ export default function Employee({
 
 						<InputBox
 							placeholder={t("placeholderNotes")}
-							register={register}
 							type="text"
 							name="notes"
 							icon={faCommentDots}
@@ -214,24 +206,19 @@ export default function Employee({
 							name="image"
 							image={employee.image}
 							path="employees"
-							register={register}
 							required={false}
 						/>
 
-						<Switch
-							name="active"
-							label={t("placeholderIsVisible")}
-							register={register}
-						/>
+						<Switch name="active" label={t("placeholderIsVisible")} />
 
-						<input type="hidden" {...register("id")} />
+						<input type="hidden" {...formMethods.register("id")} />
 
 						<button style={{ marginTop: "20px" }}>
 							{employee?.id
 								? t("buttonUpdateEmployee")
 								: t("buttonCreateEmployee")}
 						</button>
-					</form>
+					</Form>
 				</motion.section>
 			)}
 		</AnimatePresence>

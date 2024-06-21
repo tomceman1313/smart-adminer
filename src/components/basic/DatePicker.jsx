@@ -59,7 +59,10 @@ export default function DatePicker({
 				icon={icon ? icon : faCalendarWeek}
 			/>
 			{errors[name] && (
-				<p className={css.error_message}>{`* ${errors[name].message}`}</p>
+				<p
+					className={css.error_message}
+					title={`* ${errors[name].message}`}
+				>{`* ${errors[name].message}`}</p>
 			)}
 		</div>
 	);

@@ -27,10 +27,18 @@ export default function SelectWithoutFormRef({
 
 	useEffect(() => {
 		if (isSubmitted) {
-			setSelectedOption(placeholderValue);
+			if (!defaultValue) {
+				setSelectedOption(placeholderValue);
+			}
 			setSelectRect(null);
 		}
-	}, [isSubmitted, setSelectRect, setSelectedOption, placeholderValue]);
+	}, [
+		isSubmitted,
+		setSelectRect,
+		setSelectedOption,
+		placeholderValue,
+		defaultValue,
+	]);
 
 	function toggleOptions() {
 		if (selectRect) {
@@ -81,7 +89,7 @@ export default function SelectWithoutFormRef({
 				className={`${cssBasic.input_box} ${css.select} ${
 					halfSize ? cssBasic.half : ""
 				} ${whiteMode ? `${css.white} ${cssBasic.white_color}` : ""} ${
-					errors[name] ? css.validationError : ""
+					errors?.[name] ? css.validationError : ""
 				}`}
 				onClick={toggleOptions}
 			>

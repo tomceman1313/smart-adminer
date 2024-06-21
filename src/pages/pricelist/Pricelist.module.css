@@ -9,6 +9,7 @@
 .pricelist section:nth-of-type(1) {
 	width: calc(50% - 120px);
 	min-height: 350px;
+	overflow: hidden;
 }
 .pricelist section:nth-of-type(2) {
 	width: calc(50% - 120px);

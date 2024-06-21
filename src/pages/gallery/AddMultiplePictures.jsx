@@ -13,12 +13,16 @@ import CategorySelector from "../../components/basic/category-selector/CategoryS
 import Form from "../../components/basic/form/Form";
 import SubmitButton from "../../components/basic/submit-button/SubmitButton";
 import css from "./css/Gallery.module.css";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { multiplePhotoSchema } from "../../schemas/zodSchemas";
 
 const AddMultiplePictures = ({ close, categories }) => {
-	const { t } = useTranslation("gallery");
+	const { t } = useTranslation("gallery", "validationErrors");
 	const { multipleCreate } = useItemsControllerApiFunctions();
 	const [pickedCategories, setPickedCategories] = useState([]);
-	const formMethods = useForm();
+	const formMethods = useForm({
+		resolver: zodResolver(multiplePhotoSchema(t)),
+	});
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createImages, status } = useMutation({

@@ -10,6 +10,7 @@ const TextEditor = ({ value, setValue, isLiteVersion, headers }) => {
 		setValue(debounceBody);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debounceBody]);
+	//console.log(value);
 
 	let m, f;
 	if (isLiteVersion) {
@@ -17,7 +18,12 @@ const TextEditor = ({ value, setValue, isLiteVersion, headers }) => {
 			toolbar: [
 				[{ header: headers ? [...headers, false] : [1, 2, 3, false] }],
 				["bold", "italic", "underline"],
-				[{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+				[
+					{ list: "ordered" },
+					{ list: "bullet" },
+					{ indent: "-1" },
+					{ indent: "+1" },
+				],
 				["link", "clean"],
 			],
 			clipboard: {
@@ -25,13 +31,27 @@ const TextEditor = ({ value, setValue, isLiteVersion, headers }) => {
 			},
 		};
 
-		f = ["header", "bold", "italic", "underline", "list", "bullet", "indent", "link"];
+		f = [
+			"header",
+			"bold",
+			"italic",
+			"underline",
+			"list",
+			"bullet",
+			"indent",
+			"link",
+		];
 	} else {
 		m = {
 			toolbar: [
 				[{ header: headers ? [...headers, false] : [1, 2, 3, false] }],
 				["bold", "italic", "underline"],
-				[{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+				[
+					{ list: "ordered" },
+					{ list: "bullet" },
+					{ indent: "-1" },
+					{ indent: "+1" },
+				],
 				["link", "image"],
 				["clean"],
 			],
@@ -40,12 +60,29 @@ const TextEditor = ({ value, setValue, isLiteVersion, headers }) => {
 			},
 		};
 
-		f = ["header", "bold", "italic", "underline", "strike", "list", "bullet", "indent", "link", "image"];
+		f = [
+			"header",
+			"bold",
+			"italic",
+			"underline",
+			"strike",
+			"list",
+			"bullet",
+			"indent",
+			"link",
+			"image",
+		];
 	}
 
 	return (
 		<div>
-			<ReactQuill theme="snow" modules={m} formats={f} value={text} onChange={setText}></ReactQuill>
+			<ReactQuill
+				theme="snow"
+				modules={m}
+				formats={f}
+				value={text}
+				onChange={setText}
+			></ReactQuill>
 		</div>
 	);
 };

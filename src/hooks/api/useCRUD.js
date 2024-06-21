@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import useBasicApiFunctions from "./useBasicApiFunctions";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -21,6 +22,7 @@ export function useGet(apiClass, id, key, errorMessage, enabled = true) {
 	return useQuery({
 		queryKey: key,
 		queryFn: async () => {
+			if (!id) return null;
 			const data = await get(apiClass, id);
 			return data;
 		},
@@ -34,6 +36,7 @@ export function useGet(apiClass, id, key, errorMessage, enabled = true) {
 export function useCreate(apiClass, positiveText, errorMessage, invalidateKey) {
 	const { create } = useBasicApiFunctions();
 	const queryClient = useQueryClient();
+	const { t } = useTranslation("errors");
 
 	return useMutation({
 		mutationFn: (data) => {
@@ -53,7 +56,7 @@ export function useCreate(apiClass, positiveText, errorMessage, invalidateKey) {
 			}
 		},
 		meta: {
-			errorMessage: errorMessage,
+			errorMessage: errorMessage ? errorMessage : t("errorCRUDOperation"),
 		},
 	});
 }
@@ -61,6 +64,7 @@ export function useCreate(apiClass, positiveText, errorMessage, invalidateKey) {
 export function useUpdate(apiClass, positiveText, errorMessage, invalidateKey) {
 	const { edit } = useBasicApiFunctions();
 	const queryClient = useQueryClient();
+	const { t } = useTranslation("errors");
 
 	return useMutation({
 		mutationFn: (data) => {
@@ -80,7 +84,7 @@ export function useUpdate(apiClass, positiveText, errorMessage, invalidateKey) {
 			}
 		},
 		meta: {
-			errorMessage: errorMessage,
+			errorMessage: errorMessage ? errorMessage : t("errorCRUDOperation"),
 		},
 	});
 }

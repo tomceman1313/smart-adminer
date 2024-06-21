@@ -17,17 +17,17 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import InputBox from "../../components/basic/InputBox";
 import Select from "../../components/basic/select/Select";
+import Form from "../../components/basic/form/Form";
 
 const UserForm = ({ userData, roles, close, submitHandler }) => {
-	console.log(userData);
-	const { register, handleSubmit, reset, setValue } = useForm();
+	const formMethods = useForm();
 	const { t } = useTranslation("profiles");
 
 	async function onSubmit(data) {
 		const result = await submitHandler(data, userData.username);
 		if (result) {
 			close();
-			reset();
+			formMethods.reset();
 		}
 	}
 
@@ -41,14 +41,13 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 		>
 			<h2>{userData?.username ? userData.username : t("formHeader")}</h2>
 			<FontAwesomeIcon id={css.close} icon={faXmark} onClick={close} />
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<Form onSubmit={onSubmit} formContext={formMethods}>
 				<InputBox
 					key={userData?.username}
 					type="text"
 					name="username"
 					placeholder={t("username")}
 					defaultValue={userData?.username}
-					register={register}
 					icon={faUser}
 					isRequired={true}
 				/>
@@ -58,7 +57,6 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 					name="fname"
 					placeholder={t("fname")}
 					defaultValue={userData?.fname}
-					register={register}
 					icon={faImagePortrait}
 				/>
 
@@ -67,7 +65,6 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 					name="lname"
 					placeholder={t("lname")}
 					defaultValue={userData?.lname}
-					register={register}
 					icon={faIdBadge}
 				/>
 				<InputBox
@@ -75,7 +72,6 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 					name="tel"
 					placeholder={t("phone")}
 					defaultValue={userData?.tel}
-					register={register}
 					icon={faMobileScreen}
 				/>
 				<InputBox
@@ -83,7 +79,6 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 					name="email"
 					placeholder={t("email")}
 					defaultValue={userData?.email}
-					register={register}
 					icon={faAt}
 				/>
 
@@ -93,7 +88,6 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 							type="password"
 							name="password"
 							placeholder={t("password")}
-							register={register}
 							icon={faUnlock}
 							isRequired={true}
 						/>
@@ -101,29 +95,31 @@ const UserForm = ({ userData, roles, close, submitHandler }) => {
 							type="password"
 							name="password_check"
 							placeholder={t("passwordAgain")}
-							register={register}
 							icon={faLock}
 							isRequired={true}
 						/>
 					</>
 				) : (
-					<input type="hidden" defaultValue={userData.id} {...register("id")} />
+					<input
+						type="hidden"
+						defaultValue={userData.id}
+						{...formMethods.register("id")}
+					/>
 				)}
 
 				<Select
 					name="role_id"
 					options={roles}
-					register={register}
 					defaultValue={userData.role_id}
 					icon={faArrowUpWideShort}
-					setValue={setValue}
+					setValue={formMethods.setValue}
 				/>
 
 				<input
 					type="submit"
 					value={userData?.username ? t("submitButton") : t("createButton")}
 				/>
-			</form>
+			</Form>
 		</motion.section>
 	);
 };

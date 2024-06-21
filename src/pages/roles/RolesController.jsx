@@ -6,11 +6,12 @@ import css from "../../components/common/categories-controller/Category.module.c
 import Item from "../../components/common/controlled-item/Item";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import Form from "../../components/basic/form/Form";
 
 export default function RolesController({ roles, reload }) {
 	const { t } = useTranslation("profiles");
 	const { create, edit, remove } = useBasicApiFunctions();
-	const { register, handleSubmit, setValue } = useForm();
+	const formMethods = useForm();
 
 	const createHandler = async (data) => {
 		if (roles.find((role) => role.name === data.name)) {
@@ -18,7 +19,7 @@ export default function RolesController({ roles, reload }) {
 			return;
 		}
 		await create("users/roles", data, t("positiveTextCreatedRole"));
-		setValue("name", "");
+		formMethods.setValue("name", "");
 		reload();
 	};
 
@@ -57,18 +58,17 @@ export default function RolesController({ roles, reload }) {
 				<div></div>
 			</div>
 			<h3>{t("headerAddRole")}</h3>
-			<form onSubmit={handleSubmit(createHandler)}>
+			<Form onSubmit={createHandler} formContext={formMethods}>
 				<InputBox
 					placeholder={t("placeholderRoleName")}
 					name="name"
-					register={register}
 					type="text"
 					icon={faFont}
 					white={false}
 					isRequired
 				/>
 				<button>{t("createButton")}</button>
-			</form>
+			</Form>
 		</section>
 	);
 }

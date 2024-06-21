@@ -1,10 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import PlusButton from "../../components/basic/PlusButton";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import { useGetAll } from "../../hooks/api/useCRUD";
 import { createEventsArray, isActive } from "../../modules/BasicFunctions";
 import CalendarActionPrices from "./CalendarActionPrices";
 import EditPriceItem from "./EditPriceItem";
@@ -13,24 +12,24 @@ import css from "./Pricelist.module.css";
 
 export default function Pricelist() {
 	const { t } = useTranslation("priceList", "errors");
-	const { getAll } = useBasicApiFunctions();
 
 	const [events, setEvents] = useState([]);
 
 	const [priceItem, setPriceItem] = useState(false);
 	const [showAddItemCont, setShowAddItemCont] = useState(false);
 
-	const { data: prices, refetch } = useQuery({
-		queryKey: ["priceList"],
-		queryFn: async () => {
-			const data = await getAll("pricelist");
-			setEvents(createEventsArray(data));
-			return data;
-		},
-		meta: {
-			errorMessage: t("errors:errorFetchPriceList"),
-		},
-	});
+	const { data: prices } = useGetAll(
+		"pricelist",
+		null,
+		["priceList"],
+		t("errors:errorFetchPriceList")
+	);
+
+	useEffect(() => {
+		if (prices) {
+			setEvents(createEventsArray(prices));
+		}
+	}, [prices]);
 
 	function eventHandler(info) {
 		window.scrollTo(0, 0);
@@ -85,17 +84,10 @@ export default function Pricelist() {
 
 				<AnimatePresence>
 					{showAddItemCont && (
-						<NewPriceListItem
-							loadData={refetch}
-							close={() => setShowAddItemCont(false)}
-						/>
+						<NewPriceListItem close={() => setShowAddItemCont(false)} />
 					)}
 					{priceItem && (
-						<EditPriceItem
-							priceItem={priceItem}
-							setPriceItem={setPriceItem}
-							loadData={refetch}
-						/>
+						<EditPriceItem priceItem={priceItem} setPriceItem={setPriceItem} />
 					)}
 				</AnimatePresence>
 			</section>

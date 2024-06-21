@@ -14,11 +14,12 @@ import { useTranslation } from "react-i18next";
 import CategorySelector from "../../components/basic/category-selector/CategorySelector";
 import css from "./css/Gallery.module.css";
 import Form from "../../components/basic/form/Form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const EditPicture = ({ image, categories, editImage, close }) => {
-	const { t } = useTranslation("gallery");
+	const { t } = useTranslation("gallery", "validationErrors");
 	const [pickedCategories, setPickedCategories] = useState([]);
-	const formMethods = useForm();
+	const formMethods = useForm({ resolver: zodResolver(photoSchema(t)) });
 
 	useEffect(() => {
 		formMethods.setValue("title", image.title);
@@ -50,11 +51,7 @@ const EditPicture = ({ image, categories, editImage, close }) => {
 				onClick={close}
 			/>
 			<h2>{t("headerEditImage")}</h2>
-			<Form
-				onSubmit={updateImage}
-				formContext={formMethods}
-				validationSchema={photoSchema}
-			>
+			<Form onSubmit={updateImage} formContext={formMethods}>
 				<InputBox
 					placeholder={t("placeholderImageTitle")}
 					type="text"

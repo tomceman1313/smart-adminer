@@ -51,7 +51,10 @@ const InputBox = ({
 			/>
 			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 			{errors[name] && (
-				<p className={cssBasic.error_message}>{`* ${errors[name].message}`}</p>
+				<p
+					className={cssBasic.error_message}
+					title={`* ${errors[name].message}`}
+				>{`* ${errors[name].message}`}</p>
 			)}
 		</div>
 	);

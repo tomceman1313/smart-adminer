@@ -27,6 +27,8 @@
 .scrollable {
 	height: calc(100% - 150px);
 	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--green-dark) var(--green);
 }
 
 .buttons_section {

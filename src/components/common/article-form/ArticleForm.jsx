@@ -29,16 +29,19 @@ import Select from "../../basic/select/Select";
 import SubmitButton from "../../basic/submit-button/SubmitButton";
 import Switch from "../../basic/switch/Switch";
 import ArticlePreview from "../article-preview/ArticlePreview";
+import Form from "../../basic/form/Form";
 import css from "./ArticleForm.module.css";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { articleSchema } from "../../../schemas/zodSchemas";
 
 export default function ArticleForm({ type }) {
 	const navigation = useNavigate();
-	const { t } = useTranslation(type, "errors");
+	const { t } = useTranslation(type, "errors", "validationErrors");
 	const { id } = useParams();
 	const { create, edit, get, remove } = useBasicApiFunctions();
 	const { getCategories } = useCategoriesApi();
 	const { setAlert } = useInteraction();
-	const { register, handleSubmit, getValues, reset, setValue } = useForm();
+	const formMethods = useForm({ resolver: zodResolver(articleSchema(t)) });
 
 	const [eventPreview, setEventPreview] = useState(null);
 	const [body, setBody] = useState(null);
@@ -50,7 +53,7 @@ export default function ArticleForm({ type }) {
 		queryKey: ["content", id],
 		queryFn: async () => {
 			if (!id) {
-				reset();
+				formMethods.reset();
 				setBody("");
 				setUnderEventImages(null);
 				return null;
@@ -73,7 +76,7 @@ export default function ArticleForm({ type }) {
 		},
 	});
 
-	const { mutateAsync: createEvent, status: statusCreate } = useMutation({
+	const { mutateAsync: createArticle, status: statusCreate } = useMutation({
 		mutationFn: (data) => {
 			return create(type, data, t("positiveTextCreated"));
 		},
@@ -86,6 +89,7 @@ export default function ArticleForm({ type }) {
 	});
 
 	async function onSubmit(data) {
+		console.log(data);
 		let formattedData = await formatSubmittedData(
 			data,
 			data,
@@ -101,9 +105,10 @@ export default function ArticleForm({ type }) {
 		if (id) {
 			formattedData.id = id;
 			await updateEvent(formattedData);
+			formMethods.reset();
 			refetch();
 		} else {
-			await createEvent(formattedData);
+			await createArticle(formattedData);
 			navigation(`/${type}`);
 		}
 	}
@@ -123,7 +128,7 @@ export default function ArticleForm({ type }) {
 
 	async function openArticlePreview() {
 		const formattedData = await formatArticlePreviewData(
-			getValues(),
+			formMethods.getValues(),
 			data,
 			body
 		);
@@ -133,15 +138,22 @@ export default function ArticleForm({ type }) {
 
 	return (
 		<>
-			<Helmet>
-				<title>{t("htmlTitleNew")} | SmartAdminer</title>
-			</Helmet>
+			{data ? (
+				<Helmet>
+					<title>{data.title} | SmartAdminer</title>
+				</Helmet>
+			) : (
+				<Helmet>
+					<title>{t("htmlTitleNew")} | SmartAdminer</title>
+				</Helmet>
+			)}
 
 			{categories && (id ? data : true) ? (
-				<form
-					onSubmit={handleSubmit(onSubmit)}
+				<Form
+					onSubmit={onSubmit}
 					className={css.article}
 					key={data?.title}
+					formContext={formMethods}
 				>
 					<section className="half-section">
 						<h2>{t("headerBasicInfo")}</h2>
@@ -149,23 +161,19 @@ export default function ArticleForm({ type }) {
 							type="text"
 							name="title"
 							placeholder={t("placeholderTitle")}
-							register={register}
 							icon={faHeading}
 							defaultValue={data?.title}
-							isRequired
 						/>
 						<InputBox
 							type="text"
 							name="description"
 							placeholder={t("placeholderDescription")}
-							register={register}
 							icon={faMagnifyingGlass}
 							defaultValue={data?.description}
 						/>
 						<Switch
 							name="active"
 							label={t("placeholderIsVisible")}
-							register={register}
 							defaultValue={data?.active}
 						/>
 					</section>
@@ -175,26 +183,18 @@ export default function ArticleForm({ type }) {
 						<DatePicker
 							name="date"
 							placeholder={t("placeholderDate")}
-							register={register}
 							additionalClasses="gray"
 							defaultValue={makeDateFormat(data?.date, "str")}
-							isRequired
 						/>
 						<Select
 							name="category_id"
 							options={categories}
-							register={register}
 							icon={faHashtag}
 							placeholderValue={t("placeholderCategory")}
 							defaultValue={data?.category_id}
-							setValue={setValue}
+							setValue={formMethods.setValue}
 						/>
-						<ImageInput
-							image={data?.image}
-							name="image"
-							path={type}
-							register={register}
-						/>
+						<ImageInput image={data?.image} name="image" path={type} />
 					</section>
 
 					<section>
@@ -205,7 +205,6 @@ export default function ArticleForm({ type }) {
 							key={body ? "filled" : "empty"}
 						/>
 						<ImagesUnderArticle
-							register={register}
 							underArticleImages={underEventImages}
 							setUnderArticleImages={setUnderEventImages}
 							location={type}
@@ -235,7 +234,7 @@ export default function ArticleForm({ type }) {
 							)}
 						</div>
 					</section>
-				</form>
+				</Form>
 			) : (
 				<h3>Načítání článku</h3>
 			)}

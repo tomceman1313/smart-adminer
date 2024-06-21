@@ -12,7 +12,6 @@ function assignPermissionsToRole(roles, permissions) {
 	const rolesWithoutAdminUser = roles.filter(
 		(role) => role.name.toLowerCase() !== "admin"
 	);
-	console.log(rolesWithoutAdminUser);
 	return rolesWithoutAdminUser.map((role) => {
 		role.permissions = permissions.filter(
 			(permission) => permission.role_id === role.id

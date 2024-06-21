@@ -2,5 +2,7 @@
 	"required": "Pole musí být vyplněno",
 	"maxLength": "Text může mít maximálně {{number}} znaků",
 	"whiteSpaces": "Text nesmí obsahovat mezery",
-	"unrealDates": "Počáteční datum musí být dříve než konečné"
+	"unrealDates": "Počáteční datum musí být dříve než konečné",
+	"acceptOnlyNumeric": "Vstupní pole může obsahovat pouze číslice",
+	"invalidPhoneNumber": "Nesprávný formát telefonního čísla"
 }

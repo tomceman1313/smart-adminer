@@ -33,8 +33,18 @@ export function makeDate(year, month, day) {
 	return date;
 }
 
+export function getTodayDate() {
+	const today = new Date();
+	const numericDate = makeDate(
+		today.getFullYear(),
+		today.getMonth() + 1,
+		today.getDate()
+	);
+	return makeDateFormat(numericDate, "str");
+}
+
 /**
- * @param {nulber} date - date number (20230720)
+ * @param {number} date - date number (20230720)
  * @param {string} direction - str = yyyy-MM-DD, text = DD.MM.yyyy
  * @returns {string}
  */

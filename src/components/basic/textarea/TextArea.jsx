@@ -1,10 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { useFormContext } from "react-hook-form";
 import css from "./TextArea.module.css";
 
 export default function TextArea({
 	placeholder,
-	register,
 	name,
 	icon,
 	white,
@@ -13,9 +12,18 @@ export default function TextArea({
 	defaultValue,
 	readOnly,
 }) {
+	const {
+		register,
+		formState: { errors },
+	} = useFormContext();
+
 	let divClassName = `${css.input_box}`;
 	if (white) {
 		divClassName = `${css.input_box} ${css.white_color}`;
+	}
+
+	if (errors[name]) {
+		divClassName += ` ${css.validationError}`;
 	}
 
 	if (additionalClasses) {
@@ -35,6 +43,12 @@ export default function TextArea({
 				pattern="\S(.*\S)?"
 				defaultValue={defaultValue}
 			></textarea>
+			{errors[name] && (
+				<p
+					className={css.error_message}
+					title={`* ${errors[name].message}`}
+				>{`* ${errors[name].message}`}</p>
+			)}
 		</div>
 	);
 }

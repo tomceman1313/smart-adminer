@@ -4,10 +4,15 @@ import { faImage } from "@fortawesome/free-solid-svg-icons";
 import cssBasic from "../../components/styles/Basic.module.css";
 import ImageList from "./ImageList";
 import { useTranslation } from "react-i18next";
+import { useFormContext } from "react-hook-form";
 
-export default function ImagesUnderArticle({ register, underArticleImages, setUnderArticleImages, location }) {
+export default function ImagesUnderArticle({
+	underArticleImages,
+	setUnderArticleImages,
+	location,
+}) {
 	const { t } = useTranslation("articles");
-
+	const { register } = useFormContext();
 	return (
 		<div>
 			<h2>{t("headerAdditionalImages")}</h2>
@@ -17,7 +22,13 @@ export default function ImagesUnderArticle({ register, underArticleImages, setUn
 				<FontAwesomeIcon className={cssBasic.icon} icon={faImage} />
 			</div>
 
-			{underArticleImages && <ImageList images={underArticleImages} setImages={setUnderArticleImages} location={location} />}
+			{underArticleImages && (
+				<ImageList
+					images={underArticleImages}
+					setImages={setUnderArticleImages}
+					location={location}
+				/>
+			)}
 		</div>
 	);
 }
