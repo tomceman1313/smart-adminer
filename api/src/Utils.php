@@ -172,4 +172,11 @@ class Utils
 
         return $month_int;
     }
+
+    public function createPublicFolder($folderPath)
+    {
+        if (!file_exists($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
+    }
 }

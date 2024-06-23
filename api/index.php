@@ -67,6 +67,7 @@ switch ($URL_PARTS[2]) {
         $controller->processRequest();
         break;
     case 'products':
+        $utils->createPublicFolder("public/images/products");
         $controller = new ProductsController($database);
         $controller->processRequest($authAction);
         break;
@@ -83,28 +84,35 @@ switch ($URL_PARTS[2]) {
         $controller->processRequest($authAction);
         break;
     case 'articles':
+        $utils->createPublicFolder("public/images/articles");
         $controller = new ArticlesController($database);
         $controller->processRequest($authAction);
         break;
     case 'gallery':
+        $utils->createPublicFolder("public/images/gallery");
         $controller = new GalleryController($database);
         $controller->processRequest($authAction);
         break;
 
     case 'documents':
+        $utils->createPublicFolder("public/files/documents");
+        $utils->createPublicFolder("public/images/documents");
         $controller = new DocumentsController($database);
         $controller->processRequest($authAction);
         break;
     case 'events':
+        $utils->createPublicFolder("public/images/events");
         $controller = new EventsController($database);
         $controller->processRequest($authAction);
         break;
 
     case 'vacancies':
+        $utils->createPublicFolder("public/images/vacancies");
         $controller = new VacanciesController($database);
         $controller->processRequest($authAction);
         break;
     case 'employees':
+        $utils->createPublicFolder("public/images/employees");
         $controller = new EmployeesController($database);
         $controller->processRequest($authAction);
         break;
@@ -117,6 +125,7 @@ switch ($URL_PARTS[2]) {
         $controller->processRequest();
         break;
     case 'pages':
+        $utils->createPublicFolder("public/images/pages");
         $controller = new PagesController($database);
         $controller->processRequest($authAction);
         break;

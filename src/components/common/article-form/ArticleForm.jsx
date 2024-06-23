@@ -89,7 +89,6 @@ export default function ArticleForm({ type }) {
 	});
 
 	async function onSubmit(data) {
-		console.log(data);
 		let formattedData = await formatSubmittedData(
 			data,
 			data,
