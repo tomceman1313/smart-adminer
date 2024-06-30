@@ -8,5 +8,8 @@
 	"positiveTextCreatedCategory": "Category has been created",
 	"positiveTextUpdatedCategory": "Category has been updated",
 	"positiveTextDeletedCategory": "Category has been deleted",
-	"placeholderName": "Category name"
+	"placeholderName": "Category name",
+	"titleFilterButton": "Filter by category",
+	"titleEditButton": "Change name",
+	"titleDeleteButton": "Delete category"
 }

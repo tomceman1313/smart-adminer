@@ -1,69 +1,3 @@
-/*------------------------------------------------ List of categories*/
-.departments_list {
-	overflow-y: auto;
-	max-height: 240px;
-}
-
-.departments_list li {
-	display: flex;
-	align-items: stretch;
-	width: 100%;
-	margin: 10px 0;
-	overflow: hidden;
-}
-
-.departments_list input {
-	width: 100%;
-	padding-left: 30px;
-	background-color: white;
-	border: solid 1px #d6dde1;
-	border-right: none;
-	border-radius: 8px 0 0 8px;
-}
-
-.departments_list svg {
-	font-size: 20px;
-	padding: 10px;
-	color: white;
-	cursor: pointer;
-	transition: all 0.5s;
-	width: 40px;
-}
-.departments_list svg:nth-of-type(1) {
-	background-color: var(--green);
-}
-
-.departments_list svg:nth-of-type(2) {
-	background-color: var(--main);
-}
-
-.departments_list svg:nth-of-type(3) {
-	background-color: var(--red);
-	border-radius: 0 8px 8px 0;
-}
-
-.departments_list svg:nth-of-type(1):hover {
-	background-color: var(--green-dark);
-}
-
-.departments_list svg:nth-of-type(2):hover {
-	background-color: var(--main-dark);
-}
-
-.departments_list svg:nth-of-type(3):hover {
-	background-color: var(--red-dark);
-}
-
-.blur {
-	position: relative;
-	height: 20px;
-	background-color: rgb(255, 255, 255, 1);
-	filter: blur(10px);
-	margin-top: -16px;
-	z-index: 2;
-}
-
-/*------------------------------------------------ New departments form*/
 .departments form {
 	display: flex;
 	align-items: stretch;
@@ -86,9 +20,5 @@
 	.departments form button {
 		font-size: 12px;
 		padding: 10px 5px;
-	}
-
-	.departments_list input {
-		padding-left: 20px;
 	}
 }

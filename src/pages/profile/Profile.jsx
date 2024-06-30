@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import { useForm } from "react-hook-form";
 import {
 	faAt,
 	faIdBadge,
@@ -9,45 +5,42 @@ import {
 	faMobileScreen,
 	faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
+import { useAuthGet, useUpdate } from "../../hooks/api/useCRUD";
+import useAuth from "../../hooks/useAuth";
+import { userSchema } from "../../schemas/zodSchemas";
 import NewPassword from "./NewPassword";
 import css from "./Profile.module.css";
-import { useTranslation } from "react-i18next";
 
 const Profile = () => {
-	const { t } = useTranslation("profile");
+	const { t } = useTranslation("profile", "errors", "validationErrors");
 	const auth = useAuth();
-	const { edit, getWithAuth } = useBasicApiFunctions();
-	const [isEditing, setIsEditing] = useState(false);
 	const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-	const { register, handleSubmit, setValue, setFocus } = useForm();
+	const formMethods = useForm({ resolver: zodResolver(userSchema(t)) });
 
-	useEffect(() => {
-		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const { data: user } = useAuthGet(
+		"users",
+		auth.userInfo.id,
+		["user"],
+		t("errors:errorFetchUser")
+	);
 
-	async function loadData() {
-		const userData = await getWithAuth("users", auth.userInfo.id);
-		setValue("username", userData.username);
-		setValue("fname", userData.fname);
-		setValue("lname", userData.lname);
-		setValue("tel", userData.tel);
-		setValue("email", userData.email);
-		setValue("id", userData.id);
+	const { mutateAsync: edit } = useUpdate(
+		"users",
+		t("positiveTextUserUpdated"),
+		null,
+		["user"]
+	);
+
+	async function onSubmitUserInfo(data) {
+		await edit(data);
 	}
-
-	const onSubmitUserInfo = (data) => {
-		if (!isEditing) {
-			setFocus("username");
-			setIsEditing(!isEditing);
-			return;
-		}
-		setIsEditing(!isEditing);
-
-		edit("users", data, t("positiveTextUserUpdated"));
-	};
 
 	return (
 		<div className={css.profile}>
@@ -55,62 +48,55 @@ const Profile = () => {
 				<title>{t("htmlTitle")}</title>
 			</Helmet>
 			<section className={css.user_info}>
-				<form onSubmit={handleSubmit(onSubmitUserInfo)}>
-					<h2>{t("headerUserInfo")}</h2>
-
-					<InputBox
-						type="text"
-						name="username"
-						placeholder={t("placeholderUsername")}
-						register={register}
-						icon={faUser}
-						isRequired
-						readOnly={!isEditing}
-					/>
-					<InputBox
-						type="text"
-						name="fname"
-						placeholder={t("placeholderFirstName")}
-						register={register}
-						icon={faImagePortrait}
-						isRequired
-						readOnly={!isEditing}
-					/>
-					<InputBox
-						type="text"
-						name="lname"
-						placeholder={t("placeholderLastName")}
-						register={register}
-						icon={faIdBadge}
-						isRequired
-						readOnly={!isEditing}
-					/>
-					<InputBox
-						type="phone"
-						name="tel"
-						placeholder={t("placeholderPhone")}
-						register={register}
-						icon={faMobileScreen}
-						isRequired
-						readOnly={!isEditing}
-					/>
-					<InputBox
-						type="email"
-						name="email"
-						placeholder={t("placeholderEmail")}
-						register={register}
-						icon={faAt}
-						isRequired
-						readOnly={!isEditing}
-					/>
-					<input type="hidden" {...register("id")} />
-					<button type="button" onClick={() => setIsNewPasswordVisible(true)}>
-						{t("buttonChangePassword")}
-					</button>
-					<button type="submit" id="submit">
-						{isEditing ? t("buttonSave") : t("buttonEdit")}
-					</button>
-				</form>
+				{user && (
+					<Form onSubmit={onSubmitUserInfo} formContext={formMethods}>
+						<h2>{t("headerUserInfo")}</h2>
+						<InputBox
+							type="text"
+							name="username"
+							placeholder={t("placeholderUsername")}
+							icon={faUser}
+							defaultValue={user.username}
+						/>
+						<InputBox
+							type="text"
+							name="fname"
+							placeholder={t("placeholderFirstName")}
+							icon={faImagePortrait}
+							defaultValue={user.fname}
+						/>
+						<InputBox
+							type="text"
+							name="lname"
+							placeholder={t("placeholderLastName")}
+							icon={faIdBadge}
+							defaultValue={user.lname}
+						/>
+						<InputBox
+							type="phone"
+							name="tel"
+							placeholder={t("placeholderPhone")}
+							icon={faMobileScreen}
+							defaultValue={user.phone}
+						/>
+						<InputBox
+							type="email"
+							name="email"
+							placeholder={t("placeholderEmail")}
+							icon={faAt}
+							defaultValue={user.email}
+						/>
+						<input
+							type="hidden"
+							{...formMethods.register("id")}
+							defaultValue={user.id}
+						/>
+						<button type="submit">{t("buttonSave")}</button>
+						<button type="button" onClick={() => setIsNewPasswordVisible(true)}>
+							{t("buttonChangePassword")}
+						</button>
+					</Form>
+				)}
 			</section>
 			<NewPassword
 				isVisible={isNewPasswordVisible}

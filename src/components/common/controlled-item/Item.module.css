@@ -1,8 +1,10 @@
 .item {
 	display: flex;
 	align-items: stretch;
-	width: 100%;
+	width: calc(100% - 5px);
 	margin: 10px 0;
+	border: solid 1px #d6dde1;
+	border-radius: 8px;
 	overflow: hidden;
 }
 
@@ -10,15 +12,12 @@
 	width: 100%;
 	padding-left: 30px;
 	background-color: white;
-	border: solid 1px #d6dde1;
 	border-right: none;
-	border-radius: 8px 0 0 8px;
 }
 
 .item svg {
 	font-size: 18px;
 	padding: 10px;
-	color: white;
 	cursor: pointer;
 	transition: all 0.5s;
 	width: 40px;
@@ -29,25 +28,25 @@
 }
 
 .filter_button {
-	background-color: var(--main);
+	color: var(--main);
 }
 
 .edit_button {
-	background-color: var(--green);
+	color: var(--green);
 }
 
 .delete_button {
-	background-color: var(--red);
+	color: var(--red);
 }
 
 .filter_button:hover {
-	background-color: var(--main-dark);
+	color: var(--main-dark);
 }
 
 .edit_button:hover {
-	background-color: var(--green-dark);
+	color: var(--green-dark);
 }
 
 .delete_button:hover {
-	background-color: var(--red-dark);
+	color: var(--red-dark);
 }

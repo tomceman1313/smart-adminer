@@ -1,6 +1,10 @@
 import { z } from "zod";
 import i18next from "i18next";
 
+const phoneRegex = new RegExp(
+	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+);
+
 export const photoSchema = (t) => {
 	return z.object({
 		title: z.optional(
@@ -227,10 +231,6 @@ export const productSchema = (t) => {
 	});
 };
 
-const phoneRegex = new RegExp(
-	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
-);
-
 export const orderSchema = (t) => {
 	return z.object({
 		status_code: z.string().min(1, t("validationErrors:required")),
@@ -264,4 +264,57 @@ export const orderSchema = (t) => {
 		ic: z.optional(z.string()),
 		dic: z.optional(z.string()),
 	});
+};
+
+export const userSchema = (t) => {
+	return z.object({
+		username: z
+			.string()
+			.min(1, t("validationErrors:required"))
+			.max(60, {
+				message: t("validationErrors:maxLength", { number: 60 }),
+			}),
+		fname: z
+			.string()
+			.min(1, t("validationErrors:required"))
+			.max(60, {
+				message: t("validationErrors:maxLength", { number: 60 }),
+			}),
+		lname: z
+			.string()
+			.min(1, t("validationErrors:required"))
+			.max(60, {
+				message: t("validationErrors:maxLength", { number: 60 }),
+			}),
+		email: z
+			.string()
+			.refine(
+				(value) => value === "" || z.string().email().safeParse(value).success,
+				{
+					message: t("validationErrors:invalidEmail"),
+				}
+			),
+		tel: z
+			.string()
+			.refine(
+				(value) =>
+					value === "" || z.string().regex(phoneRegex).safeParse(value).success,
+				{
+					message: t("validationErrors:invalidPhoneNumber"),
+				}
+			),
+		id: z.optional(z.string()),
+	});
+};
+
+export const newPasswordSchema = (t) => {
+	return z
+		.object({
+			password: z.string().min(1, t("validationErrors:required")),
+			passwordCheck: z.string().min(1, t("validationErrors:required")),
+		})
+		.refine((data) => data.password === data.passwordCheck, {
+			message: t("validationErrors:notEqualPassword"),
+			path: ["passwordCheck"],
+		});
 };

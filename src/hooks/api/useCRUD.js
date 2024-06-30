@@ -16,6 +16,20 @@ export function useGetAll(apiClass, page, key, errorMessage) {
 	});
 }
 
+export function useAuthGetAll(apiClass, page, key, errorMessage) {
+	const { getAllWithAuth } = useBasicApiFunctions();
+	return useQuery({
+		queryKey: key,
+		queryFn: async () => {
+			const data = await getAllWithAuth(apiClass);
+			return data;
+		},
+		meta: {
+			errorMessage: errorMessage,
+		},
+	});
+}
+
 export function useGet(apiClass, id, key, errorMessage, enabled = true) {
 	const { get } = useBasicApiFunctions();
 
@@ -24,6 +38,23 @@ export function useGet(apiClass, id, key, errorMessage, enabled = true) {
 		queryFn: async () => {
 			if (!id) return null;
 			const data = await get(apiClass, id);
+			return data;
+		},
+		meta: {
+			errorMessage: errorMessage,
+		},
+		enabled: enabled,
+	});
+}
+
+export function useAuthGet(apiClass, id, key, errorMessage, enabled = true) {
+	const { getWithAuth } = useBasicApiFunctions();
+
+	return useQuery({
+		queryKey: key,
+		queryFn: async () => {
+			if (!id) return null;
+			const data = await getWithAuth(apiClass, id);
 			return data;
 		},
 		meta: {

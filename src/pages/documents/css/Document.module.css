@@ -22,10 +22,12 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .controls {
 	width: 150px;
+	background-color: white;
 	position: absolute;
 	border-radius: 0;
 	right: 0;
@@ -54,33 +56,32 @@
 .download_icon,
 .edit_icon {
 	color: white;
-	width: 20px;
-	height: 20px;
-	padding: 20px 15px;
+	font-size: 1.2rem;
+	padding: 15px;
 	transition: all 0.5s;
 }
 
 .delete_icon {
-	background-color: var(--red);
+	color: var(--red);
 }
 .delete_icon:hover {
-	background-color: var(--red-dark);
+	color: var(--red-dark);
 }
 
 .download_icon {
-	background-color: var(--main);
+	color: var(--main);
 }
 
 .download_icon:hover {
-	background-color: var(--main-dark);
+	color: var(--main-dark);
 }
 
 .edit_icon {
-	background-color: var(--green);
+	color: var(--green);
 }
 
 .edit_icon:hover {
-	background-color: var(--green-dark);
+	color: var(--green-dark);
 }
 
 .multiselection {

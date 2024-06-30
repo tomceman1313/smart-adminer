@@ -1,7 +1,6 @@
 import { test, expect } from "../playwright/fixtures";
 
 test("Create category", async ({ page: screen }) => {
-	//open to the new article
 	await screen.goto("/admin/articles");
 	await screen.getByPlaceholder("Název kategorie").click();
 	await screen
@@ -17,7 +16,6 @@ test("Create category", async ({ page: screen }) => {
 });
 
 test("Update category", async ({ page: screen }) => {
-	//open to the new article
 	await screen.goto("/admin/articles");
 
 	//set new value
@@ -30,15 +28,20 @@ test("Update category", async ({ page: screen }) => {
 	await expect(screen.locator('input[value="--E2E testing--"]')).toHaveCount(1);
 });
 
-test("create new article", async ({ page: screen }) => {
-	await screen.goto("http://localhost:3000/admin/new-article");
+test("Create new article", async ({ page: screen }) => {
+	await screen.goto("/admin/new-article");
 	await screen.getByPlaceholder("Titulek").click();
 	await screen.getByPlaceholder("Titulek").fill("E2E testing title");
 	await screen.getByPlaceholder("Titulek").press("Tab");
 	await screen.getByPlaceholder("Popisek").fill("E2E testing description");
 
 	await screen.locator('input[name="date"]').fill("2024-05-29");
-	await screen.selectOption("select", { label: "--E2E testing--" });
+	await screen
+		.locator("div")
+		.filter({ hasText: /^-- Kategorie článku --$/ })
+		.nth(1)
+		.click();
+	await screen.getByRole("list").getByText("--E2E testing--").click();
 	await screen
 		.locator('input[name="image"]')
 		.setInputFiles("public/login_background.jpeg");
@@ -60,7 +63,7 @@ test("create new article", async ({ page: screen }) => {
 test("Get all articles", async ({ page: screen }) => {
 	await screen.goto("/admin/articles");
 	await expect(
-		screen.getByRole("heading", { name: "Testovací článek" })
+		screen.getByRole("heading", { name: "E2E testing title" })
 	).toBeVisible();
 });
 
@@ -105,7 +108,6 @@ test("Show article", async ({ page: screen }) => {
 });
 
 test("Update article", async ({ page: screen }) => {
-	//open to the new article
 	await screen.goto("/admin/articles");
 	await expect(
 		screen.getByRole("heading", { name: "E2E testing title" })
@@ -153,7 +155,6 @@ test("Update article", async ({ page: screen }) => {
 });
 
 test("Delete article", async ({ page: screen }) => {
-	//open to the new article
 	await screen.goto("/admin/articles");
 	await expect(
 		screen.getByRole("heading", { name: "E2E testing title" })
@@ -166,7 +167,6 @@ test("Delete article", async ({ page: screen }) => {
 });
 
 test("Delete category", async ({ page: screen }) => {
-	//open to the new article
 	await screen.goto("/admin/articles");
 
 	//delete category

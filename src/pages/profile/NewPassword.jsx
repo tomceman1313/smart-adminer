@@ -1,47 +1,27 @@
 import { faUnlock, faUnlockKeyhole } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
-import { useForm } from "react-hook-form";
 import InputBox from "../../components/basic/InputBox";
 import useAuthApi from "../../hooks/api/useAuthApi";
 
 import { useTranslation } from "react-i18next";
+import Form from "../../components/basic/form/Form";
+import { newPasswordSchema } from "../../schemas/zodSchemas";
 import css from "./NewPassword.module.css";
-import useInteraction from "../../hooks/useInteraction";
-import warningToast from "../../components/common/warning-toast/WarningToast";
-import toast from "react-hot-toast";
 
 const NewPassword = ({ isVisible, close }) => {
 	const { t } = useTranslation("profile");
-	const { setMessage } = useInteraction();
 	const { changePassword } = useAuthApi();
-	const { register, handleSubmit, reset } = useForm();
 
 	const onSubmit = async (data) => {
-		if (data.password !== data.passwordCheck) {
-			warningToast(t("messagePasswordsNotEquals"));
-			return;
-		}
-
-		const result = await changePassword(data);
-		if (!result) {
-			setMessage({ action: "failure", text: t("messagePasswordNotChanged") });
-			return;
-		}
-		toast.success(t("positiveTextPasswordChanged"));
-		close();
-	};
-
-	const hide = () => {
-		reset();
+		await changePassword(data);
 		close();
 	};
 
 	return (
 		<AnimatePresence>
 			{isVisible && (
-				<motion.form
+				<motion.div
 					className={css.new_password_cont}
-					onSubmit={handleSubmit(onSubmit)}
 					initial={{ opacity: 0, x: "-50%", y: "-50%", scale: 0.5 }}
 					animate={{ opacity: 1, x: "-50%", y: "-50%", scale: 1 }}
 					exit={{ opacity: 0, scale: 0.5 }}
@@ -50,31 +30,29 @@ const NewPassword = ({ isVisible, close }) => {
 						bounce: 0.5,
 					}}
 				>
-					<InputBox
-						placeholder={t("placeholderPassword")}
-						type="password"
-						register={register}
-						name="password"
-						icon={faUnlockKeyhole}
-						white={true}
-						isRequired={true}
-					/>
-					<InputBox
-						placeholder={t("placeholderRepeatPassword")}
-						type="password"
-						register={register}
-						name="passwordCheck"
-						icon={faUnlock}
-						white={true}
-						isRequired={true}
-					/>
-					<div>
-						<button type="submit">{t("buttonChange")}</button>
-						<button type="button" onClick={hide}>
-							{t("buttonCancel")}
-						</button>
-					</div>
-				</motion.form>
+					<Form onSubmit={onSubmit} validationSchema={newPasswordSchema(t)}>
+						<InputBox
+							placeholder={t("placeholderPassword")}
+							type="password"
+							name="password"
+							icon={faUnlockKeyhole}
+							white={true}
+						/>
+						<InputBox
+							placeholder={t("placeholderRepeatPassword")}
+							type="password"
+							name="passwordCheck"
+							icon={faUnlock}
+							white={true}
+						/>
+						<div>
+							<button type="submit">{t("buttonChange")}</button>
+							<button type="button" onClick={close}>
+								{t("buttonCancel")}
+							</button>
+						</div>
+					</Form>
+				</motion.div>
 			)}
 		</AnimatePresence>
 	);

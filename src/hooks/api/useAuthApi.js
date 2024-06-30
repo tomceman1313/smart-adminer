@@ -2,11 +2,11 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import warningToast from "../../components/common/warning-toast/WarningToast";
-import { BASE_URL } from "../../modules/ApiFunctions";
+import { BASE_URL, responseHandler } from "../../modules/ApiFunctions";
 import useAuth from "../useAuth";
 
 export default function useAuthApi() {
-	const { t } = useTranslation("login", "errors");
+	const { t } = useTranslation("login", "profile", "errors");
 	const auth = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -84,7 +84,7 @@ export default function useAuthApi() {
 		}
 	}
 
-	async function changePassword(postData) {
+	async function changePassword(data) {
 		const response = await fetch(
 			`${BASE_URL}/api/users/${auth.userInfo.id}/password`,
 			{
@@ -93,19 +93,16 @@ export default function useAuthApi() {
 					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 					Authorization: bearer,
 				},
-				body: JSON.stringify({ data: postData }),
+				body: JSON.stringify({ data: data }),
 				credentials: "include",
 			}
 		);
 
-		if (response.status === 401) {
-			auth.setUserInfo(null);
-			return false;
-		}
-
-		const data = await response.json();
-		auth.setUserInfo({ ...auth.userInfo, token: data.token });
-		return true;
+		await responseHandler(
+			response,
+			auth,
+			t("profile:positiveTextPasswordChanged")
+		);
 	}
 
 	async function signIn(data) {

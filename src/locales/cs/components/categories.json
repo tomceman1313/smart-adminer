@@ -8,5 +8,8 @@
 	"positiveTextCreatedCategory": "Kategorie byla přidána",
 	"positiveTextUpdatedCategory": "Kategorie byla upravena",
 	"positiveTextDeletedCategory": "Kategorie byla smazána",
-	"placeholderName": "Název kategorie"
+	"placeholderName": "Název kategorie",
+	"titleFilterButton": "Filtrovat dle kategorie",
+	"titleEditButton": "Změnit název",
+	"titleDeleteButton": "Odstranit kategorii"
 }

@@ -11,6 +11,7 @@
 	"positiveTextAdDeleted": "Inzerát byl odstraněn",
 	"positiveTextAdCreated": "Inzerát byl vytvořen",
 	"positiveTextAdUpdated": "Inzerát byl upraven",
+	"positiveTextOrderChanged": "Pořadí bylo upraveno",
 	"alertDeleteAd": "Opravdu si přejete smazat inzerát?",
 	"messageDetailDescriptionIsEmpty": "Detailní popis musí být vyplněn",
 

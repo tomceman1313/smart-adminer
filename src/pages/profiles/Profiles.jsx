@@ -1,31 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import warningToast from "../../components/common/warning-toast/WarningToast";
 import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
-import { useDelete } from "../../hooks/api/useCRUD";
+import { useAuthGetAll, useDelete, useGetAll } from "../../hooks/api/useCRUD";
 import UserList from "./UserList";
 
 export default function Profiles() {
 	const { t } = useTranslation("profiles", "errors");
 
-	const { checkNameAvailability, create, edit, getAllWithAuth, getAll } =
-		useBasicApiFunctions();
-	const [roles, setRoles] = useState(null);
+	const { checkNameAvailability, create, edit } = useBasicApiFunctions();
 
-	const { data: users, refetch } = useQuery({
-		queryKey: ["users"],
-		queryFn: async () => {
-			const data = await getAllWithAuth("users");
-			const _privileges = await getAll("users/roles");
-			setRoles(_privileges);
-			return data;
-		},
-		meta: {
-			errorMessage: t("errors:errorFetchUsers"),
-		},
-	});
+	const { data: users, refetch } = useAuthGetAll(
+		"users",
+		null,
+		["users"],
+		t("errors:errorFetchUsers")
+	);
+
+	const { data: roles } = useGetAll(
+		"users/roles",
+		null,
+		["privileges"],
+		t("errors:errorFetchUsers")
+	);
 
 	const { mutateAsync: deleteUser } = useDelete(
 		"users",

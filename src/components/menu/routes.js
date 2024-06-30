@@ -19,6 +19,7 @@ import SettingsPage from "../../pages/settings/SettingsPage";
 import Vacancies from "../../pages/vacancies/Vacancies";
 import Vacancy from "../../pages/vacancy/Vacancy";
 import DashboardContent from "../../pages/dashboard/DashboardContent";
+import RequireAuth from "../admin/RequireAuth";
 
 export const ROUTES = [
 	{
@@ -204,3 +205,10 @@ export const ROUTES = [
 		menuSection: "settings-section",
 	},
 ];
+
+export const ROUTES_ROUTER = ROUTES.map((route) => {
+	return {
+		path: route.path,
+		element: <RequireAuth>{route.element}</RequireAuth>,
+	};
+});

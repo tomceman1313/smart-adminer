@@ -8,11 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState } from "react";
 import useInteraction from "../../../hooks/useInteraction";
 import css from "./Item.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Item({ el, remove, edit, show, deleteQuestion }) {
+	const { t } = useTranslation("categoriesC");
+	const { setAlert } = useInteraction();
 	const [disabled, setDisabled] = useState(true);
 	const inputRef = useRef(null);
-	const { setAlert } = useInteraction();
 
 	async function changeHandler() {
 		if (!disabled) {
@@ -50,17 +52,20 @@ export default function Item({ el, remove, edit, show, deleteQuestion }) {
 				<FontAwesomeIcon
 					className={css.filter_button}
 					icon={faEye}
+					title={t("titleFilterButton")}
 					onClick={filterByItemId}
 				/>
 			) : null}
 			<FontAwesomeIcon
 				className={css.edit_button}
 				icon={disabled ? faPencil : faFloppyDisk}
+				title={t("titleEditButton")}
 				onClick={changeHandler}
 			/>
 			<FontAwesomeIcon
 				className={css.delete_button}
 				icon={faTrashCan}
+				title={t("titleDeleteButton")}
 				onClick={removeItem}
 			/>
 		</li>

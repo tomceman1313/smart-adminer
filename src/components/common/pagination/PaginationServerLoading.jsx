@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import css from "./Pagination.module.css";
 
@@ -14,15 +14,26 @@ export default function PaginationServerLoading({ path, totalPages }) {
 	const { page } = useParams();
 	const [pages] = useState(createPagesArray(totalPages));
 
+	useEffect(() => {
+		if (!page) return;
+
+		window.scroll(0, localStorage.getItem("scrollHeight"));
+	}, [page]);
+
+	function saveScrollHeight() {
+		localStorage.setItem("scrollHeight", window.scrollY);
+	}
+
 	return (
-		<div className={css.pagination}>
+		<div className={css.pagination} onClick={saveScrollHeight}>
 			{pages.length > 0 ? (
 				pages.map((item) => (
 					<Link
 						to={`${path}/${item}`}
 						key={`page-${item}`}
-						className={(!page && item === 1) || Number(page) === item ? css.active : ""}
-						preventScrollReset={true}
+						className={
+							(!page && item === 1) || Number(page) === item ? css.active : ""
+						}
 					>
 						{item}
 					</Link>

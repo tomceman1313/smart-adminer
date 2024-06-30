@@ -1,9 +1,28 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, DragOverlay } from "@dnd-kit/core";
-import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import {
+	DndContext,
+	KeyboardSensor,
+	PointerSensor,
+	closestCenter,
+	useSensor,
+	useSensors,
+	DragOverlay,
+} from "@dnd-kit/core";
+import {
+	SortableContext,
+	arrayMove,
+	rectSortingStrategy,
+	sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 
-export default function SortableList({ children, overlayElement, items, setState, sortCallbackFunction }) {
+export default function SortableList({
+	children,
+	overlayElement,
+	items,
+	setState,
+	sortCallbackFunction,
+}) {
 	const debouncedItems = useDebounce(items, 1500);
 	const [active, setActive] = useState(null);
 	const [isModifying, setIsModifying] = useState(null);
@@ -40,7 +59,7 @@ export default function SortableList({ children, overlayElement, items, setState
 
 	function handleDragEnd(event) {
 		const { active, over } = event;
-		if (active.id !== over.id) {
+		if (active.id !== over?.id) {
 			setState((items) => {
 				const oldIndex = items.findIndex((item) => item.id === active.id);
 				const newIndex = items.findIndex((item) => item.id === over.id);
@@ -67,7 +86,7 @@ export default function SortableList({ children, overlayElement, items, setState
 			<SortableContext items={items} strategy={rectSortingStrategy}>
 				{children}
 			</SortableContext>
-			<DragOverlay>{active ? overlayElement(active) : null}</DragOverlay>
+			<DragOverlay>{active ? overlayElement(active, items) : null}</DragOverlay>
 		</DndContext>
 	);
 }

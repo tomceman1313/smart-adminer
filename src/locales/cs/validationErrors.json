@@ -4,5 +4,7 @@
 	"whiteSpaces": "Text nesmí obsahovat mezery",
 	"unrealDates": "Počáteční datum musí být dříve než konečné",
 	"acceptOnlyNumeric": "Vstupní pole může obsahovat pouze číslice",
-	"invalidPhoneNumber": "Nesprávný formát telefonního čísla"
+	"invalidPhoneNumber": "Nesprávný formát telefonního čísla",
+	"invalidEmail": "Nesprávný formát emailové adresy",
+	"notEqualPassword": "Hesla se neshodují"
 }

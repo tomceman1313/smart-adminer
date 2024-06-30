@@ -3,15 +3,6 @@
 	max-height: 240px;
 }
 
-.category_list input {
-	width: 100%;
-	padding-left: 30px;
-	background-color: white;
-	border: solid 1px #d6dde1;
-	border-right: none;
-	border-radius: 8px 0 0 8px;
-}
-
 .blur {
 	position: relative;
 	height: 20px;

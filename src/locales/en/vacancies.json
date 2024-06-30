@@ -11,6 +11,7 @@
 	"positiveTextAdDeleted": "Job advertisement has been deleted",
 	"positiveTextAdCreated": "Job advertisement has been created",
 	"positiveTextAdUpdated": "Job advertisement has been updated",
+	"positiveTextOrderChanged": "Order has been updated",
 	"alertDeleteAd": "Delete the advertisement?",
 	"messageDetailDescriptionIsEmpty": "A detailed description must be filled out",
 

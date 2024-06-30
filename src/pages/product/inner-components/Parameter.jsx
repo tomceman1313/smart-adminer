@@ -1,9 +1,14 @@
-import { faArrowDown, faArrowUp, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+	faArrowDown,
+	faArrowUp,
+	faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 import css from "../styles/Parameters.module.css";
 import { useTranslation } from "react-i18next";
+import { DragHandle } from "../../../components/common/sortable/DragHandle";
 
 const Parameter = ({ el, parameters, setParameters, activeIndex }) => {
 	const { t } = useTranslation("products");
@@ -11,6 +16,7 @@ const Parameter = ({ el, parameters, setParameters, activeIndex }) => {
 	const [paramValue, setParamValue] = useState(el.value);
 
 	useEffect(() => {
+		if (!parameters[activeIndex]?.params) return;
 		const indexOfUpdatedParam = parameters[activeIndex].params.indexOf(el);
 		const updatedParams = JSON.parse(JSON.stringify(parameters));
 		updatedParams[activeIndex].params[indexOfUpdatedParam].name = paramName;
@@ -20,7 +26,10 @@ const Parameter = ({ el, parameters, setParameters, activeIndex }) => {
 	}, [paramName]);
 
 	useEffect(() => {
-		const indexOfUpdatedParam = parameters[activeIndex].params.indexOf(el);
+		if (!parameters[activeIndex]?.params) return;
+		const indexOfUpdatedParam = parameters[activeIndex].params.findIndex(
+			(param) => param.id === el.id
+		);
 		const updatedParams = JSON.parse(JSON.stringify(parameters));
 		updatedParams[activeIndex].params[indexOfUpdatedParam].value = paramValue;
 		setParameters(updatedParams);
@@ -70,29 +79,48 @@ const Parameter = ({ el, parameters, setParameters, activeIndex }) => {
 	}
 
 	function removeParameter() {
+		if (!parameters[activeIndex]?.params) return;
 		const indexOfUpdatedParam = parameters[activeIndex].params.indexOf(el);
 		const updatedParams = JSON.parse(JSON.stringify(parameters));
 		updatedParams[activeIndex].params.splice(indexOfUpdatedParam, 1);
 
-		if (indexOfUpdatedParam >= 0 && indexOfUpdatedParam !== updatedParams[activeIndex].params.length - 1) {
-			updatedParams[activeIndex].params = updatedParams[activeIndex].params.map((item, index) => {
-				item.p_order = index;
-				return item;
-			});
+		if (
+			indexOfUpdatedParam >= 0 &&
+			indexOfUpdatedParam !== updatedParams[activeIndex].params.length - 1
+		) {
+			updatedParams[activeIndex].params = updatedParams[activeIndex].params.map(
+				(item, index) => {
+					item.p_order = index;
+					return item;
+				}
+			);
 		}
 		setParameters(updatedParams);
 	}
 
 	return (
-		<li>
-			<input defaultValue={paramName} placeholder={t("placeholderTitle")} required onChange={(e) => setParamName(e.target.value)} />
-			<input defaultValue={paramValue} placeholder={t("placeholderParameterValue")} required onChange={(e) => setParamValue(e.target.value)} />
+		<>
+			<input
+				defaultValue={paramName}
+				placeholder={t("placeholderTitle")}
+				required
+				onChange={(e) => setParamName(e.target.value)}
+			/>
+			<input
+				defaultValue={paramValue}
+				placeholder={t("placeholderParameterValue")}
+				required
+				onChange={(e) => setParamValue(e.target.value)}
+			/>
 			<div className={css.btns_cont}>
-				<FontAwesomeIcon icon={faArrowDown} onClick={downInOrder} />
-				<FontAwesomeIcon icon={faArrowUp} onClick={upInOrder} />
-				<FontAwesomeIcon icon={faTrashCan} onClick={removeParameter} />
+				<FontAwesomeIcon
+					className={css.trash_btn}
+					icon={faTrashCan}
+					onClick={removeParameter}
+				/>
+				<DragHandle id={el.id} />
 			</div>
-		</li>
+		</>
 	);
 };
 

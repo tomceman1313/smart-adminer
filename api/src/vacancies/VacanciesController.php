@@ -65,6 +65,14 @@ class VacanciesController
                 ]);
                 break;
 
+            case ($method == "PUT" && $uri == "/api/vacancies/order"):
+                $result = $this->gateway->updateOrder($data["data"]);
+                echo json_encode([
+                    "message" => "Updated",
+                    "token" => $authAction["token"]
+                ]);
+                break;
+
             case ($method == "DELETE" && preg_match('/^\/api\/vacancies\/[0-9]*$/', $uri)):
                 $this->gateway->delete($url_parts[3]);
                 echo json_encode([

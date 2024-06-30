@@ -1,18 +1,23 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import { HelmetProvider } from "react-helmet-async";
 import {
-	QueryCache,
 	MutationCache,
+	QueryCache,
 	QueryClient,
 	QueryClientProvider,
 } from "@tanstack/react-query";
-import Login from "./pages/login/Login";
-import Dashboard from "./pages/dashboard/Dashboard";
-import { InteractionProvider } from "./context/InteractionContext";
-import { ImageEditorProvider } from "./context/ImageEditorContext";
+import { HelmetProvider } from "react-helmet-async";
 import toast, { Toaster } from "react-hot-toast";
+import {
+	RouterProvider,
+	createBrowserRouter,
+	ScrollRestoration,
+} from "react-router-dom";
+import { ROUTES_ROUTER } from "./components/menu/routes";
+import { AuthProvider } from "./context/AuthContext";
+import { ImageEditorProvider } from "./context/ImageEditorContext";
+import { InteractionProvider } from "./context/InteractionContext";
+import Dashboard from "./pages/dashboard/Dashboard";
 import ErrorPage from "./pages/error/ErrorPage";
+import Login from "./pages/login/Login";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -41,6 +46,26 @@ const queryClient = new QueryClient({
 	}),
 });
 
+const router = createBrowserRouter(
+	[
+		{
+			path: "/",
+			element: <Dashboard />,
+			children: ROUTES_ROUTER,
+			errorElement: <ErrorPage errorCode={404} />,
+		},
+		{
+			path: "login",
+			element: <Login />,
+		},
+		{
+			path: "503",
+			element: <ErrorPage />,
+		},
+	],
+	{ basename: "/admin" }
+);
+
 function App() {
 	return (
 		<div className="App">
@@ -49,24 +74,14 @@ function App() {
 					<AuthProvider>
 						<InteractionProvider>
 							<ImageEditorProvider>
-								<BrowserRouter basename="/admin">
-									<Routes>
-										<Route path="/*" element={<Dashboard />} />
-										<Route path="/login" element={<Login />} />
-										<Route
-											path="/503"
-											element={<ErrorPage errorCode={503} />}
-										/>
-										<Route path="*" element={<ErrorPage errorCode={404} />} />
-									</Routes>
-									<Toaster
-										position="top-center"
-										toastOptions={{
-											success: { iconTheme: { primary: "#17a589" } },
-											error: { iconTheme: { primary: "#d3384b" } },
-										}}
-									/>
-								</BrowserRouter>
+								<RouterProvider router={router} />
+								<Toaster
+									position="top-center"
+									toastOptions={{
+										success: { iconTheme: { primary: "#17a589" } },
+										error: { iconTheme: { primary: "#d3384b" } },
+									}}
+								/>
 							</ImageEditorProvider>
 						</InteractionProvider>
 					</AuthProvider>

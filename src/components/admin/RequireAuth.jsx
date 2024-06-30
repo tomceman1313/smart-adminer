@@ -1,10 +1,13 @@
-import { Outlet } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
-const RequireAuth = ({ permissions, permissionClass }) => {
-	const permission = permissions.find((per) => per.class === permissionClass);
+const RequireAuth = ({ children, permissionClass }) => {
+	const auth = useAuth();
+	const permission = auth.userInfo.permissions.find(
+		(per) => per.class === permissionClass
+	);
 	// If permission class is empty string show section
 	if (!permissionClass) {
-		return <Outlet />;
+		return children;
 	}
 
 	if (
@@ -13,7 +16,7 @@ const RequireAuth = ({ permissions, permissionClass }) => {
 		permission?.put_permission ||
 		permission?.delete_permission
 	) {
-		return <Outlet />;
+		return children;
 	}
 
 	return (

@@ -1,18 +1,15 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import Alert from "../../components/admin/Alert";
 import Message from "../../components/admin/Message";
-import RequireAuth from "../../components/admin/RequireAuth";
 import Banner from "../../components/banner/Banner";
 import DesktopMenu from "../../components/menu/desktop-menu/DesktopMenu";
 import MobileMenu from "../../components/menu/mobile-menu/MobileMenu";
-import { ROUTES } from "../../components/menu/routes";
 import useAuth from "../../hooks/useAuth";
 import useViewport from "../../hooks/useViewport";
 
 import ImageEditor from "../../components/common/image-editor/ImageEditor";
 import useAuthApi from "../../hooks/api/useAuthApi";
-import ErrorPage from "../error/ErrorPage";
 import css from "./Dashboard.module.css";
 
 export default function Dashboard() {
@@ -48,6 +45,11 @@ export default function Dashboard() {
 		<div className={css.dashboard}>
 			{auth?.userInfo?.permissions && (
 				<>
+					<ScrollRestoration
+						getKey={(location) => {
+							return location.key;
+						}}
+					/>
 					{width > 1600 ? (
 						<DesktopMenu
 							permissions={getAccessRights()}
@@ -62,22 +64,7 @@ export default function Dashboard() {
 
 					<Banner />
 					<div className={css.content}>
-						<Routes>
-							{ROUTES.map((route) => (
-								<Route
-									key={route.name}
-									element={
-										<RequireAuth
-											permissions={auth.userInfo.permissions}
-											permissionClass={route.class}
-										/>
-									}
-								>
-									<Route path={route.path} element={route.element} />
-								</Route>
-							))}
-							<Route path="/*" element={<ErrorPage errorCode={404} />} />
-						</Routes>
+						<Outlet />
 						<Alert />
 						<Message />
 						<ImageEditor />

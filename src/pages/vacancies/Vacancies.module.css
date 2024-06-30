@@ -4,49 +4,49 @@
 	flex-wrap: wrap;
 }
 
-.vacancies li {
+.vacancy {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
+	max-height: 60px;
 	margin: 10px 0;
 	border: solid 1px var(--gray);
 	border-radius: 8px;
+	background-color: white;
 	overflow: hidden;
 }
 
-.vacancies li img {
+.vacancy img {
 	height: 60px;
 }
 
-.vacancies div {
+.vacancy div {
 	width: calc(100% - 120px);
 	margin-left: 20px;
 }
 
-.vacancies li b {
+.vacancy b {
 	display: block;
 	font-size: 1.1rem;
 }
 
-.vacancies li svg {
-	width: 50px;
-	background-color: var(--green);
-	color: white;
+.icon {
+	color: var(--main);
 	font-size: 1.2rem;
-	padding: 20px 5px;
+	padding: 20px 15px;
 	transition: all 0.5s;
 	cursor: pointer;
 }
 
-.vacancies li svg:hover {
-	background-color: var(--green-dark);
+.icon:hover {
+	color: var(--main-dark);
 }
 
-.vacancies li svg:nth-of-type(2) {
-	background-color: var(--red);
+.icon:nth-of-type(2) {
+	color: var(--red);
 }
 
-.vacancies li svg:nth-of-type(2):hover {
-	background-color: var(--red-dark);
+.icon:nth-of-type(2):hover {
+	color: var(--red-dark);
 }

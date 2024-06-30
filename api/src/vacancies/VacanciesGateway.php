@@ -12,7 +12,7 @@ class VacanciesGateway
 
     function getAll(): array
     {
-        $sql = "SELECT * FROM vacancies";
+        $sql = "SELECT * FROM vacancies ORDER BY position";
         $stmt = $this->conn->query($sql);
 
         $data = [];
@@ -38,9 +38,15 @@ class VacanciesGateway
 
     public function create(array $data)
     {
+        $sql = "SELECT COUNT(*) FROM vacancies";
+        $stmt = $this->conn->query($sql);
+        $position = $stmt->fetch(PDO::FETCH_ASSOC);
+        //indexing from 1 not 0
+        $position = $position["COUNT(*)"] + 1;
+
         $image_name = $this->utils->createImage($data["image"], 1200, "/images/vacancies");
 
-        $sql = "INSERT INTO vacancies (title, description, detail, date, active, image) VALUES (:title, :description, :detail, :date, :active, :image)";
+        $sql = "INSERT INTO vacancies (title, description, detail, date, active, image, position) VALUES (:title, :description, :detail, :date, :active, :image, :position)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
@@ -49,7 +55,8 @@ class VacanciesGateway
             'detail' => $data["detail"],
             'date' => $data["date"],
             'active' => $data["active"],
-            'image' => $image_name
+            'image' => $image_name,
+            'position' => $position
         ]);
     }
 
@@ -103,5 +110,34 @@ class VacanciesGateway
 
 
         return true;
+    }
+
+    public function updateOrder(array $data)
+    {
+        $sql_select = "SELECT id, position FROM vacancies WHERE id = :id LIMIT 1";
+        $sql_update = "UPDATE vacancies SET position = :position WHERE id = :id";
+
+        $position = 1;
+        foreach ($data["ids"] as $id) {
+            $stmt = $this->conn->prepare($sql_select);
+            $stmt->execute([
+                'id' => $id,
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            //var_dump($result);
+            if ($result["position"] !== $position) {
+                $stmt = $this->conn->prepare($sql_update);
+
+                $stmt->execute([
+                    'position' => $position,
+                    'id' => $id
+                ]);
+            }
+
+
+
+            ++$position;
+        }
     }
 }

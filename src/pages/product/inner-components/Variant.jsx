@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { faArrowDown, faArrowUp, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 
 import { useTranslation } from "react-i18next";
+import { DragHandle } from "../../../components/common/sortable/DragHandle";
 import css from "../styles/Product.module.css";
 
 const Variant = ({ el, variants, setVariants, setParameters }) => {
@@ -48,54 +49,15 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 		setVariants(updatedVariant);
 	}, [inStock]);
 
-	const upInOrder = () => {
-		const actualPosition = el.v_order;
-		if (actualPosition === 0) {
-			return;
-		}
-
-		const updatedVariants = JSON.parse(JSON.stringify(variants));
-		updatedVariants.map((item) => {
-			if (item.v_order === actualPosition - 1) {
-				item.v_order = actualPosition;
-			} else if (item.v_order === actualPosition) {
-				item.v_order = actualPosition - 1;
-			}
-
-			return item;
-		});
-
-		updatedVariants.sort((a, b) => a.v_order - b.v_order);
-		setVariants(updatedVariants);
-	};
-
-	const downInOrder = () => {
-		const actualPosition = el.v_order;
-		if (actualPosition === variants.length - 1) {
-			return;
-		}
-
-		const updatedVariants = JSON.parse(JSON.stringify(variants));
-		updatedVariants.map((item) => {
-			if (item.v_order === actualPosition + 1) {
-				item.v_order = actualPosition;
-			} else if (item.v_order === actualPosition) {
-				item.v_order = actualPosition + 1;
-			}
-
-			return item;
-		});
-
-		updatedVariants.sort((a, b) => a.v_order - b.v_order);
-		setVariants(updatedVariants);
-	};
-
 	const removeVariant = () => {
 		const indexOfDeletedVariant = variants.indexOf(el);
 		let updatedVariants = JSON.parse(JSON.stringify(variants));
 		updatedVariants.splice(indexOfDeletedVariant, 1);
 
-		if (indexOfDeletedVariant >= 0 && indexOfDeletedVariant !== updatedVariants.length - 1) {
+		if (
+			indexOfDeletedVariant >= 0 &&
+			indexOfDeletedVariant !== updatedVariants.length - 1
+		) {
 			updatedVariants = updatedVariants.map((item, index) => {
 				item.v_order = index;
 				return item;
@@ -104,7 +66,9 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 		setVariants(updatedVariants);
 
 		setParameters((prev) => {
-			const deletedParametersIndex = prev.findIndex((item) => item.variant === el.name);
+			const deletedParametersIndex = prev.findIndex(
+				(item) => item.variant === el.name
+			);
 			if (deletedParametersIndex >= 0) {
 				prev.splice(deletedParametersIndex, 1);
 			}
@@ -113,17 +77,37 @@ const Variant = ({ el, variants, setVariants, setParameters }) => {
 	};
 
 	return (
-		<li>
-			<input defaultValue={variantName} placeholder={t("placeholderTitle")} required onChange={(e) => setVariantName(e.target.value.trim())} />
-			<input defaultValue={inStock} placeholder={t("placeholderInStock")} required onChange={(e) => setInStock(e.target.value)} />
-			<input defaultValue={price} placeholder={t("placeholderOnePiecePrice")} required onChange={(e) => setPrice(e.target.value)} />
+		<>
+			<input
+				defaultValue={variantName}
+				placeholder={t("placeholderTitle")}
+				required
+				onChange={(e) => setVariantName(e.target.value.trim())}
+			/>
+			<input
+				defaultValue={inStock}
+				placeholder={t("placeholderInStock")}
+				required
+				onChange={(e) => setInStock(e.target.value)}
+			/>
+			<input
+				defaultValue={price}
+				placeholder={t("placeholderOnePiecePrice")}
+				required
+				onChange={(e) => setPrice(e.target.value)}
+			/>
 
 			<div className={css.btns_cont}>
-				<FontAwesomeIcon icon={faArrowDown} onClick={downInOrder} />
-				<FontAwesomeIcon icon={faArrowUp} onClick={upInOrder} />
-				<FontAwesomeIcon icon={faTrashCan} onClick={removeVariant} />
+				{/* <FontAwesomeIcon icon={faArrowDown} onClick={downInOrder} />
+				<FontAwesomeIcon icon={faArrowUp} onClick={upInOrder} /> */}
+				<FontAwesomeIcon
+					className={css.trash_btn}
+					icon={faTrashCan}
+					onClick={removeVariant}
+				/>
+				<DragHandle id={el.id} />
 			</div>
-		</li>
+		</>
 	);
 };
 

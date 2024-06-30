@@ -31,7 +31,7 @@ export default function ImageList({
 
 	return (
 		<>
-			<section className={`${css.images} no-section`}>
+			<ul className={`${css.images} no-section`}>
 				<AnimatePresence>
 					{images?.length > 0 ? (
 						images.map((el) => (
@@ -48,7 +48,7 @@ export default function ImageList({
 						<NoDataFound text={t("headerNoImagesFound")} />
 					)}
 				</AnimatePresence>
-			</section>
+			</ul>
 			{images?.length > 0 && (
 				<PaginationServerLoading path="/gallery/" totalPages={totalPages} />
 			)}
