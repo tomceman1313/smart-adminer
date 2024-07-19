@@ -1,28 +1,26 @@
 import { faIndent } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef, useState, useEffect } from "react";
-import useInteraction from "../../hooks/useInteraction";
-
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import SortableItem from "../../components/common/sortable/SortableItem";
+import SortableList from "../../components/common/sortable/SortableList";
+import warningToast from "../../components/common/warning-toast/WarningToast";
+import { createUniqId } from "../../modules/BasicFunctions";
 import Parameter from "./inner-components/Parameter";
 import css from "./styles/Parameters.module.css";
-import { createUniqId } from "../../modules/BasicFunctions";
-import { useTranslation } from "react-i18next";
-import SortableList from "../../components/common/sortable/SortableList";
-import SortableItem from "../../components/common/sortable/SortableItem";
 
 export default function Parameters({ parameters, setParameters, variants }) {
 	const { t } = useTranslation("products");
-	const { setMessage } = useInteraction();
 	const newParameterRef = useRef(null);
 	const addToAllRef = useRef(null);
 
+	const [isMultiEditActive, setIsMultiEditActive] = useState(false);
 	const [activeVariant, setActiveVariant] = useState(variants[0]?.name);
 	const [activeParamsIndex, setActiveParamsIndex] = useState(0);
 	const [activeParams, setActiveParams] = useState(parameters[0].params);
 
 	//change activeVariant to first in list after some variant is changed
 	useEffect(() => {
-		//console.log(variants);
 		changeVariant(variants[0]?.name);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [variants]);
@@ -38,7 +36,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 				(item) => item.name === newParameterRef.current.value
 			)
 		) {
-			setMessage({ text: t("messageParameterAlreadyExists"), action: "alert" });
+			warningToast(t("messageParameterAlreadyExists"));
 			return;
 		}
 		const updatedParams = JSON.parse(JSON.stringify(parameters));
@@ -49,8 +47,8 @@ export default function Parameters({ parameters, setParameters, variants }) {
 			value: "",
 			p_order: parameters[activeParamsIndex].params.length,
 		});
+
 		setParameters(updatedParams);
-		//console.log(updatedParams[activeParamsIndex].params);
 		setActiveParams(updatedParams[activeParamsIndex].params);
 		newParameterRef.current.value = "";
 	};
@@ -74,6 +72,7 @@ export default function Parameters({ parameters, setParameters, variants }) {
 		});
 
 		setParameters(updatedParameters);
+		setActiveParams(updatedParameters[activeParamsIndex].params);
 		newParameterRef.current.value = "";
 	}
 
@@ -88,22 +87,23 @@ export default function Parameters({ parameters, setParameters, variants }) {
 		}
 	}
 
-	function createParamsPattern() {
-		const patternParams = [];
-		parameters[activeParamsIndex]?.params.forEach((param) => {
-			patternParams.push(param.name);
-		});
-	}
+	// function createParamsPattern() {
+	// 	const patternParams = [];
+	// 	parameters[activeParamsIndex]?.params.forEach((param) => {
+	// 		patternParams.push(param.name);
+	// 	});
+	// }
 
-	function orderParametersHandler(parametersOrdered) {
-		const newOrder = activeParams.map((parameter, index) => {
+	function orderParametersHandler(updatedOrderParameters) {
+		const newOrder = updatedOrderParameters.map((parameter, index) => {
 			return { ...parameter, p_order: index };
 		});
-		setActiveParams(newOrder);
+
 		let updatedParams = JSON.parse(JSON.stringify(parameters));
 		updatedParams[activeParamsIndex].params = newOrder;
-		console.log(updatedParams);
 		setParameters(updatedParams);
+
+		return newOrder;
 	}
 
 	return (
@@ -123,11 +123,19 @@ export default function Parameters({ parameters, setParameters, variants }) {
 
 				<h2>{t("headerParameters")}</h2>
 
+				<div className={css.add_to_all}>
+					<input
+						type="checkbox"
+						id="add-to-all"
+						onChange={() => setIsMultiEditActive((prev) => !prev)}
+					/>
+					<label htmlFor="add-to-all">{t("checkboxEditInAllVariants")}</label>
+				</div>
 				<SortableList
 					items={activeParams}
 					setState={setActiveParams}
 					overlayElement={OverlayParameter}
-					sortCallbackFunction={orderParametersHandler}
+					modifyCallbackFunction={orderParametersHandler}
 				>
 					<ul>
 						{parameters &&
@@ -142,6 +150,8 @@ export default function Parameters({ parameters, setParameters, variants }) {
 										activeIndex={activeParamsIndex}
 										parameters={parameters}
 										setParameters={setParameters}
+										setActiveParams={setActiveParams}
+										isMultiEditActive={isMultiEditActive}
 									/>
 								</SortableItem>
 							))}

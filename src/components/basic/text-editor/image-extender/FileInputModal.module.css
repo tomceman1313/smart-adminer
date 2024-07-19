@@ -1,0 +1,61 @@
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 300px;
+	transform: translate(-50%, -50%);
+	background-color: var(--green);
+	padding: 15px;
+	border-radius: 16px;
+	color: white;
+	z-index: 3;
+}
+
+.modal div {
+	text-align: center;
+	padding: 30px;
+	border: dashed var(--gray) 2px;
+	border-radius: 8px;
+}
+
+.modal svg {
+	font-size: 2rem;
+	margin-bottom: 5px;
+}
+
+.modal p {
+	margin: 0;
+}
+
+.modal label {
+	display: block;
+	width: 120px;
+	position: relative;
+	margin: auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.modal label::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 30px;
+	height: 1px;
+	background-color: white;
+}
+
+.modal label::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	right: 0;
+	width: 30px;
+	height: 1px;
+	background-color: white;
+}
+
+.modal button {
+	margin: 0;
+}

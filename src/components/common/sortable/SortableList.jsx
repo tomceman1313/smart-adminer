@@ -22,6 +22,7 @@ export default function SortableList({
 	items,
 	setState,
 	sortCallbackFunction,
+	modifyCallbackFunction,
 }) {
 	const debouncedItems = useDebounce(items, 1500);
 	const [active, setActive] = useState(null);
@@ -35,17 +36,18 @@ export default function SortableList({
 	);
 
 	useEffect(() => {
-		const debouncedIds = debouncedItems.map((item) => item.id);
-		const currentIds = items.map((item) => item.id);
-
-		if (isModifying || isModifying === null) {
+		if (isModifying || isModifying === null || !sortCallbackFunction) {
 			return;
 		}
+
+		const debouncedIds = debouncedItems.map((item) => item.id);
+		const currentIds = items.map((item) => item.id);
 
 		// check if debounced value is matched to visible order (without this fires callback function immediately)
 		if (currentIds.toString() !== debouncedIds.toString()) {
 			return;
 		}
+		console.log("object");
 		sortCallbackFunction(debouncedIds);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedItems, isModifying]);
@@ -63,6 +65,12 @@ export default function SortableList({
 			setState((items) => {
 				const oldIndex = items.findIndex((item) => item.id === active.id);
 				const newIndex = items.findIndex((item) => item.id === over.id);
+
+				//if modify function is provided use it for final modification of sorted data
+				if (modifyCallbackFunction) {
+					return modifyCallbackFunction(arrayMove(items, oldIndex, newIndex));
+				}
+
 				return arrayMove(items, oldIndex, newIndex);
 			});
 		}

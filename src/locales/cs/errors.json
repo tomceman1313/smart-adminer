@@ -31,5 +31,7 @@
 	"errorFetchOrder": "Objednávku se nepodařilo načíst",
 	"errorFetchOrders": "Objednávky se nepodařilo načíst",
 	"errorFetchUser": "Uživatelský účet se nepodařilo načíst",
-	"errorCRUDOperation": "Nepodařilo se provést požadovanou operaci"
+	"errorCRUDOperation": "Nepodařilo se provést požadovanou operaci",
+
+	"errorDeleteParameter": "Parametr se nepodařilo odstranit"
 }

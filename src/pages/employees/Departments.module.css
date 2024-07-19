@@ -16,6 +16,11 @@
 	border: none;
 }
 
+.departments_list {
+	overflow-y: auto;
+	max-height: 240px;
+}
+
 @media (max-width: 450px) {
 	.departments form button {
 		font-size: 12px;

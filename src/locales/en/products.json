@@ -51,6 +51,7 @@
 	"placeholderOnePiecePrice": "Price per pc",
 	"placeholderParameterValue": "Value",
 	"checkboxAddToAll": "Add to all variants",
+	"checkboxEditInAllVariants": "Edit parameter cross all variants",
 
 	"tableHeadName": "Title",
 	"tableHeadInStock": "Pieces in stock",

@@ -2,9 +2,9 @@
     "configurations": [
         {
             "type": "chrome",
-            "name": "article",
+            "name": "dashboard",
             "request": "launch",
-            "url": "http://localhost:3000/admin/article/30"
+            "url": "http://localhost:3000/admin/"
         }
     ]
 }

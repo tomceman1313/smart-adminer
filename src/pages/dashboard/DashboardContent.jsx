@@ -5,6 +5,7 @@ import useStatsApi from "../../hooks/api/useStatsApi";
 import { getMonthName } from "../../modules/BasicFunctions";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
+import TextEditor from "../../components/basic/text-editor/TextEditor";
 
 export default function DashboardContent() {
 	const { t } = useTranslation("dashboard");
@@ -39,6 +40,7 @@ export default function DashboardContent() {
 			</Helmet>
 			<BoxesRow stats={stats} />
 			{stats?.orders && <OrdersInfo orders={stats.orders} />}
+			{/* <TextEditor /> */}
 		</>
 	);
 }

@@ -69,12 +69,10 @@ export default function Variants({
 		setVariants(variantAdded.sort((a, b) => a.v_order - b.v_order));
 	};
 
-	function orderVariantsHandler(orderedVariants) {
-		const newOrder = variants.map((variant, index) => {
+	function orderVariantsHandler(updatedOrderVariants) {
+		return updatedOrderVariants.map((variant, index) => {
 			return { ...variant, v_order: index };
 		});
-		console.log(newOrder);
-		//setVariants(newOrder);
 	}
 
 	return (
@@ -92,7 +90,7 @@ export default function Variants({
 				items={variants}
 				setState={setVariants}
 				overlayElement={OverlayVariant}
-				sortCallbackFunction={orderVariantsHandler}
+				modifyCallbackFunction={orderVariantsHandler}
 			>
 				<ul>
 					{variants.length > 0 ? (

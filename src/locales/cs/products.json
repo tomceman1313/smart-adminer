@@ -51,6 +51,7 @@
 	"placeholderOnePiecePrice": "Cena za ks",
 	"placeholderParameterValue": "Hodnota parametru",
 	"checkboxAddToAll": "Přidat parametr všem variantám",
+	"checkboxEditInAllVariants": "Spravovat parametr všem variantám",
 
 	"tableHeadName": "Název",
 	"tableHeadInStock": "Kusů skladem",

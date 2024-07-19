@@ -33,5 +33,7 @@
 	"errorFetchOrder": "Failed to load order",
 	"errorFetchOrders": "Failed to load orders",
 	"errorFetchUser": "Failed to load user",
-	"errorCRUDOperation": "Requested operation failed"
+	"errorCRUDOperation": "Requested operation failed",
+
+	"errorDeleteParameter": "Failed to delete parameter"
 }
