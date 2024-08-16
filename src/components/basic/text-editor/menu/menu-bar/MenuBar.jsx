@@ -1,5 +1,21 @@
 import { useCurrentEditor } from "@tiptap/react";
-import AddImageButton from "./image-extender/AddImageButton";
+import AddImageButton from "../../image-extender/AddImageButton";
+import MenuBarButton from "./MenuBarButton";
+import {
+	faArrowRotateLeft,
+	faArrowRotateRight,
+	faArrowTurnDown,
+	faBold,
+	faCode,
+	faGripLines,
+	faItalic,
+	faList,
+	faListOl,
+	faQuoteLeft,
+	faStrikethrough,
+	faTextSlash,
+	faXmarkSquare,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function MenuBar() {
 	const { editor } = useCurrentEditor();
@@ -12,40 +28,48 @@ export default function MenuBar() {
 		<div className="control-group">
 			<div className="button-group">
 				<AddImageButton />
-				<button
+				<MenuBarButton
+					icon={faBold}
+					label="Bold"
 					onClick={() => editor.chain().focus().toggleBold().run()}
 					disabled={!editor.can().chain().focus().toggleBold().run()}
 					className={editor.isActive("bold") ? "is-active" : ""}
-				>
-					Bold
-				</button>
-				<button
+				/>
+				<MenuBarButton
+					icon={faItalic}
+					label="Italic"
 					onClick={() => editor.chain().focus().toggleItalic().run()}
 					disabled={!editor.can().chain().focus().toggleItalic().run()}
 					className={editor.isActive("italic") ? "is-active" : ""}
-				>
-					Italic
-				</button>
-				<button
+				/>
+				<MenuBarButton
+					icon={faStrikethrough}
+					label="Strike"
 					onClick={() => editor.chain().focus().toggleStrike().run()}
 					disabled={!editor.can().chain().focus().toggleStrike().run()}
 					className={editor.isActive("strike") ? "is-active" : ""}
-				>
-					Strike
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faCode}
+					label="Code"
 					onClick={() => editor.chain().focus().toggleCode().run()}
 					disabled={!editor.can().chain().focus().toggleCode().run()}
 					className={editor.isActive("code") ? "is-active" : ""}
-				>
-					Code
-				</button>
-				<button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-					Clear marks
-				</button>
-				<button onClick={() => editor.chain().focus().clearNodes().run()}>
-					Clear nodes
-				</button>
+				/>
+
+				<MenuBarButton
+					icon={faTextSlash}
+					label="Clear formatting"
+					onClick={() => editor.chain().focus().unsetAllMarks().run()}
+				/>
+
+				<MenuBarButton
+					icon={faXmarkSquare}
+					label="Clear nodes"
+					onClick={() => editor.chain().focus().clearNodes().run()}
+				/>
+
 				<button
 					onClick={() => editor.chain().focus().setParagraph().run()}
 					className={editor.isActive("paragraph") ? "is-active" : ""}
@@ -112,50 +136,66 @@ export default function MenuBar() {
 				>
 					H6
 				</button>
-				<button
+				<MenuBarButton
+					icon={faList}
+					label="Bullet list"
 					onClick={() => editor.chain().focus().toggleBulletList().run()}
 					className={editor.isActive("bulletList") ? "is-active" : ""}
-				>
-					Bullet list
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faListOl}
+					label="Ordered list"
 					onClick={() => editor.chain().focus().toggleOrderedList().run()}
 					className={editor.isActive("orderedList") ? "is-active" : ""}
-				>
-					Ordered list
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faListOl}
+					label="Ordered list"
+					onClick={() => editor.chain().focus().toggleOrderedList().run()}
+					className={editor.isActive("orderedList") ? "is-active" : ""}
+				/>
+
+				<MenuBarButton
+					icon={faCode}
+					label="Code block"
 					onClick={() => editor.chain().focus().toggleCodeBlock().run()}
 					className={editor.isActive("codeBlock") ? "is-active" : ""}
-				>
-					Code block
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faQuoteLeft}
+					label="Blockquote"
 					onClick={() => editor.chain().focus().toggleBlockquote().run()}
 					className={editor.isActive("blockquote") ? "is-active" : ""}
-				>
-					Blockquote
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faGripLines}
+					label="Horizontal rule"
 					onClick={() => editor.chain().focus().setHorizontalRule().run()}
-				>
-					Horizontal rule
-				</button>
-				<button onClick={() => editor.chain().focus().setHardBreak().run()}>
-					Hard break
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faArrowTurnDown}
+					style={{ transform: "rotate(90deg)" }}
+					label="Hard break"
+					onClick={() => editor.chain().focus().setHardBreak().run()}
+				/>
+				<MenuBarButton
+					icon={faArrowRotateLeft}
+					label="Undo"
 					onClick={() => editor.chain().focus().undo().run()}
 					disabled={!editor.can().chain().focus().undo().run()}
-				>
-					Undo
-				</button>
-				<button
+				/>
+
+				<MenuBarButton
+					icon={faArrowRotateRight}
+					label="Redo"
 					onClick={() => editor.chain().focus().redo().run()}
 					disabled={!editor.can().chain().focus().redo().run()}
-				>
-					Redo
-				</button>
+				/>
 			</div>
 		</div>
 	);

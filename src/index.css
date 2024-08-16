@@ -312,3 +312,20 @@ html::-webkit-scrollbar-thumb:hover {
 .quill {
 	margin-bottom: 40px;
 }
+
+/*------------------------------------------- TIPTAP*/
+
+.tiptap {
+	outline: none;
+	padding: 15px;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+}
+
+.tiptap p.is-empty::before {
+	color: #adb5bd;
+	content: attr(data-placeholder);
+	float: left;
+	height: 0;
+	pointer-events: none;
+}

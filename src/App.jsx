@@ -6,11 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import toast, { Toaster } from "react-hot-toast";
-import {
-	RouterProvider,
-	createBrowserRouter,
-	ScrollRestoration,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ROUTES_ROUTER } from "./components/menu/routes";
 import { AuthProvider } from "./context/AuthContext";
 import { ImageEditorProvider } from "./context/ImageEditorContext";

@@ -1,7 +1,10 @@
-import { EditorProvider, FloatingMenu, BubbleMenu } from "@tiptap/react";
 import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
+import { BubbleMenu, EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import MenuBar from "./MenuBar";
+import { CustomFloatingMenu } from "./menu/CustomFloatingMenu";
+import MenuBar from "./menu/menu-bar/MenuBar";
+import css from "./TextEditor.module.css";
 
 // define your extension array
 const extensions = [
@@ -9,12 +12,15 @@ const extensions = [
 	StarterKit.configure({
 		bulletList: {
 			keepMarks: true,
-			keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+			keepAttributes: false,
 		},
 		orderedList: {
 			keepMarks: true,
-			keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+			keepAttributes: false,
 		},
+	}),
+	Placeholder.configure({
+		placeholder: "Napište něco...",
 	}),
 ];
 
@@ -52,13 +58,14 @@ const content = `
 
 export default function TextEditor() {
 	return (
-		<section>
+		<section className={css.editor}>
 			<EditorProvider
 				extensions={extensions}
 				content={content}
 				slotBefore={<MenuBar />}
 			>
-				<FloatingMenu editor={null}>This is the floating menu</FloatingMenu>
+				<CustomFloatingMenu />
+
 				<BubbleMenu editor={null}>This is the bubble menu</BubbleMenu>
 			</EditorProvider>
 		</section>

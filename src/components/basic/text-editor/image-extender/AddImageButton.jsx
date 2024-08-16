@@ -1,25 +1,29 @@
 import { useCurrentEditor } from "@tiptap/react";
 import { useState } from "react";
 import FileInputModal from "./FileInputModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-regular-svg-icons";
+import { convertBase64 } from "../../../../modules/BasicFunctions";
 
 export default function AddImageButton() {
 	const { editor } = useCurrentEditor();
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
-	function addImage(image) {
-		console.log(image);
-		// if (image) {
-		// 	editor
-		// 		.chain()
-		// 		.focus()
-		// 		.setImage({ src: image.base64, title: image.name })
-		// 		.run();
-		// }
+	async function addImage(image) {
+		const base64 = await convertBase64(image[0]);
+
+		if (image[0]) {
+			editor
+				.chain()
+				.focus()
+				.setImage({ src: base64, title: image[0].name })
+				.run();
+		}
 	}
 
 	return (
 		<>
-			<button onClick={() => setIsModalVisible(true)}>Add image</button>
+			<FontAwesomeIcon icon={faImage} onClick={() => setIsModalVisible(true)} />
 			{isModalVisible && <FileInputModal addImage={addImage} />}
 		</>
 	);

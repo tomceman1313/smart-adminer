@@ -11,6 +11,7 @@ import useViewport from "../../hooks/useViewport";
 import ImageEditor from "../../components/common/image-editor/ImageEditor";
 import useAuthApi from "../../hooks/api/useAuthApi";
 import css from "./Dashboard.module.css";
+import { MENU_CONFIG } from "../../components/menu/config";
 
 export default function Dashboard() {
 	const auth = useAuth();
@@ -27,6 +28,12 @@ export default function Dashboard() {
 	function getAccessRights() {
 		let accessRights = {};
 		auth?.userInfo?.permissions.forEach((permission) => {
+			//check config if section is visible
+			if (MENU_CONFIG[permission.class]?.visible === false) {
+				accessRights[permission.class] = false;
+				return;
+			}
+
 			let accessGranted = false;
 			if (
 				permission.get_permission ||
@@ -38,6 +45,7 @@ export default function Dashboard() {
 			}
 			accessRights[permission.class] = accessGranted;
 		});
+
 		return accessRights;
 	}
 

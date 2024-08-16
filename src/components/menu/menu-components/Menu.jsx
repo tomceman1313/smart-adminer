@@ -10,14 +10,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-
+import { ROUTES } from "../routes";
 import MenuLink from "./MenuLink";
 import MenuSection from "./MenuSection";
-import { ROUTES } from "../routes";
 
 import css from "./MenuComponents.module.css";
-import { useTranslation } from "react-i18next";
 
 export default function Menu({ permissions, logOut }) {
 	const location = useLocation();

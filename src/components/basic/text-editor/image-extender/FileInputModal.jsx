@@ -22,7 +22,7 @@ export default function FileInputModal({ addImage, close }) {
 
 	function handleFileChange(event) {
 		const selectedFiles = Array.from(event.target.files);
-		console.log(selectedFiles);
+		addImage(selectedFiles);
 	}
 
 	const handleClick = () => {

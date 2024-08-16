@@ -3,6 +3,7 @@ import LanguageSelector from "./LanguageSelector";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import LoginScreenBackgroundPicker from "./LoginScreenBackgroundPicker";
+import TextEditor from "../../components/basic/text-editor/TextEditor";
 
 export default function SettingsPage() {
 	const { t } = useTranslation("settings");
@@ -17,6 +18,8 @@ export default function SettingsPage() {
 			<LanguageSelector />
 
 			<LoginScreenBackgroundPicker />
+
+			<TextEditor />
 		</section>
 	);
 }
