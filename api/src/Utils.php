@@ -80,8 +80,11 @@ class Utils
 
     public function compress(string $image_name, int $max_width, string $path)
     {
-        $source = "{$this->path}{$path}/{$image_name}";
+        ini_set('memory_limit', '256M');
         set_time_limit(20);
+
+        $source = "{$this->path}{$path}/{$image_name}";
+
         do {
             if (file_exists($source)) {
                 $info = getimagesize($source);
@@ -98,6 +101,10 @@ class Utils
                 elseif ($info['mime'] == 'image/png')
                     $image = imagecreatefrompng($source);
 
+                if ($image === null) {
+                    throw new Exception("Image is null");
+                    break;
+                }
 
                 if ($width > $max_width) {
                     $aspectRatio = $width / $height;
@@ -128,6 +135,13 @@ class Utils
                     imagepng($imageResized, $source);
                 } else
                     imagejpeg($imageResized, $source);
+
+                // Free memory
+                imagedestroy($image);
+                if ($imageResized !== $image) {
+                    imagedestroy($imageResized);
+                }
+
                 break;
             }
         } while (true);

@@ -6,62 +6,61 @@ import {
 	faImage,
 	faInfo,
 } from "@fortawesome/free-solid-svg-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DatePicker from "../../components/basic/DatePicker";
 import InputBox from "../../components/basic/InputBox";
+import Form from "../../components/basic/form/Form";
 import Select from "../../components/basic/select/Select";
-import useBasicApiFunctions from "../../hooks/api/useBasicApiFunctions";
+import SubmitButton from "../../components/basic/submit-button/SubmitButton";
+import { useCreate } from "../../hooks/api/useCRUD";
 import {
 	convertBase64,
 	getTodayDate,
 	makeDateFormat,
 } from "../../modules/BasicFunctions";
-import AddMultipleFiles from "./AddMultipleFiles";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import SubmitButton from "../../components/basic/submit-button/SubmitButton";
-import Form from "../../components/basic/form/Form";
 import { documentSchema } from "../../schemas/zodSchemas";
-import { zodResolver } from "@hookform/resolvers/zod";
+import AddMultipleFiles from "./AddMultipleFiles";
 
 const NewDocument = ({ categories }) => {
 	const { t } = useTranslation("documents", "validationErrors");
-	const { create } = useBasicApiFunctions();
 	const [addMultiplePictures, setAddMultiplePictures] = useState(null);
 	const formMethods = useForm({ resolver: zodResolver(documentSchema(t)) });
-	const queryClient = useQueryClient();
 
-	const { mutateAsync: createDocument, status } = useMutation({
-		mutationFn: async (data) => {
-			let fileName = data.file[0].name.split(".");
-			const fileExtension = fileName.pop();
-			fileName = fileName.join(".");
+	const { mutateAsync: createDocument, status } = useCreate(
+		"documents",
+		t("positiveTextDocumentCreated"),
+		null,
+		["documents"]
+	);
 
-			if (data.file[0]) {
-				const base64 = await convertBase64(data.file[0]);
-				data.file = base64;
-				data.file_name = fileName;
-				data.file_extension = fileExtension;
-			}
+	async function createDocumentHandler(data) {
+		let fileName = data.file[0].name.split(".");
+		const fileExtension = fileName.pop();
+		fileName = fileName.join(".");
 
-			if (data.image[0]) {
-				const base64 = await convertBase64(data.image[0]);
-				data.image = base64;
-			} else {
-				delete data.image;
-			}
+		if (data.file[0]) {
+			const base64 = await convertBase64(data.file[0]);
+			data.file = base64;
+			data.file_name = fileName;
+			data.file_extension = fileExtension;
+		}
 
-			data.date = makeDateFormat(data.date);
+		if (data.image[0]) {
+			const base64 = await convertBase64(data.image[0]);
+			data.image = base64;
+		} else {
+			delete data.image;
+		}
 
-			return create("documents", data, t("positiveTextDocumentCreated"));
-		},
-		onSuccess: () => {
-			formMethods.reset();
-			queryClient.invalidateQueries({ queryKey: ["documents"] });
-		},
-	});
+		data.date = makeDateFormat(data.date);
+
+		await createDocument(data);
+		formMethods.reset();
+	}
 
 	const showAddMultiplePictures = () => {
 		setAddMultiplePictures(true);
@@ -71,7 +70,7 @@ const NewDocument = ({ categories }) => {
 		<>
 			<section className="half-section">
 				<h2>{t("headerCreateDocument")}</h2>
-				<Form onSubmit={createDocument} formContext={formMethods}>
+				<Form onSubmit={createDocumentHandler} formContext={formMethods}>
 					<InputBox
 						placeholder={t("placeholderDocumentTitle")}
 						type="text"
