@@ -4,8 +4,9 @@ import FileInputModal from "./FileInputModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { convertBase64 } from "../../../../modules/BasicFunctions";
+import css from "./ImageExtender.module.css";
 
-export default function AddImageButton() {
+export default function AddImageButton({ label, whiteMode }) {
 	const { editor } = useCurrentEditor();
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -23,7 +24,14 @@ export default function AddImageButton() {
 
 	return (
 		<>
-			<FontAwesomeIcon icon={faImage} onClick={() => setIsModalVisible(true)} />
+			<li className={css.image_button_cont}>
+				<FontAwesomeIcon
+					icon={faImage}
+					onClick={() => setIsModalVisible(true)}
+					className={`${css.image_button} ${whiteMode ? css.white : ""}`}
+				/>
+				{label && <label>{label}</label>}
+			</li>
 			{isModalVisible && <FileInputModal addImage={addImage} />}
 		</>
 	);

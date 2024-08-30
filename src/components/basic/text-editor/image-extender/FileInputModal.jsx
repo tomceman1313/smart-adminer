@@ -2,7 +2,7 @@ import { faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 
-import css from "./FileInputModal.module.css";
+import css from "./ImageExtender.module.css";
 
 export default function FileInputModal({ addImage, close }) {
 	const fileInputRef = useRef(null);

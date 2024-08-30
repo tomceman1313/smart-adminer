@@ -1,0 +1,122 @@
+.select_cont {
+	position: relative;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	width: 120px;
+}
+
+.select {
+	display: flex;
+	align-items: center;
+}
+
+.select div {
+	width: 100%;
+	margin-left: 15px;
+	height: 25px;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+	color: #333;
+	font-size: 0.9rem;
+	transition: all 0.5s;
+	cursor: pointer;
+}
+
+.select p {
+	cursor: pointer;
+	user-select: none;
+	margin: 0;
+}
+
+.white p {
+	color: white;
+}
+
+.arrow {
+	color: var(--main-dark);
+	font-size: 14px;
+	padding: 5px 8px 5px 8px;
+	cursor: pointer;
+}
+
+.white .arrow {
+	color: white;
+}
+
+.select_cont ul {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 150px;
+	max-height: 150px;
+	border: solid 1px var(--gray);
+	border-radius: 8px;
+	margin: 0;
+	padding: 10px 0 !important;
+	background-color: white;
+	box-shadow: var(--section-shadow);
+	z-index: 5;
+	overflow-y: auto;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-out;
+}
+
+.select_cont li {
+	display: flex;
+	align-items: center;
+	background-color: white;
+	user-select: none;
+	transition: all 0.3s;
+	font-size: 0.9rem;
+	cursor: pointer;
+	list-style-type: none;
+	padding: 5px 10px;
+}
+
+.select_cont span {
+	width: 15px;
+	font-weight: bold;
+	color: var(--main);
+	font-size: 0.8rem;
+	margin-right: 5px;
+}
+
+.select_cont li:hover {
+	background: var(--gray);
+}
+
+.select_cont li:nth-child(1) {
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+
+.select_cont li:nth-child(2) {
+	font-weight: bold;
+	font-size: 1.3rem;
+}
+
+.select_cont li:nth-child(3) {
+	font-weight: bold;
+	font-size: 1.1rem;
+}
+
+@keyframes popFromBottom {
+	from {
+		margin-top: 10px;
+	}
+
+	to {
+		margin-top: 0px;
+	}
+}
+
+@keyframes popFromTop {
+	from {
+		margin-top: -10px;
+	}
+
+	to {
+		margin-top: 0px;
+	}
+}

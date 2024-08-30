@@ -1,3 +1,25 @@
+.image_button_cont {
+	display: flex;
+	align-items: center;
+	list-style-type: none;
+}
+
+.image_button {
+	cursor: pointer;
+	border: solid 1px transparent;
+	transition: all 0.5s;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+.image_button:hover {
+	border: solid 1px white;
+}
+
+.white {
+	color: white;
+}
+
 .modal {
 	position: fixed;
 	top: 50%;

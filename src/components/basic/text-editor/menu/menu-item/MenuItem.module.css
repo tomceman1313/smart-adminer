@@ -1,0 +1,20 @@
+.menu_item {
+	list-style-type: none;
+	cursor: pointer;
+	border: solid 1px transparent;
+	transition: all 0.5s;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+.menu_item:hover {
+	border: solid 1px white;
+}
+
+.menu_item label {
+	margin-left: 5px;
+}
+
+.white {
+	color: #f2f2f2;
+}
