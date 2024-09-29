@@ -22,12 +22,31 @@ export function CustomFloatingMenu() {
 		return node.textContent === "/" ? true : false;
 	}
 
+	function handleOnClick(callbackFn) {
+		const { state, commands } = editor;
+		const { selection } = state;
+		const { from } = selection;
+
+		// Get the text before the current cursor position
+		const textBefore = state.doc.textBetween(from - 1, from, undefined, "\n");
+
+		if (textBefore === "/") {
+			// Delete the "/" character
+			commands.deleteRange({
+				from: from - 1,
+				to: from,
+			});
+		}
+
+		callbackFn();
+	}
+
 	return (
 		<>
 			{editor && (
 				<FloatingMenu
 					editor={editor}
-					tippyOptions={{ duration: 100 }}
+					tippyOptions={{ duration: 100, zIndex: 5, offset: [130, 0] }}
 					shouldShow={checkAloneSlash}
 				>
 					<ul className={css.floating_menu}>
@@ -35,68 +54,104 @@ export function CustomFloatingMenu() {
 							icon={faList}
 							title="Nadpis 1"
 							onClick={() =>
-								editor.chain().focus().toggleHeading({ level: 1 }).run()
+								handleOnClick(() =>
+									editor.chain().focus().toggleHeading({ level: 1 }).run()
+								)
 							}
 							label="Nadpis 1"
-						/>
+						>
+							<span>H1</span>
+						</MenuItem>
 
 						<MenuItem
 							icon={faList}
 							title="Nadpis 2"
 							onClick={() =>
-								editor.chain().focus().toggleHeading({ level: 2 }).run()
+								handleOnClick(() =>
+									editor.chain().focus().toggleHeading({ level: 2 }).run()
+								)
 							}
 							label="Nadpis 2"
-						/>
+						>
+							<span>H2</span>
+						</MenuItem>
 
 						<MenuItem
 							icon={faList}
 							title="Nadpis 3"
 							onClick={() =>
-								editor.chain().focus().toggleHeading({ level: 3 }).run()
+								handleOnClick(() =>
+									editor.chain().focus().toggleHeading({ level: 3 }).run()
+								)
 							}
 							label="Nadpis 3"
-						/>
+						>
+							<span>H3</span>
+						</MenuItem>
 
 						<MenuItem
 							icon={faList}
 							title="Odstavec"
-							onClick={() => editor.chain().focus().setParagraph().run()}
+							onClick={() =>
+								handleOnClick(() => editor.chain().focus().setParagraph().run())
+							}
 							label="Odstavec"
-						/>
+						>
+							<span>¶</span>
+						</MenuItem>
 
 						<MenuItem
 							icon={faList}
 							title="Odrážkový Seznam"
-							onClick={() => editor.chain().focus().toggleBulletList().run()}
+							onClick={() =>
+								handleOnClick(() =>
+									editor.chain().focus().toggleBulletList().run()
+								)
+							}
 							label="Odrážkový Seznam"
 						/>
 
 						<MenuItem
 							icon={faListOl}
 							title="Číselný seznam"
-							onClick={() => editor.chain().focus().toggleOrderedList().run()}
+							onClick={() =>
+								handleOnClick(() =>
+									editor.chain().focus().toggleOrderedList().run()
+								)
+							}
 							label="Číselný seznam"
 						/>
 
 						<MenuItem
 							icon={faCode}
 							title="Code block"
-							onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+							onClick={() =>
+								handleOnClick(() =>
+									editor.chain().focus().toggleCodeBlock().run()
+								)
+							}
 							label="Kód"
 						/>
 
 						<MenuItem
 							icon={faQuoteLeft}
 							title="Blockquote"
-							onClick={() => editor.chain().focus().toggleBlockquote().run()}
+							onClick={() =>
+								handleOnClick(() =>
+									editor.chain().focus().toggleBlockquote().run()
+								)
+							}
 							label="Uvozovky"
 						/>
 
 						<MenuItem
 							icon={faGripLines}
 							title="Horizontal rule"
-							onClick={() => editor.chain().focus().setHorizontalRule().run()}
+							onClick={() =>
+								handleOnClick(() =>
+									editor.chain().focus().setHorizontalRule().run()
+								)
+							}
 							label="Dělící čára"
 						/>
 

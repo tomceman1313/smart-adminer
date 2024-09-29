@@ -1,10 +1,11 @@
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
-import { BubbleMenu, EditorProvider } from "@tiptap/react";
+import { EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import css from "./TextEditor.module.css";
+import CustomBubbleMenu from "./menu/bubble-menu/CustomBubbleMenu";
 import { CustomFloatingMenu } from "./menu/floating-menu/CustomFloatingMenu";
 import MenuBar from "./menu/menu-bar/MenuBar";
-import css from "./TextEditor.module.css";
 
 // define your extension array
 const extensions = [
@@ -66,7 +67,7 @@ export default function TextEditor() {
 			>
 				<CustomFloatingMenu />
 
-				<BubbleMenu editor={null}>This is the bubble menu</BubbleMenu>
+				<CustomBubbleMenu />
 			</EditorProvider>
 		</section>
 	);

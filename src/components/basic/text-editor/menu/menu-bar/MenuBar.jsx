@@ -1,6 +1,6 @@
 import { useCurrentEditor } from "@tiptap/react";
 import AddImageButton from "../../image-extender/AddImageButton";
-import MenuBarButton from "../menu-item/MenuItem";
+import MenuItem from "../menu-item/MenuItem";
 import {
 	faArrowRotateLeft,
 	faArrowRotateRight,
@@ -33,7 +33,7 @@ export default function MenuBar() {
 
 			<AddImageButton whiteMode />
 
-			<MenuBarButton
+			<MenuItem
 				icon={faBold}
 				title="Bold"
 				onClick={() => editor.chain().focus().toggleBold().run()}
@@ -41,7 +41,7 @@ export default function MenuBar() {
 				className={editor.isActive("bold") ? "is-active" : ""}
 				whiteMode
 			/>
-			<MenuBarButton
+			<MenuItem
 				icon={faItalic}
 				title="Italic"
 				onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -49,7 +49,7 @@ export default function MenuBar() {
 				className={editor.isActive("italic") ? "is-active" : ""}
 				whiteMode
 			/>
-			<MenuBarButton
+			<MenuItem
 				icon={faStrikethrough}
 				title="Strike"
 				onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -58,7 +58,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faCode}
 				title="Code"
 				onClick={() => editor.chain().focus().toggleCode().run()}
@@ -67,21 +67,21 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faTextSlash}
 				title="Clear formatting"
 				onClick={() => editor.chain().focus().unsetAllMarks().run()}
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faXmarkSquare}
 				title="Clear nodes"
 				onClick={() => editor.chain().focus().clearNodes().run()}
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faList}
 				title="Bullet list"
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -89,7 +89,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faListOl}
 				title="Ordered list"
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -97,7 +97,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faListOl}
 				title="Ordered list"
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -105,7 +105,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faCode}
 				title="Code block"
 				onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -113,7 +113,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faQuoteLeft}
 				title="Blockquote"
 				onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -121,21 +121,21 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faGripLines}
 				title="Horizontal rule"
 				onClick={() => editor.chain().focus().setHorizontalRule().run()}
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faArrowTurnDown}
 				style={{ transform: "rotate(90deg)" }}
 				title="Hard break"
 				onClick={() => editor.chain().focus().setHardBreak().run()}
 				whiteMode
 			/>
-			<MenuBarButton
+			<MenuItem
 				icon={faArrowRotateLeft}
 				title="Undo"
 				onClick={() => editor.chain().focus().undo().run()}
@@ -143,7 +143,7 @@ export default function MenuBar() {
 				whiteMode
 			/>
 
-			<MenuBarButton
+			<MenuItem
 				icon={faArrowRotateRight}
 				title="Redo"
 				onClick={() => editor.chain().focus().redo().run()}
