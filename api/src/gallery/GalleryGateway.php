@@ -74,7 +74,7 @@ class GalleryGateway
     function getByCategoryName(string $category_name): array
     {
         $sql = "SELECT gallery.* FROM gallery_categories INNER JOIN image_category ON gallery_categories.id = image_category.category_id 
-        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name LIMIT $this->pagination";
+        INNER JOIN gallery ON gallery.id = image_category.image_id WHERE gallery_categories.name = :category_name ORDER BY id DESC LIMIT $this->pagination";
 
         $stmt = $this->conn->prepare($sql);
 

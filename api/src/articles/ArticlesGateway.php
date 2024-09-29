@@ -59,18 +59,7 @@ class ArticlesGateway
             $data[] = $row;
         }
 
-        $sql = "SELECT id, title, description, date, active, image FROM events ORDER BY date DESC";
-        $stmt = $this->conn->query($sql);
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row["type"] = "event";
-            $data[] = $row;
-        }
-
-        usort($data, function ($a, $b) {
-            return $a['date'] < $b['date'];
-        });
-
-        return array_slice($data, 0, 10);
+        return $data;
     }
 
     public function getByCategory(string $category_id): array
