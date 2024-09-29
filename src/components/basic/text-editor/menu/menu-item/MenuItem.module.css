@@ -7,14 +7,29 @@
 	border-radius: 4px;
 }
 
-.menu_item:hover {
+.white:hover {
 	border: solid 1px white;
 }
 
 .menu_item label {
-	margin-left: 5px;
+	margin-left: 10px;
 }
 
-.white {
+.white .icon {
 	color: #f2f2f2;
+}
+
+.icon {
+	color: var(--main);
+	width: 15px;
+	font-size: 0.8rem;
+}
+
+.menu_item span {
+	display: inline-block;
+	width: 15px;
+	font-weight: bold;
+	color: var(--main);
+	font-size: 0.8rem;
+	text-align: center;
 }

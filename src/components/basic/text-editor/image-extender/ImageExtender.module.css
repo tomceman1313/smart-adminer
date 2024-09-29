@@ -1,23 +1,30 @@
-.image_button_cont {
+.image_button {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
-}
-
-.image_button {
-	cursor: pointer;
 	border: solid 1px transparent;
 	transition: all 0.5s;
 	padding: 5px;
 	border-radius: 4px;
+	cursor: pointer;
+}
+
+.white .icon {
+	color: white;
+}
+
+.icon {
+	color: var(--main);
+	width: 15px;
+	font-size: 0.8rem;
+}
+
+.image_button label {
+	margin-left: 10px;
 }
 
 .image_button:hover {
 	border: solid 1px white;
-}
-
-.white {
-	color: white;
 }
 
 .modal {

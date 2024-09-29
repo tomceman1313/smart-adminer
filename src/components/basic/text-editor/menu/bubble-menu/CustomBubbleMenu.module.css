@@ -1,0 +1,7 @@
+.bubble_menu {
+	display: flex;
+	background-color: white;
+	padding: 5px !important;
+	border-radius: 8px;
+	box-shadow: var(--section-shadow);
+}

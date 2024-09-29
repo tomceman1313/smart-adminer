@@ -10,6 +10,7 @@ export default function MenuItem({
 	disabled,
 	style,
 	whiteMode,
+	children,
 }) {
 	return (
 		<li
@@ -18,7 +19,11 @@ export default function MenuItem({
 			disabled={disabled}
 			className={`${css.menu_item} ${className} ${whiteMode ? css.white : ""}`}
 		>
-			<FontAwesomeIcon icon={icon} style={style} />
+			{children ? (
+				children
+			) : (
+				<FontAwesomeIcon icon={icon} style={style} className={css.icon} />
+			)}
 			{label && <label>{label}</label>}
 		</li>
 	);

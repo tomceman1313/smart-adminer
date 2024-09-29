@@ -24,11 +24,11 @@ export default function AddImageButton({ label, whiteMode }) {
 
 	return (
 		<>
-			<li className={css.image_button_cont}>
+			<li className={`${css.image_button} ${whiteMode ? css.white : ""}`}>
 				<FontAwesomeIcon
 					icon={faImage}
 					onClick={() => setIsModalVisible(true)}
-					className={`${css.image_button} ${whiteMode ? css.white : ""}`}
+					className={css.icon}
 				/>
 				{label && <label>{label}</label>}
 			</li>

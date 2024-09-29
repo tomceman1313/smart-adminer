@@ -56,7 +56,7 @@ const router = createBrowserRouter(
 		},
 		{
 			path: "503",
-			element: <ErrorPage />,
+			element: <ErrorPage errorCode={503} />,
 		},
 	],
 	{ basename: "/admin" }
