@@ -9,7 +9,7 @@ class GalleryGateway
         $this->path = $path;
         $this->page = $this->utils->getUrlParams("page", 0);
 
-        $this->limit = 8;
+        $this->limit = 20;
         $offset = ($this->page > 0 ? $this->page - 1 : 0) * $this->limit;
         $this->pagination = "$offset, $this->limit";
     }

@@ -17,7 +17,7 @@
 	border-radius: 8px;
 	color: white;
 	background-color: var(--green);
-	font-family: Grota_Bold;
+	font-weight: 600;
 	cursor: pointer;
 	box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.36);
 }

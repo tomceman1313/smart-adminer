@@ -10,22 +10,26 @@ function createPagesArray(length) {
 	return pages;
 }
 
-export default function PaginationServerLoading({ path, totalPages }) {
+export default function PaginationServerLoading({
+	path,
+	totalPages,
+	elementReference,
+}) {
 	const { page } = useParams();
 	const [pages] = useState(createPagesArray(totalPages));
 
 	useEffect(() => {
 		if (!page) return;
 
-		window.scroll(0, localStorage.getItem("scrollHeight"));
-	}, [page]);
-
-	function saveScrollHeight() {
-		localStorage.setItem("scrollHeight", window.scrollY);
-	}
+		elementReference.current.scrollIntoView({
+			behavior: "instant",
+			block: "center",
+			inline: "start",
+		});
+	}, [page, elementReference]);
 
 	return (
-		<div className={css.pagination} onClick={saveScrollHeight}>
+		<div className={css.pagination}>
 			{pages.length > 0 ? (
 				pages.map((item) => (
 					<Link

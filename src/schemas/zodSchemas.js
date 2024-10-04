@@ -5,6 +5,8 @@ const phoneRegex = new RegExp(
 	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
 );
 
+const whiteSpaceRegex = new RegExp(/^\S.*\S$/);
+
 export const photoSchema = (t) => {
 	return z.object({
 		title: z.optional(
@@ -194,10 +196,18 @@ export const articleSchema = (t) => {
 			.min(1, t("validationErrors:required"))
 			.max(60, {
 				message: t("validationErrors:maxLength", { number: 60 }),
+			})
+			.regex(whiteSpaceRegex, {
+				message: t("validationErrors:startOrEndWhitespace"),
 			}),
-		description: z.string().max(160, {
-			message: t("validationErrors:maxLength", { number: 160 }),
-		}),
+		description: z
+			.string()
+			.max(160, {
+				message: t("validationErrors:maxLength", { number: 160 }),
+			})
+			.regex(whiteSpaceRegex, {
+				message: t("validationErrors:startOrEndWhitespace"),
+			}),
 		image: z.optional(
 			z
 				.instanceof(FileList)

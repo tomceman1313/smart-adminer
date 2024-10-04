@@ -47,7 +47,6 @@ const InputBox = ({
 				accept={accept}
 				readOnly={readOnly}
 				multiple={multiple}
-				pattern="\S(.*\S)?"
 			/>
 			<FontAwesomeIcon className={`${cssBasic.icon}`} icon={icon} />
 			{errors[name] && (

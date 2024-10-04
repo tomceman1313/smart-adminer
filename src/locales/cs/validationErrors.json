@@ -6,5 +6,6 @@
 	"acceptOnlyNumeric": "Vstupní pole může obsahovat pouze číslice",
 	"invalidPhoneNumber": "Nesprávný formát telefonního čísla",
 	"invalidEmail": "Nesprávný formát emailové adresy",
-	"notEqualPassword": "Hesla se neshodují"
+	"notEqualPassword": "Hesla se neshodují",
+	"startOrEndWhitespace": "Pole nesmí začínat nebo končit mezerou"
 }
