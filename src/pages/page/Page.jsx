@@ -72,6 +72,7 @@ export default function Page() {
 			data.deleted_images = findDeletedImages(body, originalImages);
 		}
 		data.id = page.id;
+
 		await edit(data);
 		refetch();
 	}

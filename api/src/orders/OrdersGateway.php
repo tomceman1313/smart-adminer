@@ -352,20 +352,176 @@ class OrdersGateway
         ]);
     }
 
-    private function sendNewOrderEmail($email, $name, $orderNumber)
+    public function sendNewOrderEmail($email, $name, $orderNumber)
     {
+        $order = $this->get($orderNumber);
+
         $emailCustomer = [];
         $emailCustomer["subject"] = "Potvrzení objednávky";
         $emailCustomer["to"] = $email;
         $emailCustomer["name"] = $name;
-        $emailCustomer["message"] = "Test message";
+
+        // Invoice info
+        $invoiceInfo = sprintf(
+            '
+                <p>Jméno: %s</p>
+                <p>Firma: %s</p>
+                <p>IČ: %s</p>
+                <p>DIČ: %s</p>
+                <p>Ulice: %s</p>
+                <p>Město: %s</p>
+                <p>PSČ: %s</p>
+                <p>Stát: %s</p>
+                <p>Email: %s</p>
+                <p>Telefon: %s</p>
+                <p>Poznámka: %s</p>
+            ',
+            $order["customer"]["fname"] . " " . $order["customer"]["lname"],
+            $order["customer"]["company_name"],
+            $order["customer"]["ic"],
+            $order["customer"]["dic"],
+            $order["customer"]["address"],
+            $order["customer"]["city"],
+            $order["customer"]["postal_code"],
+            "Česká republika",
+            $order["customer"]["email"],
+            $order["customer"]["phone"],
+            $order["comments"],
+        );
+
+        // Generate the table HTML from products data
+        $overallPrice = 0;
+        $productsTable = '<table cellpadding="10" cellspacing="0" >';
+        $productsTable .= '
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Počet kusů</th>
+                <th>Cena</th>
+            </tr>
+        </thead>
+        <tbody>';
+        foreach ($order["ordered_products"] as $product) {
+            $overallPrice += $product["price_piece"] * $product["quantity"];
+            $productsTable .= sprintf(
+                '<tr>
+                <td>%s</td>
+                <td>%d</td>
+                <td>%.2f Kč</td>
+            </tr>',
+                htmlspecialchars($product["product_name"] . " - " . $product["variant_name"], ENT_QUOTES, 'UTF-8'),
+                (int) $product["quantity"],
+                (float) $product["price_piece"] * $product["quantity"]
+            );
+        }
+        $productsTable .= '</tbody></table>';
+
+        // Set the HTML message body with the table
+        $emailCustomer["message"] = sprintf(
+            '
+        <html>
+            <head>
+                <style>
+                    .email-body {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        color: #333;
+                        line-height: 1.6;
+                        font-family: Verdana, sans-serif;
+			        }
+
+                    .email-header {
+                        background-color: #0f1177;
+                        color: white;
+                        text-align: center;
+                        font-size: 20px;
+                        border-radius: 8px;
+                    }
+
+                    .email-header img {
+                        width: 150px;
+                    }
+
+                    .email-footer {
+                        margin-top: 20px;
+                        text-align: center;
+                        font-size: 12px;
+                        color: #aaa;
+                    }
+
+                    section.email-section p {
+				        font-size: 0.8rem;
+			        }
+
+                    p {
+                        margin: 0;
+                    }
+
+                    h3 {
+                        font-size: 1.2rem;
+                        margin: 10px 0;
+                    }
+
+                    table {
+                        width: 100%%;
+                        border-collapse: collapse;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        margin: 10px 0;
+                    }
+
+                    thead tr {
+                        background-color: #0f1177;
+                        text-align: left;
+                        color: white;
+                        border: 1px solid #0f1177;
+                    }
+
+                    tr {
+                        border: 1px solid #d5d5d5;
+                    }
+
+                    th {
+                        font-size: 0.8rem;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="email-body">
+                    <div class="email-header">
+				        <img src="https://dozp-sulicka.cz/icons/logo_sulicka.svg" alt="Logo" />
+			        </div>
+                    <h2>Děkujeme Vám za objednávku!</h2>
+                    <section class="email-section">
+                        <h3>Fakturační údaje:</h3>
+                        %s
+                    </section>
+                    <h3>Obsah objednávky:</h3>
+                    %s
+                    <p>Celková cena objednávky: <b>%.2f Kč</b></p>
+                    <p>Způsob dopravy: Osobní vyzvednutí</p>
+                    <p style="margin-top: 15px">Pokud máte jakékoli dotazy, kontaktujte nás na e-mailu %s nebo na telefonním čísle %s.</p>
+                    <p style="margin-top: 15px">S pozdravem,<br>Domov Sulická</p>
+                    <div class="email-footer">
+                        Obdrželi jste tento email z důvodu vytvoření objednávky na e-shopu <a href="https://dozp-sulicka.cz/">Domov Sulická</a>.
+                    </div>
+                </div>
+            </body>
+        </html>',
+            $invoiceInfo,
+            $productsTable,
+            $overallPrice,
+            "info@domov-sulicka.cz",
+            "+420 773 001 396"
+        );
+
 
         $this->email->sendEmail($emailCustomer);
 
         $emailAdmin = [];
         $emailAdmin["subject"] = "Nová objednávka č. $orderNumber";
         $emailAdmin["to"] = "info@domov-sulicka.cz";
-        $emailAdmin["name"] = "Info";
+        $emailAdmin["name"] = "no-reply";
         $emailAdmin["message"] = "Byla přijata nová objednávka.";
 
         $this->email->sendEmail($emailAdmin);

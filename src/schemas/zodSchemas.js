@@ -59,18 +59,22 @@ export const vacancySchema = (t) => {
 
 export const pageSchema = (t) => {
 	return z.object({
-		title: z
-			.string()
-			.min(1, t("validationErrors:required"))
-			.max(80, {
-				message: i18next.t("validationErrors:maxLength", { number: 80 }),
-			}),
-		description: z
-			.string()
-			.min(1, t("validationErrors:required"))
-			.max(250, {
-				message: i18next.t("validationErrors:maxLength", { number: 250 }),
-			}),
+		title: z.optional(
+			z
+				.string()
+				.min(1, t("validationErrors:required"))
+				.max(80, {
+					message: i18next.t("validationErrors:maxLength", { number: 80 }),
+				})
+		),
+		description: z.optional(
+			z
+				.string()
+				.min(1, t("validationErrors:required"))
+				.max(250, {
+					message: i18next.t("validationErrors:maxLength", { number: 250 }),
+				})
+		),
 		image: z.optional(z.instanceof(FileList)),
 		body: z.optional(z.string()),
 	});

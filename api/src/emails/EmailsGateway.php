@@ -11,7 +11,7 @@ class EmailsGateway
     public function __construct(Database $database)
     {
         $this->conn = $database->getConnection();
-        $this->env = parse_ini_file('.env');;
+        $this->env = parse_ini_file('.env');
     }
 
     public function sendEmail(array $data): bool
@@ -32,9 +32,21 @@ class EmailsGateway
         $mail->addAddress($data["to"], $data["name"]);
         $mail->Subject = $data["subject"];
         //$mail->msgHTML(file_get_contents('email.html'), __DIR__);
+
+        // Enable HTML email
+        $mail->isHTML(true);
         $mail->Body = $data["message"];
 
-        //$mail->addAttachment('attachment.txt');
+        // Optionally set a plain-text alternative body
+        if (isset($data["altMessage"])) {
+            $mail->AltBody = $data["altMessage"];
+        }
+
+        // Add an attachment if provided
+        if (isset($data["attachment"])) {
+            $mail->addAttachment($data["attachment"]);
+        }
+
         if (!$mail->send()) {
             //echo 'Mailer Error: ' . $mail->ErrorInfo;
             return false;

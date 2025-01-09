@@ -24,7 +24,7 @@ export default function Variants({
 		const provisionalId =
 			variants.reduce((max, obj) => {
 				return obj.id > max ? obj.id : max;
-			}, variants[0].id) + 1;
+			}, variants[0]?.id || 0) + 1;
 
 		const variantAdded = [
 			...variants,

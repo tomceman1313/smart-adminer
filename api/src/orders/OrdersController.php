@@ -51,6 +51,11 @@ class OrdersController
                 echo json_encode($data);
                 return;
 
+            case ($method == "GET" && $uri == "/api/orders/test-email"):
+                $data = $this->gateway->sendNewOrderEmail("tomceman13@gmail.com", "Tomáš Zeman", "1");
+                echo json_encode($data);
+                return;
+
             case ($method == "POST" && $uri == "/api/orders"):
                 $id = $this->gateway->create($data);
                 echo json_encode([
