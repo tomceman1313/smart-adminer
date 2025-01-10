@@ -489,7 +489,7 @@ class OrdersGateway
             <body>
                 <div class="email-body">
                     <div class="email-header">
-				        <img src="https://dozp-sulicka.cz/icons/logo_sulicka.svg" alt="Logo" />
+				        <img src="https://dozp-sulicka.cz/icons/logo_stiny.png" alt="Logo" />
 			        </div>
                     <h2>Děkujeme Vám za objednávku!</h2>
                     <section class="email-section">
